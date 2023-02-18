@@ -1,0 +1,71 @@
+repositories {
+	mavenCentral()
+}
+
+plugins {
+	kotlin("jvm") version "1.8.10"
+	application
+	id("org.openjfx.javafxplugin") version "0.0.13"
+	kotlin("plugin.serialization") version "1.8.10"
+	id("com.github.johnrengelman.shadow") version "7.1.2"
+	id("com.github.ben-manes.versions") version "0.43.0"
+}
+
+dependencies {
+	implementation("no.tornado:tornadofx:1.7.20")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+	implementation("ch.qos.logback:logback-classic:1.4.5")
+
+	fun ktor(artifact: String) = "io.ktor:ktor-$artifact:2.1.3"
+	listOf(
+		"client-core",
+		"client-cio",
+		"client-logging",
+		"client-content-negotiation",
+		"serialization-kotlinx-json"
+	).forEach {
+		implementation(ktor(it))
+	}
+
+	testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
+	testImplementation("io.kotest:kotest-assertions-core:5.5.5")
+	testImplementation("io.kotest:kotest-property:5.5.5")
+}
+
+application {
+	mainClass.set("allfit.Main") // The main class of the application
+}
+
+javafx {
+	version = "19"
+	modules = listOf("javafx.controls", "javafx.fxml")
+}
+
+tasks.withType<Test>().configureEach {
+	useJUnitPlatform()
+}
+
+//tasks {
+//	named<ShadowJar>("shadowJar") {
+//		archiveBaseName.set("shadow")
+//	}
+//}
+
+//tasks {
+//	build {
+//		dependsOn(shadowJar)
+//	}
+//}
+//
+//tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+//	val rejectPatterns =
+//		listOf("""^.*-ea\+[\d]+$""").map { Regex(it) }
+//	rejectVersionIf {
+//		val version = candidate.version.toLowerCase()
+//		rejectPatterns.any {
+//			it.matches(version)
+//		}
+//	}
+//}
