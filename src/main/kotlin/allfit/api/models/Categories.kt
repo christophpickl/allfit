@@ -2,14 +2,13 @@ package allfit.api.models
 
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class PartnerCategoriesJson(
-    val data: List<PartnerCategoryJson>
+data class CategoriesJson(
+    val data: List<CategoryJson>
 )
 
 @Serializable
-data class PartnerCategoryJson(
+data class CategoryJson(
     val id: Int,
     val name: String,
     val slugs: SlugJson,
@@ -17,9 +16,9 @@ data class PartnerCategoryJson(
 
 @Serializable
 data class SlugJson(
-    val nl: String = "",
+    val nl: String?,
     val en: String,
-    val es: String = "",
+    val es: String?,
 )
 
 /*

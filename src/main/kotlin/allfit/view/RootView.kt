@@ -34,7 +34,7 @@ class RootView : View() {
             }
         }
         val categories = controller.loadCategories()
-        label("Categories: ${categories.categories.joinToString(", ") { it.shortCode }}")
+        label("Categories: ${categories.categories.joinToString(", ") { it.name }}")
     }
 }
 
@@ -46,4 +46,3 @@ class Styles : Stylesheet() {
         }
     }
 }
-

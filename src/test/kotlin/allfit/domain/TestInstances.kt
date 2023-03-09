@@ -9,6 +9,6 @@ import io.kotest.property.arbitrary.string
 fun Arb.Companion.category() = arbitrary {
     Category(
         id = int(min = 1).next(),
-        shortCode = string(minSize = 1, maxSize = 8).next(),
+        name = string(minSize = 1, maxSize = 50).next(),
     )
 }

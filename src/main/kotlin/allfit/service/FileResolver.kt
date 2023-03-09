@@ -1,11 +1,13 @@
 package allfit.service
 
 import allfit.Environment
-import mu.KotlinLogging
+import mu.KotlinLogging.logger
 import java.io.File
 
 object FileResolver {
-    private val log = KotlinLogging.logger {}
+
+    private val log = logger {}
+
     private val appDirectory = File(
         System.getProperty("user.home"), when (Environment.current) {
             Environment.Production -> ".allfit"

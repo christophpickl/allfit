@@ -10,7 +10,7 @@
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="SHORTCODE" type="varchar(64)">
+            <column name="NAME" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -47,7 +47,7 @@
     },
     {
       "id": 5,
-      "name": "Boksen",
+      "name": "Boxing",
       "slugs": {
         "nl": "boksen",
         "en": "boxing",
@@ -65,7 +65,7 @@
     },
     {
       "id": 90,
-      "name": "Boulderen",
+      "name": "Bouldering",
       "slugs": {
         "nl": "boulderen",
         "en": "bouldering",
@@ -92,7 +92,7 @@
     },
     {
       "id": 46,
-      "name": "Spinning",
+      "name": "Cycling",
       "slugs": {
         "nl": "spinning",
         "en": "cycling",
@@ -101,7 +101,7 @@
     },
     {
       "id": 69,
-      "name": "Dans",
+      "name": "Dance",
       "slugs": {
         "nl": "dans",
         "en": "dance",
@@ -162,7 +162,7 @@
     },
     {
       "id": 73,
-      "name": "Kickboksen",
+      "name": "Kickboxing",
       "slugs": {
         "nl": "kickboksen",
         "en": "kickboxing",
@@ -171,7 +171,7 @@
     },
     {
       "id": 37,
-      "name": "Hardlopen",
+      "name": "Running",
       "slugs": {
         "nl": "hardlopen",
         "en": "running",
@@ -189,7 +189,7 @@
     },
     {
       "id": 71,
-      "name": "Overig",
+      "name": "Other",
       "slugs": {
         "nl": "overig",
         "en": "other",
@@ -207,7 +207,7 @@
     },
     {
       "id": 74,
-      "name": "Paaldansen",
+      "name": "Pole Dance",
       "slugs": {
         "nl": "paaldansen",
         "en": "pole-dance",
@@ -216,7 +216,7 @@
     },
     {
       "id": 80,
-      "name": "Pre\\/post-nataal",
+      "name": "Pre\\/post-natal",
       "slugs": {
         "nl": "prepost-nataal",
         "en": "prepost-natal",
@@ -225,7 +225,7 @@
     },
     {
       "id": 92,
-      "name": "Racketsport",
+      "name": "Racket sports",
       "slugs": {
         "nl": "racketsport",
         "en": "racket-sports",
@@ -243,7 +243,7 @@
     },
     {
       "id": 78,
-      "name": "Vechtsporten",
+      "name": "Martial arts",
       "slugs": {
         "nl": "vechtsporten",
         "en": "martial-arts",
@@ -279,7 +279,7 @@
     },
     {
       "id": 82,
-      "name": "Zwemmen",
+      "name": "Swimming",
       "slugs": {
         "nl": "zwemmen",
         "en": "swimming",

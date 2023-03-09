@@ -1,7 +1,7 @@
 package allfit.sync
 
 import allfit.api.OnefitClient
-import allfit.api.models.PartnerCategoryJson
+import allfit.api.models.CategoryJson
 import allfit.domain.Category
 import allfit.persistence.CategoriesRepo
 import mu.KotlinLogging.logger
@@ -25,7 +25,7 @@ class RealSyncer(
     private suspend fun syncCategories() {
         log.debug { "Sync categories." }
         val localCategories = categoriesRepo.load()
-        val remoteCategories = client.getPartnersCategories()
+        val remoteCategories = client.getCategories()
         val report = SyncDiffer.diffCategories(localCategories, remoteCategories)
 
         if (report.toInsert.isNotEmpty()) {
@@ -37,10 +37,10 @@ class RealSyncer(
     }
 }
 
-private fun PartnerCategoryJson.toCategory() =
+private fun CategoryJson.toCategory() =
     Category(
         id = id,
-        shortCode = slugs.en,
+        name = name,
     )
 
 object NoOpSyncer : Syncer {

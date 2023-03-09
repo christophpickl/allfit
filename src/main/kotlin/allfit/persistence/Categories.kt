@@ -22,8 +22,8 @@ object InMemoryCategoriesRepo : CategoriesRepo {
     private val categories = mutableListOf<Category>()
 
     init {
-        categories += Category(1, "foo")
-        categories += Category(2, "bar")
+        categories += Category(1, "Foo")
+        categories += Category(2, "Bar")
     }
 
     override fun load() = Categories(categories)
@@ -48,7 +48,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
         Categories(CategoriesTable.selectAll().toList().map {
             Category(
                 id = it[CategoriesTable.id],
-                shortCode = it[CategoriesTable.shortCode],
+                name = it[CategoriesTable.name],
             )
         })
     }
@@ -59,7 +59,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
             categories.forEach { category ->
                 CategoriesTable.insert {
                     it[id] = category.id
-                    it[shortCode] = category.shortCode
+                    it[name] = category.name
                 }
             }
         }
@@ -68,6 +68,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
     override fun delete(categoryIds: List<Int>) {
         transaction {
             log.debug { "Deleting ${categoryIds.size} categories." }
+            // TODO or simply mark as deleted, to retain foreign reference?
             CategoriesTable.deleteWhere {
                 id inList categoryIds
             }
@@ -77,7 +78,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
 
 object CategoriesTable : Table("PUBLIC.CATEGORIES") {
     val id = integer("ID")
-    val shortCode = varchar("SHORTCODE", 64)
+    val name = varchar("NAME", 256)
 
     override val primaryKey = PrimaryKey(id)
 }

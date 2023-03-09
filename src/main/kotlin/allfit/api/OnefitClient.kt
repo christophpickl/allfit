@@ -1,12 +1,16 @@
 package allfit.api
 
-import allfit.api.models.PartnerCategoriesJson
+import allfit.api.models.AuthJson
+import allfit.api.models.AuthResponseJson
+import allfit.api.models.CategoriesJson
+import allfit.api.models.PartnersJson
 import allfit.readApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -23,7 +27,8 @@ import mu.KotlinLogging.logger
 
 interface OnefitClient {
 
-    suspend fun getPartnersCategories(): PartnerCategoriesJson
+    suspend fun getCategories(): CategoriesJson
+    suspend fun getPartners(): PartnersJson
 
     companion object {
 
@@ -48,8 +53,11 @@ interface OnefitClient {
 }
 
 object ClassPathOnefitClient : OnefitClient {
-    override suspend fun getPartnersCategories() =
-        readApiResponse<PartnerCategoriesJson>("partners_categories.json")
+    override suspend fun getCategories() =
+        readApiResponse<CategoriesJson>("partners_categories.json")
+
+    override suspend fun getPartners() =
+        readApiResponse<PartnersJson>("partners.json")
 }
 
 private fun buildClient(authToken: String?) = HttpClient(CIO) {
@@ -65,7 +73,7 @@ private fun buildClient(authToken: String?) = HttpClient(CIO) {
     }
     expectSuccess = false
     defaultRequest {
-        url(if (authToken == null) "https://one.fit/api/auth" else "https://api.one.fit/v2/nl-nl/")
+        url(if (authToken == null) "https://one.fit/api/auth" else "https://api.one.fit/v2/en-nl/")
         header("Accept", "application/vnd.onefit.v2.1+json")
         header("X-ONEFIT-CLIENT", "website/29.14.2")
         if (authToken != null) {
@@ -81,27 +89,44 @@ class RealOnefitClient(
     private val log = logger {}
     private val client = buildClient(authToken)
 
-    override suspend fun getPartnersCategories(): PartnerCategoriesJson {
-        log.debug { "GET /partners/categories" }
-        val respond = client.get("partners/categories")
-        respond.requireOk()
-        return respond.body()
-    }
-
-    suspend fun search(params: SearchParams): SearchResultsJson {
-        log.debug { "GET /workouts/search ($params)" }
-        val respond = client.get("workouts/search") {
-            parameter("city", params.city)
-            parameter("limit", params.limit)
-            parameter("page", params.page)
-            parameter("start", params.start)
-            parameter("end", params.end)
+    private suspend inline fun <reified T> simpleGet(
+        path: String,
+        requestModifier: HttpRequestBuilder.() -> Unit = {}
+    ): T {
+        val response = client.get(path) {
+            requestModifier()
         }
-        respond.requireOk()
-        return respond.body()
+        log.debug { "${response.status.value} GET ${response.request.url}" }
+        response.requireOk()
+        return response.body()
     }
 
-    // TODO
+    override suspend fun getCategories(): CategoriesJson =
+        simpleGet("partners/categories")
+
+    override suspend fun getPartners(): PartnersJson =
+        simpleGet("partners/search") {
+            parameter("city", "AMS")
+            parameter("per_page", "5000")
+            parameter("radius", "2000")
+            // category_ids
+            // zipcode
+            // query
+        }
+
+//    suspend fun search(params: SearchParams): SearchResultsJson {
+//        log.debug { "GET /workouts/search ($params)" }
+//        val respond = client.get("workouts/search") {
+//            parameter("city", params.city)
+//            parameter("limit", params.limit)
+//            parameter("page", params.page)
+//            parameter("start", params.start)
+//            parameter("end", params.end)
+//        }
+//        respond.requireOk()
+//        return respond.body()
+//    }
+
 //    suspend fun getReservations(): ReservationsJson {
 //        log.debug { "GET /members/schedule/reservations" }
 //        val respond = client.get("members/schedule/reservations") {
@@ -111,12 +136,6 @@ class RealOnefitClient(
 //        return respond.body()
 //    }
 
-    suspend fun getUsage(): UsagesJson {
-        log.debug { "GET /members/usage" }
-        val respond = client.get("members/usage")
-        respond.requireOk()
-        return respond.body()
-    }
 }
 
 

@@ -1,6 +1,6 @@
 package allfit.sync
 
-import allfit.api.models.PartnerCategoriesJson
+import allfit.api.models.CategoriesJson
 import allfit.api.models.partnerCategoryJson
 import allfit.domain.Categories
 import allfit.domain.category
@@ -52,7 +52,7 @@ class SyncDifferTest : DescribeSpec() {
         Arb.category().next().copy(id = id)
     })
 
-    private fun remoteCategoriesWithId(vararg ids: Int) = PartnerCategoriesJson(ids.map { id ->
+    private fun remoteCategoriesWithId(vararg ids: Int) = CategoriesJson(ids.map { id ->
         Arb.partnerCategoryJson().next().copy(id = id)
     })
 }

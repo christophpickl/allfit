@@ -6,5 +6,5 @@ data class Categories(
 
 data class Category(
     val id: Int,
-    val shortCode: String
+    val name: String
 )

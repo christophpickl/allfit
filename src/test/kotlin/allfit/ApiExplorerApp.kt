@@ -1,23 +1,22 @@
 package allfit
 
-import allfit.api.RealOnefitClient
+import allfit.api.OnefitClient
+import allfit.service.CredentialsLoader
 import io.kotest.common.runBlocking
 
-object ApiExplorerApp {
+class ApiExplorerApp(private val client: OnefitClient) {
 
-    @JvmStatic
-    fun main(args: Array<String>) {
-        runBlocking {
-            playground("")
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            runBlocking {
+                ApiExplorerApp(OnefitClient.authenticate(CredentialsLoader.load())).playground()
+            }
         }
     }
 
-    private suspend fun playground(authToken: String) {
-        val client = RealOnefitClient(authToken)
-//            println(client.getCategories())
-//            println(client.search(SearchParams()))
-        println()
+    private suspend fun playground() {
         println("PARTNERS")
-        println(client.getPartnersCategories())
+        println(client.getPartners())
     }
 }
