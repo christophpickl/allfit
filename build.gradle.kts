@@ -10,8 +10,6 @@ plugins {
     kotlin("plugin.serialization") version "1.8.10"
     id("com.github.johnrengelman.shadow") version "8.1.0"
     id("com.github.ben-manes.versions") version "0.46.0"
-    // https://plugins.gradle.org/plugin/nl.colorize.gradle.application
-//	id("nl.colorize.gradle.application") version "2023.2" // requires java 17?!
 }
 
 dependencies {
@@ -71,17 +69,6 @@ javafx {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
-
-//tasks {
-//    named<ShadowJar>("shadowJar") {
-//        archiveBaseName.set("shadow")
-//    }
-//}
-//tasks {
-//    build {
-//        dependsOn(shadowJar)
-//    }
-//}
 
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
     val rejectPatterns = listOf(".*-ea.*", ".*RC", ".*[Bb]eta.*", ".*[Aa]lpha.*").map { Regex(it) }

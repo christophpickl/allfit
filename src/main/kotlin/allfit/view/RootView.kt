@@ -21,7 +21,7 @@ class RootView : View() {
     private val search = textfield()
 
     init {
-        title = "AllFit" + (if (Environment.current == Environment.Development) " - DEV" else "")
+        title = "AllFit " + (if (Environment.current == Environment.Development) " - DEV" else "")
     }
 
     override val root = vbox {
