@@ -1,5 +1,6 @@
 package allfit.view
 
+import allfit.Environment
 import javafx.scene.paint.Color
 import tornadofx.Stylesheet
 import tornadofx.View
@@ -20,7 +21,7 @@ class RootView : View() {
     private val search = textfield()
 
     init {
-        title = "AllFit"
+        title = "AllFit" + (if (Environment.current == Environment.Development) " - DEV" else "")
     }
 
     override val root = vbox {
