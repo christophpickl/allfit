@@ -6,6 +6,8 @@ import tornadofx.View
 import tornadofx.action
 import tornadofx.box
 import tornadofx.button
+import tornadofx.hbox
+import tornadofx.label
 import tornadofx.plusAssign
 import tornadofx.px
 import tornadofx.textfield
@@ -15,21 +17,22 @@ class RootView : View() {
 
     private val controller by inject<MainController>()
 
-    private val inpEmail = textfield()
-    private val inpPassword = textfield()
+    private val search = textfield()
 
     init {
         title = "AllFit"
     }
 
     override val root = vbox {
-        this += inpEmail
-        this += inpPassword
-        button("Login") {
-            action {
-                controller.login(inpEmail.text, inpPassword.text)
+        hbox {
+            this += search
+            button("Search") {
+                action {
+//                controller.login(Credentials(inpEmail.text, inpPassword.text))
+                }
             }
         }
+        label("Content")
     }
 }
 
@@ -41,3 +44,4 @@ class Styles : Stylesheet() {
         }
     }
 }
+

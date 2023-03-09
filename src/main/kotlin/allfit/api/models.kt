@@ -182,17 +182,6 @@ data class SearchParams(
 )
 
 @Serializable
-data class CategoriesJson(
-    val data: List<CategoryJson>
-)
-
-@Serializable
-data class CategoryJson(
-    val id: Int,
-    val name: String
-)
-
-@Serializable
 data class SearchResultsJson(
     val data: List<SearchResultJson>
 )

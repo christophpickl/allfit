@@ -15,7 +15,7 @@ dependencies {
 	implementation("no.tornado:tornadofx:1.7.20")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
-
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 	implementation("io.insert-koin:koin-core:3.3.3")
 	implementation("io.insert-koin:koin-logger-slf4j:3.3.1")
 

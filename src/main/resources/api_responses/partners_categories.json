@@ -1,0 +1,290 @@
+{
+  "data": [
+    {
+      "id": 89,
+      "name": "Aerial",
+      "slugs": {
+        "nl": "aerial",
+        "en": "aerial",
+        "es": "aereo"
+      }
+    },
+    {
+      "id": 85,
+      "name": "Barre",
+      "slugs": {
+        "nl": "barre",
+        "en": "barre",
+        "es": "barre"
+      }
+    },
+    {
+      "id": 3,
+      "name": "BBB",
+      "slugs": {
+        "nl": "bbb",
+        "en": "bbb",
+        "es": "bbb"
+      }
+    },
+    {
+      "id": 27,
+      "name": "BodyBalance",
+      "slugs": {
+        "nl": "bodybalance",
+        "en": "bodybalance",
+        "es": "bodybalance"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Bodyshape",
+      "slugs": {
+        "nl": "bodyshape",
+        "en": "bodyshape",
+        "es": "bodyshape"
+      }
+    },
+    {
+      "id": 5,
+      "name": "Boksen",
+      "slugs": {
+        "nl": "boksen",
+        "en": "boxing",
+        "es": "boxeo"
+      }
+    },
+    {
+      "id": 6,
+      "name": "Bootcamp",
+      "slugs": {
+        "nl": "bootcamp",
+        "en": "bootcamp",
+        "es": "bootcamp"
+      }
+    },
+    {
+      "id": 90,
+      "name": "Boulderen",
+      "slugs": {
+        "nl": "boulderen",
+        "en": "bouldering",
+        "es": "bouldering"
+      }
+    },
+    {
+      "id": 68,
+      "name": "Core",
+      "slugs": {
+        "nl": "core",
+        "en": "core",
+        "es": "core"
+      }
+    },
+    {
+      "id": 17,
+      "name": "CrossFit\\u00ae",
+      "slugs": {
+        "nl": "crossfit",
+        "en": "crossfit",
+        "es": "functional-training"
+      }
+    },
+    {
+      "id": 46,
+      "name": "Spinning",
+      "slugs": {
+        "nl": "spinning",
+        "en": "cycling",
+        "es": "ciclismo"
+      }
+    },
+    {
+      "id": 69,
+      "name": "Dans",
+      "slugs": {
+        "nl": "dans",
+        "en": "dance",
+        "es": "baile"
+      }
+    },
+    {
+      "id": 64,
+      "name": "Essentrics",
+      "slugs": {
+        "nl": "essentrics",
+        "en": "essentrics",
+        "es": "essentrics"
+      }
+    },
+    {
+      "id": 93,
+      "name": "Fitness",
+      "slugs": {
+        "nl": "fitness",
+        "en": "fitness"
+      }
+    },
+    {
+      "id": 91,
+      "name": "Fun",
+      "slugs": {
+        "nl": "fun",
+        "en": "fun",
+        "es": "fun"
+      }
+    },
+    {
+      "id": 67,
+      "name": "HIIT",
+      "slugs": {
+        "nl": "hiit",
+        "en": "hiit",
+        "es": "hiit"
+      }
+    },
+    {
+      "id": 81,
+      "name": "Hot Yoga",
+      "slugs": {
+        "nl": "hot-yoga",
+        "en": "hot-yoga",
+        "es": "hot-yoga"
+      }
+    },
+    {
+      "id": 94,
+      "name": "Hyrox",
+      "slugs": {
+        "nl": "hyrox",
+        "en": "hyrox"
+      }
+    },
+    {
+      "id": 73,
+      "name": "Kickboksen",
+      "slugs": {
+        "nl": "kickboksen",
+        "en": "kickboxing",
+        "es": "kickboxing"
+      }
+    },
+    {
+      "id": 37,
+      "name": "Hardlopen",
+      "slugs": {
+        "nl": "hardlopen",
+        "en": "running",
+        "es": "correr"
+      }
+    },
+    {
+      "id": 88,
+      "name": "Mindfulness",
+      "slugs": {
+        "nl": "mindfulness",
+        "en": "mindfulness",
+        "es": "mindfulness"
+      }
+    },
+    {
+      "id": 71,
+      "name": "Overig",
+      "slugs": {
+        "nl": "overig",
+        "en": "other",
+        "es": "otros"
+      }
+    },
+    {
+      "id": 40,
+      "name": "Pilates",
+      "slugs": {
+        "nl": "pilates",
+        "en": "pilates",
+        "es": "pilates"
+      }
+    },
+    {
+      "id": 74,
+      "name": "Paaldansen",
+      "slugs": {
+        "nl": "paaldansen",
+        "en": "pole-dance",
+        "es": "pole-dance"
+      }
+    },
+    {
+      "id": 80,
+      "name": "Pre\\/post-nataal",
+      "slugs": {
+        "nl": "prepost-nataal",
+        "en": "prepost-natal",
+        "es": "prepost-natal"
+      }
+    },
+    {
+      "id": 92,
+      "name": "Racketsport",
+      "slugs": {
+        "nl": "racketsport",
+        "en": "racket-sports",
+        "es": "deportes-de-raqueta"
+      }
+    },
+    {
+      "id": 47,
+      "name": "Steps",
+      "slugs": {
+        "nl": "steps",
+        "en": "steps",
+        "es": "steps"
+      }
+    },
+    {
+      "id": 78,
+      "name": "Vechtsporten",
+      "slugs": {
+        "nl": "vechtsporten",
+        "en": "martial-arts",
+        "es": "artes-marciales"
+      }
+    },
+    {
+      "id": 83,
+      "name": "Wellness",
+      "slugs": {
+        "nl": "wellness",
+        "en": "wellness",
+        "es": "wellness"
+      }
+    },
+    {
+      "id": 84,
+      "name": "Yin yoga",
+      "slugs": {
+        "nl": "yin-yoga",
+        "en": "yin-yoga",
+        "es": "yin-yoga"
+      }
+    },
+    {
+      "id": 54,
+      "name": "Yoga",
+      "slugs": {
+        "nl": "yoga",
+        "en": "yoga",
+        "es": "yoga"
+      }
+    },
+    {
+      "id": 82,
+      "name": "Zwemmen",
+      "slugs": {
+        "nl": "zwemmen",
+        "en": "swimming",
+        "es": "natacion"
+      }
+    }
+  ]
+}
