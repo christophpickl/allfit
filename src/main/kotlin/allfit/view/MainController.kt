@@ -1,20 +1,20 @@
 package allfit.view
 
-import allfit.domain.Categories
-import allfit.persistence.CategoriesRepo
+import allfit.domain.Category
+import allfit.service.DataStorage
 import mu.KotlinLogging.logger
 import tornadofx.Controller
 
 class MainController : Controller() {
 
-    private val categoriesRepo: CategoriesRepo by di()
+    private val dataStorage: DataStorage by di()
     private val logger = logger {}
 
     fun search(query: String) {
         logger.debug { "Search: [$query]" }
     }
 
-    fun loadCategories(): Categories {
-        return categoriesRepo.load()
+    fun loadCategories(): List<Category> {
+        return dataStorage.getCategories()
     }
 }

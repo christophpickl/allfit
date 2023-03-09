@@ -1,6 +1,5 @@
 package allfit.persistence
 
-import allfit.domain.category
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
@@ -14,7 +13,7 @@ class LiquibaseMigratorTest : StringSpec() {
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
 
             Database.connect(jdbcUrl)
-            ExposedCategoriesRepo.insert(listOf(Arb.category().next()))
+            ExposedCategoriesRepo.insert(listOf(Arb.categoryDbo().next()))
             ExposedCategoriesRepo.load()
         }
     }

@@ -2,8 +2,7 @@ package allfit.sync
 
 import allfit.api.models.CategoriesJson
 import allfit.api.models.partnerCategoryJson
-import allfit.domain.Categories
-import allfit.domain.category
+import allfit.persistence.categoryDbo
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -48,9 +47,9 @@ class SyncDifferTest : DescribeSpec() {
         }
     }
 
-    private fun localCategoriesWithId(vararg ids: Int) = Categories(ids.map { id ->
-        Arb.category().next().copy(id = id)
-    })
+    private fun localCategoriesWithId(vararg ids: Int) = ids.map { id ->
+        Arb.categoryDbo().next().copy(id = id)
+    }
 
     private fun remoteCategoriesWithId(vararg ids: Int) = CategoriesJson(ids.map { id ->
         Arb.partnerCategoryJson().next().copy(id = id)

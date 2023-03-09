@@ -1,6 +1,5 @@
 package allfit.persistence
 
-import allfit.domain.category
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestResult
@@ -16,9 +15,9 @@ import org.jetbrains.exposed.sql.transactions.transaction
 class ExposedCategoriesRepoTest : StringSpec() {
 
     private lateinit var db: Database
-    private val category = Arb.category().next()
-    private val category1 = Arb.category().next()
-    private val category2 = Arb.category().next()
+    private val category = Arb.categoryDbo().next()
+    private val category1 = Arb.categoryDbo().next().copy(id = 1)
+    private val category2 = Arb.categoryDbo().next().copy(id = 2)
 
     override suspend fun beforeEach(testCase: TestCase) {
         db = Database.connect("jdbc:h2:mem:test${System.currentTimeMillis()};DB_CLOSE_DELAY=-1")
@@ -43,14 +42,25 @@ class ExposedCategoriesRepoTest : StringSpec() {
 
             val categories = ExposedCategoriesRepo.load()
 
-            categories.categories.shouldBeSingleton().first() shouldBe category
+            categories.shouldBeSingleton().first() shouldBe category
+        }
+        "When delete single" {
+            val categoryNonDeleted = category.copy(isDeleted = false)
+            ExposedCategoriesRepo.insert(listOf(categoryNonDeleted))
+
+            ExposedCategoriesRepo.delete(listOf(categoryNonDeleted.id))
+
+            ExposedCategoriesRepo.load().shouldBeSingleton().first().isDeleted shouldBe true
         }
         "When delete" {
-            ExposedCategoriesRepo.insert(listOf(category1, category2))
+            val categoryNonDeleted1 = category1.copy(isDeleted = false)
+            val categoryNonDeleted2 = category2.copy(isDeleted = false)
+            ExposedCategoriesRepo.insert(listOf(categoryNonDeleted1, categoryNonDeleted2))
 
-            ExposedCategoriesRepo.delete(listOf(category1.id))
+            ExposedCategoriesRepo.delete(listOf(categoryNonDeleted1.id))
 
-            ExposedCategoriesRepo.load().categories.shouldBeSingleton().first().id shouldBe category2.id
+            ExposedCategoriesRepo.load().filter { it.isDeleted }
+                .shouldBeSingleton().first().id shouldBe categoryNonDeleted1.id
         }
     }
 }

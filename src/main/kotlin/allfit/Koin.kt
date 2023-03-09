@@ -5,6 +5,7 @@ import allfit.persistence.ExposedCategoriesRepo
 import allfit.persistence.InMemoryCategoriesRepo
 import allfit.persistence.LiquibaseConfig
 import allfit.persistence.LiquibaseMigrator
+import allfit.service.DataStorage
 import allfit.service.FileResolver
 import allfit.sync.NoOpSyncer
 import allfit.sync.RealSyncer
@@ -18,6 +19,7 @@ fun mainModule(onefitClient: OnefitClient) = module {
     if (!AppConfig.mockDb) {
         connectToDatabase()
     }
+    single { DataStorage(get()) }
     single { onefitClient }
     single {
         if (AppConfig.mockDb) InMemoryCategoriesRepo else ExposedCategoriesRepo

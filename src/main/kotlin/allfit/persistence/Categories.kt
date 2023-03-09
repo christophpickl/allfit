@@ -1,34 +1,32 @@
 package allfit.persistence
 
-import allfit.domain.Categories
-import allfit.domain.Category
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+
 
 interface CategoriesRepo {
-    fun load(): Categories
-    fun insert(categories: List<Category>)
+    fun load(): List<CategoryDbo>
+    fun insert(categories: List<CategoryDbo>)
     fun delete(categoryIds: List<Int>)
 }
 
 object InMemoryCategoriesRepo : CategoriesRepo {
 
     private val log = logger {}
-    private val categories = mutableListOf<Category>()
+    private val categories = mutableListOf<CategoryDbo>()
 
     init {
-        categories += Category(1, "Foo")
-        categories += Category(2, "Bar")
+        categories += CategoryDbo(1, "Foo", false)
+        categories += CategoryDbo(2, "Bar", false)
     }
 
-    override fun load() = Categories(categories)
+    override fun load() = categories
 
-    override fun insert(categories: List<Category>) {
+    override fun insert(categories: List<CategoryDbo>) {
         log.debug { "Inserting ${categories.size} categories." }
         this.categories += categories
     }
@@ -45,21 +43,23 @@ object ExposedCategoriesRepo : CategoriesRepo {
 
     override fun load() = transaction {
         log.debug { "Loading categories." }
-        Categories(CategoriesTable.selectAll().toList().map {
-            Category(
+        CategoriesTable.selectAll().toList().map {
+            CategoryDbo(
                 id = it[CategoriesTable.id],
                 name = it[CategoriesTable.name],
+                isDeleted = it[CategoriesTable.isDeleted],
             )
-        })
+        }
     }
 
-    override fun insert(categories: List<Category>) {
+    override fun insert(categories: List<CategoryDbo>) {
         transaction {
             log.debug { "Inserting ${categories.size} categories." }
             categories.forEach { category ->
                 CategoriesTable.insert {
                     it[id] = category.id
                     it[name] = category.name
+                    it[isDeleted] = false
                 }
             }
         }
@@ -68,17 +68,29 @@ object ExposedCategoriesRepo : CategoriesRepo {
     override fun delete(categoryIds: List<Int>) {
         transaction {
             log.debug { "Deleting ${categoryIds.size} categories." }
-            // TODO or simply mark as deleted, to retain foreign reference?
-            CategoriesTable.deleteWhere {
-                id inList categoryIds
+            CategoriesTable.update(where = {
+                CategoriesTable.id inList categoryIds
+            }) {
+                it[isDeleted] = true
             }
         }
+    }
+}
+
+data class CategoryDbo(
+    val id: Int,
+    val name: String,
+    val isDeleted: Boolean
+) {
+    init {
+        require(name.length < 256)
     }
 }
 
 object CategoriesTable : Table("PUBLIC.CATEGORIES") {
     val id = integer("ID")
     val name = varchar("NAME", 256)
+    val isDeleted = bool("IS_DELETED")
 
     override val primaryKey = PrimaryKey(id)
 }

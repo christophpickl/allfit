@@ -34,7 +34,7 @@ class RootView : View() {
             }
         }
         val categories = controller.loadCategories()
-        label("Categories: ${categories.categories.joinToString(", ") { it.name }}")
+        label("Categories: ${categories.joinToString(", ") { it.name }}")
     }
 }
 

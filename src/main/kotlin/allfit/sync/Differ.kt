@@ -2,12 +2,11 @@ package allfit.sync
 
 import allfit.api.models.CategoriesJson
 import allfit.api.models.CategoryJson
-import allfit.domain.Categories
-import allfit.domain.Category
+import allfit.persistence.CategoryDbo
 
 object SyncDiffer {
-    fun diffCategories(local: Categories, remote: CategoriesJson): DiffReport<CategoryJson, Category> {
-        val localById = local.categories.associateBy { it.id }
+    fun diffCategories(local: List<CategoryDbo>, remote: CategoriesJson): DiffReport<CategoryJson, CategoryDbo> {
+        val localById = local.associateBy { it.id }
         val remoteById = remote.data.associateBy { it.id }
         val toBeInserted = remoteById.toMutableMap()
         localById.forEach { (i, _) ->

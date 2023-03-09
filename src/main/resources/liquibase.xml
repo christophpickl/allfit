@@ -13,6 +13,9 @@
             <column name="NAME" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
+            <column name="IS_DELETED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <!--
