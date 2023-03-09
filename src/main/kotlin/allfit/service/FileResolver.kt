@@ -1,11 +1,17 @@
 package allfit.service
 
+import allfit.Environment
 import mu.KotlinLogging
 import java.io.File
 
-object FileStorage {
+object FileResolver {
     private val log = KotlinLogging.logger {}
-    private val appDirectory = File(System.getProperty("user.home"), ".allfit")
+    private val appDirectory = File(
+        System.getProperty("user.home"), when (Environment.current) {
+            Environment.Production -> ".allfit"
+            Environment.Development -> ".allfit-dev"
+        }
+    )
 
     init {
         if (!appDirectory.exists()) {

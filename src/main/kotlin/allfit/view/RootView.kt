@@ -28,11 +28,12 @@ class RootView : View() {
             this += search
             button("Search") {
                 action {
-//                controller.login(Credentials(inpEmail.text, inpPassword.text))
+                    controller.search(search.text)
                 }
             }
         }
-        label("Content")
+        val categories = controller.loadCategories()
+        label("Categories: ${categories.categories.joinToString(", ") { it.shortCode }}")
     }
 }
 

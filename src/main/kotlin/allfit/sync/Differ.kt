@@ -18,13 +18,13 @@ object SyncDiffer {
             toBeDeleted.remove(i)
         }
         return DiffReport(
-            insert = toBeInserted.values.toList(),
-            delete = toBeDeleted.values.toList(),
+            toInsert = toBeInserted.values.toList(),
+            toDelete = toBeDeleted.values.toList(),
         )
     }
 }
 
 data class DiffReport<INSERT, DELETE>(
-    val insert: List<INSERT>,
-    val delete: List<DELETE>,
+    val toInsert: List<INSERT>,
+    val toDelete: List<DELETE>,
 )

@@ -1,27 +1,53 @@
 package allfit.sync
 
 import allfit.api.OnefitClient
+import allfit.api.models.PartnerCategoryJson
+import allfit.domain.Category
 import allfit.persistence.CategoriesRepo
+import mu.KotlinLogging.logger
 
 interface Syncer {
     suspend fun sync()
 }
 
 class RealSyncer(
-    private val repo: CategoriesRepo,
+    private val categoriesRepo: CategoriesRepo,
     private val client: OnefitClient
 ) : Syncer {
+
+    private val log = logger {}
+
     override suspend fun sync() {
-        val localCategories = repo.load()
+        log.info { "Sync started ..." }
+        syncCategories()
+    }
+
+    private suspend fun syncCategories() {
+        log.debug { "Sync categories." }
+        val localCategories = categoriesRepo.load()
         val remoteCategories = client.getPartnersCategories()
         val report = SyncDiffer.diffCategories(localCategories, remoteCategories)
 
-        // FIXME execute DB operations
+        if (report.toInsert.isNotEmpty()) {
+            categoriesRepo.insert(report.toInsert.map { it.toCategory() })
+        }
+        if (report.toDelete.isNotEmpty()) {
+            categoriesRepo.delete(report.toDelete.map { it.id })
+        }
     }
 }
 
+private fun PartnerCategoryJson.toCategory() =
+    Category(
+        id = id,
+        shortCode = slugs.en,
+    )
+
 object NoOpSyncer : Syncer {
+
+    private val log = logger {}
+
     override suspend fun sync() {
-        println("NoOp sync")
+        log.info { "No-op syncer is not doing anything." }
     }
 }

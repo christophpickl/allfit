@@ -14,7 +14,7 @@ class LiquibaseMigratorTest : StringSpec() {
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
 
             Database.connect(jdbcUrl)
-            ExposedCategoriesRepo.save(listOf(Arb.category().next()))
+            ExposedCategoriesRepo.insert(listOf(Arb.category().next()))
             ExposedCategoriesRepo.load()
         }
     }

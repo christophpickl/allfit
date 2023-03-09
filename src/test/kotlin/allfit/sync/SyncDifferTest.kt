@@ -20,7 +20,7 @@ class SyncDifferTest : DescribeSpec() {
             it("Insert single") {
                 val report = SyncDiffer.diffCategories(localCategoriesWithId(), remoteCategoriesWithId(categoryId))
 
-                report.insert.shouldBeSingleton().first().id shouldBe categoryId
+                report.toInsert.shouldBeSingleton().first().id shouldBe categoryId
             }
             it("Skip existing") {
                 val report = SyncDiffer.diffCategories(
@@ -28,14 +28,14 @@ class SyncDifferTest : DescribeSpec() {
                     remoteCategoriesWithId(categoryId)
                 )
 
-                report.insert.shouldBeEmpty()
+                report.toInsert.shouldBeEmpty()
             }
         }
         describe("Delete categories") {
             it("Delete single") {
                 val report = SyncDiffer.diffCategories(localCategoriesWithId(categoryId), remoteCategoriesWithId())
 
-                report.delete.shouldBeSingleton().first().id shouldBe categoryId
+                report.toDelete.shouldBeSingleton().first().id shouldBe categoryId
             }
             it("Skip existing") {
                 val report = SyncDiffer.diffCategories(
@@ -43,7 +43,7 @@ class SyncDifferTest : DescribeSpec() {
                     remoteCategoriesWithId(categoryId)
                 )
 
-                report.delete.shouldBeEmpty()
+                report.toDelete.shouldBeEmpty()
             }
         }
     }

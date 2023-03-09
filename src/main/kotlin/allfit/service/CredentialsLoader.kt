@@ -11,7 +11,7 @@ object CredentialsLoader {
     private val log = logger {}
 
     fun load(): Credentials {
-        val file = FileStorage.resolve("login.json")
+        val file = FileResolver.resolve("login.json")
         log.debug { "Loading credentials from: ${file.absolutePath}" }
         if (!file.exists()) {
             error("Expected login file existing at: ${file.absolutePath}")

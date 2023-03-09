@@ -3,7 +3,8 @@ package allfit
 import allfit.api.OnefitClient
 import allfit.service.CredentialsLoader
 import allfit.sync.Syncer
-import allfit.view.AllFitApp
+import allfit.view.TornadoFxEntryPoint
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging.logger
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
@@ -17,9 +18,11 @@ object AllFit {
     private val log = logger {}
 
     @JvmStatic
-    suspend fun main(args: Array<String>) {
+    fun main(args: Array<String>) {
         log.info { "Starting up AllFit." }
-        startupKoin().get<AllFitStarter>().start()
+        runBlocking {
+            startupKoin().get<AllFitStarter>().start()
+        }
     }
 
     private suspend fun startupKoin(): Koin {
@@ -50,6 +53,6 @@ class AllFitStarter(private val syncer: Syncer) {
                 return getKoin().get(clazz = type, qualifier = null, parameters = null)
             }
         }
-        launch<AllFitApp>(emptyArray())
+        launch<TornadoFxEntryPoint>(emptyArray())
     }
 }

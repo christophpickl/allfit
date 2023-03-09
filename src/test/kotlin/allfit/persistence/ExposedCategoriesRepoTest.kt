@@ -17,6 +17,8 @@ class ExposedCategoriesRepoTest : StringSpec() {
 
     private lateinit var db: Database
     private val category = Arb.category().next()
+    private val category1 = Arb.category().next()
+    private val category2 = Arb.category().next()
 
     override suspend fun beforeEach(testCase: TestCase) {
         db = Database.connect("jdbc:h2:mem:test${System.currentTimeMillis()};DB_CLOSE_DELAY=-1")
@@ -34,14 +36,21 @@ class ExposedCategoriesRepoTest : StringSpec() {
             ExposedCategoriesRepo.load()
         }
         "When save" {
-            ExposedCategoriesRepo.save(listOf(category))
+            ExposedCategoriesRepo.insert(listOf(category))
         }
         "When save and load" {
-            ExposedCategoriesRepo.save(listOf(category))
+            ExposedCategoriesRepo.insert(listOf(category))
 
             val categories = ExposedCategoriesRepo.load()
 
             categories.categories.shouldBeSingleton().first() shouldBe category
+        }
+        "When delete" {
+            ExposedCategoriesRepo.insert(listOf(category1, category2))
+
+            ExposedCategoriesRepo.delete(listOf(category1.id))
+
+            ExposedCategoriesRepo.load().categories.shouldBeSingleton().first().id shouldBe category2.id
         }
     }
 }
