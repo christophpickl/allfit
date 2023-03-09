@@ -12,5 +12,5 @@ fun mainModule(onefitClient: OnefitClient) = module {
     single<CategoriesRepo> { InMemoryCategoriesRepo }
     single<Syncer> { RealSyncer(get(), get()) }
 //    single<Syncer> { NoOpSyncer }
-    single { AllFitStarter() }
+    single { AllFitStarter(get()) }
 }

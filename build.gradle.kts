@@ -13,13 +13,19 @@ plugins {
 
 dependencies {
 	implementation("no.tornado:tornadofx:1.7.20")
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
+
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
 	implementation("io.insert-koin:koin-core:3.3.3")
 	implementation("io.insert-koin:koin-logger-slf4j:3.3.1")
 
-	// TODO exposed
+	implementation("org.jetbrains.exposed:exposed-core:0.41.1")
+	implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
+	implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+	implementation("com.h2database:h2:2.1.214")
+	implementation("org.liquibase:liquibase-core:4.19.0")
+	implementation("com.mattbertolini:liquibase-slf4j:4.1.0")
 
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("ch.qos.logback:logback-classic:1.4.5")
@@ -34,6 +40,7 @@ dependencies {
 	).forEach {
 		implementation(ktor(it))
 	}
+
 //	implementation("io.insert-koin:koin-test:3.3.3")
 	testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
 	testImplementation("io.kotest:kotest-assertions-core:5.5.5")
@@ -41,7 +48,7 @@ dependencies {
 }
 
 application {
-	mainClass.set("allfit.Main") // The main class of the application
+	mainClass.set("allfit.AllFit")
 }
 
 javafx {

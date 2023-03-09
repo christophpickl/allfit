@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="christophpickl" failOnError="true">
+        <comment>setting up initial categories data</comment>
+        <createTable tableName="categories">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="SHORTCODE" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <!--
+        <addColumn tableName="song">
+            <column name="title" type="varchar(8)"/>
+        </addColumn>
+
+        <modifyDataType
+            columnName="title"
+            newDataType="varchar(2000)"
+            tableName="song"/>
+
+        <sql>update song set foo_temp=foo</sql>
+        <dropColumn tableName="song" columnName="title" />
+
+        <property name="char" value="CHAR" dbms="postgres"/>
+        <property name="char" value=""/>
+
+        <sql>CREATE TYPE my_state AS ENUM ('yes','no')</sql>
+          <table name="foo">
+            <column name="state" type="my_state"/>
+          </table>
+          OR:
+
+          <table name="t">
+                <column name="c" type="varchar(3)"/>
+            </table>
+            <sql>ALTER TABLE t ADD CONSTRAINT check_yes_no CHECK (c = 'yes' OR c = 'no')</sql>
+
+    -->
+</databaseChangeLog>
+
