@@ -7,18 +7,22 @@ plugins {
 	application
 	id("org.openjfx.javafxplugin") version "0.0.13"
 	kotlin("plugin.serialization") version "1.8.10"
-	id("com.github.johnrengelman.shadow") version "7.1.2"
-	id("com.github.ben-manes.versions") version "0.43.0"
+	id("com.github.johnrengelman.shadow") version "8.1.0"
+	id("com.github.ben-manes.versions") version "0.46.0"
 }
 
 dependencies {
 	implementation("no.tornado:tornadofx:1.7.20")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
+
+	implementation("io.insert-koin:koin-core:3.3.3")
+	implementation("io.insert-koin:koin-logger-slf4j:3.3.1")
+
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("ch.qos.logback:logback-classic:1.4.5")
 
-	fun ktor(artifact: String) = "io.ktor:ktor-$artifact:2.1.3"
+	fun ktor(artifact: String) = "io.ktor:ktor-$artifact:2.2.4"
 	listOf(
 		"client-core",
 		"client-cio",
@@ -28,7 +32,7 @@ dependencies {
 	).forEach {
 		implementation(ktor(it))
 	}
-
+//	implementation("io.insert-koin:koin-test:3.3.3")
 	testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
 	testImplementation("io.kotest:kotest-assertions-core:5.5.5")
 	testImplementation("io.kotest:kotest-property:5.5.5")
@@ -39,7 +43,7 @@ application {
 }
 
 javafx {
-	version = "19"
+	version = "19.0.2.1"
 	modules = listOf("javafx.controls", "javafx.fxml")
 }
 
@@ -52,20 +56,17 @@ tasks.withType<Test>().configureEach {
 //		archiveBaseName.set("shadow")
 //	}
 //}
-
 //tasks {
 //	build {
 //		dependsOn(shadowJar)
 //	}
 //}
-//
-//tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
-//	val rejectPatterns =
-//		listOf("""^.*-ea\+[\d]+$""").map { Regex(it) }
-//	rejectVersionIf {
-//		val version = candidate.version.toLowerCase()
-//		rejectPatterns.any {
-//			it.matches(version)
-//		}
-//	}
-//}
+
+tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+	val rejectPatterns = listOf(".*-ea.*", ".*RC", ".*[Bb]eta.*", ".*[Aa]lpha.*").map { Regex(it) }
+	rejectVersionIf {
+		rejectPatterns.any {
+			it.matches(candidate.version)
+		}
+	}
+}
