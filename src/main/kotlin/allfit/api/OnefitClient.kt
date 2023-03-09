@@ -4,7 +4,7 @@ import allfit.api.models.AuthJson
 import allfit.api.models.AuthResponseJson
 import allfit.api.models.CategoriesJson
 import allfit.api.models.PartnersJson
-import allfit.readApiResponse
+import allfit.service.readApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -50,6 +50,13 @@ interface OnefitClient {
             return RealOnefitClient(response.body<AuthResponseJson>().access_token)
         }
     }
+}
+
+class InMemoryOnefitClient : OnefitClient {
+    var categoriesJson = CategoriesJson(emptyList())
+    var partnersJson = PartnersJson(emptyList())
+    override suspend fun getCategories() = categoriesJson
+    override suspend fun getPartners() = partnersJson
 }
 
 object ClassPathOnefitClient : OnefitClient {

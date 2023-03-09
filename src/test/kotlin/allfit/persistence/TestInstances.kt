@@ -14,3 +14,11 @@ fun Arb.Companion.categoryDbo() = arbitrary {
         isDeleted = boolean().next(),
     )
 }
+
+fun Arb.Companion.partnerDbo() = arbitrary {
+    PartnerDbo(
+        id = int(min = 1).next(),
+        name = string(minSize = 1, maxSize = 50).next(),
+        isDeleted = boolean().next(),
+    )
+}

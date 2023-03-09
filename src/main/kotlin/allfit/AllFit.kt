@@ -1,5 +1,6 @@
 package allfit
 
+import allfit.api.ClassPathOnefitClient
 import allfit.api.OnefitClient
 import allfit.service.CredentialsLoader
 import allfit.sync.Syncer
@@ -34,7 +35,11 @@ object AllFit {
     }
 
     private suspend fun buildClient(): OnefitClient =
-        OnefitClient.authenticate(CredentialsLoader.load())
+        if (AppConfig.mockClient) {
+            ClassPathOnefitClient
+        } else {
+            OnefitClient.authenticate(CredentialsLoader.load())
+        }
 }
 
 class AllFitStarter(private val syncer: Syncer) {
@@ -42,7 +47,7 @@ class AllFitStarter(private val syncer: Syncer) {
     private val log = logger {}
 
     suspend fun start() {
-        syncer.sync()
+        syncer.syncAll()
         startTornadoFx()
     }
 

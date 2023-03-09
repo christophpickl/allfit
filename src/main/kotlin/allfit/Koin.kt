@@ -1,10 +1,14 @@
 package allfit
 
 import allfit.api.OnefitClient
+import allfit.persistence.CategoryDbo
 import allfit.persistence.ExposedCategoriesRepo
+import allfit.persistence.ExposedPartnersRepo
 import allfit.persistence.InMemoryCategoriesRepo
+import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.LiquibaseConfig
 import allfit.persistence.LiquibaseMigrator
+import allfit.persistence.PartnerDbo
 import allfit.service.DataStorage
 import allfit.service.FileResolver
 import allfit.sync.NoOpSyncer
@@ -22,10 +26,27 @@ fun mainModule(onefitClient: OnefitClient) = module {
     single { DataStorage(get()) }
     single { onefitClient }
     single {
-        if (AppConfig.mockDb) InMemoryCategoriesRepo else ExposedCategoriesRepo
+        if (AppConfig.mockDb) InMemoryCategoriesRepo().apply {
+            insert(
+                listOf(
+                    CategoryDbo(id = 1, name = "Foo", isDeleted = false),
+                    CategoryDbo(id = 2, name = "Bar", isDeleted = false)
+                )
+            )
+        } else ExposedCategoriesRepo
     }
     single {
-        if (AppConfig.mockSyncer) NoOpSyncer else RealSyncer(get(), get())
+        if (AppConfig.mockDb) InMemoryPartnersRepo().apply {
+            insert(
+                listOf(
+                    PartnerDbo(id = 1, name = "Partner A", isDeleted = false),
+                    PartnerDbo(id = 2, name = "Partner B", isDeleted = false)
+                )
+            )
+        } else ExposedPartnersRepo
+    }
+    single {
+        if (AppConfig.mockSyncer) NoOpSyncer else RealSyncer(get(), get(), get())
     }
     single { AllFitStarter(get()) }
 }

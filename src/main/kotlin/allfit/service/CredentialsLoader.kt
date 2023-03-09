@@ -3,7 +3,6 @@ package allfit.service
 import allfit.api.Credentials
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
 
 object CredentialsLoader {
@@ -16,7 +15,7 @@ object CredentialsLoader {
         if (!file.exists()) {
             error("Expected login file existing at: ${file.absolutePath}")
         }
-        return Json.decodeFromString<LoginJson>(file.readText()).toCredentials()
+        return kotlinxSerializer.decodeFromString<LoginJson>(file.readText()).toCredentials()
     }
 }
 

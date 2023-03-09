@@ -4,10 +4,10 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 
-class ExposedCategoriesRepoTest : DescribeSpec() {
+class ExposedPartnersRepoTest : DescribeSpec() {
     init {
-        include(repoTests(RepoTestContext(ExposedCategoriesRepo) {
-            var dbo = Arb.categoryDbo().next()
+        include(repoTests(RepoTestContext(ExposedPartnersRepo) {
+            var dbo = Arb.partnerDbo().next()
             if (it.id != null) {
                 dbo = dbo.copy(id = it.id)
             }
@@ -18,4 +18,3 @@ class ExposedCategoriesRepoTest : DescribeSpec() {
         }))
     }
 }
-

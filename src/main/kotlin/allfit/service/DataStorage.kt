@@ -8,7 +8,7 @@ class DataStorage(
     private val categoriesRepo: CategoriesRepo
 ) {
     private val lazyCategories: List<Category> by lazy {
-        categoriesRepo.load().filter { !it.isDeleted }.map { it.toCategory() }
+        categoriesRepo.select().filter { !it.isDeleted }.map { it.toCategory() }
     }
 
     fun getCategories(): List<Category> = lazyCategories

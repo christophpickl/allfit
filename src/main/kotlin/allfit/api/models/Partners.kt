@@ -4,18 +4,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PartnersJson(
-    val data: List<PartnerJson>
-)
+    override val data: List<PartnerJson>
+) : SyncableJsonContainer<PartnerJson>
 
 @Serializable
 data class PartnerJson(
-    val id: Int,
+    override val id: Int,
     val name: String,
     val category: PartnerCategoryJson,
     val categories: List<PartnerCategoryJson>,
     // image
     // location / address
-)
+) : SyncableJsonEntity
 
 @Serializable
 data class PartnerCategoryJson(

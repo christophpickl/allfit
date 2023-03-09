@@ -1,7 +1,7 @@
 package allfit.sync
 
 import allfit.api.models.CategoriesJson
-import allfit.api.models.partnerCategoryJson
+import allfit.api.models.categoryJson
 import allfit.persistence.categoryDbo
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -12,19 +12,19 @@ import io.kotest.property.arbitrary.next
 
 class SyncDifferTest : DescribeSpec() {
 
-    private val categoryId = 42
+    private val jsonId = 42
 
     init {
         describe("Insert categories") {
             it("Insert single") {
-                val report = SyncDiffer.diffCategories(localCategoriesWithId(), remoteCategoriesWithId(categoryId))
+                val report = SyncDiffer.diff(localDbosWithId(), remoteJsonWithId(jsonId))
 
-                report.toInsert.shouldBeSingleton().first().id shouldBe categoryId
+                report.toInsert.shouldBeSingleton().first().id shouldBe jsonId
             }
             it("Skip existing") {
-                val report = SyncDiffer.diffCategories(
-                    localCategoriesWithId(categoryId),
-                    remoteCategoriesWithId(categoryId)
+                val report = SyncDiffer.diff(
+                    localDbosWithId(jsonId),
+                    remoteJsonWithId(jsonId)
                 )
 
                 report.toInsert.shouldBeEmpty()
@@ -32,14 +32,14 @@ class SyncDifferTest : DescribeSpec() {
         }
         describe("Delete categories") {
             it("Delete single") {
-                val report = SyncDiffer.diffCategories(localCategoriesWithId(categoryId), remoteCategoriesWithId())
+                val report = SyncDiffer.diff(localDbosWithId(jsonId), remoteJsonWithId())
 
-                report.toDelete.shouldBeSingleton().first().id shouldBe categoryId
+                report.toDelete.shouldBeSingleton().first().id shouldBe jsonId
             }
             it("Skip existing") {
-                val report = SyncDiffer.diffCategories(
-                    localCategoriesWithId(categoryId),
-                    remoteCategoriesWithId(categoryId)
+                val report = SyncDiffer.diff(
+                    localDbosWithId(jsonId),
+                    remoteJsonWithId(jsonId)
                 )
 
                 report.toDelete.shouldBeEmpty()
@@ -47,11 +47,11 @@ class SyncDifferTest : DescribeSpec() {
         }
     }
 
-    private fun localCategoriesWithId(vararg ids: Int) = ids.map { id ->
+    private fun localDbosWithId(vararg ids: Int) = ids.map { id ->
         Arb.categoryDbo().next().copy(id = id)
     }
 
-    private fun remoteCategoriesWithId(vararg ids: Int) = CategoriesJson(ids.map { id ->
-        Arb.partnerCategoryJson().next().copy(id = id)
+    private fun remoteJsonWithId(vararg ids: Int) = CategoriesJson(ids.map { id ->
+        Arb.categoryJson().next().copy(id = id)
     })
 }

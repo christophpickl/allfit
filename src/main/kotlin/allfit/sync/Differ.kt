@@ -1,21 +1,27 @@
 package allfit.sync
 
-import allfit.api.models.CategoriesJson
-import allfit.api.models.CategoryJson
-import allfit.persistence.CategoryDbo
+import allfit.api.models.SyncableJsonContainer
+import allfit.api.models.SyncableJsonEntity
+import allfit.persistence.Dbo
 
 object SyncDiffer {
-    fun diffCategories(local: List<CategoryDbo>, remote: CategoriesJson): DiffReport<CategoryJson, CategoryDbo> {
-        val localById = local.associateBy { it.id }
-        val remoteById = remote.data.associateBy { it.id }
+    fun <DBO : Dbo, CONTAINER : SyncableJsonContainer<ENTITY>, ENTITY : SyncableJsonEntity> diff(
+        localDbos: List<DBO>,
+        syncableJsons: CONTAINER
+    ): DiffReport<ENTITY, DBO> {
+        val localById = localDbos.associateBy { it.id }
+        val remoteById = syncableJsons.data.associateBy { it.id }
+
         val toBeInserted = remoteById.toMutableMap()
         localById.forEach { (i, _) ->
             toBeInserted.remove(i)
         }
+
         val toBeDeleted = localById.toMutableMap()
         remoteById.forEach { (i, _) ->
             toBeDeleted.remove(i)
         }
+
         return DiffReport(
             toInsert = toBeInserted.values.toList(),
             toDelete = toBeDeleted.values.toList(),

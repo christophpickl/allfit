@@ -4,21 +4,21 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CategoriesJson(
-    val data: List<CategoryJson>
-)
+    override val data: List<CategoryJson>
+) : SyncableJsonContainer<CategoryJson>
 
 @Serializable
 data class CategoryJson(
-    val id: Int,
+    override val id: Int,
     val name: String,
     val slugs: SlugJson,
-)
+) : SyncableJsonEntity
 
 @Serializable
 data class SlugJson(
-    val nl: String?,
+    val nl: String? = null,
     val en: String,
-    val es: String?,
+    val es: String? = null,
 )
 
 /*

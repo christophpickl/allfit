@@ -13,8 +13,11 @@ class LiquibaseMigratorTest : StringSpec() {
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
 
             Database.connect(jdbcUrl)
+
             ExposedCategoriesRepo.insert(listOf(Arb.categoryDbo().next()))
-            ExposedCategoriesRepo.load()
+            ExposedCategoriesRepo.select()
+            ExposedPartnersRepo.insert(listOf(Arb.partnerDbo().next()))
+            ExposedPartnersRepo.select()
         }
     }
 

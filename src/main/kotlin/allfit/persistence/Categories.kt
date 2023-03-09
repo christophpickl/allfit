@@ -7,81 +7,13 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
-
-interface CategoriesRepo {
-    fun load(): List<CategoryDbo>
-    fun insert(categories: List<CategoryDbo>)
-    fun delete(categoryIds: List<Int>)
-}
-
-object InMemoryCategoriesRepo : CategoriesRepo {
-
-    private val log = logger {}
-    private val categories = mutableListOf<CategoryDbo>()
-
-    init {
-        categories += CategoryDbo(1, "Foo", false)
-        categories += CategoryDbo(2, "Bar", false)
-    }
-
-    override fun load() = categories
-
-    override fun insert(categories: List<CategoryDbo>) {
-        log.debug { "Inserting ${categories.size} categories." }
-        this.categories += categories
-    }
-
-    override fun delete(categoryIds: List<Int>) {
-        log.debug { "Deleting ${categoryIds.size} categories." }
-        categories.removeIf { categoryIds.contains(it.id) }
-    }
-}
-
-object ExposedCategoriesRepo : CategoriesRepo {
-
-    private val log = logger {}
-
-    override fun load() = transaction {
-        log.debug { "Loading categories." }
-        CategoriesTable.selectAll().toList().map {
-            CategoryDbo(
-                id = it[CategoriesTable.id],
-                name = it[CategoriesTable.name],
-                isDeleted = it[CategoriesTable.isDeleted],
-            )
-        }
-    }
-
-    override fun insert(categories: List<CategoryDbo>) {
-        transaction {
-            log.debug { "Inserting ${categories.size} categories." }
-            categories.forEach { category ->
-                CategoriesTable.insert {
-                    it[id] = category.id
-                    it[name] = category.name
-                    it[isDeleted] = false
-                }
-            }
-        }
-    }
-
-    override fun delete(categoryIds: List<Int>) {
-        transaction {
-            log.debug { "Deleting ${categoryIds.size} categories." }
-            CategoriesTable.update(where = {
-                CategoriesTable.id inList categoryIds
-            }) {
-                it[isDeleted] = true
-            }
-        }
-    }
-}
+interface CategoriesRepo : Repo<CategoryDbo>
 
 data class CategoryDbo(
-    val id: Int,
+    override val id: Int,
+    override val isDeleted: Boolean,
     val name: String,
-    val isDeleted: Boolean
-) {
+) : Dbo {
     init {
         require(name.length < 256)
     }
@@ -93,4 +25,67 @@ object CategoriesTable : Table("PUBLIC.CATEGORIES") {
     val isDeleted = bool("IS_DELETED")
 
     override val primaryKey = PrimaryKey(id)
+}
+
+class InMemoryCategoriesRepo : CategoriesRepo {
+
+    private val log = logger {}
+    private val categories = mutableListOf<CategoryDbo>()
+
+    override fun select() = categories
+
+    override fun insert(dbos: List<CategoryDbo>) {
+        log.debug { "Inserting ${dbos.size} categories." }
+        categories += dbos
+    }
+
+    override fun delete(ids: List<Int>) {
+        log.debug { "Deleting ${ids.size} categories." }
+
+        val toDelete = categories.filter { ids.contains(it.id) }
+        categories.removeAll(toDelete)
+        categories.addAll(toDelete.map {
+            it.copy(isDeleted = true)
+        })
+    }
+}
+
+object ExposedCategoriesRepo : CategoriesRepo {
+
+    private val log = logger {}
+
+    override fun select() = transaction {
+        log.debug { "Loading categories." }
+        CategoriesTable.selectAll().toList().map {
+            CategoryDbo(
+                id = it[CategoriesTable.id],
+                name = it[CategoriesTable.name],
+                isDeleted = it[CategoriesTable.isDeleted],
+            )
+        }
+    }
+
+    override fun insert(dbos: List<CategoryDbo>) {
+        transaction {
+            log.debug { "Inserting ${dbos.size} categories." }
+            dbos.forEach { category ->
+                CategoriesTable.insert {
+                    it[id] = category.id
+                    it[name] = category.name
+                    it[isDeleted] = category.isDeleted
+                }
+            }
+        }
+    }
+
+    override fun delete(ids: List<Int>) {
+        transaction {
+            log.debug { "Deleting ${ids.size} categories." }
+            CategoriesTable.update(where = {
+                CategoriesTable.id inList ids
+            }) {
+                it[isDeleted] = true
+            }
+        }
+    }
 }

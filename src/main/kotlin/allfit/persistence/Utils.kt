@@ -1,3 +1,6 @@
 package allfit.persistence
 
-val allTables = arrayOf(CategoriesTable)
+val allTables = arrayOf(
+    CategoriesTable,
+    PartnersTable
+)

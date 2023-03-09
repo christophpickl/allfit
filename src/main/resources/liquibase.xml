@@ -6,7 +6,18 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="1" author="christophpickl" failOnError="true">
         <comment>setting up initial categories data</comment>
-        <createTable tableName="categories">
+        <createTable tableName="CATEGORIES">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_DELETED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="PARTNERS">
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

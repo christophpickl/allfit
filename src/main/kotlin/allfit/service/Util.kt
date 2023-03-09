@@ -1,7 +1,11 @@
-package allfit
+package allfit.service
 
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+
+val kotlinxSerializer = Json {
+    ignoreUnknownKeys = true
+}
 
 inline fun <reified T> readApiResponse(fileName: String): T {
     val classpath = "/api_responses/$fileName"
@@ -11,5 +15,5 @@ inline fun <reified T> readApiResponse(fileName: String): T {
         .use {
             it.readText()
         }
-    return Json.decodeFromString(json)
+    return kotlinxSerializer.decodeFromString(json)
 }
