@@ -20,7 +20,7 @@ import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
 
 class OnefitClient(
-    val authToken: String
+    authToken: String
 ) {
 
     companion object {

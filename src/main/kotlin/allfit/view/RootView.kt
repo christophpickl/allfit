@@ -1,12 +1,26 @@
-package allfit
+package allfit.view
 
 import javafx.scene.paint.Color
-import tornadofx.*
+import tornadofx.Stylesheet
+import tornadofx.View
+import tornadofx.action
+import tornadofx.box
+import tornadofx.button
+import tornadofx.plusAssign
+import tornadofx.px
+import tornadofx.textfield
+import tornadofx.vbox
 
 class RootView : View() {
+
+    private val controller by inject<MainController>()
+
     private val inpEmail = textfield()
     private val inpPassword = textfield()
-    private val controller = Controller()
+
+    init {
+        title = "AllFit"
+    }
 
     override val root = vbox {
         this += inpEmail

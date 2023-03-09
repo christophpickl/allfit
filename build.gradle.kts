@@ -19,6 +19,8 @@ dependencies {
 	implementation("io.insert-koin:koin-core:3.3.3")
 	implementation("io.insert-koin:koin-logger-slf4j:3.3.1")
 
+	// TODO exposed
+
 	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 	implementation("ch.qos.logback:logback-classic:1.4.5")
 
