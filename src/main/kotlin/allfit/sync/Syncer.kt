@@ -1,6 +1,7 @@
 package allfit.sync
 
 import allfit.api.OnefitClient
+import allfit.api.PartnerSearchParams
 import allfit.api.models.CategoryJson
 import allfit.api.models.PartnerJson
 import allfit.api.models.SyncableJsonContainer
@@ -28,7 +29,7 @@ class RealSyncer(
     override suspend fun syncAll() {
         log.info { "Sync started ..." }
         syncAny(categoriesRepo, client.getCategories()) { it.toCategoryDbo() }
-        syncAny(partnersRepo, client.getPartners()) { it.toPartnerDbo() }
+        syncAny(partnersRepo, client.getPartners(PartnerSearchParams.simple())) { it.toPartnerDbo() }
     }
 
     private fun <

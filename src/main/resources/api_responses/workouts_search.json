@@ -1,0 +1,159 @@
+{
+  "data": [
+    {
+      "id": 11038764,
+      "name": "Street Jazz",
+      "slug": "zhembrovskyy-de-pijp-street-jazz",
+      "spots_available": 1,
+      "spots_booked": 1,
+      "reservation_allowed": true,
+      "from": "2023-03-09T21:15:00+01:00",
+      "till": "2023-03-09T22:15:00+01:00",
+      "reserved": false,
+      "waitlist": false,
+      "partner": {
+        "id": 16608,
+        "name": "Zhembrovskyy de Pijp",
+        "slug": "zhembrovskyy-de-pijp-amsterdam",
+        "waitlist_enabled": true
+      },
+      "location": {
+        "street": "Van Woustraat",
+        "house_number": "149",
+        "addition": "Hs",
+        "zip_code": "1073RX",
+        "city": "Amsterdam",
+        "latitude": 52.35281372,
+        "longitude": 4.90296316
+      },
+      "attending_friends": [],
+      "is_digital": false
+    },
+    {
+      "id": 11002451,
+      "name": "VeGym Training",
+      "slug": "vondelgym-zuid-fitness-vegym-training",
+      "spots_available": 4,
+      "spots_booked": 0,
+      "reservation_allowed": true,
+      "from": "2023-03-09T21:30:00+01:00",
+      "till": "2023-03-09T22:00:00+01:00",
+      "reserved": false,
+      "waitlist": false,
+      "partner": {
+        "id": 17239,
+        "name": "Vondelgym Zuid - Fitness",
+        "slug": "vondelgym-zuid-fitness-amsterdam",
+        "waitlist_enabled": true
+      },
+      "location": {
+        "street": "Eduard van Beinumstraat",
+        "house_number": "110",
+        "addition": "",
+        "zip_code": "1077 ZZ",
+        "city": "Amsterdam",
+        "latitude": 52.3395858,
+        "longitude": 4.8707082
+      },
+      "attending_friends": [],
+      "is_digital": false
+    },
+    {
+      "id": 11060301,
+      "name": "Open Gym",
+      "slug": "double-shift-open-gym",
+      "spots_available": 8,
+      "spots_booked": 0,
+      "reservation_allowed": true,
+      "from": "2023-03-09T21:30:00+01:00",
+      "till": "2023-03-09T22:30:00+01:00",
+      "reserved": false,
+      "waitlist": false,
+      "partner": {
+        "id": 17173,
+        "name": "Double Shift",
+        "slug": "double-shift-amsterdam",
+        "waitlist_enabled": true
+      },
+      "location": {
+        "street": "Lauriergracht",
+        "house_number": "102",
+        "addition": "H",
+        "zip_code": "1016 RP",
+        "city": "Amsterdam",
+        "latitude": 52.37154734,
+        "longitude": 4.87995458
+      },
+      "attending_friends": [],
+      "is_digital": false
+    },
+    {
+      "id": 11002448,
+      "name": "VeGym Training",
+      "slug": "vondelgym-zuid-fitness-vegym-training",
+      "spots_available": 4,
+      "spots_booked": 0,
+      "reservation_allowed": true,
+      "from": "2023-03-09T22:00:00+01:00",
+      "till": "2023-03-09T22:30:00+01:00",
+      "reserved": false,
+      "waitlist": false,
+      "partner": {
+        "id": 17239,
+        "name": "Vondelgym Zuid - Fitness",
+        "slug": "vondelgym-zuid-fitness-amsterdam",
+        "waitlist_enabled": true
+      },
+      "location": {
+        "street": "Eduard van Beinumstraat",
+        "house_number": "110",
+        "addition": "",
+        "zip_code": "1077 ZZ",
+        "city": "Amsterdam",
+        "latitude": 52.3395858,
+        "longitude": 4.8707082
+      },
+      "attending_friends": [],
+      "is_digital": false
+    },
+    {
+      "id": 11002980,
+      "name": "Open Gym",
+      "slug": "double-shift-open-gym",
+      "spots_available": 8,
+      "spots_booked": 0,
+      "reservation_allowed": true,
+      "from": "2023-03-09T22:00:00+01:00",
+      "till": "2023-03-09T23:00:00+01:00",
+      "reserved": false,
+      "waitlist": false,
+      "partner": {
+        "id": 17173,
+        "name": "Double Shift",
+        "slug": "double-shift-amsterdam",
+        "waitlist_enabled": true
+      },
+      "location": {
+        "street": "Lauriergracht",
+        "house_number": "102",
+        "addition": "H",
+        "zip_code": "1016 RP",
+        "city": "Amsterdam",
+        "latitude": 52.37154734,
+        "longitude": 4.87995458
+      },
+      "attending_friends": [],
+      "is_digital": false
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "total": 5,
+      "count": 5,
+      "per_page": 20,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}

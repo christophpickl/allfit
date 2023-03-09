@@ -3,8 +3,14 @@ package allfit.api
 import allfit.api.models.AuthJson
 import allfit.api.models.AuthResponseJson
 import allfit.api.models.CategoriesJson
+import allfit.api.models.MetaJson
+import allfit.api.models.MetaPaginationJson
+import allfit.api.models.PagedJson
 import allfit.api.models.PartnersJson
+import allfit.api.models.WorkoutsJson
+import allfit.service.formatOnefit
 import allfit.service.readApiResponse
+import allfit.service.zone
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -24,11 +30,13 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
+import java.time.ZonedDateTime
 
 interface OnefitClient {
 
     suspend fun getCategories(): CategoriesJson
-    suspend fun getPartners(): PartnersJson
+    suspend fun getPartners(params: PartnerSearchParams): PartnersJson
+    suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJson
 
     companion object {
 
@@ -55,16 +63,21 @@ interface OnefitClient {
 class InMemoryOnefitClient : OnefitClient {
     var categoriesJson = CategoriesJson(emptyList())
     var partnersJson = PartnersJson(emptyList())
+    var workoutsJson = WorkoutsJson(emptyList(), MetaJson(MetaPaginationJson(1, 1)))
     override suspend fun getCategories() = categoriesJson
-    override suspend fun getPartners() = partnersJson
+    override suspend fun getPartners(params: PartnerSearchParams) = partnersJson
+    override suspend fun getWorkouts(params: WorkoutSearchParams) = workoutsJson
 }
 
 object ClassPathOnefitClient : OnefitClient {
     override suspend fun getCategories() =
         readApiResponse<CategoriesJson>("partners_categories.json")
 
-    override suspend fun getPartners() =
-        readApiResponse<PartnersJson>("partners.json")
+    override suspend fun getPartners(params: PartnerSearchParams) =
+        readApiResponse<PartnersJson>("partners_search.json")
+
+    override suspend fun getWorkouts(params: WorkoutSearchParams) =
+        readApiResponse<WorkoutsJson>("workouts_search.json")
 }
 
 private fun buildClient(authToken: String?) = HttpClient(CIO) {
@@ -96,7 +109,37 @@ class RealOnefitClient(
     private val log = logger {}
     private val client = buildClient(authToken)
 
-    private suspend inline fun <reified T> simpleGet(
+
+    override suspend fun getCategories(): CategoriesJson =
+        get("partners/categories")
+
+    override suspend fun getPartners(params: PartnerSearchParams): PartnersJson =
+        // slightly different result from partners/city/AMS, but this one is better ;)
+        get("partners/search") {
+            parameter("city", params.city)
+            parameter("per_page", params.pageItemCount)
+            parameter("radius", params.radiusInMeters)
+            parameter("zipcode", params.zipCode)
+            // category_ids
+            // query
+        }
+
+    override suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJson =
+        getPaged(params, ::getWorkoutsPage) { data, meta ->
+            WorkoutsJson(data, meta)
+        }
+
+    private suspend fun getWorkoutsPage(params: WorkoutSearchParams): WorkoutsJson =
+        get("workouts/search") {
+            parameter("city", params.city)
+            parameter("limit", params.limit)
+            parameter("page", params.page)
+            parameter("start", params.startFormatted)
+            parameter("end", params.endFormatted)
+            parameter("is_digital", params.isDigital)
+        }
+
+    private suspend inline fun <reified T> get(
         path: String,
         requestModifier: HttpRequestBuilder.() -> Unit = {}
     ): T {
@@ -108,47 +151,88 @@ class RealOnefitClient(
         return response.body()
     }
 
-    override suspend fun getCategories(): CategoriesJson =
-        simpleGet("partners/categories")
+    private suspend fun <
+            JSON : PagedJson<ENTITY>,
+            ENTITY,
+            PARAMS : PagedParams<PARAMS>
+            > getPaged(
+        initParams: PARAMS,
+        request: suspend (PARAMS) -> JSON,
+        builder: (List<ENTITY>, MetaJson) -> JSON
+    ): JSON {
+        val data = mutableListOf<ENTITY>()
 
-    override suspend fun getPartners(): PartnersJson =
-        simpleGet("partners/search") {
-            parameter("city", "AMS")
-            parameter("per_page", "5000")
-            parameter("radius", "2000")
-            // category_ids
-            // zipcode
-            // query
-        }
+        var currentParams = initParams
+        var lastMeta: MetaJson
+        do {
+            val result = request(currentParams)
+            data += result.data
+            currentParams = currentParams.nextPage()
+            lastMeta = result.meta
+            log.debug { "Received page ${lastMeta.pagination.current_page}/${lastMeta.pagination.total_pages}" }
+        } while (currentParams.page <= lastMeta.pagination.total_pages)
 
-//    suspend fun search(params: SearchParams): SearchResultsJson {
-//        log.debug { "GET /workouts/search ($params)" }
-//        val respond = client.get("workouts/search") {
-//            parameter("city", params.city)
-//            parameter("limit", params.limit)
-//            parameter("page", params.page)
-//            parameter("start", params.start)
-//            parameter("end", params.end)
-//        }
-//        respond.requireOk()
-//        return respond.body()
-//    }
-
-//    suspend fun getReservations(): ReservationsJson {
-//        log.debug { "GET /members/schedule/reservations" }
-//        val respond = client.get("members/schedule/reservations") {
-//
-//        }
-//        respond.requireOk()
-//        return respond.body()
-//    }
-
+        return builder(data, lastMeta)
+    }
 }
 
+interface PagedParams<THIS : PagedParams<THIS>> {
+    val limit: Int
+    val page: Int
+    fun nextPage(): THIS
+}
+
+data class PartnerSearchParams(
+    val city: String,
+    val pageItemCount: Int,
+    val radiusInMeters: Int,
+    val zipCode: String,
+) {
+    companion object {
+        fun simple() =
+            PartnerSearchParams(
+                city = "AMS",
+                pageItemCount = 5_000,
+                radiusInMeters = 3_000,
+                zipCode = "1011HW",
+            )
+    }
+}
+
+data class WorkoutSearchParams(
+    val city: String,
+    override val limit: Int,
+    override val page: Int,
+    val start: ZonedDateTime,
+    val end: ZonedDateTime,
+    val isDigital: Boolean
+) : PagedParams<WorkoutSearchParams> {
+
+    val startFormatted = start.formatOnefit()
+    val endFormatted = end.formatOnefit()
+
+    override fun nextPage() = copy(page = page + 1)
+
+    companion object {
+        fun simple(
+            limit: Int = 10_000
+        ): WorkoutSearchParams {
+            val now = ZonedDateTime.now(zone).withHour(0).withMinute(0).withSecond(0)
+            return WorkoutSearchParams(
+                city = "AMS",
+                limit = limit,
+                page = 1,
+                start = now,
+                end = now.plusDays(2),
+                isDigital = false,
+            )
+        }
+    }
+}
 
 private suspend fun HttpResponse.requireOk() {
     if (status != HttpStatusCode.OK) {
         System.err.println(bodyAsText())
-        error("Invalid status code: $status (${request.url})")
+        error("Invalid status code: $status requesting ${request.url}")
     }
 }

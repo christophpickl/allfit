@@ -13,8 +13,9 @@ data class PartnerJson(
     val name: String,
     val category: PartnerCategoryJson,
     val categories: List<PartnerCategoryJson>,
+    // description
     // image
-    // location / address
+    // locations (geo, address)
 ) : SyncableJsonEntity
 
 @Serializable
