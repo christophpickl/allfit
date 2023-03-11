@@ -10,9 +10,9 @@ data class CategoriesJson(
 @Serializable
 data class CategoryJson(
     override val id: Int,
-    val name: String,
+    override val name: String,
     val slugs: SlugJson,
-) : SyncableJsonEntity
+) : CategoryJsonDefinition
 
 @Serializable
 data class SlugJson(

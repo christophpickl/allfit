@@ -33,6 +33,7 @@ data class WorkoutPartnerJson(
     val id: Int,
 )
 
+// slightly different from PartnerLocationJson
 @Serializable
 data class WorkoutLocationJson(
     val street: String,

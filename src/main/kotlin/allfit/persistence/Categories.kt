@@ -1,7 +1,7 @@
 package allfit.persistence
 
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -19,12 +19,9 @@ data class CategoryDbo(
     }
 }
 
-object CategoriesTable : Table("PUBLIC.CATEGORIES") {
-    val id = integer("ID")
+object CategoriesTable : IntIdTable("PUBLIC.CATEGORIES", "ID") {
     val name = varchar("NAME", 256)
     val isDeleted = bool("IS_DELETED")
-
-    override val primaryKey = PrimaryKey(id)
 }
 
 class InMemoryCategoriesRepo : CategoriesRepo {
@@ -58,7 +55,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
         log.debug { "Loading categories." }
         CategoriesTable.selectAll().toList().map {
             CategoryDbo(
-                id = it[CategoriesTable.id],
+                id = it[CategoriesTable.id].value,
                 name = it[CategoriesTable.name],
                 isDeleted = it[CategoriesTable.isDeleted],
             )

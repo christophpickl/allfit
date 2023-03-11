@@ -41,8 +41,6 @@ fun <REPO : Repo<DBO>, DBO : Dbo> repoTests(context: RepoTestContext<REPO, DBO>)
 
     with(context) {
         val dbo = dboProvider(DboContext())
-        val dbo1 = dboProvider(DboContext(id = 1))
-        val dbo2 = dboProvider(DboContext(id = 2))
         val dboNotDeleted = dboProvider(DboContext(isDeleted = false))
         val dboNotDeleted1 = dboProvider(DboContext(id = 1, isDeleted = false))
         val dboNotDeleted2 = dboProvider(DboContext(id = 2, isDeleted = false))

@@ -1,16 +1,15 @@
 package allfit.sync
 
-import allfit.api.models.SyncableJsonContainer
 import allfit.api.models.SyncableJsonEntity
 import allfit.persistence.Dbo
 
 object SyncDiffer {
-    fun <DBO : Dbo, CONTAINER : SyncableJsonContainer<ENTITY>, ENTITY : SyncableJsonEntity> diff(
+    fun <DBO : Dbo, ENTITY : SyncableJsonEntity> diff(
         localDbos: List<DBO>,
-        syncableJsons: CONTAINER
+        syncableJsons: List<ENTITY>
     ): DiffReport<ENTITY, DBO> {
         val localById = localDbos.associateBy { it.id }
-        val remoteById = syncableJsons.data.associateBy { it.id }
+        val remoteById = syncableJsons.associateBy { it.id }
 
         val toBeInserted = remoteById.toMutableMap()
         localById.forEach { (i, _) ->

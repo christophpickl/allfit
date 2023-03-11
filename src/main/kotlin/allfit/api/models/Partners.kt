@@ -2,6 +2,10 @@ package allfit.api.models
 
 import kotlinx.serialization.Serializable
 
+interface CategoryJsonDefinition : SyncableJsonEntity {
+    val name: String
+}
+
 @Serializable
 data class PartnersJson(
     override val data: List<PartnerJson>
@@ -11,17 +15,52 @@ data class PartnersJson(
 data class PartnerJson(
     override val id: Int,
     val name: String,
+    val slug: String,
+    val description: String,
     val category: PartnerCategoryJson,
     val categories: List<PartnerCategoryJson>,
-    // description
-    // image
-    // locations (geo, address)
+    val header_image: HeaderImageJson,
+    val settlement_options: SettlementOptionsJson,
+    val location_groups: List<PartnerLocationGroupsJson>
 ) : SyncableJsonEntity
 
 @Serializable
 data class PartnerCategoryJson(
-    val id: Int,
-    val name: String,
+    override val id: Int,
+    override val name: String,
+) : CategoryJsonDefinition
+
+@Serializable
+data class HeaderImageJson(
+    // e.g.: https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16280\\/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg
+    // add "?w=123" to resize by width
+    val orig: String,
+)
+
+@Serializable
+data class PartnerLocationGroupsJson(
+    val latitude: Double,
+    val longitude: Double,
+    val locations: List<PartnerLocationJson>
+)
+
+// slightly different from WorkoutLocationJson
+@Serializable
+data class PartnerLocationJson(
+    val street_name: String,
+    val house_number: String,
+    val addition: String,
+    val zip_code: String,
+    val city: String,
+    val latitude: Double,
+    val longitude: Double,
+)
+
+@Serializable
+data class SettlementOptionsJson(
+    val drop_in_enabled: Boolean,
+    val reservable_workouts: Boolean,
+    val first_come_first_serve: Boolean,
 )
 /*
 {

@@ -1,7 +1,7 @@
 package allfit.persistence
 
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,20 +13,23 @@ data class PartnerDbo(
     override val id: Int,
     override val isDeleted: Boolean,
     val name: String,
-    // TODO categories!
+    val categories: List<Int>,
 ) : Dbo {
     init {
         require(name.length < 256)
     }
 }
 
-object PartnersTable : Table("PUBLIC.PARTNERS") {
-    val id = integer("ID")
+// TODO better way to do exposed mapping!
+//class PartnerDbo2(id: EntityID<Int>): IntEntity(id) {
+//    companion object : IntEntityClass<PartnerDbo2>(PartnersTable)
+//    var name by PartnersTable.name
+//}
+
+object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
     val isDeleted = bool("IS_DELETED")
     // categories n:m
-
-    override val primaryKey = PrimaryKey(id)
 }
 
 class InMemoryPartnersRepo : PartnersRepo {
@@ -59,9 +62,10 @@ object ExposedPartnersRepo : PartnersRepo {
         log.debug { "Loading partners." }
         PartnersTable.selectAll().toList().map {
             PartnerDbo(
-                id = it[PartnersTable.id],
+                id = it[PartnersTable.id].value,
                 name = it[PartnersTable.name],
                 isDeleted = it[PartnersTable.isDeleted],
+                categories = emptyList(), // FIXME
             )
         }
     }
