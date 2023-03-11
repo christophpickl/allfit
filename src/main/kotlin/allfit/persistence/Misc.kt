@@ -14,6 +14,7 @@ val allTables = arrayOf(
     CategoriesTable,
     PartnersTable,
     PartnersCategoriesTable,
+    WorkoutsTable,
 )
 
 interface MutableDeletable : Deletable {

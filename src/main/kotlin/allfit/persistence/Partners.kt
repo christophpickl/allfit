@@ -14,7 +14,14 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
     val isDeleted = bool("IS_DELETED")
     // isHidden
+
+    fun selectByIds(ids: List<EntityID<Int>>): Map<Int, PartnerDbo> {
+        return PartnerDbo.find { PartnersTable.id inList ids }.associateBy { it.id.value }
+    }
 }
+
+fun Map<Int, PartnerDbo>.findOrThrow(id: Int) =
+    this[id] ?: throw PartnerNotFoundException("Could not find partner by ID: $id!")
 
 object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {
     val partner = reference("PARTNER", PartnersTable)
@@ -31,6 +38,8 @@ class PartnerDbo(id: EntityID<Int>) : IntEntity(id), MutableDeletable {
 }
 
 interface PartnersRepo : Repo<Partner>
+
+class PartnerNotFoundException(message: String) : Exception(message)
 
 class InMemoryPartnersRepo : PartnersRepo {
 
@@ -66,17 +75,13 @@ object ExposedPartnersRepo : PartnersRepo {
     override fun insert(domainObjects: List<Partner>) {
         transaction {
             log.debug { "Inserting ${domainObjects.size} partners." }
-            val categoryDboIds = domainObjects.map { it.categories.map { it.id } }.flatten().distinct()
-                .map { EntityID(it, CategoriesTable) }
-            val categoryDbos = CategoryDbo.find { CategoriesTable.id inList categoryDboIds }.associateBy { it.id.value }
-
+            val categoryDbosById = CategoriesTable.selectByIds(domainObjects.toDistinctCategoryIds())
             domainObjects.forEach { partner ->
                 PartnerDbo.new(partner.id) {
                     name = partner.name
                     isDeleted = partner.isDeleted
                     categories = SizedCollection(partner.categories.map {
-                        categoryDbos[it.id]
-                            ?: throw CategoryNotFoundException("Could not find category by ID: ${it.id}!")
+                        categoryDbosById.findOrThrow(it.id)
                     })
                 }
             }
@@ -88,9 +93,11 @@ object ExposedPartnersRepo : PartnersRepo {
     }
 }
 
-class CategoryNotFoundException(message: String) : Exception(message)
+private fun List<Partner>.toDistinctCategoryIds() = map { it.categories.map { it.id } }.flatten().distinct()
+    .map { EntityID(it, CategoriesTable) }
 
-private fun PartnerDbo.toPartner() = Partner(
+
+fun PartnerDbo.toPartner() = Partner(
     id = id.value,
     name = name,
     isDeleted = isDeleted,

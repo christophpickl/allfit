@@ -1,6 +1,8 @@
 package allfit.domain
 
 import io.kotest.property.Arb
+import io.kotest.property.arbitrary.Codepoint
+import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.int
@@ -22,5 +24,14 @@ fun Arb.Companion.partner() = arbitrary {
         name = string(minSize = 1, maxSize = 50).next(),
         isDeleted = boolean().next(),
         categories = list(category(), 1..4).next(),
+    )
+}
+
+fun Arb.Companion.workout() = arbitrary {
+    Workout(
+        id = int(min = 1).next(),
+        name = string(minSize = 1, maxSize = 50).next(),
+        slug = string(minSize = 1, maxSize = 50, codepoints = Codepoint.alphanumeric()).next(),
+        partner = partner().next(),
     )
 }

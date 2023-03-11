@@ -11,7 +11,14 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object CategoriesTable : IntIdTable("PUBLIC.CATEGORIES", "ID") {
     val name = varchar("NAME", 256)
     val isDeleted = bool("IS_DELETED")
+
+    fun selectByIds(ids: List<EntityID<Int>>): Map<Int, CategoryDbo> {
+        return CategoryDbo.find { CategoriesTable.id inList ids }.associateBy { it.id.value }
+    }
 }
+
+fun Map<Int, CategoryDbo>.findOrThrow(id: Int) =
+    this[id] ?: throw CategoryNotFoundException("Could not find category by ID: $id!")
 
 class CategoryDbo(id: EntityID<Int>) : IntEntity(id), MutableDeletable {
     companion object : IntEntityClass<CategoryDbo>(CategoriesTable)
@@ -21,6 +28,8 @@ class CategoryDbo(id: EntityID<Int>) : IntEntity(id), MutableDeletable {
 }
 
 interface CategoriesRepo : Repo<Category>
+
+class CategoryNotFoundException(message: String) : Exception(message)
 
 class InMemoryCategoriesRepo : CategoriesRepo {
 

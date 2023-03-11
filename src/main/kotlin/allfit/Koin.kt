@@ -3,11 +3,13 @@ package allfit
 import allfit.api.OnefitClient
 import allfit.persistence.ExposedCategoriesRepo
 import allfit.persistence.ExposedPartnersRepo
+import allfit.persistence.ExposedWorkoutsRepo
 import allfit.persistence.InMemoryCategoriesRepo
-import allfit.persistence.InMemoryMockDataSetup.insertMockData
 import allfit.persistence.InMemoryPartnersRepo
+import allfit.persistence.InMemoryWorkoutsRepo
 import allfit.persistence.LiquibaseConfig
 import allfit.persistence.LiquibaseMigrator
+import allfit.persistence.insertMockData
 import allfit.service.DataStorage
 import allfit.service.FileResolver
 import allfit.sync.NoOpSyncer
@@ -29,6 +31,9 @@ fun mainModule(onefitClient: OnefitClient) = module {
     }
     single {
         if (AppConfig.mockDb) InMemoryPartnersRepo().insertMockData() else ExposedPartnersRepo
+    }
+    single {
+        if (AppConfig.mockDb) InMemoryWorkoutsRepo().insertMockData() else ExposedWorkoutsRepo
     }
     single {
         if (AppConfig.mockSyncer) NoOpSyncer else RealSyncer(get(), get(), get())

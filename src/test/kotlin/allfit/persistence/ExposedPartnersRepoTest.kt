@@ -8,6 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -38,7 +39,7 @@ class ExposedPartnersRepoTest : DescribeSpec() {
             it("Given no category Then fail with foreign key violation") {
                 shouldThrow<CategoryNotFoundException> {
                     ExposedPartnersRepo.insert(listOf(partner.copy(categories = listOf(category))))
-                }
+                }.message shouldContain category.id.toString()
             }
         }
         describe("When delete") {
