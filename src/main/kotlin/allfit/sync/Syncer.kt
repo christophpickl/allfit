@@ -8,10 +8,10 @@ import allfit.api.models.PartnerCategoryJson
 import allfit.api.models.PartnerJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.SyncableJsonEntity
+import allfit.domain.Category
+import allfit.domain.HasIntId
+import allfit.domain.Partner
 import allfit.persistence.CategoriesRepo
-import allfit.persistence.CategoryDbo
-import allfit.persistence.Dbo
-import allfit.persistence.PartnerDbo
 import allfit.persistence.PartnersRepo
 import allfit.persistence.Repo
 import mu.KotlinLogging.logger
@@ -38,8 +38,8 @@ class RealSyncer(
     override suspend fun syncAll() {
         log.info { "Sync started ..." }
         val partners = client.getPartners(PartnerSearchParams.simple())
-        syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) { it.toCategoryDbo() }
-        syncAny(partnersRepo, partners.data) { it.toPartnerDbo() }
+        syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) { it.toCategory() }
+        syncAny(partnersRepo, partners.data) { it.toPartner() }
     }
 }
 
@@ -50,15 +50,15 @@ private fun mergedCategories(categories: CategoriesJson, partners: PartnersJson)
     }.values.toList()
 
 private fun <
-        REPO : Repo<DBO>,
-        DBO : Dbo,
+        REPO : Repo<DOMAIN>,
+        DOMAIN : HasIntId,
         ENTITY : SyncableJsonEntity
-        > syncAny(repo: REPO, syncableJsons: List<ENTITY>, mapper: (ENTITY) -> DBO) {
-    val localDbos = repo.select()
-    val report = SyncDiffer.diff(localDbos, syncableJsons)
+        > syncAny(repo: REPO, syncableJsons: List<ENTITY>, mapper: (ENTITY) -> DOMAIN) {
+    val localDomains = repo.select()
+    val report = SyncDiffer.diff(localDomains, syncableJsons, mapper)
 
     if (report.toInsert.isNotEmpty()) {
-        repo.insert(report.toInsert.map(mapper))
+        repo.insert(report.toInsert)
     }
     if (report.toDelete.isNotEmpty()) {
         repo.delete(report.toDelete.map { it.id })
@@ -72,16 +72,16 @@ private fun PartnersJson.toFlattenedCategories() = data.map { partner ->
     }
 }.flatten()
 
-private fun PartnerJson.toPartnerDbo() =
-    PartnerDbo(
+private fun PartnerJson.toPartner() =
+    Partner(
         id = id,
         name = name,
         isDeleted = false,
-        categories = emptyList(), // FIXME
+        categories = categories.map { it.toCategory() },
     )
 
-private fun CategoryJsonDefinition.toCategoryDbo() =
-    CategoryDbo(
+fun CategoryJsonDefinition.toCategory() =
+    Category(
         id = id,
         name = name,
         isDeleted = false,

@@ -1,30 +1,43 @@
 package allfit.sync
 
 import allfit.api.models.SyncableJsonEntity
-import allfit.persistence.Dbo
+import allfit.domain.HasIntId
 
 object SyncDiffer {
-    fun <DBO : Dbo, ENTITY : SyncableJsonEntity> diff(
-        localDbos: List<DBO>,
-        syncableJsons: List<ENTITY>
-    ): DiffReport<ENTITY, DBO> {
+    fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> diff(
+        localDbos: List<DOMAIN>,
+        syncableJsons: List<ENTITY>,
+        mapper: (ENTITY) -> DOMAIN,
+    ): DiffReport<DOMAIN, DOMAIN> {
         val localById = localDbos.associateBy { it.id }
         val remoteById = syncableJsons.associateBy { it.id }
+        return DiffReport(
+            toInsert = calcToBeInserted(localById, remoteById, mapper),
+            toDelete = calcToBeDeleted(localById, remoteById),
+        )
+    }
 
-        val toBeInserted = remoteById.toMutableMap()
-        localById.forEach { (i, _) ->
-            toBeInserted.remove(i)
+    private fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> calcToBeInserted(
+        localById: Map<Int, DOMAIN>,
+        remoteById: Map<Int, ENTITY>,
+        mapper: (ENTITY) -> DOMAIN
+    ): List<DOMAIN> {
+        val remotesToBeInserted = remoteById.toMutableMap()
+        localById.forEach { (key, _) ->
+            remotesToBeInserted.remove(key)
         }
+        return remotesToBeInserted.values.map(mapper)
+    }
 
+    private fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> calcToBeDeleted(
+        localById: Map<Int, DOMAIN>,
+        remoteById: Map<Int, ENTITY>
+    ): List<DOMAIN> {
         val toBeDeleted = localById.toMutableMap()
         remoteById.forEach { (i, _) ->
             toBeDeleted.remove(i)
         }
-
-        return DiffReport(
-            toInsert = toBeInserted.values.toList(),
-            toDelete = toBeDeleted.values.toList(),
-        )
+        return toBeDeleted.values.toList()
     }
 }
 

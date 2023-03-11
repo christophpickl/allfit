@@ -1,6 +1,7 @@
 package allfit.domain
 
 data class Category(
-    val id: Int,
+    override val id: Int,
     val name: String,
-)
+    override val isDeleted: Boolean,
+) : BaseDomain

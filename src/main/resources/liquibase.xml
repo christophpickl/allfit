@@ -28,6 +28,14 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <createTable tableName="PARTNERS_CATEGORIES">
+            <column name="PARTNER" type="integer">
+                <constraints primaryKey="true" primaryKeyName="PK_PARTNERS_CATEGORIES" nullable="false"/>
+            </column>
+            <column name="CATEGORY" type="integer">
+                <constraints primaryKey="true" primaryKeyName="PK_PARTNERS_CATEGORIES" nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
     <!--
         <addColumn tableName="song">
