@@ -27,15 +27,16 @@ object AllFit {
     }
 
     private suspend fun startupKoin(): Koin {
-        val client = buildClient()
+        val config = if (Environment.current == Environment.Development) AppConfig.develop else AppConfig.prod
+        val client = buildClient(config)
         return startKoin {
             log.debug { "Starting up Koin context." }
-            modules(mainModule(client))
+            modules(rootModule(config, client))
         }.koin
     }
 
-    private suspend fun buildClient(): OnefitClient =
-        if (AppConfig.mockClient) {
+    private suspend fun buildClient(config: AppConfig): OnefitClient =
+        if (config.mockClient) {
             ClassPathOnefitClient
         } else {
             OnefitClient.authenticate(CredentialsLoader.load())

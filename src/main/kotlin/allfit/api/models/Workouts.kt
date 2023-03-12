@@ -39,7 +39,7 @@ data class WorkoutLocationJson(
     val street: String,
     val house_number: String,
     val addition: String,
-    val zip_code: String,
+    val zip_code: String?,
     val city: String,
     val latitude: Double,
     val longitude: Double,

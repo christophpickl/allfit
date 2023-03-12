@@ -21,7 +21,8 @@ data class ReservationJson(
 @Serializable
 data class WorkoutReservationJson(
     val id: Int,
-    val partner: WorkoutReservationPartnerJson
+    val partner: WorkoutReservationPartnerJson,
+    val from: ZonedDateTime,
 )
 
 @Serializable

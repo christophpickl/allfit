@@ -9,7 +9,9 @@ import allfit.api.models.PagedJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationsJson
 import allfit.api.models.WorkoutsJson
+import allfit.service.FileResolver
 import allfit.service.formatOnefit
+import allfit.service.kotlinxSerializer
 import allfit.service.readApiResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -109,7 +111,7 @@ private fun buildClient(authToken: String?) = HttpClient(CIO) {
 }
 
 class RealOnefitClient(
-    authToken: String
+    authToken: String,
 ) : OnefitClient {
 
     private val log = logger {}
@@ -124,8 +126,8 @@ class RealOnefitClient(
         get("partners/search") {
             parameter("city", params.city)
             parameter("per_page", params.pageItemCount)
-            parameter("radius", params.radiusInMeters)
-            parameter("zipcode", params.zipCode)
+//            parameter("radius", params.radiusInMeters)
+//            parameter("zipcode", params.zipCode)
             // category_ids
             // query
         }
@@ -156,7 +158,8 @@ class RealOnefitClient(
             requestModifier()
         }
         log.debug { "${response.status.value} GET ${response.request.url}" }
-        println(response.bodyAsText())
+        FileResolver.resolve("${path.replace("/", "_")}-${response.status.value}.json")
+            .writeText(kotlinxSerializer.parseToJsonElement(response.bodyAsText()).toString())
         response.requireOk()
         return response.body()
     }
@@ -195,16 +198,16 @@ interface PagedParams<THIS : PagedParams<THIS>> {
 data class PartnerSearchParams(
     val city: String,
     val pageItemCount: Int,
-    val radiusInMeters: Int,
-    val zipCode: String,
+//    val radiusInMeters: Int,
+//    val zipCode: String,
 ) {
     companion object {
         fun simple() =
             PartnerSearchParams(
                 city = "AMS",
                 pageItemCount = 5_000,
-                radiusInMeters = 3_000,
-                zipCode = "1011HW",
+//                radiusInMeters = 3_000,
+//                zipCode = "1011HW",
             )
     }
 }
@@ -227,7 +230,7 @@ data class WorkoutSearchParams(
         fun simple(
             from: ZonedDateTime,
             plusDays: Int,
-            limit: Int = 10_000,
+            limit: Int = 5_000, // must not be 15k (or similar) otherwise throws 500! we follow pagination anyway ;)
         ): WorkoutSearchParams {
             return WorkoutSearchParams(
                 city = "AMS",

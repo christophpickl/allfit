@@ -1,9 +1,23 @@
 package allfit
 
+//private val enabled = Environment.current != Environment.Production
+
 @Suppress("SimplifyBooleanWithConstants")
-object AppConfig {
-    private val enabled = Environment.current != Environment.Production
-    val mockClient = true && enabled
-    val mockSyncer = false && enabled
-    val mockDb = true && enabled
+data class AppConfig(
+    val mockClient: Boolean,
+    val mockSyncer: Boolean,
+    val mockDb: Boolean,
+) {
+    companion object {
+        val develop = AppConfig(
+            mockClient = true,
+            mockSyncer = false,
+            mockDb = false,
+        )
+        val prod = AppConfig(
+            mockClient = false,
+            mockSyncer = false,
+            mockDb = false,
+        )
+    }
 }

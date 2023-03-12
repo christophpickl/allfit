@@ -67,6 +67,18 @@
             </column>
         </createTable>
 
+        <createTable tableName="RESERVATIONS">
+            <column name="ID" type="varchar(36)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="START" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="WORKOUT_ID" type="integer">
+                <constraints nullable="false" references="WORKOUTS(ID)" foreignKeyName="FK_RESERVATIONS_TO_PARTNERS"/>
+            </column>
+        </createTable>
+
     </changeSet>
     <!--
         <addColumn tableName="song">

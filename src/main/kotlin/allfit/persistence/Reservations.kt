@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 import java.util.UUID
@@ -16,6 +17,7 @@ object ReservationsTable : Table("PUBLIC.RESERVATIONS") {
     val uuid = uuid("ID")
     val workoutStart = datetime("START")
     val workoutId = reference("WORKOUT_ID", WorkoutsTable)
+    override val primaryKey = PrimaryKey(uuid)
 }
 
 data class ReservationEntity(
@@ -25,6 +27,7 @@ data class ReservationEntity(
 )
 
 interface ReservationsRepo {
+    fun selectAll(): List<ReservationEntity>
     fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<ReservationEntity>
     fun insertAll(reservations: List<ReservationEntity>)
     fun deleteAll(uuids: List<UUID>)
@@ -34,6 +37,9 @@ class InMemoryReservationsRepo : ReservationsRepo {
 
     private val log = logger {}
     private val reservations = mutableMapOf<UUID, ReservationEntity>()
+
+    override fun selectAll() =
+        reservations.values.toList()
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
         reservations.values.filter { it.workoutStart >= fromInclusive }
@@ -58,6 +64,11 @@ object ExposedReservationsRepo : ReservationsRepo {
 
     private val log = logger {}
 
+    override fun selectAll(): List<ReservationEntity> = transaction {
+        log.debug { "Selecting all reservations." }
+        ReservationsTable.selectAll().map { it.toReservationsEntity() }
+    }
+
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<ReservationEntity> = transaction {
         log.debug { "Selecting reservations from: $fromInclusive" }
         ReservationsTable.select {
@@ -80,6 +91,7 @@ object ExposedReservationsRepo : ReservationsRepo {
 
     override fun deleteAll(uuids: List<UUID>) {
         transaction {
+            log.debug { "Deleting ${uuids.size} reservations." }
             ReservationsTable.deleteWhere {
                 uuid inList uuids
             }

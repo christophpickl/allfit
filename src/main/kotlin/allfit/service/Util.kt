@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 
 val kotlinxSerializer = Json {
     ignoreUnknownKeys = true
+    prettyPrint = true
 }
 
 inline fun <reified T> readApiResponse(fileName: String): T {

@@ -6,7 +6,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.sql.Database
-import java.io.File
 
 class LiquibaseMigratorTest : StringSpec() {
     init {
@@ -28,11 +27,17 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedWorkoutsRepo.insertAll(listOf(workout))
             ExposedWorkoutsRepo.selectAllStartingFrom(fromInclusive = workout.start).shouldBeSingleton()
                 .first() shouldBe workout
+
+            val reservation = Arb.reservationEntity().next().copy(workoutId = workout.id)
+            ExposedReservationsRepo.insertAll(listOf(reservation))
+            ExposedReservationsRepo.selectAll().shouldBeSingleton()
+                .first() shouldBe reservation
         }
     }
 
     private fun testJdbcUrl(): String {
-        val tmpDir = File(System.getProperty("java.io.tmpdir"), "liquitest-${System.currentTimeMillis()}")
-        return "jdbc:h2:file:${tmpDir.absolutePath}"
+//        val tmpDir = File(System.getProperty("java.io.tmpdir"), "liquitest-${System.currentTimeMillis()}")
+//        return "jdbc:h2:file:${tmpDir.absolutePath}"
+        return "jdbc:h2:mem:liquitest-${System.currentTimeMillis()};DB_CLOSE_DELAY=-1"
     }
 }

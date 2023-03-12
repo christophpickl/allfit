@@ -12,6 +12,8 @@ import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.uuid
+import java.time.ZonedDateTime
 
 fun Arb.Companion.categoryJson() = arbitrary {
     CategoryJson(
@@ -127,7 +129,7 @@ fun Arb.Companion.workoutLocationJson() = arbitrary {
         street = string(minSize = 1, maxSize = 8).next(),
         house_number = string(minSize = 1, maxSize = 8).next(),
         addition = string(minSize = 1, maxSize = 8).next(),
-        zip_code = string(minSize = 1, maxSize = 8).next(),
+        zip_code = string(minSize = 1, maxSize = 8).orNull().next(),
         city = string(minSize = 1, maxSize = 8).next(),
         latitude = double(min = 0.0).next(),
         longitude = double(min = 0.0).next(),
@@ -146,5 +148,33 @@ fun Arb.Companion.metaPaginationJson() = arbitrary {
     MetaPaginationJson(
         current_page = currentPage,
         total_pages = totalPages,
+    )
+}
+
+fun Arb.Companion.reservationsJson() = arbitrary {
+    ReservationsJson(
+        data = list(reservationJson(), 0..5).next(),
+    )
+}
+
+fun Arb.Companion.reservationJson() = arbitrary {
+    ReservationJson(
+        uuid = uuid().next().toString(),
+        created_at = ZonedDateTime.now(),
+        workout = workoutReservationJson().next(),
+    )
+}
+
+fun Arb.Companion.workoutReservationJson() = arbitrary {
+    WorkoutReservationJson(
+        id = int(min = 1).next(),
+        partner = workoutReservationPartnerJson().next(),
+        from = ZonedDateTime.now(),
+    )
+}
+
+fun Arb.Companion.workoutReservationPartnerJson() = arbitrary {
+    WorkoutReservationPartnerJson(
+        id = int(min = 1).next(),
     )
 }
