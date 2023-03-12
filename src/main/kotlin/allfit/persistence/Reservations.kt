@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 object ReservationsTable : Table("PUBLIC.RESERVATIONS") {
-    val uuid = uuid("ID")
+    val uuid = varchar("ID", 36)
     val workoutStart = datetime("START")
     val workoutId = reference("WORKOUT_ID", WorkoutsTable)
     override val primaryKey = PrimaryKey(uuid)
@@ -57,7 +57,6 @@ class InMemoryReservationsRepo : ReservationsRepo {
             reservations.remove(it)
         }
     }
-
 }
 
 object ExposedReservationsRepo : ReservationsRepo {
@@ -81,7 +80,7 @@ object ExposedReservationsRepo : ReservationsRepo {
             log.debug { "Inserting ${reservations.size} reservations." }
             reservations.forEach { reservation ->
                 ReservationsTable.insert {
-                    it[uuid] = reservation.uuid
+                    it[uuid] = reservation.uuid.toString()
                     it[workoutStart] = reservation.workoutStart
                     it[workoutId] = reservation.workoutId
                 }
@@ -93,14 +92,14 @@ object ExposedReservationsRepo : ReservationsRepo {
         transaction {
             log.debug { "Deleting ${uuids.size} reservations." }
             ReservationsTable.deleteWhere {
-                uuid inList uuids
+                uuid inList uuids.map { it.toString() }
             }
         }
     }
 }
 
 private fun ResultRow.toReservationsEntity() = ReservationEntity(
-    uuid = this[ReservationsTable.uuid],
+    uuid = UUID.fromString(this[ReservationsTable.uuid]),
     workoutId = this[ReservationsTable.workoutId].value,
     workoutStart = this[ReservationsTable.workoutStart],
 )
