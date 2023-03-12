@@ -8,6 +8,7 @@ val allTables = arrayOf(
     PartnersTable,
     PartnersCategoriesTable,
     WorkoutsTable,
+    ReservationsTable,
 )
 
 interface BaseEntity : HasIntId, Deletable

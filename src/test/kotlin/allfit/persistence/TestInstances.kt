@@ -9,6 +9,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.uuid
 import java.time.LocalDateTime
 
 fun Arb.Companion.categoryEntity() = arbitrary {
@@ -36,5 +37,13 @@ fun Arb.Companion.workoutEntity() = arbitrary {
         start = LocalDateTime.now(),
         end = LocalDateTime.now(),
         partnerId = int(min = 1).next(),
+    )
+}
+
+fun Arb.Companion.reservationEntity() = arbitrary {
+    ReservationEntity(
+        uuid = uuid().next(),
+        workoutId = int(min = 1).next(),
+        workoutStart = LocalDateTime.now(),
     )
 }

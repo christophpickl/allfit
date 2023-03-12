@@ -7,6 +7,7 @@ import allfit.api.models.MetaJson
 import allfit.api.models.MetaPaginationJson
 import allfit.api.models.PagedJson
 import allfit.api.models.PartnersJson
+import allfit.api.models.ReservationsJson
 import allfit.api.models.WorkoutsJson
 import allfit.service.formatOnefit
 import allfit.service.readApiResponse
@@ -36,6 +37,7 @@ interface OnefitClient {
     suspend fun getCategories(): CategoriesJson
     suspend fun getPartners(params: PartnerSearchParams): PartnersJson
     suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJson
+    suspend fun getReservations(): ReservationsJson
 
     companion object {
 
@@ -63,9 +65,11 @@ class InMemoryOnefitClient : OnefitClient {
     var categoriesJson = CategoriesJson(emptyList())
     var partnersJson = PartnersJson(emptyList())
     var workoutsJson = WorkoutsJson(emptyList(), MetaJson(MetaPaginationJson(1, 1)))
+    var reservationsJson = ReservationsJson(emptyList())
     override suspend fun getCategories() = categoriesJson
     override suspend fun getPartners(params: PartnerSearchParams) = partnersJson
     override suspend fun getWorkouts(params: WorkoutSearchParams) = workoutsJson
+    override suspend fun getReservations() = reservationsJson
 }
 
 object ClassPathOnefitClient : OnefitClient {
@@ -77,6 +81,9 @@ object ClassPathOnefitClient : OnefitClient {
 
     override suspend fun getWorkouts(params: WorkoutSearchParams) =
         readApiResponse<WorkoutsJson>("workouts_search.json")
+
+    override suspend fun getReservations() =
+        readApiResponse<ReservationsJson>("reservations.json")
 }
 
 private fun buildClient(authToken: String?) = HttpClient(CIO) {
@@ -128,6 +135,9 @@ class RealOnefitClient(
             WorkoutsJson(data, meta)
         }
 
+    override suspend fun getReservations(): ReservationsJson =
+        get("members/schedule/reservations")
+
     private suspend fun getWorkoutsPage(params: WorkoutSearchParams): WorkoutsJson =
         get("workouts/search") {
             parameter("city", params.city)
@@ -146,6 +156,7 @@ class RealOnefitClient(
             requestModifier()
         }
         log.debug { "${response.status.value} GET ${response.request.url}" }
+        println(response.bodyAsText())
         response.requireOk()
         return response.body()
     }

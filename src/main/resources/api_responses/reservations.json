@@ -1,0 +1,70 @@
+{
+  "data": [
+    {
+      "uuid": "c90b5f10-7b23-47b5-b457-ade8b30e430a",
+      "created_at": "2023-03-12T16:11:27+01:00",
+      "workout": {
+        "id": 10937847,
+        "name": "Personal Training",
+        "slug": "active-club-personal-training",
+        "spots_available": 1,
+        "spots_booked": 1,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-03-14T16:00:00+01:00",
+        "till": "2023-03-14T17:00:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 16114,
+          "name": "Active Club",
+          "slug": "active-club-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16114\\/7c674177-0540-456c-9513-91bf81ba6488.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Keizersgracht",
+          "house_number": "82",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1015CT",
+          "latitude": 52.377851,
+          "longitude": 4.887778,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 71,
+          "name": "Other"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-03-14T15:30:00+01:00",
+          "till": "2023-03-14T16:10:00+01:00"
+        }
+      }
+    }
+  ]
+}

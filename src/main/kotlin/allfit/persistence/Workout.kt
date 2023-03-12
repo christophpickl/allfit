@@ -38,7 +38,7 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
     private val workouts = mutableMapOf<Int, WorkoutEntity>()
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
-        workouts.values.toList().filter { it.start >= fromInclusive }
+        workouts.values.filter { it.start >= fromInclusive }
 
     override fun insertAll(workouts: List<WorkoutEntity>) {
         log.debug { "Inserting ${workouts.size} workouts." }
@@ -53,7 +53,7 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
     private val log = logger {}
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) = transaction {
-        log.debug { "Loading workouts." }
+        log.debug { "Selecting workouts from: $fromInclusive" }
         WorkoutsTable.select {
             WorkoutsTable.start greaterEq fromInclusive
         }.map { it.toWorkoutEntity() }
