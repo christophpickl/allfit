@@ -1,6 +1,7 @@
 package allfit.persistence
 
 import allfit.domain.Partner
+import allfit.domain.PartnerNotFoundException
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
@@ -38,8 +39,6 @@ class PartnerDbo(id: EntityID<Int>) : IntEntity(id), MutableDeletable {
 }
 
 interface PartnersRepo : Repo<Partner>
-
-class PartnerNotFoundException(message: String) : Exception(message)
 
 class InMemoryPartnersRepo : PartnersRepo {
 

@@ -17,3 +17,8 @@ data class Partner(
     // starred: Boolean
     // favorite: Boolean
 ) : BaseDomain
+
+fun Map<Int, Partner>.findOrThrow(id: Int) =
+    this[id] ?: throw PartnerNotFoundException("Could not find partner by ID: $id!")
+
+class PartnerNotFoundException(message: String) : Exception(message)

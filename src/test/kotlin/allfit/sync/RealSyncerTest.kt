@@ -6,8 +6,13 @@ import allfit.api.models.PartnersJson
 import allfit.api.models.categoryJson
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
+import allfit.api.models.partnersJson
+import allfit.api.models.workoutJson
+import allfit.api.models.workoutPartnerJson
+import allfit.api.models.workoutsJson
 import allfit.persistence.InMemoryCategoriesRepo
 import allfit.persistence.InMemoryPartnersRepo
+import allfit.persistence.InMemoryWorkoutsRepo
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -21,6 +26,7 @@ class RealSyncerTest : DescribeSpec() {
     private lateinit var client: InMemoryOnefitClient
     private lateinit var categoriesRepo: InMemoryCategoriesRepo
     private lateinit var partnersRepo: InMemoryPartnersRepo
+    private lateinit var workoutsRepo: InMemoryWorkoutsRepo
 
     private val category = Arb.categoryJson().next()
     private val partner = Arb.partnerJson().next()
@@ -31,11 +37,12 @@ class RealSyncerTest : DescribeSpec() {
         client = InMemoryOnefitClient()
         categoriesRepo = InMemoryCategoriesRepo()
         partnersRepo = InMemoryPartnersRepo()
+        workoutsRepo = InMemoryWorkoutsRepo()
     }
 
     init {
         describe("Categories") {
-            it("Insert") {
+            it("Insert category") {
                 client.categoriesJson = CategoriesJson(listOf(category))
 
                 syncAll()
@@ -44,7 +51,7 @@ class RealSyncerTest : DescribeSpec() {
             }
         }
         describe("Partners") {
-            it("Insert") {
+            it("Insert partner") {
                 client.partnersJson = PartnersJson(listOf(partner))
 
                 syncAll()
@@ -66,7 +73,22 @@ class RealSyncerTest : DescribeSpec() {
                 ).map { it.id }
             }
         }
+
+        describe("Workouts") {
+            it("Given partner and workout Then insert workout") {
+                val partner = Arb.partnerJson().next()
+                client.partnersJson = Arb.partnersJson().next().copy(data = listOf(partner))
+                val workout = Arb.workoutJson().next()
+                    .copy(partner = Arb.workoutPartnerJson().next().copy(id = partner.id))
+                client.workoutsJson = Arb.workoutsJson().next().copy(data = listOf(workout))
+
+                syncAll()
+
+                workoutsRepo.selectStartingFrom(workout.from.minusDays(1)).shouldBeSingleton()
+                    .first().id shouldBe workout.id
+            }
+        }
     }
 
-    private suspend fun syncAll() = RealSyncer(client, categoriesRepo, partnersRepo).syncAll()
+    private suspend fun syncAll() = RealSyncer(client, categoriesRepo, partnersRepo, workoutsRepo).syncAll()
 }

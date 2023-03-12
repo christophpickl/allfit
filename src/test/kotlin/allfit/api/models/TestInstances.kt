@@ -1,5 +1,6 @@
 package allfit.api.models
 
+import allfit.service.SystemClock
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
@@ -39,6 +40,12 @@ fun Arb.Companion.partnerJson() = arbitrary {
         header_image = headerImageJson().next(),
         settlement_options = settlementOptionsJson().next(),
         location_groups = list(partnerLocationGroupsJson(), 0..3).next(),
+    )
+}
+
+fun Arb.Companion.partnersJson() = arbitrary {
+    PartnersJson(
+        data = list(partnerJson(), 0..3).next(),
     )
 }
 
@@ -86,5 +93,58 @@ fun Arb.Companion.partnerCategoryJson() = arbitrary {
     PartnerCategoryJson(
         id = int(min = 1).next(),
         name = string(minSize = 1, maxSize = 8).next(),
+    )
+}
+
+fun Arb.Companion.workoutsJson() = arbitrary {
+    WorkoutsJson(
+        data = list(workoutJson(), 0..5).next(),
+        meta = metaJson().next(),
+    )
+}
+
+fun Arb.Companion.workoutJson() = arbitrary {
+    WorkoutJson(
+        id = int(min = 1).next(),
+        name = string(minSize = 1, maxSize = 8).next(),
+        slug = string(minSize = 1, maxSize = 8, codepoints = Codepoint.alphanumeric()).next(),
+        partner = workoutPartnerJson().next(),
+        location = workoutLocationJson().next(),
+        from = SystemClock.now(),
+        till = SystemClock.now(),
+        reservation_allowed = boolean().next(),
+    )
+}
+
+fun Arb.Companion.workoutPartnerJson() = arbitrary {
+    WorkoutPartnerJson(
+        id = int(min = 1).next(),
+    )
+}
+
+fun Arb.Companion.workoutLocationJson() = arbitrary {
+    WorkoutLocationJson(
+        street = string(minSize = 1, maxSize = 8).next(),
+        house_number = string(minSize = 1, maxSize = 8).next(),
+        addition = string(minSize = 1, maxSize = 8).next(),
+        zip_code = string(minSize = 1, maxSize = 8).next(),
+        city = string(minSize = 1, maxSize = 8).next(),
+        latitude = double(min = 0.0).next(),
+        longitude = double(min = 0.0).next(),
+    )
+}
+
+fun Arb.Companion.metaJson() = arbitrary {
+    MetaJson(
+        pagination = metaPaginationJson().next(),
+    )
+}
+
+fun Arb.Companion.metaPaginationJson() = arbitrary {
+    val currentPage = int(min = 1, max = 100).next()
+    val totalPages = currentPage + int(min = 1, max = 100).next()
+    MetaPaginationJson(
+        current_page = currentPage,
+        total_pages = totalPages,
     )
 }

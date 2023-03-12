@@ -1,6 +1,7 @@
 package allfit.persistence
 
 import allfit.domain.Category
+import allfit.domain.CategoryNotFoundException
 import allfit.domain.Partner
 import allfit.domain.category
 import allfit.domain.partner

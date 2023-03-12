@@ -5,3 +5,5 @@ data class Category(
     val name: String,
     override val isDeleted: Boolean,
 ) : BaseDomain
+
+class CategoryNotFoundException(message: String) : Exception(message)

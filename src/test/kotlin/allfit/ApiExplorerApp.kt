@@ -5,6 +5,7 @@ import allfit.api.PartnerSearchParams
 import allfit.api.RealOnefitClient
 import allfit.api.WorkoutSearchParams
 import allfit.service.CredentialsLoader
+import allfit.service.SystemClock
 import io.kotest.common.runBlocking
 
 class ApiExplorerApp(private val client: RealOnefitClient) {
@@ -20,7 +21,12 @@ class ApiExplorerApp(private val client: RealOnefitClient) {
 
     private suspend fun playground() {
         println(client.getPartners(PartnerSearchParams.simple()))
-        val workouts = client.getWorkouts(WorkoutSearchParams.simple())
+        val workouts = client.getWorkouts(
+            WorkoutSearchParams.simple(
+                from = SystemClock.todayBeginOfDay(),
+                plusDays = 1
+            )
+        )
         println("found ${workouts.data.size} workouts")
         println(workouts)
     }

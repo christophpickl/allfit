@@ -3,7 +3,7 @@ package allfit.sync
 import allfit.api.models.SyncableJsonEntity
 import allfit.domain.HasIntId
 
-object SyncDiffer {
+object Differ {
     fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> diff(
         localDbos: List<DOMAIN>,
         syncableJsons: List<ENTITY>,

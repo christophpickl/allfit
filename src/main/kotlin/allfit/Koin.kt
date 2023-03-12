@@ -36,7 +36,7 @@ fun mainModule(onefitClient: OnefitClient) = module {
         if (AppConfig.mockDb) InMemoryWorkoutsRepo().insertMockData() else ExposedWorkoutsRepo
     }
     single {
-        if (AppConfig.mockSyncer) NoOpSyncer else RealSyncer(get(), get(), get())
+        if (AppConfig.mockSyncer) NoOpSyncer else RealSyncer(get(), get(), get(), get())
     }
     single { AllFitStarter(get()) }
 }

@@ -1,5 +1,6 @@
 package allfit.domain
 
+import allfit.service.SystemClock
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
@@ -32,6 +33,8 @@ fun Arb.Companion.workout() = arbitrary {
         id = int(min = 1).next(),
         name = string(minSize = 1, maxSize = 50).next(),
         slug = string(minSize = 1, maxSize = 50, codepoints = Codepoint.alphanumeric()).next(),
+        start = SystemClock.now(),
+        end = SystemClock.now(),
         partner = partner().next(),
     )
 }

@@ -10,7 +10,6 @@ import allfit.api.models.PartnersJson
 import allfit.api.models.WorkoutsJson
 import allfit.service.formatOnefit
 import allfit.service.readApiResponse
-import allfit.service.zone
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -215,15 +214,16 @@ data class WorkoutSearchParams(
 
     companion object {
         fun simple(
-            limit: Int = 10_000
+            from: ZonedDateTime,
+            plusDays: Int,
+            limit: Int = 10_000,
         ): WorkoutSearchParams {
-            val now = ZonedDateTime.now(zone).withHour(0).withMinute(0).withSecond(0)
             return WorkoutSearchParams(
                 city = "AMS",
                 limit = limit,
                 page = 1,
-                start = now,
-                end = now.plusDays(2),
+                start = from,
+                end = from.plusDays(plusDays.toLong()),
                 isDigital = false,
             )
         }

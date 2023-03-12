@@ -14,7 +14,7 @@ data class WorkoutsJson(
 
 @Serializable
 data class WorkoutJson(
-    val id: Int,
+    override val id: Int,
     val name: String,
     val slug: String, // to create the web address
     val partner: WorkoutPartnerJson,
@@ -26,7 +26,7 @@ data class WorkoutJson(
 
 // for more data, would need to parse HTML... e.g. from:
 // https://one.fit/en-nl/workouts/11002448/vondelgym-zuid-fitness-vegym-training
-)
+) : SyncableJsonEntity
 
 @Serializable
 data class WorkoutPartnerJson(

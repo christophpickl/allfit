@@ -24,6 +24,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:0.41.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
     implementation("com.h2database:h2:2.1.214")
     implementation("org.liquibase:liquibase-core:4.19.0")
     implementation("com.mattbertolini:liquibase-slf4j:4.1.0")
