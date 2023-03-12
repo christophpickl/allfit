@@ -1,9 +1,9 @@
 package allfit.api.models
 
-interface SyncableJsonContainer<ENTITY : SyncableJsonEntity> {
+interface SyncableJsonContainer<ENTITY : SyncableJson> {
     val data: List<ENTITY>
 }
 
-interface SyncableJsonEntity {
+interface SyncableJson {
     val id: Int
 }

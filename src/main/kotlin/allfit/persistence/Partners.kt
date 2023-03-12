@@ -1,60 +1,59 @@
 package allfit.persistence
 
-import allfit.domain.Partner
-import allfit.domain.PartnerNotFoundException
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.SizedCollection
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
     val isDeleted = bool("IS_DELETED")
     // isHidden
+}
 
-    fun selectByIds(ids: List<EntityID<Int>>): Map<Int, PartnerDbo> {
-        return PartnerDbo.find { PartnersTable.id inList ids }.associateBy { it.id.value }
+object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {
+    val partnerId = reference("PARTNER_ID", PartnersTable)
+    val categoryId = reference("CATEGORY_ID", CategoriesTable)
+    override val primaryKey = PrimaryKey(partnerId, categoryId, name = "PK_PARTNERS_CATEGORIES")
+
+    fun selectAllCategoryIdsByPartnerIds(): Map<Int, List<Int>> {
+        val categoryIdsByPartnerIds = mutableMapOf<Int, MutableList<Int>>()
+        PartnersCategoriesTable.selectAll().map {
+            it[partnerId].value to it[categoryId].value
+        }.groupByTo(categoryIdsByPartnerIds, { it.first }, { it.second })
+        return categoryIdsByPartnerIds
     }
 }
 
-fun Map<Int, PartnerDbo>.findOrThrow(id: Int) =
-    this[id] ?: throw PartnerNotFoundException("Could not find partner by ID: $id!")
+data class PartnerEntity(
+    override val id: Int,
+    override val isDeleted: Boolean,
+    val name: String,
+    val categoryIds: List<Int>,
+) : BaseEntity
 
-object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {
-    val partner = reference("PARTNER", PartnersTable)
-    val category = reference("CATEGORY", CategoriesTable)
-    override val primaryKey = PrimaryKey(partner, category, name = "PK_PARTNERS_CATEGORIES")
-}
-
-class PartnerDbo(id: EntityID<Int>) : IntEntity(id), MutableDeletable {
-    companion object : IntEntityClass<PartnerDbo>(PartnersTable)
-
-    var name by PartnersTable.name
-    override var isDeleted by PartnersTable.isDeleted
-    var categories by CategoryDbo via PartnersCategoriesTable
-}
-
-interface PartnersRepo : Repo<Partner>
+interface PartnersRepo : BaseRepo<PartnerEntity>
 
 class InMemoryPartnersRepo : PartnersRepo {
 
     private val log = logger {}
-    private val partners = mutableMapOf<Int, Partner>()
+    private val partners = mutableMapOf<Int, PartnerEntity>()
 
-    override fun select() = partners.values.toList()
+    override fun selectAll() = partners.values.toList()
 
-    override fun insert(domainObjects: List<Partner>) {
-        log.debug { "Inserting ${domainObjects.size} partners." }
-        domainObjects.forEach {
+    override fun insertAll(entities: List<PartnerEntity>) {
+        log.debug { "Inserting ${entities.size} partners." }
+        entities.forEach {
             partners[it.id] = it
         }
     }
 
-    override fun delete(ids: List<Int>) {
+    override fun deleteAll(ids: List<Int>) {
         log.debug { "Deleting ${ids.size} partners." }
         ids.forEach { id ->
             partners[id] = partners[id]!!.copy(isDeleted = true)
@@ -66,39 +65,47 @@ object ExposedPartnersRepo : PartnersRepo {
 
     private val log = logger {}
 
-    override fun select() = transaction {
+    override fun selectAll() = transaction {
         log.debug { "Loading partners." }
-        PartnerDbo.all().map { it.toPartner() }
+        val categories = PartnersCategoriesTable.selectAllCategoryIdsByPartnerIds()
+        PartnersTable.selectAll().map { it.toPartnerEntity(categories[it[PartnersTable.id].value]!!) }
     }
 
-    override fun insert(domainObjects: List<Partner>) {
+    override fun insertAll(entities: List<PartnerEntity>) {
         transaction {
-            log.debug { "Inserting ${domainObjects.size} partners." }
-            val categoryDbosById = CategoriesTable.selectByIds(domainObjects.toDistinctCategoryIds())
-            domainObjects.forEach { partner ->
-                PartnerDbo.new(partner.id) {
-                    name = partner.name
-                    isDeleted = partner.isDeleted
-                    categories = SizedCollection(partner.categories.map {
-                        categoryDbosById.findOrThrow(it.id)
-                    })
+            log.debug { "Inserting ${entities.size} partners." }
+            entities.forEach { partner ->
+                PartnersTable.insert {
+                    it[PartnersTable.id] = EntityID(partner.id, PartnersTable)
+                    it[name] = partner.name
+                    it[isDeleted] = partner.isDeleted
+                }
+                partner.categoryIds.forEach { categoryId ->
+                    PartnersCategoriesTable.insert {
+                        it[partnerId] = partner.id
+                        it[this.categoryId] = categoryId
+                    }
                 }
             }
         }
     }
 
-    override fun delete(ids: List<Int>) {
-        markDeleted(PartnersTable, PartnerDbo, ids, "partners")
+    override fun deleteAll(ids: List<Int>) {
+        require(ids.isNotEmpty())
+        transaction {
+            log.debug { "Deleting ${ids.size} partners." }
+            PartnersTable.update(where = {
+                PartnersTable.id inList ids
+            }) {
+                it[isDeleted] = true
+            }
+        }
     }
 }
 
-private fun List<Partner>.toDistinctCategoryIds() = map { it.categories.map { it.id } }.flatten().distinct()
-    .map { EntityID(it, CategoriesTable) }
-
-
-fun PartnerDbo.toPartner() = Partner(
-    id = id.value,
-    name = name,
-    isDeleted = isDeleted,
-    categories = categories.map { it.toCategory() }
+private fun ResultRow.toPartnerEntity(categoryIds: List<Int>) = PartnerEntity(
+    id = this[PartnersTable.id].value,
+    isDeleted = this[PartnersTable.isDeleted],
+    name = this[PartnersTable.name],
+    categoryIds = categoryIds,
 )

@@ -6,6 +6,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="1" author="christophpickl" failOnError="true">
         <comment>setting up initial categories data</comment>
+
         <createTable tableName="CATEGORIES">
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,6 +18,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
         <createTable tableName="PARTNERS">
             <column name="ID" type="integer">
                 <constraints primaryKey="true" nullable="false"/>
@@ -28,14 +30,43 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
         <createTable tableName="PARTNERS_CATEGORIES">
-            <column name="PARTNER" type="integer">
+            <column name="PARTNER_ID" type="integer">
                 <constraints primaryKey="true" primaryKeyName="PK_PARTNERS_CATEGORIES" nullable="false"/>
             </column>
-            <column name="CATEGORY" type="integer">
+            <column name="CATEGORY_ID" type="integer">
                 <constraints primaryKey="true" primaryKeyName="PK_PARTNERS_CATEGORIES" nullable="false"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint constraintName="FK_PARTNERS_CATEGORIES_CATEGORY_ID"
+                                 baseTableName="PARTNERS_CATEGORIES" baseColumnNames="CATEGORY_ID"
+                                 referencedTableName="CATEGORIES" referencedColumnNames="ID"/>
+        <addForeignKeyConstraint constraintName="FK_PARTNERS_CATEGORIES_PARTNER_ID"
+                                 baseTableName="PARTNERS_CATEGORIES" baseColumnNames="PARTNER_ID"
+                                 referencedTableName="PARTNERS" referencedColumnNames="ID"/>
+
+        <createTable tableName="WORKOUTS">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SLUG" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="START" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="END" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PARTNER_ID" type="integer">
+                <constraints nullable="false" references="PARTNERS(ID)" foreignKeyName="FK_WORKOUTS_TO_PARTNERS"/>
+            </column>
+        </createTable>
+
     </changeSet>
     <!--
         <addColumn tableName="song">

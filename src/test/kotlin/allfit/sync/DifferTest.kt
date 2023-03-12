@@ -13,7 +13,7 @@ import io.kotest.property.arbitrary.next
 class DifferTest : StringSpec() {
 
     private val id = 42
-    private val mapper = CategoryJsonDefinition::toCategory
+    private val mapper = CategoryJsonDefinition::toCategoryEntity
 
     init {
         "Given remote When diff Then insert it" {

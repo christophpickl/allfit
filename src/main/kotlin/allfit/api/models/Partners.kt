@@ -2,7 +2,7 @@ package allfit.api.models
 
 import kotlinx.serialization.Serializable
 
-interface CategoryJsonDefinition : SyncableJsonEntity {
+interface CategoryJsonDefinition : SyncableJson {
     val name: String
 }
 
@@ -22,7 +22,7 @@ data class PartnerJson(
     val header_image: HeaderImageJson,
     val settlement_options: SettlementOptionsJson,
     val location_groups: List<PartnerLocationGroupsJson>
-) : SyncableJsonEntity
+) : SyncableJson
 
 @Serializable
 data class PartnerCategoryJson(

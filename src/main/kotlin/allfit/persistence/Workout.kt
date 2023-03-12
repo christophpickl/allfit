@@ -1,52 +1,49 @@
 package allfit.persistence
 
-import allfit.domain.Workout
-import allfit.service.fromUtcToAmsterdamZonedDateTime
-import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
     val name = varchar("NAME", 256)
     val slug = varchar("SLUG", 256)
     val start = datetime("START")
-    val end = datetime("end")
-    val partner = reference("PARTNER", PartnersTable)
+    val end = datetime("END")
+    val partnerId = reference("PARTNER_ID", PartnersTable)
 }
 
-class WorkoutDbo(id: EntityID<Int>) : IntEntity(id) {
-    companion object : IntEntityClass<WorkoutDbo>(WorkoutsTable)
-
-    var name by WorkoutsTable.name
-    var slug by WorkoutsTable.slug
-    var start by WorkoutsTable.start
-    var end by WorkoutsTable.end
-    var partner by PartnerDbo referencedOn WorkoutsTable.partner
-}
+data class WorkoutEntity(
+    val id: Int,
+    val name: String,
+    val slug: String,
+    val start: LocalDateTime,
+    val end: LocalDateTime,
+    val partnerId: Int,
+)
 
 interface WorkoutsRepo {
-    fun selectStartingFrom(from: ZonedDateTime): List<Workout>
-    fun insert(domainObjects: List<Workout>)
+    fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<WorkoutEntity>
+    fun insertAll(workouts: List<WorkoutEntity>)
 }
 
 class InMemoryWorkoutsRepo : WorkoutsRepo {
 
     private val log = logger {}
-    private val workouts = mutableMapOf<Int, Workout>()
+    private val workouts = mutableMapOf<Int, WorkoutEntity>()
 
-    override fun selectStartingFrom(from: ZonedDateTime) =
-        workouts.values.toList().filter { it.start >= from }
+    override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
+        workouts.values.toList().filter { it.start >= fromInclusive }
 
-    override fun insert(domainObjects: List<Workout>) {
-        log.debug { "Inserting ${domainObjects.size} workouts." }
-        domainObjects.forEach {
-            workouts[it.id] = it
+    override fun insertAll(workouts: List<WorkoutEntity>) {
+        log.debug { "Inserting ${workouts.size} workouts." }
+        workouts.forEach {
+            this.workouts[it.id] = it
         }
     }
 }
@@ -55,37 +52,35 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
 
     private val log = logger {}
 
-    override fun selectStartingFrom(from: ZonedDateTime) = transaction {
+    override fun selectAllStartingFrom(fromInclusive: LocalDateTime) = transaction {
         log.debug { "Loading workouts." }
-        WorkoutDbo.find { WorkoutsTable.start greaterEq from.toUtcLocalDateTime() }.map { it.toWorkout() }
+        WorkoutsTable.select {
+            WorkoutsTable.start greaterEq fromInclusive
+        }.map { it.toWorkoutEntity() }
     }
 
-    override fun insert(domainObjects: List<Workout>) {
+    override fun insertAll(workouts: List<WorkoutEntity>) {
         transaction {
-            log.debug { "Inserting ${domainObjects.size} workouts." }
-            val partnerDbos = PartnersTable.selectByIds(domainObjects.toDistinctPartnerIds())
-            domainObjects.forEach { workout ->
-                WorkoutDbo.new(workout.id) {
-                    name = workout.name
-                    slug = workout.slug
-                    start = workout.start.toUtcLocalDateTime()
-                    end = workout.end.toUtcLocalDateTime()
-                    partner = partnerDbos.findOrThrow(workout.partner.id)
+            log.debug { "Inserting ${workouts.size} workouts." }
+            workouts.forEach { workout ->
+                WorkoutsTable.insert {
+                    it[WorkoutsTable.id] = workout.id
+                    it[name] = workout.name
+                    it[slug] = workout.slug
+                    it[start] = workout.start
+                    it[end] = workout.end
+                    it[partnerId] = EntityID(workout.partnerId, PartnersTable)
                 }
             }
         }
     }
 }
 
-private fun List<Workout>.toDistinctPartnerIds() =
-    map { it.partner.id }.distinct().map { EntityID(it, PartnersTable) }
-
-
-private fun WorkoutDbo.toWorkout() = Workout(
-    id = id.value,
-    name = name,
-    slug = slug,
-    start = start.fromUtcToAmsterdamZonedDateTime(),
-    end = end.fromUtcToAmsterdamZonedDateTime(),
-    partner = partner.toPartner()
+private fun ResultRow.toWorkoutEntity() = WorkoutEntity(
+    id = this[WorkoutsTable.id].value,
+    name = this[WorkoutsTable.name],
+    slug = this[WorkoutsTable.slug],
+    start = this[WorkoutsTable.start],
+    end = this[WorkoutsTable.end],
+    partnerId = this[WorkoutsTable.partnerId].value,
 )

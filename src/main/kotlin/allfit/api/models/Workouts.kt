@@ -26,7 +26,7 @@ data class WorkoutJson(
 
 // for more data, would need to parse HTML... e.g. from:
 // https://one.fit/en-nl/workouts/11002448/vondelgym-zuid-fitness-vegym-training
-) : SyncableJsonEntity
+) : SyncableJson
 
 @Serializable
 data class WorkoutPartnerJson(

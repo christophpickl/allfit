@@ -13,6 +13,7 @@ import allfit.api.models.workoutsJson
 import allfit.persistence.InMemoryCategoriesRepo
 import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.InMemoryWorkoutsRepo
+import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -47,7 +48,7 @@ class RealSyncerTest : DescribeSpec() {
 
                 syncAll()
 
-                categoriesRepo.select().shouldBeSingleton().first().id shouldBe category.id
+                categoriesRepo.selectAll().shouldBeSingleton().first().id shouldBe category.id
             }
         }
         describe("Partners") {
@@ -56,7 +57,7 @@ class RealSyncerTest : DescribeSpec() {
 
                 syncAll()
 
-                partnersRepo.select().shouldBeSingleton().first().id shouldBe partner.id
+                partnersRepo.selectAll().shouldBeSingleton().first().id shouldBe partner.id
             }
             it("Insert category") {
                 val partnerWithCategories = partner.copy(
@@ -67,7 +68,7 @@ class RealSyncerTest : DescribeSpec() {
 
                 syncAll()
 
-                categoriesRepo.select().map { it.id } shouldContainExactlyInAnyOrder listOf(
+                categoriesRepo.selectAll().map { it.id } shouldContainExactlyInAnyOrder listOf(
                     partnerCategory1,
                     partnerCategory2
                 ).map { it.id }
@@ -84,7 +85,7 @@ class RealSyncerTest : DescribeSpec() {
 
                 syncAll()
 
-                workoutsRepo.selectStartingFrom(workout.from.minusDays(1)).shouldBeSingleton()
+                workoutsRepo.selectAllStartingFrom(workout.from.toUtcLocalDateTime()).shouldBeSingleton()
                     .first().id shouldBe workout.id
             }
         }

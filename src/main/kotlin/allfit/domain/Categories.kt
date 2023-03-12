@@ -6,4 +6,6 @@ data class Category(
     override val isDeleted: Boolean,
 ) : BaseDomain
 
-class CategoryNotFoundException(message: String) : Exception(message)
+data class CategoryWithPartners(
+    val id: Int,
+)

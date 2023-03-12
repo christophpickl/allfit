@@ -1,51 +1,42 @@
 package allfit.persistence
 
-import allfit.domain.Category
-import allfit.domain.CategoryNotFoundException
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 object CategoriesTable : IntIdTable("PUBLIC.CATEGORIES", "ID") {
     val name = varchar("NAME", 256)
     val isDeleted = bool("IS_DELETED")
-
-    fun selectByIds(ids: List<EntityID<Int>>): Map<Int, CategoryDbo> {
-        return CategoryDbo.find { CategoriesTable.id inList ids }.associateBy { it.id.value }
-    }
 }
 
-fun Map<Int, CategoryDbo>.findOrThrow(id: Int) =
-    this[id] ?: throw CategoryNotFoundException("Could not find category by ID: $id!")
+data class CategoryEntity(
+    override val id: Int,
+    val name: String,
+    override val isDeleted: Boolean,
+) : BaseEntity
 
-class CategoryDbo(id: EntityID<Int>) : IntEntity(id), MutableDeletable {
-    companion object : IntEntityClass<CategoryDbo>(CategoriesTable)
-
-    var name by CategoriesTable.name
-    override var isDeleted by CategoriesTable.isDeleted
-}
-
-interface CategoriesRepo : Repo<Category>
-
+interface CategoriesRepo : BaseRepo<CategoryEntity>
 
 class InMemoryCategoriesRepo : CategoriesRepo {
 
     private val log = logger {}
-    private val categories = mutableMapOf<Int, Category>()
+    private val categories = mutableMapOf<Int, CategoryEntity>()
 
-    override fun select() = categories.values.toList()
+    override fun selectAll() = categories.values.toList()
 
-    override fun insert(domainObjects: List<Category>) {
-        log.debug { "Inserting ${domainObjects.size} categories." }
-        domainObjects.forEach {
+    override fun insertAll(entities: List<CategoryEntity>) {
+        log.debug { "Inserting ${entities.size} categories." }
+        entities.forEach {
             categories[it.id] = it
         }
     }
 
-    override fun delete(ids: List<Int>) {
+    override fun deleteAll(ids: List<Int>) {
         log.debug { "Deleting ${ids.size} categories." }
         ids.forEach { id ->
             categories[id] = categories[id]!!.copy(isDeleted = true)
@@ -57,31 +48,39 @@ object ExposedCategoriesRepo : CategoriesRepo {
 
     private val log = logger {}
 
-    override fun select() = transaction {
+    override fun selectAll() = transaction {
         log.debug { "Loading categories." }
-        CategoryDbo.all().map { it.toCategory() }
+        CategoriesTable.selectAll().map { it.toCategoryEntity() }
     }
 
-    override fun insert(domainObjects: List<Category>) {
+    override fun insertAll(entities: List<CategoryEntity>) {
         transaction {
-            log.debug { "Inserting ${domainObjects.size} categories." }
-            domainObjects.forEach { category ->
-                CategoryDbo.new(category.id) {
-                    name = category.name
-                    isDeleted = category.isDeleted
+            log.debug { "Inserting ${entities.size} categories." }
+            entities.forEach { category ->
+                CategoriesTable.insert {
+                    it[CategoriesTable.id] = EntityID(category.id, CategoriesTable)
+                    it[isDeleted] = category.isDeleted
+                    it[name] = category.name
                 }
             }
         }
     }
 
-    override fun delete(ids: List<Int>) {
-        markDeleted(CategoriesTable, CategoryDbo, ids, "categories")
+    override fun deleteAll(ids: List<Int>) {
+        require(ids.isNotEmpty())
+        transaction {
+            log.debug { "Deleting ${ids.size} categories." }
+            CategoriesTable.update(where = {
+                CategoriesTable.id inList ids
+            }) {
+                it[isDeleted] = true
+            }
+        }
     }
 }
 
-
-fun CategoryDbo.toCategory() = Category(
-    id = id.value,
-    name = name,
-    isDeleted = isDeleted,
+private fun ResultRow.toCategoryEntity() = CategoryEntity(
+    id = this[CategoriesTable.id].value,
+    isDeleted = this[CategoriesTable.isDeleted],
+    name = this[CategoriesTable.name],
 )

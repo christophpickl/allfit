@@ -1,14 +1,14 @@
 package allfit.sync
 
-import allfit.api.models.SyncableJsonEntity
+import allfit.api.models.SyncableJson
 import allfit.domain.HasIntId
 
 object Differ {
-    fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> diff(
-        localDbos: List<DOMAIN>,
-        syncableJsons: List<ENTITY>,
-        mapper: (ENTITY) -> DOMAIN,
-    ): DiffReport<DOMAIN, DOMAIN> {
+    fun <ENTITY : HasIntId, JSON : SyncableJson> diff(
+        localDbos: List<ENTITY>,
+        syncableJsons: List<JSON>,
+        mapper: (JSON) -> ENTITY,
+    ): DiffReport<ENTITY, ENTITY> {
         val localById = localDbos.associateBy { it.id }
         val remoteById = syncableJsons.associateBy { it.id }
         return DiffReport(
@@ -17,7 +17,7 @@ object Differ {
         )
     }
 
-    private fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> calcToBeInserted(
+    private fun <DOMAIN : HasIntId, ENTITY : SyncableJson> calcToBeInserted(
         localById: Map<Int, DOMAIN>,
         remoteById: Map<Int, ENTITY>,
         mapper: (ENTITY) -> DOMAIN
@@ -29,7 +29,7 @@ object Differ {
         return remotesToBeInserted.values.map(mapper)
     }
 
-    private fun <DOMAIN : HasIntId, ENTITY : SyncableJsonEntity> calcToBeDeleted(
+    private fun <DOMAIN : HasIntId, ENTITY : SyncableJson> calcToBeDeleted(
         localById: Map<Int, DOMAIN>,
         remoteById: Map<Int, ENTITY>
     ): List<DOMAIN> {

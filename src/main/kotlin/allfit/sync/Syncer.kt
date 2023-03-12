@@ -8,18 +8,18 @@ import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.PartnerCategoryJson
 import allfit.api.models.PartnerJson
 import allfit.api.models.PartnersJson
-import allfit.api.models.SyncableJsonEntity
+import allfit.api.models.SyncableJson
 import allfit.api.models.WorkoutJson
-import allfit.domain.Category
 import allfit.domain.HasIntId
-import allfit.domain.Partner
-import allfit.domain.Workout
-import allfit.domain.findOrThrow
+import allfit.persistence.BaseRepo
 import allfit.persistence.CategoriesRepo
+import allfit.persistence.CategoryEntity
+import allfit.persistence.PartnerEntity
 import allfit.persistence.PartnersRepo
-import allfit.persistence.Repo
+import allfit.persistence.WorkoutEntity
 import allfit.persistence.WorkoutsRepo
 import allfit.service.SystemClock
+import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger
 
 interface Syncer {
@@ -45,8 +45,8 @@ class RealSyncer(
     override suspend fun syncAll() {
         log.info { "Sync started ..." }
         val partners = client.getPartners(PartnerSearchParams.simple())
-        syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) { it.toCategory() }
-        syncAny(partnersRepo, partners.data) { it.toPartner() }
+        syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) { it.toCategoryEntity() }
+        syncAny(partnersRepo, partners.data) { it.toPartnerEntity() }
         syncWorkouts()
     }
 
@@ -59,21 +59,13 @@ class RealSyncer(
             )
         ).data
 
+        workoutsRepo.insertAll(workouts.map { it.toWorkoutEntity() })
         // FIXME calculate diff of workouts! only insert what is not yet existing
-        val partnersById = partnersRepo.select().associateBy { it.id }
-        workoutsRepo.insert(workouts.map { it.toWorkout(partnersById.findOrThrow(it.partner.id)) })
+//        val partnersById = partnersRepo.selectAll().associateBy { it.id }
+//        workoutsRepo.insert(workouts.map { it.toWorkout(partnersById.findOrThrow(it.partner.id)) })
         // FIXME delete workouts before today which has no association with a reservation.
     }
 }
-
-private fun WorkoutJson.toWorkout(partner: Partner) = Workout(
-    id = id,
-    name = name,
-    slug = slug,
-    start = from,
-    end = till,
-    partner = partner
-)
 
 private fun mergedCategories(categories: CategoriesJson, partners: PartnersJson) =
     mutableMapOf<Int, CategoryJsonDefinition>().apply {
@@ -82,18 +74,18 @@ private fun mergedCategories(categories: CategoriesJson, partners: PartnersJson)
     }.values.toList()
 
 private fun <
-        REPO : Repo<DOMAIN>,
-        DOMAIN : HasIntId,
-        ENTITY : SyncableJsonEntity
-        > syncAny(repo: REPO, syncableJsons: List<ENTITY>, mapper: (ENTITY) -> DOMAIN) {
-    val localDomains = repo.select()
+        REPO : BaseRepo<ENTITY>,
+        ENTITY : HasIntId,
+        JSON : SyncableJson
+        > syncAny(repo: REPO, syncableJsons: List<JSON>, mapper: (JSON) -> ENTITY) {
+    val localDomains = repo.selectAll()
     val report = Differ.diff(localDomains, syncableJsons, mapper)
 
     if (report.toInsert.isNotEmpty()) {
-        repo.insert(report.toInsert)
+        repo.insertAll(report.toInsert)
     }
     if (report.toDelete.isNotEmpty()) {
-        repo.delete(report.toDelete.map { it.id })
+        repo.deleteAll(report.toDelete.map { it.id })
     }
 }
 
@@ -104,17 +96,27 @@ private fun PartnersJson.toFlattenedCategories() = data.map { partner ->
     }
 }.flatten()
 
-private fun PartnerJson.toPartner() =
-    Partner(
-        id = id,
-        name = name,
-        isDeleted = false,
-        categories = categories.map { it.toCategory() },
-    )
+fun CategoryJsonDefinition.toCategoryEntity() = CategoryEntity(
+    id = id,
+    name = name,
+    isDeleted = false,
+)
 
-fun CategoryJsonDefinition.toCategory() =
-    Category(
-        id = id,
-        name = name,
-        isDeleted = false,
-    )
+private fun PartnerJson.toPartnerEntity() = PartnerEntity(
+    id = id,
+    name = name,
+    categoryIds = mutableListOf<Int>().apply {
+        add(category.id)
+        addAll(categories.map { it.id })
+    },
+    isDeleted = false,
+)
+
+private fun WorkoutJson.toWorkoutEntity() = WorkoutEntity(
+    id = id,
+    name = name,
+    slug = slug,
+    start = from.toUtcLocalDateTime(),
+    end = till.toUtcLocalDateTime(),
+    partnerId = partner.id
+)

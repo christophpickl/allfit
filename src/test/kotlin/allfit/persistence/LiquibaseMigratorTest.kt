@@ -1,7 +1,5 @@
 package allfit.persistence
 
-import allfit.domain.category
-import allfit.domain.partner
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
@@ -18,13 +16,18 @@ class LiquibaseMigratorTest : StringSpec() {
 
             Database.connect(jdbcUrl)
 
-            val category = Arb.category().next()
-            ExposedCategoriesRepo.insert(listOf(category))
-            ExposedCategoriesRepo.select().shouldBeSingleton().first() shouldBe category
+            val category = Arb.categoryEntity().next()
+            ExposedCategoriesRepo.insertAll(listOf(category))
+            ExposedCategoriesRepo.selectAll().shouldBeSingleton().first() shouldBe category
 
-            val partner = Arb.partner().next().copy(categories = listOf(category))
-            ExposedPartnersRepo.insert(listOf(partner))
-            ExposedPartnersRepo.select().shouldBeSingleton().first() shouldBe partner
+            val partner = Arb.partnerEntity().next().copy(categoryIds = listOf(category.id))
+            ExposedPartnersRepo.insertAll(listOf(partner))
+            ExposedPartnersRepo.selectAll().shouldBeSingleton().first() shouldBe partner
+
+            val workout = Arb.workoutEntity().next().copy(partnerId = partner.id)
+            ExposedWorkoutsRepo.insertAll(listOf(workout))
+            ExposedWorkoutsRepo.selectAllStartingFrom(fromInclusive = workout.start).shouldBeSingleton()
+                .first() shouldBe workout
         }
     }
 
