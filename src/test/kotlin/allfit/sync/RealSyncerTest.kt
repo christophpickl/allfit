@@ -3,16 +3,16 @@ package allfit.sync
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.CategoriesJson
 import allfit.api.models.PartnersJson
+import allfit.api.models.WorkoutJson
 import allfit.api.models.categoryJson
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
-import allfit.api.models.partnersJson
 import allfit.api.models.workoutJson
-import allfit.api.models.workoutPartnerJson
 import allfit.api.models.workoutsJson
 import allfit.persistence.InMemoryCategoriesRepo
 import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.InMemoryWorkoutsRepo
+import allfit.persistence.workoutEntity
 import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
@@ -76,20 +76,32 @@ class RealSyncerTest : DescribeSpec() {
         }
 
         describe("Workouts") {
-            it("Given partner and workout Then insert workout") {
-                val partner = Arb.partnerJson().next()
-                client.partnersJson = Arb.partnersJson().next().copy(data = listOf(partner))
-                val workout = Arb.workoutJson().next()
-                    .copy(partner = Arb.workoutPartnerJson().next().copy(id = partner.id))
-                client.workoutsJson = Arb.workoutsJson().next().copy(data = listOf(workout))
+            it("Given workout json Then insert workout") {
+                val workoutJson = Arb.workoutJson().next()
+                client.mockWorkoutsResponse(workoutJson)
 
                 syncAll()
 
-                workoutsRepo.selectAllStartingFrom(workout.from.toUtcLocalDateTime()).shouldBeSingleton()
-                    .first().id shouldBe workout.id
+                workoutsRepo.selectAllStartingFrom(workoutJson.from.toUtcLocalDateTime()).shouldBeSingleton()
+                    .first().id shouldBe workoutJson.id
+            }
+            it("Given workout already in DB Then do nothing") {
+                val workoutEntity = Arb.workoutEntity().next()
+                workoutsRepo.insertAll(listOf(workoutEntity))
+                val workoutJson = Arb.workoutJson().next().copy(id = workoutEntity.id)
+                client.mockWorkoutsResponse(workoutJson)
+
+                syncAll()
+
+                workoutsRepo.selectAllStartingFrom(workoutJson.from.toUtcLocalDateTime()).shouldBeSingleton()
+                    .first() shouldBe workoutEntity
             }
         }
     }
 
     private suspend fun syncAll() = RealSyncer(client, categoriesRepo, partnersRepo, workoutsRepo).syncAll()
+}
+
+private fun InMemoryOnefitClient.mockWorkoutsResponse(vararg workouts: WorkoutJson) {
+    workoutsJson = Arb.workoutsJson().next().copy(data = workouts.toList())
 }

@@ -59,10 +59,13 @@ class RealSyncer(
             )
         ).data
 
-        workoutsRepo.insertAll(workouts.map { it.toWorkoutEntity() })
-        // FIXME calculate diff of workouts! only insert what is not yet existing
-//        val partnersById = partnersRepo.selectAll().associateBy { it.id }
-//        workoutsRepo.insert(workouts.map { it.toWorkout(partnersById.findOrThrow(it.partner.id)) })
+        val workoutIdsToBeInserted = workouts.map { it.id }.toMutableList()
+        val entities = workoutsRepo.selectAllStartingFrom(from.toUtcLocalDateTime())
+        entities.forEach {
+            workoutIdsToBeInserted.remove(it.id)
+        }
+
+        workoutsRepo.insertAll(workouts.filter { workoutIdsToBeInserted.contains(it.id) }.map { it.toWorkoutEntity() })
         // FIXME delete workouts before today which has no association with a reservation.
     }
 }
