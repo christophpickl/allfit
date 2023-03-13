@@ -8,8 +8,8 @@ A desktop OneFit client with metadata.
 
 * download image during sync
 * for more workout data (e.g. description), need to parse HTML
-    * e.g. from: https://one.fit/en-nl/workouts/11002448/vondelgym-zuid-fitness-vegym-training
-* ? primaryCategory vs additionalCategories?
+  * e.g. from: https://one.fit/en-nl/workouts/11002448/vondelgym-zuid-fitness-vegym-training
+* ? for partner: primaryCategory vs additionalCategories?
 
 ### Domain
 

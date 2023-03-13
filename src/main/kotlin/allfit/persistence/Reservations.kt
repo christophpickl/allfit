@@ -15,8 +15,8 @@ import java.util.UUID
 
 object ReservationsTable : Table("PUBLIC.RESERVATIONS") {
     val uuid = varchar("ID", 36)
-    val workoutStart = datetime("START")
     val workoutId = reference("WORKOUT_ID", WorkoutsTable)
+    val workoutStart = datetime("START")
     override val primaryKey = PrimaryKey(uuid)
 }
 

@@ -26,9 +26,16 @@ fun Arb.Companion.categoryEntity() = arbitrary {
 fun Arb.Companion.partnerEntity() = arbitrary {
     PartnerEntity(
         id = int(min = 1).next(),
-        isDeleted = boolean().next(),
-        name = string().next(),
         categoryIds = list(int(min = 1), 1..5).next().distinct(),
+        name = string().next(),
+        slug = string().next(),
+        description = string().next(),
+        note = string().next(),
+        facilities = string().next(),
+        isDeleted = boolean().next(),
+        isStarred = boolean().next(),
+        isHidden = boolean().next(),
+        isFavorited = boolean().next(),
     )
 }
 

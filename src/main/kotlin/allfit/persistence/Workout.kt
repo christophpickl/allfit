@@ -11,11 +11,11 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 
 object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
+    val partnerId = reference("PARTNER_ID", PartnersTable)
     val name = varchar("NAME", 256)
     val slug = varchar("SLUG", 256)
     val start = datetime("START")
     val end = datetime("END")
-    val partnerId = reference("PARTNER_ID", PartnersTable)
     // we don't store the location of a workout; it must be one of the partner's anyway
 }
 

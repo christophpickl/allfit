@@ -29,7 +29,28 @@
             <column name="NAME" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
+            <column name="SLUG" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOTE" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FACILITIES" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
             <column name="IS_DELETED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_FAVORITED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_STARRED" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="IS_HIDDEN" type="boolean">
                 <constraints nullable="false"/>
             </column>
         </createTable>

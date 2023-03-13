@@ -8,8 +8,16 @@ import java.util.UUID
 private val category1 = CategoryEntity(id = 1, name = "Category 1", slug = "cat1", isDeleted = false)
 private val category2 = CategoryEntity(id = 2, name = "Category 2", slug = null, isDeleted = false)
 private val categories = listOf(category1, category2)
-private val partner1 = PartnerEntity(id = 1, name = "Partner 1", isDeleted = false, categoryIds = listOf(category1.id))
-private val partner2 = PartnerEntity(id = 2, name = "Partner 2", isDeleted = false, categoryIds = listOf(category2.id))
+private val partner1 = PartnerEntity(
+    id = 1, categoryIds = listOf(category1.id), name = "Partner 1", slug = "part1",
+    description = "description from one fit", note = "note from me", facilities = "fac1,fac2,fac3",
+    isDeleted = false, isFavorited = true, isHidden = false, isStarred = false
+)
+private val partner2 = PartnerEntity(
+    id = 2, categoryIds = listOf(category2.id), name = "Partner 2", slug = "part2",
+    description = "description from one fit", note = "", facilities = "",
+    isDeleted = false, isFavorited = false, isHidden = false, isStarred = true
+)
 private val partners = listOf(partner1, partner2)
 private val now = SystemClock.now().toUtcLocalDateTime()
 private val workout1 = WorkoutEntity(

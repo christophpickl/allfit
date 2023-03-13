@@ -12,15 +12,14 @@ import org.jetbrains.exposed.sql.update
 
 object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
-//    val slug = varchar("SLUG", 256)
-//    val description = mediumText("DESCRIPTION")
-
-    // custom:
-//    val note = mediumText("NOTE")
-    val isDeleted = bool("IS_DELETED")
-//    val isFavorited = bool("IS_FAVORITED")
-//    val isStarred = bool("IS_STARRED")
-//    val isHidden = bool("IS_HIDDEN")
+    val slug = varchar("SLUG", 256)
+    val description = text("DESCRIPTION")
+    val note = text("NOTE") // custom
+    val facilities = text("FACILITIES") // comma separated list
+    val isDeleted = bool("IS_DELETED") // custom
+    val isFavorited = bool("IS_FAVORITED") // custom
+    val isStarred = bool("IS_STARRED") // custom
+    val isHidden = bool("IS_HIDDEN") // custom
 }
 
 object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {
@@ -39,9 +38,16 @@ object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {
 
 data class PartnerEntity(
     override val id: Int,
-    override val isDeleted: Boolean,
-    val name: String,
     val categoryIds: List<Int>,
+    val name: String,
+    val slug: String,
+    val description: String,
+    val note: String,
+    val facilities: String,
+    override val isDeleted: Boolean,
+    val isFavorited: Boolean,
+    val isStarred: Boolean,
+    val isHidden: Boolean,
 ) : BaseEntity
 
 interface PartnersRepo : BaseRepo<PartnerEntity>
@@ -68,6 +74,7 @@ class InMemoryPartnersRepo : PartnersRepo {
     }
 }
 
+@Suppress("DuplicatedCode")
 object ExposedPartnersRepo : PartnersRepo {
 
     private val log = logger {}
@@ -85,6 +92,13 @@ object ExposedPartnersRepo : PartnersRepo {
                 PartnersTable.insert {
                     it[PartnersTable.id] = EntityID(partner.id, PartnersTable)
                     it[name] = partner.name
+                    it[slug] = partner.slug
+                    it[description] = partner.description
+                    it[note] = partner.note
+                    it[facilities] = partner.facilities
+                    it[isStarred] = partner.isStarred
+                    it[isFavorited] = partner.isFavorited
+                    it[isHidden] = partner.isHidden
                     it[isDeleted] = partner.isDeleted
                 }
                 partner.categoryIds.forEach { categoryId ->
@@ -112,7 +126,14 @@ object ExposedPartnersRepo : PartnersRepo {
 
 private fun ResultRow.toPartnerEntity(categoryIds: List<Int>) = PartnerEntity(
     id = this[PartnersTable.id].value,
-    isDeleted = this[PartnersTable.isDeleted],
-    name = this[PartnersTable.name],
     categoryIds = categoryIds,
+    name = this[PartnersTable.name],
+    slug = this[PartnersTable.slug],
+    description = this[PartnersTable.description],
+    note = this[PartnersTable.note],
+    facilities = this[PartnersTable.facilities],
+    isDeleted = this[PartnersTable.isDeleted],
+    isFavorited = this[PartnersTable.isFavorited],
+    isHidden = this[PartnersTable.isHidden],
+    isStarred = this[PartnersTable.isStarred],
 )

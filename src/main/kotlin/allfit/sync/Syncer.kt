@@ -177,12 +177,19 @@ fun CategoryJsonDefinition.toCategoryEntity() = CategoryEntity(
 
 private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     id = id,
-    name = name,
     categoryIds = mutableListOf<Int>().apply {
         add(category.id)
         addAll(categories.map { it.id })
     }.distinct(), // OneFit sends corrupt data :-/
+    name = name,
+    slug = slug,
+    description = description,
+    note = "",
+    facilities = facilities.joinToString(","),
     isDeleted = false,
+    isFavorited = false,
+    isHidden = false,
+    isStarred = false,
 )
 
 private fun WorkoutJson.toWorkoutEntity() = WorkoutEntity(
