@@ -6,6 +6,7 @@ import allfit.api.WorkoutSearchParams
 import allfit.api.models.CategoriesJson
 import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.PartnerJson
+import allfit.api.models.PartnerLocationJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationJson
 import allfit.api.models.SyncableJson
@@ -14,6 +15,8 @@ import allfit.domain.HasIntId
 import allfit.persistence.BaseRepo
 import allfit.persistence.CategoriesRepo
 import allfit.persistence.CategoryEntity
+import allfit.persistence.LocationEntity
+import allfit.persistence.LocationsRepo
 import allfit.persistence.PartnerEntity
 import allfit.persistence.PartnersRepo
 import allfit.persistence.ReservationEntity
@@ -40,6 +43,7 @@ class RealSyncer(
     private val client: OnefitClient,
     private val categoriesRepo: CategoriesRepo,
     private val partnersRepo: PartnersRepo,
+    private val locationsRepo: LocationsRepo,
     private val workoutsRepo: WorkoutsRepo,
     private val reservationsRepo: ReservationsRepo,
 ) : Syncer {
@@ -49,13 +53,27 @@ class RealSyncer(
     override suspend fun syncAll() {
         log.info { "Sync started ..." }
         val partners = client.getPartners(PartnerSearchParams.simple())
-        syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) { it.toCategoryEntity() }
-        syncAny(partnersRepo, partners.data) { it.toPartnerEntity() }
+        syncLocations(partners)
+        syncAny(
+            "categories",
+            categoriesRepo,
+            mergedCategories(client.getCategories(), partners)
+        ) { it.toCategoryEntity() }
+        syncAny("partners", partnersRepo, partners.data) { it.toPartnerEntity() }
         syncWorkouts()
         syncReservations()
     }
 
+    private fun syncLocations(partners: PartnersJson) {
+        log.debug { "Syncing locations..." }
+        val locations = partners.data.map { partner ->
+            partner.location_groups.map { it.locations }.flatten()
+        }.flatten()
+        locationsRepo.insertAll(locations.map { it.toLocationEntity() })
+    }
+
     private suspend fun syncWorkouts() {
+        log.debug { "Syncing workouts..." }
         workoutsRepo.insertAll(getWorkoutsToBeSynced().map { it.toWorkoutEntity() })
         // FIXME delete workouts before today which has no association with a reservation.
     }
@@ -82,6 +100,7 @@ class RealSyncer(
     }
 
     private suspend fun syncReservations() {
+        log.debug { "Syncing reservations..." }
         val reservationsRemote = client.getReservations()
         val reservationsLocal = reservationsRepo.selectAllStartingFrom(SystemClock.now().toUtcLocalDateTime())
 
@@ -98,7 +117,36 @@ class RealSyncer(
         reservationsRepo.insertAll(toBeInserted.values.map { it.toReservationEntity() })
         reservationsRepo.deleteAll(toBeDeleted.map { UUID.fromString(it.key) })
     }
+
+    private fun <
+            REPO : BaseRepo<ENTITY>,
+            ENTITY : HasIntId,
+            JSON : SyncableJson
+            > syncAny(label: String, repo: REPO, syncableJsons: List<JSON>, mapper: (JSON) -> ENTITY) {
+        log.debug { "Syncing $label ..." }
+        val localDomains = repo.selectAll()
+        val report = Differ.diff(localDomains, syncableJsons, mapper)
+
+        if (report.toInsert.isNotEmpty()) {
+            repo.insertAll(report.toInsert)
+        }
+        if (report.toDelete.isNotEmpty()) {
+            repo.deleteAll(report.toDelete.map { it.id })
+        }
+    }
 }
+
+private fun PartnerLocationJson.toLocationEntity() = LocationEntity(
+    id = id.toIntOrNull() ?: error("Invalid, non-numeric location ID '$id'!"),
+    partnerId = partner_id,
+    streetName = street_name,
+    houseNumber = house_number,
+    addition = addition,
+    zipCode = zip_code,
+    city = city,
+    latitude = latitude,
+    longitude = longitude,
+)
 
 private fun ReservationJson.toReservationEntity() = ReservationEntity(
     uuid = UUID.fromString(uuid),
@@ -112,21 +160,6 @@ private fun mergedCategories(categories: CategoriesJson, partners: PartnersJson)
         putAll(partners.toFlattenedCategories().associateBy { it.id })
     }.values.toList()
 
-private fun <
-        REPO : BaseRepo<ENTITY>,
-        ENTITY : HasIntId,
-        JSON : SyncableJson
-        > syncAny(repo: REPO, syncableJsons: List<JSON>, mapper: (JSON) -> ENTITY) {
-    val localDomains = repo.selectAll()
-    val report = Differ.diff(localDomains, syncableJsons, mapper)
-
-    if (report.toInsert.isNotEmpty()) {
-        repo.insertAll(report.toInsert)
-    }
-    if (report.toDelete.isNotEmpty()) {
-        repo.deleteAll(report.toDelete.map { it.id })
-    }
-}
 
 private fun PartnersJson.toFlattenedCategories() = data.map { partner ->
     mutableListOf<CategoryJsonDefinition>().also {
@@ -139,6 +172,7 @@ fun CategoryJsonDefinition.toCategoryEntity() = CategoryEntity(
     id = id,
     name = name,
     isDeleted = false,
+    slug = slugs?.en,
 )
 
 private fun PartnerJson.toPartnerEntity() = PartnerEntity(

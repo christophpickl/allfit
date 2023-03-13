@@ -12,8 +12,15 @@ import org.jetbrains.exposed.sql.update
 
 object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
+//    val slug = varchar("SLUG", 256)
+//    val description = mediumText("DESCRIPTION")
+
+    // custom:
+//    val note = mediumText("NOTE")
     val isDeleted = bool("IS_DELETED")
-    // isHidden
+//    val isFavorited = bool("IS_FAVORITED")
+//    val isStarred = bool("IS_STARRED")
+//    val isHidden = bool("IS_HIDDEN")
 }
 
 object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {

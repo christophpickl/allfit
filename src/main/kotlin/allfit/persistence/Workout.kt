@@ -16,6 +16,7 @@ object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
     val start = datetime("START")
     val end = datetime("END")
     val partnerId = reference("PARTNER_ID", PartnersTable)
+    // we don't store the location of a workout; it must be one of the partner's anyway
 }
 
 data class WorkoutEntity(

@@ -2,10 +2,10 @@ package allfit.api.models
 
 import kotlinx.serialization.Serializable
 
-//interface CommonCategoryJson {
-//    val id: Int
-//    val name: String
-//}
+interface CategoryJsonDefinition : SyncableJson {
+    val name: String
+    val slugs: SlugJson?
+}
 
 @Serializable
 data class CategoriesJson(
@@ -16,7 +16,7 @@ data class CategoriesJson(
 data class CategoryJson(
     override val id: Int,
     override val name: String,
-    val slugs: SlugJson,
+    override val slugs: SlugJson,
 ) : CategoryJsonDefinition
 
 
@@ -35,4 +35,22 @@ data class CategoryJson(
     ...
   ]
 }
+
+
+and what we get from partners sub model:
+      "category": {
+        "id": 1,
+        "name": "Gym",
+        "slugs": {
+          "nl": "gym",
+          "en": "gym",
+          "es": "gym"
+        }
+      },
+      "categories": [
+        {
+          "id": 46,
+          "name": "Spinning"
+        }
+      ],
 */

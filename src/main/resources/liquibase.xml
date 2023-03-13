@@ -14,6 +14,9 @@
             <column name="NAME" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
+            <column name="SLUG" type="varchar(256)">
+                <constraints nullable="true"/>
+            </column>
             <column name="IS_DELETED" type="boolean">
                 <constraints nullable="false"/>
             </column>
@@ -30,6 +33,39 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+
+        <createTable tableName="LOCATIONS">
+            <column name="ID" type="integer">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PARTNER_ID" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STREET_NAME" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="HOUSE_NUMBER" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDITION" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ZIP_CODE" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CITY" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LATITUDE" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LONGITUDE" type="double">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="FK_LOCATIONS_PARTNER_ID"
+                                 baseTableName="LOCATIONS" baseColumnNames="PARTNER_ID"
+                                 referencedTableName="PARTNERS" referencedColumnNames="ID"/>
 
         <createTable tableName="PARTNERS_CATEGORIES">
             <column name="PARTNER_ID" type="integer">

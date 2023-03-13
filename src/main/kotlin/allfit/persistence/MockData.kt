@@ -5,8 +5,8 @@ import allfit.service.toUtcLocalDateTime
 import java.time.LocalDateTime
 import java.util.UUID
 
-private val category1 = CategoryEntity(id = 1, name = "Category 1", isDeleted = false)
-private val category2 = CategoryEntity(id = 2, name = "Category 2", isDeleted = false)
+private val category1 = CategoryEntity(id = 1, name = "Category 1", slug = "cat1", isDeleted = false)
+private val category2 = CategoryEntity(id = 2, name = "Category 2", slug = null, isDeleted = false)
 private val categories = listOf(category1, category2)
 private val partner1 = PartnerEntity(id = 1, name = "Partner 1", isDeleted = false, categoryIds = listOf(category1.id))
 private val partner2 = PartnerEntity(id = 2, name = "Partner 2", isDeleted = false, categoryIds = listOf(category2.id))
@@ -35,9 +35,24 @@ private val workouts = listOf(
         partnerId = partner2.id
     ),
 )
-private val reservations = listOf(
-    ReservationEntity(uuid = UUID.randomUUID(), workoutId = workout1.id, workoutStart = LocalDateTime.now())
+val reservation1 = ReservationEntity(
+    uuid = UUID.randomUUID(),
+    workoutId = workout1.id,
+    workoutStart = LocalDateTime.now()
 )
+private val reservations = listOf(reservation1)
+private val location1 = LocationEntity(
+    id = 1,
+    partnerId = partner1.id,
+    streetName = "Main Street",
+    houseNumber = "42",
+    addition = "8",
+    zipCode = "1000 AB",
+    city = "Amsterdam",
+    latitude = 100.0,
+    longitude = 200.0,
+)
+private val locations = listOf(location1)
 
 fun InMemoryCategoriesRepo.insertMockData() = apply {
     insertAll(categories)
@@ -53,4 +68,8 @@ fun InMemoryWorkoutsRepo.insertMockData() = apply {
 
 fun InMemoryReservationsRepo.insertMockData() = apply {
     insertAll(reservations)
+}
+
+fun InMemoryLocationsRepo.insertMockData() = apply {
+    insertAll(locations)
 }

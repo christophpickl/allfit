@@ -1,5 +1,6 @@
 package allfit.api.models
 
+import allfit.intAsString
 import allfit.service.SystemClock
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
@@ -82,7 +83,7 @@ fun Arb.Companion.partnerLocationGroupsJson() = arbitrary {
 
 fun Arb.Companion.partnerLocationJson() = arbitrary {
     PartnerLocationJson(
-        id = string().next(),
+        id = intAsString().next(),
         partner_id = int(min = 0).next(),
         street_name = string(minSize = 1, maxSize = 8).next(),
         house_number = string(minSize = 1, maxSize = 8).next(),

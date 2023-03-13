@@ -10,12 +10,15 @@ import allfit.api.models.WorkoutJson
 import allfit.api.models.categoryJson
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
+import allfit.api.models.partnerLocationGroupsJson
+import allfit.api.models.partnerLocationJson
 import allfit.api.models.reservationJson
 import allfit.api.models.reservationsJson
 import allfit.api.models.workoutJson
 import allfit.api.models.workoutPartnerJson
 import allfit.api.models.workoutsJson
 import allfit.persistence.InMemoryCategoriesRepo
+import allfit.persistence.InMemoryLocationsRepo
 import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.InMemoryReservationsRepo
 import allfit.persistence.InMemoryWorkoutsRepo
@@ -37,11 +40,13 @@ class RealSyncerTest : DescribeSpec() {
     private lateinit var client: InMemoryOnefitClient
     private lateinit var categoriesRepo: InMemoryCategoriesRepo
     private lateinit var partnersRepo: InMemoryPartnersRepo
+    private lateinit var locationsRepo: InMemoryLocationsRepo
     private lateinit var workoutsRepo: InMemoryWorkoutsRepo
     private lateinit var reservationsRepo: InMemoryReservationsRepo
 
     private val category = Arb.categoryJson().next()
     private val partner = Arb.partnerJson().next()
+    private val location = Arb.partnerLocationJson().next()
     private val partnerCategory1 = Arb.partnerCategoryJson().next().copy(id = 101)
     private val partnerCategory2 = Arb.partnerCategoryJson().next().copy(id = 102)
     private val reservationEntity = Arb.reservationEntity().next()
@@ -49,6 +54,7 @@ class RealSyncerTest : DescribeSpec() {
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         categoriesRepo = InMemoryCategoriesRepo()
+        locationsRepo = InMemoryLocationsRepo()
         partnersRepo = InMemoryPartnersRepo()
         workoutsRepo = InMemoryWorkoutsRepo()
         reservationsRepo = InMemoryReservationsRepo()
@@ -85,6 +91,22 @@ class RealSyncerTest : DescribeSpec() {
                     partnerCategory1,
                     partnerCategory2
                 ).map { it.id }
+            }
+            it("Insert location") {
+                client.partnersJson = PartnersJson(
+                    listOf(
+                        partner.copy(
+                            categories = emptyList(),
+                            location_groups = listOf(
+                                Arb.partnerLocationGroupsJson().next().copy(locations = listOf(location))
+                            )
+                        )
+                    )
+                )
+
+                syncAll()
+
+                locationsRepo.selectAll().shouldBeSingleton().first().id shouldBe location.id.toInt()
             }
         }
 
@@ -146,7 +168,7 @@ class RealSyncerTest : DescribeSpec() {
     }
 
     private suspend fun syncAll() = RealSyncer(
-        client, categoriesRepo, partnersRepo, workoutsRepo, reservationsRepo
+        client, categoriesRepo, partnersRepo, locationsRepo, workoutsRepo, reservationsRepo
     ).syncAll()
 }
 

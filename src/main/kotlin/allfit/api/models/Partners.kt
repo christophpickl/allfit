@@ -2,10 +2,6 @@ package allfit.api.models
 
 import kotlinx.serialization.Serializable
 
-interface CategoryJsonDefinition : SyncableJson {
-    val name: String
-}
-
 @Serializable
 data class PartnersJson(
     override val data: List<PartnerJson>
@@ -29,18 +25,19 @@ data class PartnerJson(
 data class PartnerCategoryJson(
     override val id: Int,
     override val name: String,
-    val slugs: SlugJson
+    override val slugs: SlugJson
 ) : CategoryJsonDefinition
 
 @Serializable
 data class PartnerSubCategoryJson(
     override val id: Int,
     override val name: String,
+    override val slugs: SlugJson? = null // actually not part of the JSON, but for pragmatic reasons in the interface!
 ) : CategoryJsonDefinition
 
 @Serializable
 data class HeaderImageJson(
-    // e.g.: https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16280\\/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg
+    // https://edge.one.fit/image/partner/image/16280/b7ad750d-8e00-40cb-b590-a6e9c4875d91.jpg
     // add "?w=123" to resize by width
     val orig: String,
 )

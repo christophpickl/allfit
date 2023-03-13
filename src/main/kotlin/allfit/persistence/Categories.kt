@@ -11,6 +11,9 @@ import org.jetbrains.exposed.sql.update
 
 object CategoriesTable : IntIdTable("PUBLIC.CATEGORIES", "ID") {
     val name = varchar("NAME", 256)
+
+    /** In english. For categories only retrieved from partners, we don't get a slug. */
+    val slug = varchar("SLUG", 256).nullable()
     val isDeleted = bool("IS_DELETED")
 }
 
@@ -18,6 +21,7 @@ data class CategoryEntity(
     override val id: Int,
     val name: String,
     override val isDeleted: Boolean,
+    val slug: String?,
 ) : BaseEntity
 
 interface CategoriesRepo : BaseRepo<CategoryEntity>
@@ -61,6 +65,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
                     it[CategoriesTable.id] = EntityID(category.id, CategoriesTable)
                     it[isDeleted] = category.isDeleted
                     it[name] = category.name
+                    it[slug] = category.slug
                 }
             }
         }
@@ -83,4 +88,5 @@ private fun ResultRow.toCategoryEntity() = CategoryEntity(
     id = this[CategoriesTable.id].value,
     isDeleted = this[CategoriesTable.isDeleted],
     name = this[CategoriesTable.name],
+    slug = this[CategoriesTable.slug],
 )

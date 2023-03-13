@@ -2,8 +2,6 @@ package allfit.persistence
 
 import allfit.AppConfig
 import allfit.service.FileResolver
-import allfit.sync.NoOpSyncer
-import allfit.sync.RealSyncer
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Database
 import org.koin.dsl.module
@@ -27,7 +25,10 @@ fun persistenceModule(config: AppConfig) = module {
         if (config.mockDb) InMemoryReservationsRepo().insertMockData() else ExposedReservationsRepo
     }
     single {
-        if (config.mockSyncer) NoOpSyncer else RealSyncer(get(), get(), get(), get(), get())
+        if (config.mockDb) InMemoryReservationsRepo().insertMockData() else ExposedReservationsRepo
+    }
+    single {
+        if (config.mockDb) InMemoryLocationsRepo().insertMockData() else ExposedLocationsRepo
     }
 }
 
