@@ -1,6 +1,7 @@
 package allfit.service
 
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 val kotlinxSerializer = Json {
@@ -18,3 +19,6 @@ inline fun <reified T> readApiResponse(fileName: String): T {
         }
     return kotlinxSerializer.decodeFromString(json)
 }
+
+fun Json.toPrettyString(jsonString: String) =
+    encodeToString(parseToJsonElement(jsonString))

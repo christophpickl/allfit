@@ -2,6 +2,11 @@ package allfit.api.models
 
 import kotlinx.serialization.Serializable
 
+//interface CommonCategoryJson {
+//    val id: Int
+//    val name: String
+//}
+
 @Serializable
 data class CategoriesJson(
     override val data: List<CategoryJson>
@@ -14,12 +19,6 @@ data class CategoryJson(
     val slugs: SlugJson,
 ) : CategoryJsonDefinition
 
-@Serializable
-data class SlugJson(
-    val nl: String? = null,
-    val en: String,
-    val es: String? = null,
-)
 
 /*
 {

@@ -21,11 +21,10 @@ data class WorkoutJson(
     val location: WorkoutLocationJson,
     val from: ZonedDateTime,
     val till: ZonedDateTime,
+    val spots_available: Int, // needs a continuous update...
+    val waitlist: Boolean,
     val reservation_allowed: Boolean,
-//    val spots_available: Int, ... would need a continuous update...
-
-// for more data, would need to parse HTML... e.g. from:
-// https://one.fit/en-nl/workouts/11002448/vondelgym-zuid-fitness-vegym-training
+    val is_digital: Boolean,
 ) : SyncableJson
 
 @Serializable

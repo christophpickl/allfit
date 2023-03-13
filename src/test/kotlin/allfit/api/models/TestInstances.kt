@@ -36,12 +36,13 @@ fun Arb.Companion.partnerJson() = arbitrary {
         id = int(min = 1).next(),
         name = string(minSize = 1, maxSize = 8).next(),
         category = partnerCategoryJson().next(),
-        categories = list(partnerCategoryJson(), 0..5).next(),
+        categories = list(partnerSubCategoryJson(), 0..5).next(),
         slug = string(minSize = 1, maxSize = 8).next(),
         description = string(minSize = 1, maxSize = 20).next(),
         header_image = headerImageJson().next(),
         settlement_options = settlementOptionsJson().next(),
         location_groups = list(partnerLocationGroupsJson(), 0..3).next(),
+        facilities = list(string(maxSize = 5), 0..5).next(),
     )
 }
 
@@ -81,6 +82,8 @@ fun Arb.Companion.partnerLocationGroupsJson() = arbitrary {
 
 fun Arb.Companion.partnerLocationJson() = arbitrary {
     PartnerLocationJson(
+        id = string().next(),
+        partner_id = int(min = 0).next(),
         street_name = string(minSize = 1, maxSize = 8).next(),
         house_number = string(minSize = 1, maxSize = 8).next(),
         addition = string(minSize = 1, maxSize = 8).next(),
@@ -93,6 +96,14 @@ fun Arb.Companion.partnerLocationJson() = arbitrary {
 
 fun Arb.Companion.partnerCategoryJson() = arbitrary {
     PartnerCategoryJson(
+        id = int(min = 1).next(),
+        name = string(minSize = 1, maxSize = 8).next(),
+        slugs = slugJson().next(),
+    )
+}
+
+fun Arb.Companion.partnerSubCategoryJson() = arbitrary {
+    PartnerSubCategoryJson(
         id = int(min = 1).next(),
         name = string(minSize = 1, maxSize = 8).next(),
     )
@@ -115,6 +126,9 @@ fun Arb.Companion.workoutJson() = arbitrary {
         from = SystemClock.now(),
         till = SystemClock.now(),
         reservation_allowed = boolean().next(),
+        spots_available = int(min = 0).next(),
+        waitlist = boolean().next(),
+        is_digital = boolean().next(),
     )
 }
 

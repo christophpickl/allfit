@@ -18,14 +18,22 @@ data class PartnerJson(
     val slug: String,
     val description: String,
     val category: PartnerCategoryJson,
-    val categories: List<PartnerCategoryJson>,
+    val categories: List<PartnerSubCategoryJson>,
     val header_image: HeaderImageJson,
     val settlement_options: SettlementOptionsJson,
-    val location_groups: List<PartnerLocationGroupsJson>
+    val location_groups: List<PartnerLocationGroupsJson>,
+    val facilities: List<String>,
 ) : SyncableJson
 
 @Serializable
 data class PartnerCategoryJson(
+    override val id: Int,
+    override val name: String,
+    val slugs: SlugJson
+) : CategoryJsonDefinition
+
+@Serializable
+data class PartnerSubCategoryJson(
     override val id: Int,
     override val name: String,
 ) : CategoryJsonDefinition
@@ -47,6 +55,8 @@ data class PartnerLocationGroupsJson(
 // slightly different from WorkoutLocationJson
 @Serializable
 data class PartnerLocationJson(
+    val id: String,
+    val partner_id: Int,
     val street_name: String,
     val house_number: String,
     val addition: String,

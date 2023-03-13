@@ -5,7 +5,6 @@ import allfit.api.PartnerSearchParams
 import allfit.api.WorkoutSearchParams
 import allfit.api.models.CategoriesJson
 import allfit.api.models.CategoryJsonDefinition
-import allfit.api.models.PartnerCategoryJson
 import allfit.api.models.PartnerJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationJson
@@ -130,7 +129,7 @@ private fun <
 }
 
 private fun PartnersJson.toFlattenedCategories() = data.map { partner ->
-    mutableListOf<PartnerCategoryJson>().also {
+    mutableListOf<CategoryJsonDefinition>().also {
         it.add(partner.category)
         it.addAll(partner.categories)
     }

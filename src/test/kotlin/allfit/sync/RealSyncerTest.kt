@@ -2,6 +2,8 @@ package allfit.sync
 
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.CategoriesJson
+import allfit.api.models.PartnerCategoryJson
+import allfit.api.models.PartnerSubCategoryJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationJson
 import allfit.api.models.WorkoutJson
@@ -73,7 +75,7 @@ class RealSyncerTest : DescribeSpec() {
             it("Insert category") {
                 val partnerWithCategories = partner.copy(
                     category = partnerCategory1,
-                    categories = listOf(partnerCategory2)
+                    categories = listOf(partnerCategory2.toPartnerSubCategoryJson())
                 )
                 client.partnersJson = PartnersJson(listOf(partnerWithCategories))
 
@@ -155,3 +157,8 @@ private fun InMemoryOnefitClient.mockWorkoutsResponse(vararg workouts: WorkoutJs
 private fun InMemoryOnefitClient.mockReservationsResponse(vararg reservations: ReservationJson) {
     reservationsJson = Arb.reservationsJson().next().copy(data = reservations.toList())
 }
+
+private fun PartnerCategoryJson.toPartnerSubCategoryJson() = PartnerSubCategoryJson(
+    id = id,
+    name = name,
+)

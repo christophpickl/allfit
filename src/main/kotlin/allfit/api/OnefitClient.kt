@@ -13,6 +13,7 @@ import allfit.service.FileResolver
 import allfit.service.formatOnefit
 import allfit.service.kotlinxSerializer
 import allfit.service.readApiResponse
+import allfit.service.toPrettyString
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -158,10 +159,15 @@ class RealOnefitClient(
             requestModifier()
         }
         log.debug { "${response.status.value} GET ${response.request.url}" }
-        FileResolver.resolve("${path.replace("/", "_")}-${response.status.value}.json")
-            .writeText(kotlinxSerializer.parseToJsonElement(response.bodyAsText()).toString())
+        response.logJsonResponse(path)
         response.requireOk()
         return response.body()
+    }
+
+    private suspend fun HttpResponse.logJsonResponse(path: String) {
+        val fileName = "${path.replace("/", "_")}-${status.value}.json"
+        val jsonResponseString = kotlinxSerializer.toPrettyString(bodyAsText())
+        FileResolver.resolve(fileName).writeText(jsonResponseString)
     }
 
     private suspend fun <
