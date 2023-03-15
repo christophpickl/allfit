@@ -2,6 +2,7 @@ package allfit.sync
 
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.CategoriesJson
+import allfit.api.models.HeaderImageJson
 import allfit.api.models.PartnerCategoryJson
 import allfit.api.models.PartnerSubCategoryJson
 import allfit.api.models.PartnersJson
@@ -25,6 +26,8 @@ import allfit.persistence.InMemoryWorkoutsRepo
 import allfit.persistence.partnerEntity
 import allfit.persistence.reservationEntity
 import allfit.persistence.workoutEntity
+import allfit.service.InMemoryImageStorage
+import allfit.service.PartnerAndImageUrl
 import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
@@ -42,7 +45,9 @@ class RealSyncerTest : DescribeSpec() {
     private lateinit var partnersRepo: InMemoryPartnersRepo
     private lateinit var locationsRepo: InMemoryLocationsRepo
     private lateinit var workoutsRepo: InMemoryWorkoutsRepo
+    private lateinit var workoutFetcher: WorkoutFetcher
     private lateinit var reservationsRepo: InMemoryReservationsRepo
+    private lateinit var imageStorage: InMemoryImageStorage
 
     private val category = Arb.categoryJson().next()
     private val partner = Arb.partnerJson().next()
@@ -50,6 +55,7 @@ class RealSyncerTest : DescribeSpec() {
     private val partnerCategory1 = Arb.partnerCategoryJson().next().copy(id = 101)
     private val partnerCategory2 = Arb.partnerCategoryJson().next().copy(id = 102)
     private val reservationEntity = Arb.reservationEntity().next()
+    private val imageUrl = "imageUrl"
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
@@ -57,7 +63,9 @@ class RealSyncerTest : DescribeSpec() {
         locationsRepo = InMemoryLocationsRepo()
         partnersRepo = InMemoryPartnersRepo()
         workoutsRepo = InMemoryWorkoutsRepo()
+        workoutFetcher = DummyWorkoutFetcher()
         reservationsRepo = InMemoryReservationsRepo()
+        imageStorage = InMemoryImageStorage()
     }
 
     init {
@@ -107,6 +115,20 @@ class RealSyncerTest : DescribeSpec() {
                 syncAll()
 
                 locationsRepo.selectAll().shouldBeSingleton().first().id shouldBe location.id.toInt()
+            }
+            it("Save image") {
+                client.partnersJson = PartnersJson(
+                    listOf(
+                        partner.copy(header_image = HeaderImageJson(imageUrl))
+                    )
+                )
+
+                syncAll()
+
+                imageStorage.savedPartnerImages.shouldBeSingleton().first() shouldBe PartnerAndImageUrl(
+                    partner.id,
+                    imageUrl
+                )
             }
         }
 
@@ -168,7 +190,14 @@ class RealSyncerTest : DescribeSpec() {
     }
 
     private suspend fun syncAll() = RealSyncer(
-        client, categoriesRepo, partnersRepo, locationsRepo, workoutsRepo, reservationsRepo
+        client,
+        categoriesRepo,
+        partnersRepo,
+        locationsRepo,
+        workoutsRepo,
+        workoutFetcher,
+        reservationsRepo,
+        imageStorage
     ).syncAll()
 }
 

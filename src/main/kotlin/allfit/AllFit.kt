@@ -2,6 +2,7 @@ package allfit
 
 import allfit.api.ClassPathOnefitClient
 import allfit.api.OnefitClient
+import allfit.api.authenticateOneFit
 import allfit.service.CredentialsLoader
 import allfit.sync.Syncer
 import allfit.view.TornadoFxEntryPoint
@@ -39,7 +40,7 @@ object AllFit {
         if (config.mockClient) {
             ClassPathOnefitClient
         } else {
-            OnefitClient.authenticate(CredentialsLoader.load())
+            authenticateOneFit(CredentialsLoader.load())
         }
 }
 

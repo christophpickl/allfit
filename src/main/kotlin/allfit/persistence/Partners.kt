@@ -15,6 +15,7 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val slug = varchar("SLUG", 256)
     val description = text("DESCRIPTION")
     val note = text("NOTE") // custom
+    val imageUrl = varchar("IMAGE_URL", 256)
     val facilities = text("FACILITIES") // comma separated list
     val isDeleted = bool("IS_DELETED") // custom
     val isFavorited = bool("IS_FAVORITED") // custom
@@ -45,6 +46,7 @@ data class PartnerEntity(
     val note: String,
     val facilities: String,
     override val isDeleted: Boolean,
+    val imageUrl: String,
     val isFavorited: Boolean,
     val isStarred: Boolean,
     val isHidden: Boolean,
@@ -96,6 +98,7 @@ object ExposedPartnersRepo : PartnersRepo {
                     it[description] = partner.description
                     it[note] = partner.note
                     it[facilities] = partner.facilities
+                    it[imageUrl] = partner.imageUrl
                     it[isStarred] = partner.isStarred
                     it[isFavorited] = partner.isFavorited
                     it[isHidden] = partner.isHidden
@@ -132,6 +135,7 @@ private fun ResultRow.toPartnerEntity(categoryIds: List<Int>) = PartnerEntity(
     description = this[PartnersTable.description],
     note = this[PartnersTable.note],
     facilities = this[PartnersTable.facilities],
+    imageUrl = this[PartnersTable.imageUrl],
     isDeleted = this[PartnersTable.isDeleted],
     isFavorited = this[PartnersTable.isFavorited],
     isHidden = this[PartnersTable.isHidden],

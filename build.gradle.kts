@@ -32,6 +32,8 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
     implementation("ch.qos.logback:logback-classic:1.4.5")
 
+    implementation("org.jsoup:jsoup:1.15.4")
+
     fun ktor(artifact: String) = "io.ktor:ktor-$artifact:2.2.4"
     listOf(
         "client-core",

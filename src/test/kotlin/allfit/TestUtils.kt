@@ -15,5 +15,7 @@ fun Codepoint.Companion.numeric(): Arb<Codepoint> =
     Arb.of(('0'..'9').map { Codepoint(it.code) })
 
 fun Arb.Companion.intAsString() = arbitrary {
-    string(minSize = 1, maxSize = 10, codepoints = Codepoint.numeric()).next()
+    string(minSize = 1, maxSize = 9, codepoints = Codepoint.numeric()).next().also {
+        it.toInt() // sanity check, below INT.MAX_VALUE of 2147483647
+    }
 }

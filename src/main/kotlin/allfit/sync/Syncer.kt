@@ -23,7 +23,10 @@ import allfit.persistence.ReservationEntity
 import allfit.persistence.ReservationsRepo
 import allfit.persistence.WorkoutEntity
 import allfit.persistence.WorkoutsRepo
+import allfit.service.ImageStorage
+import allfit.service.PartnerAndImageUrl
 import allfit.service.SystemClock
+import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger
 import java.util.UUID
@@ -39,27 +42,36 @@ object NoOpSyncer : Syncer {
     }
 }
 
+// TODO split into several parts
 class RealSyncer(
     private val client: OnefitClient,
     private val categoriesRepo: CategoriesRepo,
     private val partnersRepo: PartnersRepo,
     private val locationsRepo: LocationsRepo,
     private val workoutsRepo: WorkoutsRepo,
+    private val workoutFetcher: WorkoutFetcher,
     private val reservationsRepo: ReservationsRepo,
+    private val imageStorage: ImageStorage
 ) : Syncer {
 
     private val log = logger {}
 
     override suspend fun syncAll() {
         log.info { "Sync started ..." }
+        // TODO wrap with transaction all of it (write test first which breaks in between)
+
         val partners = client.getPartners(PartnerSearchParams.simple())
+        syncAny("categories", categoriesRepo, mergedCategories(client.getCategories(), partners)) {
+            it.toCategoryEntity()
+        }
+        val report = syncAny("partners", partnersRepo, partners.data) {
+            it.toPartnerEntity()
+        }
         syncLocations(partners)
-        syncAny(
-            "categories",
-            categoriesRepo,
-            mergedCategories(client.getCategories(), partners)
-        ) { it.toCategoryEntity() }
-        syncAny("partners", partnersRepo, partners.data) { it.toPartnerEntity() }
+        imageStorage.savePartnerImages(report.toInsert.map {
+            PartnerAndImageUrl(it.id, it.imageUrl)
+        })
+
         syncWorkouts()
         syncReservations()
     }
@@ -69,13 +81,21 @@ class RealSyncer(
         val locations = partners.data.map { partner ->
             partner.location_groups.map { it.locations }.flatten()
         }.flatten()
-        locationsRepo.insertAll(locations.map { it.toLocationEntity() })
+        locationsRepo.insertAll(locations.map { it.toLocationEntity() }
+            .associateBy { it.id }.values.toList() // remove duplicates
+        )
     }
 
     private suspend fun syncWorkouts() {
         log.debug { "Syncing workouts..." }
-        workoutsRepo.insertAll(getWorkoutsToBeSynced().map { it.toWorkoutEntity() })
-        // FIXME delete workouts before today which has no association with a reservation.
+        val workoutsToBeSyncedJson = getWorkoutsToBeSynced()
+        val metaFetchById = workoutsToBeSyncedJson.map {
+            workoutFetcher.fetch(WorkoutUrl(workoutId = it.id, workoutSlug = it.slug))
+        }.associateBy { it.workoutId }
+        workoutsRepo.insertAll(workoutsToBeSyncedJson.map { it.toWorkoutEntity(metaFetchById[it.id]!!) })
+        imageStorage.saveWorkoutImages(metaFetchById.values.map { WorkoutAndImageUrl(it.workoutId, it.imageUrls) })
+
+        // FIXME delete workouts before today which has no association with a reservation; and also images!
     }
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
@@ -122,7 +142,12 @@ class RealSyncer(
             REPO : BaseRepo<ENTITY>,
             ENTITY : HasIntId,
             JSON : SyncableJson
-            > syncAny(label: String, repo: REPO, syncableJsons: List<JSON>, mapper: (JSON) -> ENTITY) {
+            > syncAny(
+        label: String,
+        repo: REPO,
+        syncableJsons: List<JSON>,
+        mapper: (JSON) -> ENTITY
+    ): DiffReport<ENTITY, ENTITY> {
         log.debug { "Syncing $label ..." }
         val localDomains = repo.selectAll()
         val report = Differ.diff(localDomains, syncableJsons, mapper)
@@ -133,6 +158,7 @@ class RealSyncer(
         if (report.toDelete.isNotEmpty()) {
             repo.deleteAll(report.toDelete.map { it.id })
         }
+        return report
     }
 }
 
@@ -185,6 +211,7 @@ private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     slug = slug,
     description = description,
     note = "",
+    imageUrl = header_image.orig,
     facilities = facilities.joinToString(","),
     isDeleted = false,
     isFavorited = false,
@@ -192,11 +219,20 @@ private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     isStarred = false,
 )
 
-private fun WorkoutJson.toWorkoutEntity() = WorkoutEntity(
+private fun WorkoutJson.toWorkoutEntity(htmlMetaData: WorkoutHtmlMetaData) = WorkoutEntity(
     id = id,
     name = name,
     slug = slug,
     start = from.toUtcLocalDateTime(),
     end = till.toUtcLocalDateTime(),
-    partnerId = partner.id
+    partnerId = partner.id,
+    about = htmlMetaData.about,
+    specifics = htmlMetaData.specifics,
+    address = htmlMetaData.address,
 )
+
+interface WorkoutHtmlMetaData {
+    val about: String
+    val specifics: String
+    val address: String
+}

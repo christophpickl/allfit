@@ -32,6 +32,7 @@ fun Arb.Companion.partnerEntity() = arbitrary {
         description = string().next(),
         note = string().next(),
         facilities = string().next(),
+        imageUrl = string().next(),
         isDeleted = boolean().next(),
         isStarred = boolean().next(),
         isHidden = boolean().next(),
@@ -60,6 +61,9 @@ fun Arb.Companion.workoutEntity() = arbitrary {
         slug = string(minSize = 1, maxSize = 20, codepoints = Codepoint.alphanumeric()).next(),
         start = LocalDateTime.now(),
         end = LocalDateTime.now(),
+        about = string().next(),
+        specifics = string().next(),
+        address = string().next(),
         partnerId = int(min = 1).next(),
     )
 }

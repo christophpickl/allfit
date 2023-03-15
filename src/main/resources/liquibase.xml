@@ -32,6 +32,9 @@
             <column name="SLUG" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
+            <column name="IMAGE_URL" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
             <column name="DESCRIPTION" type="longvarchar">
                 <constraints nullable="false"/>
             </column>
@@ -117,6 +120,15 @@
                 <constraints nullable="false"/>
             </column>
             <column name="END" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ABOUT" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPECIFICS" type="longvarchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDRESS" type="varchar(256)">
                 <constraints nullable="false"/>
             </column>
             <column name="PARTNER_ID" type="integer">

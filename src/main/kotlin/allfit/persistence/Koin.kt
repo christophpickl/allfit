@@ -35,7 +35,7 @@ fun persistenceModule(config: AppConfig) = module {
 
 private fun connectToDatabase() {
     val dbDir = FileResolver.resolve(DirectoryEntry.Database)
-    val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}"
+    val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}/h2"
     log.info { "Connecting to database: $jdbcUrl" }
     LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
     Database.connect(jdbcUrl)

@@ -1,6 +1,6 @@
 package allfit
 
-import allfit.api.OnefitClient
+import allfit.api.authenticateOneFit
 import allfit.service.CredentialsLoader
 import allfit.sync.Syncer
 import io.kotest.common.runBlocking
@@ -13,7 +13,7 @@ object SyncSystemTestManual {
             println("Start ...")
             println()
 
-            val client = OnefitClient.authenticate(CredentialsLoader.load())
+            val client = authenticateOneFit(CredentialsLoader.load())
             val koin = startKoin {
                 modules(rootModule(AppConfig.prod, client))
             }.koin

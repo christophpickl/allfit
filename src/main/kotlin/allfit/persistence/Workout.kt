@@ -16,16 +16,22 @@ object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
     val slug = varchar("SLUG", 256)
     val start = datetime("START")
     val end = datetime("END")
+    val about = text("ABOUT")
+    val specifics = text("SPECIFICS")
+    val address = varchar("ADDRESS", 256)
     // we don't store the location of a workout; it must be one of the partner's anyway
 }
 
 data class WorkoutEntity(
     val id: Int,
+    val partnerId: Int,
     val name: String,
     val slug: String,
     val start: LocalDateTime,
     val end: LocalDateTime,
-    val partnerId: Int,
+    val about: String, // parsed from HTML
+    val specifics: String, // parsed from HTML
+    val address: String, // parsed from HTML
 )
 
 interface WorkoutsRepo {
@@ -70,6 +76,9 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
                     it[slug] = workout.slug
                     it[start] = workout.start
                     it[end] = workout.end
+                    it[about] = workout.about
+                    it[specifics] = workout.specifics
+                    it[address] = workout.address
                     it[partnerId] = EntityID(workout.partnerId, PartnersTable)
                 }
             }
@@ -83,5 +92,8 @@ private fun ResultRow.toWorkoutEntity() = WorkoutEntity(
     slug = this[WorkoutsTable.slug],
     start = this[WorkoutsTable.start],
     end = this[WorkoutsTable.end],
+    about = this[WorkoutsTable.about],
+    specifics = this[WorkoutsTable.specifics],
+    address = this[WorkoutsTable.address],
     partnerId = this[WorkoutsTable.partnerId].value,
 )

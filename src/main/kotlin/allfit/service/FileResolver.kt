@@ -4,35 +4,50 @@ import allfit.Environment
 import mu.KotlinLogging.logger
 import java.io.File
 
+private val log = logger {}
+
 object FileResolver {
 
-    private val log = logger {}
-
-    private val appDirectory = File(
-        System.getProperty("user.home"), when (Environment.current) {
-            Environment.Production -> ".allfit"
-            Environment.Development -> ".allfit-dev"
-        }
-    )
-
-    init {
-        if (!appDirectory.exists()) {
-            log.info { "Creating app directory at: ${appDirectory.absolutePath}" }
-            if (!appDirectory.mkdir()) {
-                error("Could not create directory: ${appDirectory.absolutePath}")
-            }
-        }
+    private val homeDirectory = File(System.getProperty("user.home"))
+    private val appDirectoryProd = File(homeDirectory, ".allfit")
+    private val appDirectoryDev = File(homeDirectory, ".allfit-dev")
+    private val appDirectory = when (Environment.current) {
+        Environment.Production -> appDirectoryProd
+        Environment.Development -> appDirectoryDev
     }
 
-    fun resolve(entry: FileEntry) = File(appDirectory, entry.fileName)
-    fun resolve(entry: DirectoryEntry) = File(appDirectory, entry.directoryName)
+    init {
+        appDirectoryProd.createIfNeededOrFail()
+        appDirectoryDev.createIfNeededOrFail()
+    }
+
+    private fun baseDirectory(entry: DiskEntry) =
+        if (entry.environmentAgnostic) appDirectoryProd else appDirectory
+
+    fun resolve(entry: FileEntry) = File(baseDirectory(entry), entry.fileName)
+    fun resolve(entry: DirectoryEntry) = File(baseDirectory(entry), entry.directoryName).createIfNeededOrFail()
 }
 
-enum class FileEntry(val fileName: String) {
+private fun File.createIfNeededOrFail() = apply {
+    if (!exists()) {
+        log.debug { "Creating directory at: $absolutePath" }
+        if (!mkdir()) {
+            error("Could not create directory at: $absolutePath")
+        }
+    }
+}
+
+interface DiskEntry {
+    val environmentAgnostic: Boolean
+}
+
+enum class FileEntry(val fileName: String, override val environmentAgnostic: Boolean = false) : DiskEntry {
     Login("login.json"),
 }
 
-enum class DirectoryEntry(val directoryName: String) {
+enum class DirectoryEntry(val directoryName: String, override val environmentAgnostic: Boolean = false) : DiskEntry {
     Database("database"),
     JsonLogs("json_logs"),
+    ImagesPartners("images/partners", environmentAgnostic = true),
+    ImagesWorkouts("images/workouts", environmentAgnostic = true),
 }
