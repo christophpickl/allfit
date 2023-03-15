@@ -9,6 +9,7 @@ import allfit.api.models.PagedJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationsJson
 import allfit.api.models.WorkoutsJson
+import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import allfit.service.formatOnefit
 import allfit.service.kotlinxSerializer
@@ -33,6 +34,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
+import java.io.File
 import java.time.ZonedDateTime
 
 interface OnefitClient {
@@ -167,7 +169,7 @@ class RealOnefitClient(
     private suspend fun HttpResponse.logJsonResponse(path: String) {
         val fileName = "${path.replace("/", "_")}-${status.value}.json"
         val jsonResponseString = kotlinxSerializer.toPrettyString(bodyAsText())
-        FileResolver.resolve(fileName).writeText(jsonResponseString)
+        File(FileResolver.resolve(DirectoryEntry.JsonLogs), fileName).writeText(jsonResponseString)
     }
 
     private suspend fun <

@@ -24,5 +24,15 @@ object FileResolver {
         }
     }
 
-    fun resolve(fileName: String) = File(appDirectory, fileName)
+    fun resolve(entry: FileEntry) = File(appDirectory, entry.fileName)
+    fun resolve(entry: DirectoryEntry) = File(appDirectory, entry.directoryName)
+}
+
+enum class FileEntry(val fileName: String) {
+    Login("login.json"),
+}
+
+enum class DirectoryEntry(val directoryName: String) {
+    Database("database"),
+    JsonLogs("json_logs"),
 }

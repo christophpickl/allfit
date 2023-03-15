@@ -1,6 +1,7 @@
 package allfit.persistence
 
 import allfit.AppConfig
+import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Database
@@ -33,10 +34,9 @@ fun persistenceModule(config: AppConfig) = module {
 }
 
 private fun connectToDatabase() {
-    val dbDir = FileResolver.resolve("database")
+    val dbDir = FileResolver.resolve(DirectoryEntry.Database)
     val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}"
     log.info { "Connecting to database: $jdbcUrl" }
     LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
     Database.connect(jdbcUrl)
-
 }
