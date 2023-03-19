@@ -3,6 +3,8 @@ package allfit.service
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 import java.io.File
 
@@ -52,12 +54,15 @@ class RealImageStorage(
     private val client = HttpClient()
     private val width = 300
     private val extension = "jpg"
+    private val parallelWorkersCount = 3
+    private val delayBetweenEachDownloadInMs = 40L
 
     override suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>) {
         log.debug { "Saving ${partners.size} partner images." }
         partners.map { it.imageUrl }.requireAllEndsWithExtension(extension)
-        partners.forEach {
+        partners.workParallel(parallelWorkersCount) {
             client.getAndSave("${it.imageUrl}?w=$width", File(partnersFolder, "${it.partnerId}.$extension"))
+            delay(delayBetweenEachDownloadInMs)
         }
     }
 
@@ -70,13 +75,17 @@ class RealImageStorage(
         }
     }
 
+
     override suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
         log.debug { "Saving ${workouts.size} workout images." }
-        workouts.map { it.imagesUrl }.flatten().requireAllEndsWithExtension(extension)
-        workouts.forEach { workout ->
-            workout.imagesUrl.forEachIndexed { i, imageUrl ->
-                client.getAndSave("$imageUrl?w=$width", File(workoutsFolder, "${workout.workoutId}-$i.$extension"))
-            }
+        workouts.map { it.imageUrl }.requireAllEndsWithExtension(extension)
+
+        workouts.workParallel(parallelWorkersCount) { workout ->
+            client.getAndSave(
+                url = "${workout.imageUrl}?w=$width",
+                target = File(workoutsFolder, "${workout.workoutId}.$extension")
+            )
+            delay(delayBetweenEachDownloadInMs)
         }
     }
 
@@ -85,16 +94,16 @@ class RealImageStorage(
         return workoutIds.map { id ->
             WorkoutAndImagesBytes(
                 workoutId = id,
-                imagesBytes = loadImageBytesFor(id),
+                imageBytes = loadImageBytesFor(id),
             )
         }
     }
 
-    private fun loadImageBytesFor(workoutId: Int): List<ByteArray> {
+    private fun loadImageBytesFor(workoutId: Int): ByteArray {
         val prefix = "$workoutId-"
         return workoutsFolder.list { _, name ->
             name.startsWith(prefix)
-        }!!.map {
+        }!!.first().let {
             val image = File(workoutsFolder, it)
             image.readBytes()
         }
@@ -115,8 +124,16 @@ private fun List<String>.requireAllEndsWithExtension(extension: String) {
 
 private val log = logger {}
 
+private val defaultImage: ByteArray = ImageStorage::class.java.classLoader.getResourceAsStream("not_found_default_image.jpg")!!
+    .readAllBytes()
+
 private suspend fun HttpClient.getAndSave(url: String, target: File) {
     val response = get(url)
+    if (response.status == HttpStatusCode.NotFound) {
+        target.writeBytes(defaultImage)
+        log.warn { "Received 404 for $url - saving default not found image instead to: ${target.absolutePath}" }
+        return
+    }
     response.requireOk()
     val imageBinaryData = response.body<ByteArray>()
     if (target.exists()) {
@@ -141,12 +158,12 @@ class PartnerAndImageBytes(
 
 data class WorkoutAndImageUrl(
     val workoutId: Int,
-    val imagesUrl: List<String>,
+    val imageUrl: String,
 )
 
 class WorkoutAndImagesBytes(
     val workoutId: Int,
-    val imagesBytes: List<ByteArray>,
+    val imageBytes: ByteArray,
 ) {
-    override fun toString() = "WorkoutAndImagesBytes[workoutId=$workoutId,imagesBytes.size=${imagesBytes.size}]"
+    override fun toString() = "WorkoutAndImagesBytes[workoutId=$workoutId,imageBytes...]"
 }

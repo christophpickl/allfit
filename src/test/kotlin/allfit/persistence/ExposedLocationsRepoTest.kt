@@ -27,8 +27,15 @@ class ExposedLocationsRepoTest : DescribeSpec() {
         describe("When insert") {
             it("Then succeed") {
                 ExposedPartnersRepo.insertAll(listOf(partner))
-                repo.insertAll(listOf(locationWithPartner))
+                repo.insertAllIfNotYetExists(listOf(locationWithPartner))
 
+                repo.selectAll().shouldBeSingleton().first() shouldBe locationWithPartner
+            }
+            it("Given same Then ignore") {
+                ExposedPartnersRepo.insertAll(listOf(partner))
+                repo.insertAllIfNotYetExists(listOf(locationWithPartner))
+
+                repo.insertAllIfNotYetExists(listOf(locationWithPartner))
                 repo.selectAll().shouldBeSingleton().first() shouldBe locationWithPartner
             }
         }

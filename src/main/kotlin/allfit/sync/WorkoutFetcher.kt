@@ -7,7 +7,6 @@ import io.ktor.client.statement.bodyAsText
 import mu.KotlinLogging.logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
-import org.jsoup.nodes.TextNode
 import org.jsoup.select.Elements
 
 interface WorkoutFetcher {
@@ -61,12 +60,12 @@ object WorkoutHtmlParser {
         val about = body.getElementsByClass("about")
         if (about.size == 0) return ""
         return about.requireOneChild()
-            .select(".readMore--aboutLesson > div:nth-child(1) > p:nth-child(1)")[0].parseText()
+            .select(".readMore--aboutLesson > div:nth-child(1) > p:nth-child(1)")[0].html()
     }
 
     private fun parseSpecifics(body: Element) =
         body.getElementsByClass("specifics").requireOneChild()
-            .select(".readMore--specifics > div:nth-child(1) > p:nth-child(1)")[0].parseText()
+            .select(".readMore--specifics > div:nth-child(1) > p:nth-child(1)")[0].html()
 
     private fun parseAddress(body: Element) =
         body.select("div.address").text()
@@ -77,20 +76,6 @@ object WorkoutHtmlParser {
             img.attr("src").substringBefore("?")
         }
 }
-
-private fun Element.parseText() =
-    childNodes().joinToString("") {
-        when (it) {
-            is TextNode -> it.text().trim()
-            is Element ->
-                if (it.tagName() == "br") {
-                    "\n"
-                } else {
-                    error("Unhandled element tag: $it")
-                }
-            else -> error("Unhandled tag type: $it")
-        }
-    }.trim()
 
 private fun Elements.requireOneChild() = apply {
     require(size == 1) { "Expected element to have single child but had: $size" }

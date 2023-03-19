@@ -31,7 +31,7 @@ object FileResolver {
 private fun File.createIfNeededOrFail() = apply {
     if (!exists()) {
         log.debug { "Creating directory at: $absolutePath" }
-        if (!mkdir()) {
+        if (!mkdirs()) {
             error("Could not create directory at: $absolutePath")
         }
     }
@@ -48,6 +48,7 @@ enum class FileEntry(val fileName: String, override val environmentAgnostic: Boo
 enum class DirectoryEntry(val directoryName: String, override val environmentAgnostic: Boolean = false) : DiskEntry {
     Database("database"),
     JsonLogs("json_logs"),
+    Images("images/partners", environmentAgnostic = true),
     ImagesPartners("images/partners", environmentAgnostic = true),
     ImagesWorkouts("images/workouts", environmentAgnostic = true),
 }

@@ -53,6 +53,9 @@ fun Arb.Companion.partnersJson() = arbitrary {
     )
 }
 
+fun partnersJson(vararg partners: PartnerJson) =
+    PartnersJson(partners.toList())
+
 fun Arb.Companion.headerImageJson() = arbitrary {
     HeaderImageJson(
         orig = "https://server.test/${

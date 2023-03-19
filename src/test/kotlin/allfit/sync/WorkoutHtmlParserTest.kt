@@ -13,8 +13,8 @@ class WorkoutHtmlParserTest : StringSpec() {
             val workout = WorkoutHtmlParser.parse(workoutId, readHtmlResponse("workout.html"))
             workout shouldBe WorkoutFetch(
                 workoutId = workoutId,
-                about = "about1\nabout2",
-                specifics = "specifics1\nspecifics2",
+                about = "about1<br>\n about2",
+                specifics = "specifics1 <br><a href=\"foo\">specifics2</a>",
                 address = "Workout Address",
                 imageUrls = listOf(
                     "https://edge.one.fit/image/partner/image/17239/e8c44e8e-07d3-42be-afa6-95d7b91db85b.jpg",

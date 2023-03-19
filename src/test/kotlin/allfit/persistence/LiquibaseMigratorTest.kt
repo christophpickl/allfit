@@ -24,7 +24,7 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedPartnersRepo.selectAll().shouldBeSingleton().first() shouldBe partner
 
             val location = Arb.locationEntity().next().copy(partnerId = partner.id)
-            ExposedLocationsRepo.insertAll(listOf(location))
+            ExposedLocationsRepo.insertAllIfNotYetExists(listOf(location))
             ExposedLocationsRepo.selectAll().shouldBeSingleton().first() shouldBe location
 
             val workout = Arb.workoutEntity().next().copy(partnerId = partner.id)

@@ -42,7 +42,7 @@ interface WorkoutsRepo {
 class InMemoryWorkoutsRepo : WorkoutsRepo {
 
     private val log = logger {}
-    private val workouts = mutableMapOf<Int, WorkoutEntity>()
+    val workouts = mutableMapOf<Int, WorkoutEntity>()
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
         workouts.values.filter { it.start >= fromInclusive }

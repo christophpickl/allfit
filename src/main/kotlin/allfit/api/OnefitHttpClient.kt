@@ -66,7 +66,7 @@ private fun buildClient(authToken: String?) = HttpClient(CIO) {
     defaultRequest {
         url(if (authToken == null) "https://one.fit/api/auth" else "https://api.one.fit/v2/en-nl/")
         header("Accept", "application/vnd.onefit.v2.1+json")
-        header("X-ONEFIT-CLIENT", "website/29.14.2")
+        header("X-ONEFIT-CLIENT", "website/29.14.4")
         if (authToken != null) {
             bearerAuth(authToken)
         }
