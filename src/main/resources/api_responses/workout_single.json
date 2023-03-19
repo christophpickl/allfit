@@ -1,0 +1,167 @@
+{
+  "data": {
+    "id": 11033240,
+    "inventory_id": "63f95b4c41ac611e6517925a",
+    "name": "4D Full Body Massage",
+    "slug": "relax-lounge-4d-full-body-massage",
+    "description": "",
+    "rating": 10,
+    "review_rating": 5,
+    "spots_available": 1,
+    "intensity": 0,
+    "level": "ALL",
+    "review_count": 2,
+    "from": "2023-03-17T13:30:00+01:00",
+    "till": "2023-03-17T14:00:00+01:00",
+    "workout_type": "lesson_committed",
+    "cancellations_allowed_until": "2023-03-17T11:30:00+01:00",
+    "reservations_allowed_until": "2023-03-17T13:30:00+01:00",
+    "reservation_allowed": true,
+    "waitlist_count": 0,
+    "visible_in_schedule": true,
+    "reserved": true,
+    "waitlist": false,
+    "is_digital": false,
+    "partner": {
+      "id": 16391,
+      "name": "Relax Lounge",
+      "slug": "relax-lounge-amsterdam",
+      "description": "At Relax Lounge, you can switch off completely for 20 minutes.\nDuring a Full Body massage session without physical touch and with clothes on, you can relax in a 4D Full Body fully automatic massage chair and wear a Relax Sound headset. It will transport you to another world, allowing you to let go of everyday life for 20 minutes.",
+      "onefit_city": "AMS",
+      "specifics": "You can choose from a menu of different massages such as a comfortable massage, sports massage, and a massage especially for office workers. The relaxation session helps with the circulation of the muscles and the removal of waste products in your body.\nLockers for your valuables are available. It's not recommended to use relaxation sessions if you are pregnant.\n\nPlease note that this venue booking a 4D Full Body Massage is preferred. But if all spots are full you can also check in via an open workout. In that case, do bear in mind that there is a possibility that you will have to wait a while.",
+      "facilities": [
+        "Cafe / lounge",
+        "Lockers",
+        "WiFi"
+      ],
+      "activities": [
+        "Wellness"
+      ],
+      "rating": 9.7,
+      "review_rating": 4.9,
+      "review_count": 3796,
+      "drop_in_allowed": true,
+      "first_live_at": "2019-11-04T13:51:59+01:00",
+      "waitlist_enabled": true,
+      "opening_hours_unknown": false,
+      "category_location_count": 291,
+      "is_exclusive": false,
+      "is_new": false,
+      "images": [
+        {
+          "desktop": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1680",
+          "xxxhdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1440",
+          "xxhdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1080",
+          "tablet": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1024",
+          "mobile": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=768",
+          "xhdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=720",
+          "hdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=540",
+          "mdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=480",
+          "ldpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=320",
+          "thumbnail": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=150",
+          "orig": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg"
+        },
+        {
+          "desktop": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=1680",
+          "xxxhdpi": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=1440",
+          "xxhdpi": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=1080",
+          "tablet": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=1024",
+          "mobile": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=768",
+          "xhdpi": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=720",
+          "hdpi": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=540",
+          "mdpi": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=480",
+          "ldpi": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=320",
+          "thumbnail": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg?w=150",
+          "orig": "https://edge.one.fit/image/partner/image/16391/8f900613-2424-4e19-8018-75f332ef66f4.jpg"
+        },
+        {
+          "desktop": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=1680",
+          "xxxhdpi": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=1440",
+          "xxhdpi": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=1080",
+          "tablet": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=1024",
+          "mobile": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=768",
+          "xhdpi": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=720",
+          "hdpi": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=540",
+          "mdpi": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=480",
+          "ldpi": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=320",
+          "thumbnail": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg?w=150",
+          "orig": "https://edge.one.fit/image/partner/image/16391/3d798376-eb20-47a2-9d93-8a4726c8e645.jpg"
+        },
+        {
+          "desktop": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=1680",
+          "xxxhdpi": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=1440",
+          "xxhdpi": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=1080",
+          "tablet": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=1024",
+          "mobile": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=768",
+          "xhdpi": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=720",
+          "hdpi": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=540",
+          "mdpi": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=480",
+          "ldpi": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=320",
+          "thumbnail": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg?w=150",
+          "orig": "https://edge.one.fit/image/partner/image/16391/88f33b5d-750e-4453-b625-fd48170ac2ef.jpg"
+        },
+        {
+          "desktop": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=1680",
+          "xxxhdpi": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=1440",
+          "xxhdpi": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=1080",
+          "tablet": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=1024",
+          "mobile": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=768",
+          "xhdpi": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=720",
+          "hdpi": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=540",
+          "mdpi": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=480",
+          "ldpi": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=320",
+          "thumbnail": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg?w=150",
+          "orig": "https://edge.one.fit/image/partner/image/16391/44850b25-ee1f-4bab-9312-f2ba41b4b173.jpg"
+        }
+      ],
+      "awards": [
+        {
+          "name": "OneFit Award 2022",
+          "icon": "https://onefitcdn.nl/img/specifics/awards/award-icon-2022.png",
+          "date": "2022-01-01T00:00:00+01:00",
+          "type": "general"
+        }
+      ],
+      "surplus": {
+        "surplus_allowed": true,
+        "price": 950,
+        "formatted_price": "€ 9,50"
+      }
+    },
+    "attendees": [
+      {
+        "id": 184477,
+        "first_name": "You",
+        "profile_image": "https://edge.one.fit/image/member/image/0303/XZecB5NOnMwxYG2gbuhtEzTCsP13lxUcgSVgXbMe.jpeg",
+        "decoration": null,
+        "is_friend": true
+      },
+      {
+        "id": null,
+        "first_name": null,
+        "profile_image": null,
+        "decoration": null,
+        "is_friend": false
+      },
+      {
+        "id": 187692,
+        "first_name": "Suzanne",
+        "profile_image": "https://edge.one.fit/image/member/image/0905/3hNHGe5fvByNvVgkbeuDlYCiFiUqCkuxJKrTlw09.jpeg",
+        "decoration": null,
+        "is_friend": false
+      }
+    ],
+    "teachers": [],
+    "location": {
+      "street_name": "Kerkstraat",
+      "house_number": "163",
+      "addition": "",
+      "city": "Amsterdam",
+      "zip_code": "1017 GG",
+      "latitude": 52.363437,
+      "longitude": 4.889131,
+      "meeting_notes": null
+    },
+    "waitlisted": []
+  }
+}

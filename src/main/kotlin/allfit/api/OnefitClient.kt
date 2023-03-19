@@ -1,8 +1,10 @@
 package allfit.api
 
 import allfit.api.models.CategoriesJson
+import allfit.api.models.CheckinsJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationsJson
+import allfit.api.models.SingleWorkoutJson
 import allfit.api.models.WorkoutsJson
 import allfit.service.formatOnefit
 import java.time.ZonedDateTime
@@ -12,7 +14,9 @@ interface OnefitClient {
     suspend fun getCategories(): CategoriesJson
     suspend fun getPartners(params: PartnerSearchParams): PartnersJson
     suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJson
+    suspend fun getWorkoutById(id: Int): SingleWorkoutJson
     suspend fun getReservations(): ReservationsJson
+    suspend fun getCheckins(params: CheckinSearchParams): CheckinsJson
 
 }
 
@@ -36,6 +40,20 @@ data class PartnerSearchParams(
 //                radiusInMeters = 3_000,
 //                zipCode = "1011HW",
             )
+    }
+}
+
+data class CheckinSearchParams(
+    override val limit: Int,
+    override val page: Int,
+) : PagedParams<CheckinSearchParams> {
+    override fun nextPage() = copy(page = page + 1)
+
+    companion object {
+        fun simple(limit: Int = 500) = CheckinSearchParams(
+            page = 1,
+            limit = limit,
+        )
     }
 }
 

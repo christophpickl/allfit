@@ -17,7 +17,8 @@ class ApiExplorerApp(private val client: OnefitHttpClient) {
     }
 
     private suspend fun playground() {
-        println(client.getReservations())
+//        println(client.getCheckins(CheckinSearchParams.simple()))
+        println(client.getWorkoutById(11033240))
 //        println(client.getPartners(PartnerSearchParams.simple()))
 //        val workouts = client.getWorkouts(
 //            WorkoutSearchParams.simple(

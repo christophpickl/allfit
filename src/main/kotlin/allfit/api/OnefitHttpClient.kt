@@ -3,10 +3,12 @@ package allfit.api
 import allfit.api.models.AuthJson
 import allfit.api.models.AuthResponseJson
 import allfit.api.models.CategoriesJson
+import allfit.api.models.CheckinsJson
 import allfit.api.models.MetaJson
 import allfit.api.models.PagedJson
 import allfit.api.models.PartnersJson
 import allfit.api.models.ReservationsJson
+import allfit.api.models.SingleWorkoutJson
 import allfit.api.models.WorkoutsJson
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
@@ -30,10 +32,10 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging
+import mu.KotlinLogging.logger
 import java.io.File
 
-private val log = KotlinLogging.logger {}
+private val log = logger {}
 private val authClient = buildClient(null)
 
 suspend fun authenticateOneFit(credentials: Credentials): OnefitClient {
@@ -77,9 +79,8 @@ class OnefitHttpClient(
     authToken: String,
 ) : OnefitClient {
 
-    private val log = KotlinLogging.logger {}
+    private val log = logger {}
     private val client = buildClient(authToken)
-
 
     override suspend fun getCategories(): CategoriesJson =
         get("partners/categories")
@@ -100,8 +101,22 @@ class OnefitHttpClient(
             WorkoutsJson(data, meta)
         }
 
+    override suspend fun getWorkoutById(id: Int): SingleWorkoutJson =
+        get("workouts/$id")
+
     override suspend fun getReservations(): ReservationsJson =
         get("members/schedule/reservations")
+
+    override suspend fun getCheckins(params: CheckinSearchParams): CheckinsJson =
+        getPaged(params, ::getCheckinsPage) { data, meta ->
+            CheckinsJson(data, meta)
+        }
+
+    private suspend fun getCheckinsPage(params: CheckinSearchParams): CheckinsJson =
+        get("members/check-ins") {
+            parameter("limit", params.limit)
+            parameter("page", params.page)
+        }
 
     private suspend fun getWorkoutsPage(params: WorkoutSearchParams): WorkoutsJson =
         get("workouts/search") {

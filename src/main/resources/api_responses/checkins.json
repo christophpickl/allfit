@@ -1,0 +1,706 @@
+{
+  "data": [
+    {
+      "uuid": "9bd95a69-897d-4212-a886-85f684173dec",
+      "type": "workout",
+      "created_at": "2023-03-17T13:30:00+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 11033240,
+        "name": "4D Full Body Massage",
+        "slug": "relax-lounge-4d-full-body-massage",
+        "spots_available": 1,
+        "spots_booked": 3,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-03-17T13:30:00+01:00",
+        "till": "2023-03-17T14:00:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 16391,
+          "name": "Relax Lounge",
+          "slug": "relax-lounge-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/16391/7873343c-a040-4363-8ea7-39274268cae4.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Kerkstraat",
+          "house_number": "163",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1017 GG",
+          "latitude": 52.363437,
+          "longitude": 4.889131,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 93,
+          "name": "Fitness"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-03-17T13:00:00+01:00",
+          "till": "2023-03-17T13:40:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "8f1d6079-4f3a-47f3-b2bb-a01faa193a8e",
+      "type": "workout",
+      "created_at": "2023-03-14T15:51:29+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10937847,
+        "name": "Personal Training",
+        "slug": "active-club-personal-training",
+        "spots_available": 1,
+        "spots_booked": 1,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-03-14T16:00:00+01:00",
+        "till": "2023-03-14T17:00:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 16114,
+          "name": "Active Club",
+          "slug": "active-club-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/16114/7c674177-0540-456c-9513-91bf81ba6488.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Keizersgracht",
+          "house_number": "82",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1015CT",
+          "latitude": 52.377851,
+          "longitude": 4.887778,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 71,
+          "name": "Other"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-03-14T15:30:00+01:00",
+          "till": "2023-03-14T16:10:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "0b707923-2436-4c20-a988-87bfb558ed10",
+      "type": "workout",
+      "created_at": "2023-03-12T10:16:11+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10973353,
+        "name": "Sweat & Flow 75",
+        "slug": "yagoy-de-pijp-sweat-flow-75",
+        "spots_available": 1,
+        "spots_booked": 5,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-03-12T10:30:00+01:00",
+        "till": "2023-03-12T11:45:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 675,
+          "name": "Yagoy | de Pijp",
+          "slug": "yagoy-de-pijp-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/675/4648745e-c716-4937-b693-ca48ade19ac3.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Karel du Jardinstraat",
+          "house_number": "33",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1072 SG",
+          "latitude": 52.351318,
+          "longitude": 4.89383,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 54,
+          "name": "Yoga"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-03-12T10:00:00+01:00",
+          "till": "2023-03-12T10:40:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "70c666c9-6edb-4f05-858b-a5e68c521398",
+      "type": "workout",
+      "created_at": "2023-03-03T11:58:24+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10979163,
+        "name": "Gyrokinesis®",
+        "slug": "shido-studio-gyrokinesis",
+        "spots_available": 0,
+        "spots_booked": 5,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-03-03T12:15:00+01:00",
+        "till": "2023-03-03T13:15:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 17292,
+          "name": "Shido Studio",
+          "slug": "shido-studio-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/17292/655a0c40-4c63-4f1e-bf1b-99fd621bc88e.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Ite Boeremastraat",
+          "house_number": "1",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1054 PP",
+          "latitude": 52.362487,
+          "longitude": 4.869601,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 54,
+          "name": "Yoga"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-03-03T11:45:00+01:00",
+          "till": "2023-03-03T12:25:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "7c68915e-d4d8-40fc-921d-8266edad335c",
+      "type": "workout",
+      "created_at": "2023-02-24T11:52:03+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10927381,
+        "name": "Hot Pilates Fusion",
+        "slug": "hot-flow-yoga-rivierenbuurt-hot-pilates-fusion",
+        "spots_available": 2,
+        "spots_booked": 7,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-02-24T12:00:00+01:00",
+        "till": "2023-02-24T13:00:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 861,
+          "name": "Hot Flow Yoga Rivierenbuurt",
+          "slug": "hot-flow-yoga-rivierenbuurt-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/861/31de7c6c-2631-48db-91bd-ad1f7473bf6f.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "",
+          "house_number": "107",
+          "addition": "Amstelkade",
+          "city": "Amsterdam",
+          "zip_code": "1078 AP",
+          "latitude": 52.347725,
+          "longitude": 4.894901,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 40,
+          "name": "Pilates"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-02-24T11:30:00+01:00",
+          "till": "2023-02-24T12:10:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "ba57e6d9-c0df-4930-a3cc-6b9dfb3686d1",
+      "type": "workout",
+      "created_at": "2023-02-17T16:25:55+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10900521,
+        "name": "Hot Relax and Flow",
+        "slug": "hot-flow-yoga-jordaan-hot-relax-and-flow",
+        "spots_available": 9,
+        "spots_booked": 8,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-02-17T16:30:00+01:00",
+        "till": "2023-02-17T17:30:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 551,
+          "name": "Hot Flow Yoga Jordaan",
+          "slug": "hot-flow-yoga-jordaan-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Prinsengracht",
+          "house_number": "489",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1016 HP",
+          "latitude": 52.369537,
+          "longitude": 4.883173,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 81,
+          "name": "Hot Yoga"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-02-17T16:00:00+01:00",
+          "till": "2023-02-17T16:40:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "29a979c8-b02f-4a81-9b1f-6fe3d8594f0d",
+      "type": "workout",
+      "created_at": "2023-02-14T16:21:22+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10887376,
+        "name": "Hot Pilates Fusion",
+        "slug": "hot-flow-yoga-jordaan-hot-pilates-fusion",
+        "spots_available": 4,
+        "spots_booked": 6,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-02-14T16:30:00+01:00",
+        "till": "2023-02-14T17:30:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 551,
+          "name": "Hot Flow Yoga Jordaan",
+          "slug": "hot-flow-yoga-jordaan-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Prinsengracht",
+          "house_number": "489",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1016 HP",
+          "latitude": 52.369537,
+          "longitude": 4.883173,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 81,
+          "name": "Hot Yoga"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-02-14T16:00:00+01:00",
+          "till": "2023-02-14T16:40:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "986cd218-c92d-4e94-aa8d-31b32c919111",
+      "type": "workout",
+      "created_at": "2023-02-04T12:00:00+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10874873,
+        "name": "Open Gym",
+        "slug": "double-shift-open-gym",
+        "spots_available": 6,
+        "spots_booked": 2,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-02-04T12:00:00+01:00",
+        "till": "2023-02-04T13:00:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 17173,
+          "name": "Double Shift",
+          "slug": "double-shift-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/17173/2a602be6-d7f1-4922-b669-5df0bb547191.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Lauriergracht",
+          "house_number": "102",
+          "addition": "H",
+          "city": "Amsterdam",
+          "zip_code": "1016 RP",
+          "latitude": 52.371547,
+          "longitude": 4.879955,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 93,
+          "name": "Fitness"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-02-04T11:30:00+01:00",
+          "till": "2023-02-04T12:10:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "99ddc5db-f0cb-4a50-9370-f91bb114fedb",
+      "type": "workout",
+      "created_at": "2023-02-03T11:03:59+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10871670,
+        "name": "Banenzwemmen binnenbad",
+        "slug": "sportplaza-mercator-zwembad-banenzwemmen-binnenbad",
+        "spots_available": 9,
+        "spots_booked": 1,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-02-03T11:00:00+01:00",
+        "till": "2023-02-03T12:00:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 17132,
+          "name": "Sportplaza Mercator Zwembad",
+          "slug": "sportplaza-mercator-zwembad-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/17132/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Jan van Galenstraat",
+          "house_number": "315",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1056 CB",
+          "latitude": 52.371584,
+          "longitude": 4.845944,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 82,
+          "name": "Swimming"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-02-03T10:30:00+01:00",
+          "till": "2023-02-03T11:10:00+01:00"
+        }
+      }
+    },
+    {
+      "uuid": "51573a7a-0428-4a24-9ed5-97475acae549",
+      "type": "workout",
+      "created_at": "2023-01-24T16:16:38+01:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "workout": {
+        "id": 10799948,
+        "name": "Hot Pilates Fusion",
+        "slug": "hot-flow-yoga-jordaan-hot-pilates-fusion",
+        "spots_available": 2,
+        "spots_booked": 8,
+        "reservation_allowed": true,
+        "workout_type": "lesson_committed",
+        "from": "2023-01-24T16:30:00+01:00",
+        "till": "2023-01-24T17:30:00+01:00",
+        "reserved": true,
+        "waitlist": false,
+        "is_digital": false,
+        "partner": {
+          "id": 551,
+          "name": "Hot Flow Yoga Jordaan",
+          "slug": "hot-flow-yoga-jordaan-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1680",
+            "xxxhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1440",
+            "xxhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1080",
+            "tablet": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1024",
+            "mobile": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=768",
+            "xhdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=720",
+            "hdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=540",
+            "mdpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=480",
+            "ldpi": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=320",
+            "thumbnail": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=150",
+            "orig": "https://edge.one.fit/image/partner/image/551/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg"
+          },
+          "category": {
+            "id": 1,
+            "name": "Gym",
+            "slugs": {
+              "nl": "gym",
+              "en": "gym",
+              "es": "gym"
+            }
+          }
+        },
+        "location": {
+          "street_name": "Prinsengracht",
+          "house_number": "489",
+          "addition": "",
+          "city": "Amsterdam",
+          "zip_code": "1016 HP",
+          "latitude": 52.369537,
+          "longitude": 4.883173,
+          "meeting_notes": null
+        },
+        "category": {
+          "id": 81,
+          "name": "Hot Yoga"
+        },
+        "attending_friends": [],
+        "checkin_period": {
+          "from": "2023-01-24T16:00:00+01:00",
+          "till": "2023-01-24T16:40:00+01:00"
+        }
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "total": 29,
+      "count": 10,
+      "per_page": 10,
+      "current_page": 1,
+      "total_pages": 3,
+      "links": {
+        "next": "https://api.one.fit/v2/en-nl/members/check-ins?page=2"
+      }
+    }
+  }
+}

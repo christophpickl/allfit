@@ -38,6 +38,8 @@ class RealSyncer(
         locationsSyncer.sync(partners)
         workoutsSyncer.sync()
         reservationsSyncer.sync()
+        // FIXME checkinSyncer.sync() ... might also need to insert workout & partner (if too long in past)
+
     }
 }
 

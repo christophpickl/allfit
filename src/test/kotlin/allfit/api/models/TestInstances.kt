@@ -161,11 +161,15 @@ fun Arb.Companion.metaJson() = arbitrary {
 }
 
 fun Arb.Companion.metaPaginationJson() = arbitrary {
-    val currentPage = int(min = 1, max = 100).next()
-    val totalPages = currentPage + int(min = 1, max = 100).next()
+    val currentPage = int(min = 1, max = 10).next()
+    val totalPages = currentPage + int(min = 1, max = 10).next()
+    val count = int(min = 1, max = 10).next()
     MetaPaginationJson(
         current_page = currentPage,
         total_pages = totalPages,
+        count = count,
+        total = count + int(min = 1, max = 10).next(),
+        per_page = 10,
     )
 }
 

@@ -25,6 +25,11 @@ data class WorkoutJson(
     val waitlist: Boolean,
     val reservation_allowed: Boolean,
     val is_digital: Boolean,
+    // spots_available: Int,
+    // spots_booked: Int,
+    // workout_type: String, // enum: lesson_committed, ...
+    // reserved: Boolean,
+
 ) : SyncableJson
 
 @Serializable
@@ -44,36 +49,31 @@ data class WorkoutLocationJson(
     val longitude: Double,
 )
 
-/*
-{
-  "data": [
-    {
-      "id": 11038764,
-      "name": "Street Jazz",
-      "slug": "zhembrovskyy-de-pijp-street-jazz",
-      "spots_available": 1,
-      "spots_booked": 1,
-      "reservation_allowed": true,
-      "from": "2023-03-09T21:15:00+01:00",
-      "till": "2023-03-09T22:15:00+01:00",
-      "reserved": false,
-      "waitlist": false,
-      "partner": {
-        "id": 16608,
-        "name": "Zhembrovskyy de Pijp",
-        "slug": "zhembrovskyy-de-pijp-amsterdam",
-        "waitlist_enabled": true
-      },
-      "location": {
-        "street": "Van Woustraat",
-        "house_number": "149",
-        "addition": "Hs",
-        "zip_code": "1073RX",
-        "city": "Amsterdam",
-        "latitude": 52.35281372,
-        "longitude": 4.90296316
-      },
-      "attending_friends": [],
-      "is_digital": false
-    },
- */
+@Serializable
+data class SingleWorkoutJson(
+    val data: SingleWorkoutDataJson,
+)
+
+@Serializable
+data class SingleWorkoutDataJson(
+    val id: Int,
+    val name: String,
+    val slug: String,
+    val description: String,
+    val from: ZonedDateTime,
+    val till: ZonedDateTime,
+    val partner: PartnerWorkoutJson,
+)
+
+@Serializable
+data class PartnerWorkoutJson(
+    val id: Int,
+    val name: String,
+    val slug: String,
+    val description: String,
+    val specifics: String,
+    val facilities: List<String>,
+    val activities: List<String>,
+    val drop_in_allowed: Boolean,
+    // location ...
+)
