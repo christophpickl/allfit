@@ -12,7 +12,6 @@ class LiquibaseMigratorTest : StringSpec() {
         "When migrate Then load and save works" {
             val jdbcUrl = testJdbcUrl()
             LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
-
             Database.connect(jdbcUrl)
 
             val category = Arb.categoryEntity().next()
@@ -36,12 +35,13 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedReservationsRepo.insertAll(listOf(reservation))
             ExposedReservationsRepo.selectAll().shouldBeSingleton()
                 .first() shouldBe reservation
+
+            val checkin = Arb.checkinEntity().next().copy(workoutId = workout.id)
+            ExposedCheckinsRepository.insertAll(listOf(checkin))
+            ExposedCheckinsRepository.selectAll().shouldBeSingleton().first() shouldBe checkin
         }
     }
 
-    private fun testJdbcUrl(): String {
-//        val tmpDir = File(System.getProperty("java.io.tmpdir"), "liquitest-${System.currentTimeMillis()}")
-//        return "jdbc:h2:file:${tmpDir.absolutePath}"
-        return "jdbc:h2:mem:liquitest-${System.currentTimeMillis()};DB_CLOSE_DELAY=-1"
-    }
+    private fun testJdbcUrl(): String =
+        "jdbc:h2:mem:liquitest-${System.currentTimeMillis()};DB_CLOSE_DELAY=-1"
 }

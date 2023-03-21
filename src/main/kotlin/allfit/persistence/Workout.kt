@@ -4,6 +4,8 @@ import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
@@ -36,7 +38,10 @@ data class WorkoutEntity(
 
 interface WorkoutsRepo {
     fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<WorkoutEntity>
+    fun selectAllBefore(untilExclusive: LocalDateTime): List<WorkoutEntity>
+    fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity>
     fun insertAll(workouts: List<WorkoutEntity>)
+    fun deleteAll(workoutIds: List<Int>)
 }
 
 class InMemoryWorkoutsRepo : WorkoutsRepo {
@@ -47,12 +52,26 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
         workouts.values.filter { it.start >= fromInclusive }
 
+    override fun selectAllBefore(untilExclusive: LocalDateTime): List<WorkoutEntity> =
+        workouts.values.filter { it.start < untilExclusive }
+
     override fun insertAll(workouts: List<WorkoutEntity>) {
         log.debug { "Inserting ${workouts.size} workouts." }
         workouts.forEach {
             this.workouts[it.id] = it
         }
     }
+
+    override fun deleteAll(workoutIds: List<Int>) {
+        log.debug { "Deleting ${workoutIds.size} workouts." }
+        workoutIds.forEach {
+            workouts.remove(it)
+        }
+    }
+
+    override fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity> =
+        workouts.values.filter { searchIds.contains(it.id) }
+
 }
 
 object ExposedWorkoutsRepo : WorkoutsRepo {
@@ -60,9 +79,23 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
     private val log = logger {}
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) = transaction {
-        log.debug { "Selecting workouts from: $fromInclusive" }
+        log.debug { "Selecting workouts after: $fromInclusive" }
         WorkoutsTable.select {
             WorkoutsTable.start greaterEq fromInclusive
+        }.map { it.toWorkoutEntity() }
+    }
+
+    override fun selectAllBefore(untilExclusive: LocalDateTime): List<WorkoutEntity> = transaction {
+        log.debug { "Selecting workouts before: $untilExclusive" }
+        WorkoutsTable.select {
+            WorkoutsTable.start less untilExclusive
+        }.map { it.toWorkoutEntity() }
+    }
+
+    override fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity> = transaction {
+        log.debug { "Selecting workouts with ID: $searchIds" }
+        WorkoutsTable.select {
+            WorkoutsTable.id inList searchIds
         }.map { it.toWorkoutEntity() }
     }
 
@@ -81,6 +114,15 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
                     it[address] = workout.address
                     it[partnerId] = EntityID(workout.partnerId, PartnersTable)
                 }
+            }
+        }
+    }
+
+    override fun deleteAll(workoutIds: List<Int>) {
+        transaction {
+            log.debug { "Deleting ${workoutIds.size} workouts." }
+            WorkoutsTable.deleteWhere {
+                WorkoutsTable.id inList workoutIds
             }
         }
     }

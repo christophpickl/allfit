@@ -3,6 +3,7 @@ package allfit.persistence
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -31,12 +32,13 @@ interface ReservationsRepo {
     fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<ReservationEntity>
     fun insertAll(reservations: List<ReservationEntity>)
     fun deleteAll(uuids: List<UUID>)
+    fun deleteAllBefore(untilExclusive: LocalDateTime)
 }
 
 class InMemoryReservationsRepo : ReservationsRepo {
 
     private val log = logger {}
-    private val reservations = mutableMapOf<UUID, ReservationEntity>()
+    val reservations = mutableMapOf<UUID, ReservationEntity>()
 
     override fun selectAll() =
         reservations.values.toList()
@@ -55,6 +57,14 @@ class InMemoryReservationsRepo : ReservationsRepo {
         log.debug { "Deleting ${reservations.size} reservations." }
         uuids.forEach {
             reservations.remove(it)
+        }
+    }
+
+    override fun deleteAllBefore(untilExclusive: LocalDateTime) {
+        reservations.filter {
+            it.value.workoutStart < untilExclusive
+        }.forEach { (key, _) ->
+            reservations.remove(key)
         }
     }
 }
@@ -93,6 +103,15 @@ object ExposedReservationsRepo : ReservationsRepo {
             log.debug { "Deleting ${uuids.size} reservations." }
             ReservationsTable.deleteWhere {
                 uuid inList uuids.map { it.toString() }
+            }
+        }
+    }
+
+    override fun deleteAllBefore(untilExclusive: LocalDateTime) {
+        transaction {
+            log.debug { "Deleting reservations before: $untilExclusive." }
+            ReservationsTable.deleteWhere {
+                workoutStart less untilExclusive
             }
         }
     }

@@ -200,3 +200,32 @@ fun Arb.Companion.workoutReservationPartnerJson() = arbitrary {
         id = int(min = 1).next(),
     )
 }
+
+fun Arb.Companion.checkinJson() = arbitrary {
+    CheckinJson(
+        uuid = uuid().next().toString(),
+        type = "workout",
+        created_at = ZonedDateTime.now(),
+        workout = workoutCheckinJson().next(),
+    )
+}
+
+fun Arb.Companion.workoutCheckinJson() = arbitrary {
+    WorkoutCheckinJson(
+        id = int(min = 1).next(),
+        name = string(minSize = 1, maxSize = 8).next(),
+        slug = string(minSize = 1, maxSize = 8, codepoints = Codepoint.alphanumeric()).next(),
+        from = SystemClock.now(),
+        till = SystemClock.now(),
+        partner = partnerWorkoutCheckinJson().next(),
+    )
+}
+
+fun Arb.Companion.partnerWorkoutCheckinJson() = arbitrary {
+    PartnerWorkoutCheckinJson(
+        id = int(min = 1).next(),
+        name = string(minSize = 1, maxSize = 8).next(),
+        slug = string(minSize = 1, maxSize = 8, codepoints = Codepoint.alphanumeric()).next(),
+        category = categoryJson().next(),
+    )
+}

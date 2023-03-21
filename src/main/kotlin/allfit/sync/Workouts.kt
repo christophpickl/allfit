@@ -3,7 +3,9 @@ package allfit.sync
 import allfit.api.OnefitClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.models.WorkoutJson
+import allfit.persistence.CheckinsRepository
 import allfit.persistence.PartnersRepo
+import allfit.persistence.ReservationsRepo
 import allfit.persistence.WorkoutEntity
 import allfit.persistence.WorkoutsRepo
 import allfit.service.ImageStorage
@@ -12,16 +14,22 @@ import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger
 
-class WorkoutsSyncer(
+interface WorkoutsSyncer {
+    suspend fun sync()
+}
+
+class WorkoutsSyncerImpl(
     private val client: OnefitClient,
     private val workoutsRepo: WorkoutsRepo,
     private val workoutFetcher: WorkoutFetcher,
     private val partnersRepo: PartnersRepo,
     private val imageStorage: ImageStorage,
-) {
+    private val checkinsRepository: CheckinsRepository,
+    private val reservationsRepo: ReservationsRepo,
+) : WorkoutsSyncer {
     private val log = logger {}
 
-    suspend fun sync() {
+    override suspend fun sync() {
         log.debug { "Syncing workouts..." }
         val workoutsToBeSyncedJson = getWorkoutsToBeSynced()
         val metaFetchById = workoutsToBeSyncedJson.map {
@@ -32,7 +40,14 @@ class WorkoutsSyncer(
             .filter { it.imageUrls.isNotEmpty() }
             .map { WorkoutAndImageUrl(it.workoutId, it.imageUrls.first()) })
 
-        // FIXME delete workouts before today which has no association with a reservation; and also images!
+
+        val startDeletion = SystemClock.todayBeginOfDay().toUtcLocalDateTime()
+        reservationsRepo.deleteAllBefore(startDeletion)
+        val workoutIdsWithCheckin = checkinsRepository.selectAll().map { it.workoutId }
+        val workoutIdsToDelete = workoutsRepo.selectAllBefore(startDeletion)
+            .filter { !workoutIdsWithCheckin.contains(it.id) }.map { it.id }
+        workoutsRepo.deleteAll(workoutIdsToDelete)
+        imageStorage.deleteWorkoutImages(workoutIdsToDelete)
     }
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {

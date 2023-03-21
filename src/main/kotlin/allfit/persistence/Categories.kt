@@ -1,7 +1,6 @@
 package allfit.persistence
 
 import mu.KotlinLogging.logger
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
@@ -29,7 +28,7 @@ interface CategoriesRepo : BaseRepo<CategoryEntity>
 class InMemoryCategoriesRepo : CategoriesRepo {
 
     private val log = logger {}
-    private val categories = mutableMapOf<Int, CategoryEntity>()
+    val categories = mutableMapOf<Int, CategoryEntity>()
 
     override fun selectAll() = categories.values.toList()
 
@@ -62,7 +61,7 @@ object ExposedCategoriesRepo : CategoriesRepo {
             log.debug { "Inserting ${entities.size} categories." }
             entities.forEach { category ->
                 CategoriesTable.insert {
-                    it[CategoriesTable.id] = EntityID(category.id, CategoriesTable)
+                    it[id] = category.id
                     it[isDeleted] = category.isDeleted
                     it[name] = category.name
                     it[slug] = category.slug

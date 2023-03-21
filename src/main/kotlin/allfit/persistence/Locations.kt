@@ -67,7 +67,7 @@ object ExposedLocationsRepo : LocationsRepo {
                 }.empty()
                 if (notExisting) {
                     LocationsTable.insert {
-                        it[id] = EntityID(location.id, LocationsTable)
+                        it[id] = location.id
                         it[partnerId] = EntityID(location.partnerId, PartnersTable)
                         it[streetName] = location.streetName
                         it[houseNumber] = location.houseNumber

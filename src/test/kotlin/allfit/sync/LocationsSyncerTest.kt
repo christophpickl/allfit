@@ -22,7 +22,7 @@ class LocationsSyncerTest : StringSpec() {
 
     override suspend fun beforeEach(testCase: TestCase) {
         locationsRepo = InMemoryLocationsRepo()
-        syncer = LocationsSyncer(locationsRepo)
+        syncer = LocationsSyncerImpl(locationsRepo)
     }
 
     init {

@@ -33,7 +33,7 @@ class CategoriesSyncerTest : StringSpec() {
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         categoriesRepo = InMemoryCategoriesRepo()
-        syncer = CategoriesSyncer(client, categoriesRepo)
+        syncer = CategoriesSyncerImpl(client, categoriesRepo)
     }
 
     init {

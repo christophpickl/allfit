@@ -11,9 +11,11 @@ import java.io.File
 interface ImageStorage {
 
     suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>)
+    fun saveDefaultImageForPartner(partnerIds: List<Int>)
     fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes>
 
     suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>)
+    fun saveDefaultImageForWorkout(workoutIds: List<Int>)
     fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes>
     fun deleteWorkoutImages(workoutIds: List<Int>)
 }
@@ -23,9 +25,14 @@ class InMemoryImageStorage : ImageStorage {
     val partnerImagesToBeLoaded = mutableMapOf<Int, PartnerAndImageBytes>()
     val savedWorkoutImages = mutableListOf<WorkoutAndImageUrl>()
     val workoutImagesToBeLoaded = mutableMapOf<Int, WorkoutAndImagesBytes>()
+    val deletedWorkoutImages = mutableListOf<Int>()
 
     override suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>) {
         savedPartnerImages += partners
+    }
+
+    override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
+        savedPartnerImages += partnerIds.map { PartnerAndImageUrl(it, it.toString()) }
     }
 
     override fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes> =
@@ -37,19 +44,25 @@ class InMemoryImageStorage : ImageStorage {
         savedWorkoutImages += workouts
     }
 
+    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
+        savedWorkoutImages += workoutIds.map { WorkoutAndImageUrl(it, it.toString()) }
+    }
+
     override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> =
         workoutIds.mapNotNull {
             workoutImagesToBeLoaded[it]
         }
 
     override fun deleteWorkoutImages(workoutIds: List<Int>) {
+        deletedWorkoutImages += workoutIds
     }
 }
 
-class RealImageStorage(
+class FileSystemImageStorage(
     private val partnersFolder: File,
     private val workoutsFolder: File,
 ) : ImageStorage {
+
     private val log = logger {}
     private val client = HttpClient()
     private val width = 300
@@ -61,10 +74,19 @@ class RealImageStorage(
         log.debug { "Saving ${partners.size} partner images." }
         partners.map { it.imageUrl }.requireAllEndsWithExtension(extension)
         partners.workParallel(parallelWorkersCount) {
-            client.getAndSave("${it.imageUrl}?w=$width", File(partnersFolder, "${it.partnerId}.$extension"))
+            val bytes = client.getBytes("${it.imageUrl}?w=$width")
+            partnerTarget(it.partnerId).saveAndLog(bytes)
             delay(delayBetweenEachDownloadInMs)
         }
     }
+
+    override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
+        partnerIds.forEach { id ->
+            partnerTarget(id).saveAndLog(null)
+        }
+    }
+
+    private fun partnerTarget(partnerId: Int) = File(partnersFolder, "$partnerId.$extension")
 
     override fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes> {
         log.debug { "Loading ${partnerIds.size} partner images." }
@@ -75,19 +97,24 @@ class RealImageStorage(
         }
     }
 
-
     override suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
         log.debug { "Saving ${workouts.size} workout images." }
         workouts.map { it.imageUrl }.requireAllEndsWithExtension(extension)
 
         workouts.workParallel(parallelWorkersCount) { workout ->
-            client.getAndSave(
-                url = "${workout.imageUrl}?w=$width",
-                target = File(workoutsFolder, "${workout.workoutId}.$extension")
-            )
+            val bytes = client.getBytes("${workout.imageUrl}?w=$width")
+            workoutTarget(workout.workoutId).saveAndLog(bytes)
             delay(delayBetweenEachDownloadInMs)
         }
     }
+
+    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
+        workoutIds.forEach { id ->
+            workoutTarget(id).saveAndLog(null)
+        }
+    }
+
+    private fun workoutTarget(workoutId: Int) = File(workoutsFolder, "$workoutId.$extension")
 
     override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> {
         log.debug { "Loading ${workoutIds.size} workout images." }
@@ -110,7 +137,15 @@ class RealImageStorage(
     }
 
     override fun deleteWorkoutImages(workoutIds: List<Int>) {
-        // FIXME implement me
+        val prefixes = workoutIds.map { "$it-" }
+        workoutsFolder.list { _, name ->
+            prefixes.any { name.startsWith(it) }
+        }!!.forEach {
+            val file = File(workoutsFolder, it)
+            if (!file.delete()) {
+                log.warn { "Unable to delete workout image located at: ${file.absolutePath}" }
+            }
+        }
     }
 }
 
@@ -127,21 +162,23 @@ private val log = logger {}
 private val defaultImage: ByteArray = ImageStorage::class.java.classLoader.getResourceAsStream("not_found_default_image.jpg")!!
     .readAllBytes()
 
-private suspend fun HttpClient.getAndSave(url: String, target: File) {
+private suspend fun HttpClient.getBytes(url: String): ByteArray? {
     val response = get(url)
     if (response.status == HttpStatusCode.NotFound) {
-        target.writeBytes(defaultImage)
-        log.warn { "Received 404 for $url - saving default not found image instead to: ${target.absolutePath}" }
-        return
+        log.warn { "Received 404 for $url" }
+        return null
     }
     response.requireOk()
-    val imageBinaryData = response.body<ByteArray>()
-    if (target.exists()) {
-        log.warn { "Overwriting image file ${target.absolutePath} from URL: $url" }
+    return response.body<ByteArray>()
+}
+
+private fun File.saveAndLog(imageBinaryData: ByteArray?) {
+    if (exists()) {
+        log.warn { "Overwriting image file $absolutePath" }
     } else {
-        log.trace { "Saving image to file ${target.absolutePath} from URL: $url" }
+        log.trace { "Saving image to file $absolutePath" }
     }
-    target.writeBytes(imageBinaryData)
+    writeBytes(imageBinaryData ?: defaultImage)
 }
 
 data class PartnerAndImageUrl(

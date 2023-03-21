@@ -9,13 +9,17 @@ import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger
 import java.util.UUID
 
-class ReservationsSyncer(
+interface ReservationsSyncer {
+    suspend fun sync()
+}
+
+class ReservationsSyncerImpl(
     private val client: OnefitClient,
     private val reservationsRepo: ReservationsRepo,
-) {
+) : ReservationsSyncer {
     private val log = logger {}
 
-    suspend fun sync() {
+    override suspend fun sync() {
         log.debug { "Syncing reservations..." }
         val reservationsRemote = client.getReservations()
         val reservationsLocal = reservationsRepo.selectAllStartingFrom(SystemClock.now().toUtcLocalDateTime())

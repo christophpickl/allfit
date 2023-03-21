@@ -8,13 +8,17 @@ import allfit.service.ImageStorage
 import allfit.service.PartnerAndImageUrl
 import mu.KotlinLogging.logger
 
-class PartnersSyncer(
+interface PartnersSyncer {
+    suspend fun sync(partners: PartnersJson)
+}
+
+class PartnersSyncerImpl(
     private val partnersRepo: PartnersRepo,
     private val imageStorage: ImageStorage
-) {
+) : PartnersSyncer {
     private val log = logger {}
 
-    suspend fun sync(partners: PartnersJson) {
+    override suspend fun sync(partners: PartnersJson) {
         log.debug { "Syncing partners ..." }
         val report = syncAny(partnersRepo, partners.data) {
             it.toPartnerEntity()

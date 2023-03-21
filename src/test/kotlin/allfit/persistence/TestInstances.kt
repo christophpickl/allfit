@@ -75,3 +75,11 @@ fun Arb.Companion.reservationEntity() = arbitrary {
         workoutStart = LocalDateTime.now(),
     )
 }
+
+fun Arb.Companion.checkinEntity() = arbitrary {
+    CheckinEntity(
+        id = uuid().next(),
+        workoutId = int(min = 1).next(),
+        createdAt = LocalDateTime.now(),
+    )
+}

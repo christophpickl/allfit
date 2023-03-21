@@ -35,7 +35,7 @@ class PartnersSyncerTest : StringSpec() {
         categoriesRepo = InMemoryCategoriesRepo()
         partnersRepo = InMemoryPartnersRepo()
         locationsRepo = InMemoryLocationsRepo()
-        syncer = PartnersSyncer(partnersRepo, imageStorage)
+        syncer = PartnersSyncerImpl(partnersRepo, imageStorage)
     }
 
     init {

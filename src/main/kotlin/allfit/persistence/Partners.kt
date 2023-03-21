@@ -57,7 +57,7 @@ interface PartnersRepo : BaseRepo<PartnerEntity>
 class InMemoryPartnersRepo : PartnersRepo {
 
     private val log = logger {}
-    private val partners = mutableMapOf<Int, PartnerEntity>()
+    val partners = mutableMapOf<Int, PartnerEntity>()
 
     override fun selectAll() = partners.values.toList()
 

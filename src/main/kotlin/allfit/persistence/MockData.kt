@@ -61,6 +61,14 @@ private val location1 = LocationEntity(
 )
 private val allLocations = listOf(location1)
 
+private val checkin1 = CheckinEntity(
+    id = UUID.randomUUID(),
+    workoutId = workout1.id,
+    createdAt = LocalDateTime.now(),
+)
+
+private val allCheckins = listOf(checkin1)
+
 fun InMemoryCategoriesRepo.insertMockData() = apply {
     insertAll(allCategories)
 }
@@ -79,4 +87,8 @@ fun InMemoryReservationsRepo.insertMockData() = apply {
 
 fun InMemoryLocationsRepo.insertMockData() = apply {
     insertAllIfNotYetExists(allLocations)
+}
+
+fun InMemoryCheckinsRepository.insertMockData() = apply {
+    insertAll(allCheckins)
 }

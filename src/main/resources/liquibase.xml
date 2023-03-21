@@ -144,7 +144,19 @@
                 <constraints nullable="false"/>
             </column>
             <column name="WORKOUT_ID" type="integer">
-                <constraints nullable="false" references="WORKOUTS(ID)" foreignKeyName="FK_RESERVATIONS_TO_PARTNERS"/>
+                <constraints nullable="false" references="WORKOUTS(ID)" foreignKeyName="FK_RESERVATIONS_TO_WORKOUTS"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="CHECKINS">
+            <column name="UUID" type="varchar(36)">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="PK_CHECKINS"/>
+            </column>
+            <column name="CREATED_AT" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="WORKOUT_ID" type="integer">
+                <constraints nullable="false" references="WORKOUTS(ID)" foreignKeyName="FK_CHECKINS_TO_WORKOUTS"/>
             </column>
         </createTable>
 
@@ -175,7 +187,6 @@
                 <column name="c" type="varchar(3)"/>
             </table>
             <sql>ALTER TABLE t ADD CONSTRAINT check_yes_no CHECK (c = 'yes' OR c = 'no')</sql>
-
     -->
 </databaseChangeLog>
 

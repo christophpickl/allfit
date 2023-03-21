@@ -8,13 +8,17 @@ import allfit.persistence.CategoriesRepo
 import allfit.persistence.CategoryEntity
 import mu.KotlinLogging.logger
 
-class CategoriesSyncer(
+interface CategoriesSyncer {
+    suspend fun sync(partners: PartnersJson)
+}
+
+class CategoriesSyncerImpl(
     private val client: OnefitClient,
     private val categoriesRepo: CategoriesRepo,
-) {
+) : CategoriesSyncer {
     private val log = logger {}
 
-    suspend fun sync(partners: PartnersJson) {
+    override suspend fun sync(partners: PartnersJson) {
         log.debug { "Syncing categories ..." }
         syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) {
             it.toCategoryEntity()

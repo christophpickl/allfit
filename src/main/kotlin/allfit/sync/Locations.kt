@@ -6,12 +6,16 @@ import allfit.persistence.LocationEntity
 import allfit.persistence.LocationsRepo
 import mu.KotlinLogging.logger
 
-class LocationsSyncer(
+interface LocationsSyncer {
+    fun sync(partners: PartnersJson)
+}
+
+class LocationsSyncerImpl(
     private val locationsRepo: LocationsRepo,
-) {
+) : LocationsSyncer {
     private val log = logger {}
 
-    fun sync(partners: PartnersJson) {
+    override fun sync(partners: PartnersJson) {
         log.debug { "Syncing locations..." }
         val locations = partners.data.map { partner ->
             partner.location_groups.map { it.locations }.flatten()

@@ -5,10 +5,16 @@ import allfit.api.models.WorkoutJson
 import allfit.api.models.workoutJson
 import allfit.api.models.workoutPartnerJson
 import allfit.api.models.workoutsJson
+import allfit.persistence.CheckinsRepository
+import allfit.persistence.InMemoryCheckinsRepository
 import allfit.persistence.InMemoryPartnersRepo
+import allfit.persistence.InMemoryReservationsRepo
 import allfit.persistence.InMemoryWorkoutsRepo
 import allfit.persistence.WorkoutEntity
+import allfit.persistence.checkinEntity
 import allfit.persistence.partnerEntity
+import allfit.persistence.reservationEntity
+import allfit.persistence.singletonShouldBe
 import allfit.persistence.workoutEntity
 import allfit.service.InMemoryImageStorage
 import allfit.service.WorkoutAndImageUrl
@@ -22,9 +28,11 @@ import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
+import java.time.LocalDateTime
 
 class WorkoutsSyncerTest : StringSpec() {
 
+    private val pastDateTime = LocalDateTime.of(2000, 1, 1, 0, 0)
     private val partnerEntity = Arb.partnerEntity().next()
     private val workoutJson = Arb.workoutJson().next()
     private val workoutFetch = Arb.workoutFetch().next()
@@ -35,6 +43,8 @@ class WorkoutsSyncerTest : StringSpec() {
     private lateinit var workoutsRepo: InMemoryWorkoutsRepo
     private lateinit var partnersRepo: InMemoryPartnersRepo
     private lateinit var imageStorage: InMemoryImageStorage
+    private lateinit var checkinsRepository: CheckinsRepository
+    private lateinit var reservationsRepo: InMemoryReservationsRepo
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
@@ -42,15 +52,17 @@ class WorkoutsSyncerTest : StringSpec() {
         workoutFetcher = DummyWorkoutFetcher()
         partnersRepo = InMemoryPartnersRepo()
         imageStorage = InMemoryImageStorage()
-        syncer = WorkoutsSyncer(client, workoutsRepo, workoutFetcher, partnersRepo, imageStorage)
-    }
-
-    private fun workoutWithPartnerId(partnerId: Int) = Arb.workoutJson().next()
-        .copy(partner = Arb.workoutPartnerJson().next().copy(id = partnerId))
-
-    private fun insertPartnerForWorkout(): WorkoutJson {
-        partnersRepo.insertAll(listOf(partnerEntity))
-        return workoutWithPartnerId(partnerEntity.id)
+        checkinsRepository = InMemoryCheckinsRepository()
+        reservationsRepo = InMemoryReservationsRepo()
+        syncer = WorkoutsSyncerImpl(
+            client,
+            workoutsRepo,
+            workoutFetcher,
+            partnersRepo,
+            imageStorage,
+            checkinsRepository,
+            reservationsRepo
+        )
     }
 
     init {
@@ -102,8 +114,41 @@ class WorkoutsSyncerTest : StringSpec() {
             workoutsRepo.selectAllStartingFrom(workoutJson.from.toUtcLocalDateTime()).shouldBeSingleton()
                 .first() shouldBe workoutEntity
         }
+        "Given past reservation When sync Then delete it" {
+            reservationsRepo.insertAll(listOf(Arb.reservationEntity().next().copy(workoutStart = pastDateTime)))
+
+            syncer.sync()
+
+            reservationsRepo.reservations.shouldBeEmpty()
+        }
+        "Given past workout without association When sync Then delete it and remove image" {
+            val pastWorkout = workoutEntity.copy(start = pastDateTime)
+            workoutsRepo.insertAll(listOf(pastWorkout))
+
+            syncer.sync()
+
+            workoutsRepo.workouts.shouldBeEmpty()
+            imageStorage.deletedWorkoutImages.shouldBeSingleton().first() shouldBe pastWorkout.id
+        }
+        "Given past workout with association When sync Then keep it" {
+            val pastWorkout = workoutEntity.copy(start = pastDateTime)
+            checkinsRepository.insertAll(listOf(Arb.checkinEntity().next().copy(workoutId = pastWorkout.id)))
+            workoutsRepo.insertAll(listOf(pastWorkout))
+
+            syncer.sync()
+
+            workoutsRepo singletonShouldBe pastWorkout
+        }
+    }
+
+    private fun insertPartnerForWorkout(): WorkoutJson {
+        partnersRepo.insertAll(listOf(partnerEntity))
+        return workoutWithPartnerId(partnerEntity.id)
     }
 }
+
+private fun workoutWithPartnerId(partnerId: Int) = Arb.workoutJson().next()
+    .copy(partner = Arb.workoutPartnerJson().next().copy(id = partnerId))
 
 private fun InMemoryOnefitClient.mockWorkoutsResponse(vararg workouts: WorkoutJson) {
     workoutsJson = Arb.workoutsJson().next().copy(data = workouts.toList())

@@ -31,6 +31,9 @@ fun persistenceModule(config: AppConfig) = module {
     single {
         if (config.mockDb) InMemoryLocationsRepo().insertMockData() else ExposedLocationsRepo
     }
+    single {
+        if (config.mockDb) InMemoryCheckinsRepository().insertMockData() else ExposedCheckinsRepository
+    }
 }
 
 private fun connectToDatabase() {

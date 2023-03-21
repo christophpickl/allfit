@@ -15,14 +15,27 @@ data class CheckinsJson(
 @Serializable
 data class CheckinJson(
     val uuid: String,
-    val type: String, // enum: workout
+    val type: String, // enum: workout, ...
     val created_at: ZonedDateTime,
-    val workout: WorkoutCheckinJson, // FIXME when checkin is in past, workout needs to be fetched individually
+    val workout: WorkoutCheckinJson,
     // invalid_reason: X?,
-    // checkoued_out_at: X?,
+    // checked_out_at: X?,
 )
 
 @Serializable
 data class WorkoutCheckinJson(
     val id: Int,
+    val name: String,
+    val slug: String,
+    val from: ZonedDateTime,
+    val till: ZonedDateTime,
+    val partner: PartnerWorkoutCheckinJson,
+)
+
+@Serializable
+data class PartnerWorkoutCheckinJson(
+    val id: Int,
+    val name: String,
+    val slug: String,
+    val category: CategoryJson,
 )

@@ -29,7 +29,7 @@ class ReservationsSyncerTest : StringSpec() {
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         reservationsRepo = InMemoryReservationsRepo()
-        syncer = ReservationsSyncer(client, reservationsRepo)
+        syncer = ReservationsSyncerImpl(client, reservationsRepo)
     }
 
     init {

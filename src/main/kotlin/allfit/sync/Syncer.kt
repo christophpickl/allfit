@@ -5,41 +5,46 @@ import allfit.api.PartnerSearchParams
 import allfit.api.models.SyncableJson
 import allfit.domain.HasIntId
 import allfit.persistence.BaseRepo
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging.logger
+import org.jetbrains.exposed.sql.transactions.transaction
 
 interface Syncer {
-    suspend fun syncAll()
+    fun syncAll()
 }
 
 object NoOpSyncer : Syncer {
     private val log = logger {}
-    override suspend fun syncAll() {
+    override fun syncAll() {
         log.info { "No-op syncer is not doing anything." }
     }
 }
 
-class RealSyncer(
+class CompositeSyncer(
     private val client: OnefitClient,
     private val categoriesSyncer: CategoriesSyncer,
     private val partnersSyncer: PartnersSyncer,
     private val locationsSyncer: LocationsSyncer,
     private val workoutsSyncer: WorkoutsSyncer,
     private val reservationsSyncer: ReservationsSyncer,
+    private val checkinsSyncer: CheckinsSyncer,
 ) : Syncer {
 
     private val log = logger {}
 
-    override suspend fun syncAll() {
-        log.info { "Sync started ..." }
-        // TODO wrap with transaction all of it (write test first which breaks in between)
-        val partners = client.getPartners(PartnerSearchParams.simple())
-        categoriesSyncer.sync(partners)
-        partnersSyncer.sync(partners)
-        locationsSyncer.sync(partners)
-        workoutsSyncer.sync()
-        reservationsSyncer.sync()
-        // FIXME checkinSyncer.sync() ... might also need to insert workout & partner (if too long in past)
-
+    override fun syncAll() {
+        transaction {
+            runBlocking {
+                log.info { "Sync started ..." }
+                val partners = client.getPartners(PartnerSearchParams.simple())
+                categoriesSyncer.sync(partners)
+                partnersSyncer.sync(partners)
+                locationsSyncer.sync(partners)
+                workoutsSyncer.sync()
+                reservationsSyncer.sync()
+                checkinsSyncer.sync()
+            }
+        }
     }
 }
 
