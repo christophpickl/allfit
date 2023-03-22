@@ -20,7 +20,7 @@ class WorkoutsTable(workouts: ObservableList<FullWorkout>) : TableView<FullWorko
 
         readonlyColumn("Name", FullWorkout::name)
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }
-        column<FullWorkout, Int>("Visits") { it.value.partner.visitsProperty() }
+        column<FullWorkout, Int>("Checkins") { it.value.partner.checkinsProperty() }
         column<FullWorkout, Rating>("Rating") { it.value.partner.ratingProperty() }.cellFormat { rating ->
             graphic = label(rating.renderStars())
         }

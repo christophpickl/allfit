@@ -1,5 +1,6 @@
 package allfit.presentation
 
+import allfit.presentation.logic.MainController
 import allfit.presentation.view.MainView
 import javafx.stage.Stage
 import tornadofx.App

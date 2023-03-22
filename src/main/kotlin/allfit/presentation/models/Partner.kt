@@ -8,7 +8,7 @@ typealias Rating = Int
 interface Partner {
     val id: Int
     val name: String
-    val visits: Int
+    val checkins: Int
     var rating: Rating
     var isFavourited: Boolean
     var isWishlisted: Boolean
@@ -17,7 +17,7 @@ interface Partner {
 class SimplePartner(
     id: Int,
     name: String,
-    visits: Int,
+    checkins: Int,
     rating: Rating,
     isFavourited: Boolean,
     isWishlisted: Boolean,
@@ -26,8 +26,8 @@ class SimplePartner(
     fun idProperty() = getProperty(SimplePartner::id)
     override var name: String by property(name)
     fun nameProperty() = getProperty(SimplePartner::name)
-    override var visits: Int by property(visits)
-    fun visitsProperty() = getProperty(SimplePartner::visits)
+    override var checkins: Int by property(checkins)
+    fun checkinsProperty() = getProperty(SimplePartner::checkins)
     override var rating: Rating by property(rating)
     fun ratingProperty() = getProperty(SimplePartner::rating)
     override var isFavourited: Boolean by property(isFavourited)

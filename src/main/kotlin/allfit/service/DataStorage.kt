@@ -22,19 +22,33 @@ object InMemoryDataStorage : DataStorage {
     private val simpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutGym, workoutJump)
 
     private val partnerEms = FullPartner(
-        SimplePartner(id = 1, name = "EMS Studio", visits = 0, rating = 0, isFavourited = false, isWishlisted = false),
+        SimplePartner(
+            id = 1,
+            name = "EMS Studio",
+            checkins = 0,
+            rating = 0,
+            isFavourited = false,
+            isWishlisted = false
+        ),
         listOf(workoutEms)
     )
     private val partnerYoga = FullPartner(
-        SimplePartner(id = 2, name = "Yoga School", visits = 2, rating = 5, isFavourited = true, isWishlisted = false),
+        SimplePartner(
+            id = 2,
+            name = "Yoga School",
+            checkins = 2,
+            rating = 5,
+            isFavourited = true,
+            isWishlisted = false
+        ),
         listOf(workoutYogaYin, workoutYogaHot)
     )
     private val partnerGym = FullPartner(
-        SimplePartner(id = 3, name = "The Gym", visits = 1, rating = 3, isFavourited = false, isWishlisted = false),
+        SimplePartner(id = 3, name = "The Gym", checkins = 1, rating = 3, isFavourited = false, isWishlisted = false),
         listOf(workoutGym)
     )
     private val partnerFoobar = FullPartner(
-        SimplePartner(id = 4, name = "Foobar", visits = 0, rating = 0, isFavourited = false, isWishlisted = true),
+        SimplePartner(id = 4, name = "Foobar", checkins = 0, rating = 0, isFavourited = false, isWishlisted = true),
         listOf(workoutJump)
     )
     private val allFullPartners = listOf(partnerEms, partnerYoga, partnerGym, partnerFoobar)

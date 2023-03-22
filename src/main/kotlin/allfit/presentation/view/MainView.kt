@@ -21,7 +21,7 @@ class MainView : View() {
     private val partnerDetailView: PartnerDetailView by inject()
     private val workoutDetailView: WorkoutDetailView by inject()
     private val mainViewModel: MainViewModel by inject()
-    private val workoutsTable = WorkoutsTable(mainViewModel.allWorkouts)
+    private val workoutsTable = WorkoutsTable(mainViewModel.sortedFilteredWorkouts)
 
     init {
         title = "AllFit " + (if (Environment.current == Environment.Development) " - DEV" else "")

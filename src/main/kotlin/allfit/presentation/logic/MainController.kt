@@ -1,5 +1,9 @@
-package allfit.presentation
+package allfit.presentation.logic
 
+import allfit.presentation.ApplicationStartedFxEvent
+import allfit.presentation.SavePartnerFXEvent
+import allfit.presentation.SearchFXEvent
+import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
 import allfit.service.DataStorage
 import mu.KotlinLogging.logger
@@ -19,7 +23,8 @@ class MainController : Controller() {
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
         }
         subscribe<SearchFXEvent>() {
-            logger.debug { "Search." }
+            logger.debug { "Search: ${it.searchRequest}" }
+            mainViewModel.sortedFilteredWorkouts.predicate = it.searchRequest.predicate
         }
         subscribe<WorkoutSelectedFXEvent>() {
             logger.debug { "Workout selected: ${it.workout}" }
@@ -29,6 +34,8 @@ class MainController : Controller() {
         subscribe<SavePartnerFXEvent>() {
             logger.debug { "Saving partner: ${it.modifications}" }
             dataStorage.updatePartner(it.modifications)
+            mainViewModel.sortedFilteredWorkouts.refilter()
         }
     }
 }
+
