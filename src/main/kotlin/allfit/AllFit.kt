@@ -3,9 +3,9 @@ package allfit
 import allfit.api.ClassPathOnefitClient
 import allfit.api.OnefitClient
 import allfit.api.authenticateOneFit
+import allfit.presentation.TornadoFxEntryPoint
 import allfit.service.CredentialsLoader
 import allfit.sync.Syncer
-import allfit.view.TornadoFxEntryPoint
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging.logger
 import org.koin.core.Koin
@@ -48,7 +48,7 @@ class AllFitStarter(private val syncer: Syncer) {
 
     private val log = logger {}
 
-    suspend fun start() {
+    fun start() {
         syncer.syncAll()
         startTornadoFx()
     }

@@ -159,7 +159,7 @@ private fun List<String>.requireAllEndsWithExtension(extension: String) {
 
 private val log = logger {}
 
-private val defaultImage: ByteArray = ImageStorage::class.java.classLoader.getResourceAsStream("not_found_default_image.jpg")!!
+private val notFoundDefaultImage: ByteArray = ImageStorage::class.java.classLoader.getResourceAsStream("images/not_found_default_image.jpg")!!
     .readAllBytes()
 
 private suspend fun HttpClient.getBytes(url: String): ByteArray? {
@@ -178,7 +178,7 @@ private fun File.saveAndLog(imageBinaryData: ByteArray?) {
     } else {
         log.trace { "Saving image to file $absolutePath" }
     }
-    writeBytes(imageBinaryData ?: defaultImage)
+    writeBytes(imageBinaryData ?: notFoundDefaultImage)
 }
 
 data class PartnerAndImageUrl(

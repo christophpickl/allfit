@@ -1,7 +1,7 @@
 package allfit.sync
 
 import allfit.api.models.SyncableJson
-import allfit.domain.HasIntId
+import allfit.persistence.HasIntId
 
 object Differ {
     fun <ENTITY : HasIntId, JSON : SyncableJson> diff(

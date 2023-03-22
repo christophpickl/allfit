@@ -1,8 +1,5 @@
 package allfit.persistence
 
-import allfit.domain.Deletable
-import allfit.domain.HasIntId
-
 val allTables = arrayOf(
     CategoriesTable,
     PartnersTable,
@@ -13,4 +10,12 @@ val allTables = arrayOf(
     CheckinsTable,
 )
 
+interface HasIntId {
+    val id: Int
+}
+
 interface BaseEntity : HasIntId, Deletable
+
+interface Deletable {
+    val isDeleted: Boolean
+}

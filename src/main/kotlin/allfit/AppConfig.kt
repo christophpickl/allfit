@@ -6,13 +6,13 @@ package allfit
 data class AppConfig(
     val mockClient: Boolean,
     val mockSyncer: Boolean,
-    val mockDb: Boolean,
+    val mockDb: Boolean
 ) {
     companion object {
         val develop = AppConfig(
             mockClient = true,
-            mockSyncer = false,
-            mockDb = false,
+            mockSyncer = true,
+            mockDb = true,
         )
         val prod = AppConfig(
             mockClient = false,

@@ -7,6 +7,7 @@ import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import allfit.service.FileSystemImageStorage
 import allfit.service.ImageStorage
+import allfit.service.InMemoryDataStorage
 import allfit.sync.syncModule
 import org.koin.dsl.module
 
@@ -19,7 +20,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
         )
     }
 
-    single { DataStorage(get()) }
+    single<DataStorage> { InMemoryDataStorage }
     single { AllFitStarter(get()) }
 
     includes(persistenceModule(config))

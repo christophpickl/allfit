@@ -3,8 +3,8 @@ package allfit.sync
 import allfit.api.OnefitClient
 import allfit.api.PartnerSearchParams
 import allfit.api.models.SyncableJson
-import allfit.domain.HasIntId
 import allfit.persistence.BaseRepo
+import allfit.persistence.HasIntId
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.transactions.transaction
