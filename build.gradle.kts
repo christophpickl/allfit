@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 repositories {
     mavenCentral()
 }
+
 plugins {
     kotlin("jvm") version "1.8.10"
     application
@@ -14,7 +15,6 @@ plugins {
 
 dependencies {
     implementation("no.tornado:tornadofx:1.7.20")
-    implementation("org.openjfx:javafx-web:19.0.2.1") // for WebView class
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines:0.19.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
@@ -27,11 +27,11 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
     implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
     implementation("com.h2database:h2:2.1.214")
-    implementation("org.liquibase:liquibase-core:4.19.0")
+    implementation("org.liquibase:liquibase-core:4.20.0")
     implementation("com.mattbertolini:liquibase-slf4j:4.1.0")
 
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
-    implementation("ch.qos.logback:logback-classic:1.4.5")
+    implementation("ch.qos.logback:logback-classic:1.4.6")
 
     implementation("org.jsoup:jsoup:1.15.4")
 
@@ -68,7 +68,7 @@ tasks.withType<KotlinCompile> {
 
 javafx {
     version = "19.0.2.1"
-    modules = listOf("javafx.controls", "javafx.fxml")
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.web")
 }
 
 tasks.withType<Test>().configureEach {
@@ -83,3 +83,11 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
         }
     }
 }
+
+//configurations.all {
+//    resolutionStrategy {
+//        failOnVersionConflict()
+//        failOnNonReproducibleResolution()
+//    }
+//}
+

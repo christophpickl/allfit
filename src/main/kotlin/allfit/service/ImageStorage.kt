@@ -159,8 +159,10 @@ private fun List<String>.requireAllEndsWithExtension(extension: String) {
 
 private val log = logger {}
 
-private val notFoundDefaultImage: ByteArray = ImageStorage::class.java.classLoader.getResourceAsStream("images/not_found_default_image.jpg")!!
-    .readAllBytes()
+private val notFoundDefaultImage: ByteArray =
+    ImageStorage::class.java.classLoader
+        .getResourceAsStream("images/not_found_default_image.jpg")?.readAllBytes()
+        ?: error("Classpath image 'not_found_default_image.jpg' not found!")
 
 private suspend fun HttpClient.getBytes(url: String): ByteArray? {
     val response = get(url)

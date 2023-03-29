@@ -3,7 +3,9 @@ package allfit.presentation.view
 import allfit.presentation.StaticImage
 import allfit.presentation.StaticImageStorage
 import allfit.presentation.Styles
+import allfit.presentation.htmlview
 import allfit.presentation.models.MainViewModel
+import javafx.scene.paint.Color
 import tornadofx.View
 import tornadofx.action
 import tornadofx.addClass
@@ -11,7 +13,7 @@ import tornadofx.bind
 import tornadofx.button
 import tornadofx.imageview
 import tornadofx.label
-import tornadofx.textarea
+import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.visibleWhen
@@ -23,23 +25,18 @@ class WorkoutDetailView : View() {
     private val mainViewModel: MainViewModel by inject()
 
     override val root = vbox {
+        style {
+            backgroundColor += Color.RED
+        }
         label("Workout") {
             bind(mainViewModel.selectedWorkout.map { it.name })
             addClass(Styles.header1)
         }
+        label().bind(mainViewModel.selectedWorkout.map { it.date.prettyString })
         imageview(mainViewModel.selectedWorkout.map { it.image })
 
-//        webview {
-//            prefHeight = 100.0
-//            javafx.scene.
-
-//            engine.userAgent = iPhoneUserAgent
-        //bind(mainViewModel.selectedWorkout.map { it.about })
-//        }
-        textarea {
-            bind(mainViewModel.selectedWorkout.map { it.specifics })
-        }
-        label().bind(mainViewModel.selectedWorkout.map { it.date.prettyString })
+        htmlview(mainViewModel.selectedWorkout.map { it.about })
+        htmlview(mainViewModel.selectedWorkout.map { it.specifics })
 
         imageview(StaticImageStorage.get(StaticImage.Reserved)) {
             visibleWhen {

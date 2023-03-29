@@ -16,6 +16,7 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
+import javafx.scene.paint.Color
 import tornadofx.FXEvent
 import tornadofx.View
 import tornadofx.action
@@ -40,6 +41,7 @@ import tornadofx.onSelectionChange
 import tornadofx.readonlyColumn
 import tornadofx.selectedItem
 import tornadofx.singleAssign
+import tornadofx.style
 import tornadofx.textarea
 import tornadofx.tooltip
 import tornadofx.vbox
@@ -60,6 +62,9 @@ class PartnerDetailView : View() {
     }
 
     override val root = vbox {
+        style {
+            backgroundColor += Color.YELLOW
+        }
         label("Partner") {
             bind(mainViewModel.selectedPartner.name)
             addClass(Styles.header1)
@@ -122,25 +127,27 @@ class PartnerDetailView : View() {
                 }
             }
         }
-        label("Facilities:")
         label {
-            bind(mainViewModel.selectedPartner.facilities.map { it.split(",").joinToString() })
+            bind(mainViewModel.selectedPartner.facilities.map { facilities ->
+                "Facilities: " + facilities.split(",").joinToString(", ").let {
+                    it.ifEmpty { "None" }
+                }
+            })
         }
 
         textarea("Description:") {
             isEditable = false
-            // TODO render as HTML
             bind(mainViewModel.selectedPartner.description)
         }
 
         label("Visited Workouts:")
         workoutTable(mainViewModel.selectedPartner.pastWorkouts, ::fireDelegate) {
-            prefHeight = 60.0
+            prefHeight = 200.0
         }
 
         label("Available Workouts:")
         workoutTable(mainViewModel.selectedPartner.currentWorkouts, ::fireDelegate) {
-            prefHeight = 120.0
+            prefHeight = 400.0
         }
     }
 

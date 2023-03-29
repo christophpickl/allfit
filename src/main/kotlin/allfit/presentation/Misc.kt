@@ -2,6 +2,10 @@ package allfit.presentation
 
 import allfit.presentation.models.Rating
 import allfit.presentation.models.SimplePartner
+import javafx.beans.value.ObservableValue
+import javafx.event.EventTarget
+import javafx.scene.web.WebView
+import tornadofx.webview
 
 private val starsMap = mapOf(
     0 to "",
@@ -26,5 +30,15 @@ data class PartnerModifications(
         storedPartner.isFavorited = isFavorited
         storedPartner.isWishlisted = isWishlisted
         storedPartner.note = note
+    }
+}
+
+// TODO specify nice default font
+fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit = {}) {
+    webview {
+        html.addListener { _, _, newValue ->
+            engine.loadContent(newValue ?: "")
+        }
+        op()
     }
 }
