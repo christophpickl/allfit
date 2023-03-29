@@ -2,6 +2,7 @@ package allfit.presentation.logic
 
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.view.NumericOperator
+import java.time.ZonedDateTime
 
 interface SubSearchRequest {
     val predicate: (FullWorkout) -> Boolean
@@ -30,10 +31,18 @@ data class CheckinSearchRequest(
     }
 }
 
-data class FavouriteSearchRequest(
+data class FavoriteSearchRequest(
     val operand: Boolean,
 ) : SubSearchRequest {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
-        workout.partner.isFavourited == operand
+        workout.partner.isFavorited == operand
+    }
+}
+
+data class DateSearchRequest(
+    val operand: ZonedDateTime,
+) : SubSearchRequest {
+    override val predicate: (FullWorkout) -> Boolean = { workout ->
+        workout.simpleWorkout.date.start.dayOfYear == operand.dayOfYear
     }
 }

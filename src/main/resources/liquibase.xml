@@ -50,7 +50,7 @@
             <column name="IS_FAVORITED" type="boolean">
                 <constraints nullable="false"/>
             </column>
-            <column name="IS_STARRED" type="boolean">
+            <column name="IS_WISHLISTED" type="boolean">
                 <constraints nullable="false"/>
             </column>
             <column name="IS_HIDDEN" type="boolean">

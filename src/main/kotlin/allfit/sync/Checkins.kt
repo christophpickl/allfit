@@ -93,7 +93,7 @@ private fun PartnerWorkoutCheckinJson.toPartnerEntity() = PartnerEntity(
     facilities = "",
     isDeleted = false,
     isFavorited = false,
-    isStarred = false,
+    isWishlisted = false,
     isHidden = false
 )
 

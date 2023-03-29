@@ -12,10 +12,11 @@ object StaticImageStorage {
 }
 
 enum class StaticImage(val filename: String) {
-    FavouriteFull("favourite_full.png"),
-    FavouriteOutline("favourite_outline.png"),
+    FavoriteFull("favorite_full.png"),
+    FavoriteOutline("favorite_outline.png"),
     WishlistFull("wishlist_full.png"),
     WishlistOutline("wishlist_outline.png"),
+    Reserved("reserved.png"),
 }
 
 object ImageReader {

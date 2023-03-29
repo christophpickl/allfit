@@ -2,7 +2,7 @@ package allfit.sync
 
 import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.categoryJson
-import allfit.domain.category
+import allfit.persistence.categoryEntity
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -40,7 +40,7 @@ class DifferTest : StringSpec() {
         Differ.diff(localDbosWithId(localDboIds), remoteJsonsWithId(remoteJsonIds), mapper)
 
     private fun localDbosWithId(ids: List<Int>) = ids.map { id ->
-        Arb.category().next().copy(id = id)
+        Arb.categoryEntity().next().copy(id = id)
     }
 
     private fun remoteJsonsWithId(ids: List<Int>) = ids.map { id ->

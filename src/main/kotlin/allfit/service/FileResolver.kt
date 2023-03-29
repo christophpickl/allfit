@@ -21,11 +21,8 @@ object FileResolver {
         appDirectoryDev.createIfNeededOrFail()
     }
 
-    private fun baseDirectory(entry: DiskEntry) =
-        if (entry.environmentAgnostic) appDirectoryProd else appDirectory
-
-    fun resolve(entry: FileEntry) = File(baseDirectory(entry), entry.fileName)
-    fun resolve(entry: DirectoryEntry) = File(baseDirectory(entry), entry.directoryName).createIfNeededOrFail()
+    fun resolve(entry: FileEntry) = File(appDirectory, entry.fileName)
+    fun resolve(entry: DirectoryEntry) = File(appDirectory, entry.directoryName).createIfNeededOrFail()
 }
 
 private fun File.createIfNeededOrFail() = apply {
@@ -37,18 +34,15 @@ private fun File.createIfNeededOrFail() = apply {
     }
 }
 
-interface DiskEntry {
-    val environmentAgnostic: Boolean
-}
 
-enum class FileEntry(val fileName: String, override val environmentAgnostic: Boolean = false) : DiskEntry {
+enum class FileEntry(val fileName: String) {
     Login("login.json"),
 }
 
-enum class DirectoryEntry(val directoryName: String, override val environmentAgnostic: Boolean = false) : DiskEntry {
+enum class DirectoryEntry(val directoryName: String) {
     Database("database"),
     JsonLogs("json_logs"),
-    Images("images/partners", environmentAgnostic = true),
-    ImagesPartners("images/partners", environmentAgnostic = true),
-    ImagesWorkouts("images/workouts", environmentAgnostic = true),
+    Images("images/partners"),
+    ImagesPartners("images/partners"),
+    ImagesWorkouts("images/workouts"),
 }

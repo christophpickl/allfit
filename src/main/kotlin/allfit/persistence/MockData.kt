@@ -15,12 +15,12 @@ private val partner1 = PartnerEntity(
     id = 1, categoryIds = listOf(category1.id), name = "Partner 1", slug = "part1",
     description = "description from one fit", note = "note from me", facilities = "fac1,fac2,fac3",
     imageUrl = "www.one.fit/image1.jpg",
-    isDeleted = false, isFavorited = true, isHidden = false, isStarred = false
+    isDeleted = false, isFavorited = true, isHidden = false, isWishlisted = false
 )
 private val partner2 = PartnerEntity(
     id = 2, categoryIds = listOf(category2.id), name = "Partner 2", slug = "part2",
     description = "description from one fit", note = "", facilities = "", imageUrl = "www.one.fit/image2.jpg",
-    isDeleted = false, isFavorited = false, isHidden = false, isStarred = true
+    isDeleted = false, isFavorited = false, isHidden = false, isWishlisted = true
 )
 private val allPartners = listOf(partner1, partner2)
 

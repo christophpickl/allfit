@@ -17,12 +17,14 @@ fun Rating.renderStars() = starsMap[this] ?: error("Invalid rating star entry: $
 data class PartnerModifications(
     val partnerId: Int,
     val rating: Rating,
-    val isFavourited: Boolean,
+    val note: String,
+    val isFavorited: Boolean,
     val isWishlisted: Boolean,
 ) {
     fun update(storedPartner: SimplePartner) {
         storedPartner.rating = rating
-        storedPartner.isFavourited = isFavourited
+        storedPartner.isFavorited = isFavorited
         storedPartner.isWishlisted = isWishlisted
+        storedPartner.note = note
     }
 }

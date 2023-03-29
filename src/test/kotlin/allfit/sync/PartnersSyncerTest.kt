@@ -56,7 +56,7 @@ class PartnersSyncerTest : StringSpec() {
                 note = "",
                 isDeleted = false,
                 isFavorited = false,
-                isStarred = false,
+                isWishlisted = false,
                 isHidden = false,
 
                 )

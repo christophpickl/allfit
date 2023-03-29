@@ -44,5 +44,5 @@ private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     isDeleted = false,
     isFavorited = false,
     isHidden = false,
-    isStarred = false,
+    isWishlisted = false,
 )

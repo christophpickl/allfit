@@ -1,8 +1,9 @@
 package allfit.presentation.logic
 
 import allfit.presentation.ApplicationStartedFxEvent
-import allfit.presentation.SavePartnerFXEvent
+import allfit.presentation.PartnerWorkoutSelectedFXEvent
 import allfit.presentation.SearchFXEvent
+import allfit.presentation.UpdatePartnerFXEvent
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
 import allfit.service.DataStorage
@@ -19,7 +20,7 @@ class MainController : Controller() {
     init {
         subscribe<ApplicationStartedFxEvent>() {
             logger.debug { "Application started." }
-            val workouts = dataStorage.getAllFullWorkouts()
+            val workouts = dataStorage.getFutureFullWorkouts()
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
         }
         subscribe<SearchFXEvent>() {
@@ -27,15 +28,21 @@ class MainController : Controller() {
             mainViewModel.sortedFilteredWorkouts.predicate = it.searchRequest.predicate
         }
         subscribe<WorkoutSelectedFXEvent>() {
-            logger.debug { "Workout selected: ${it.workout}" }
-            mainViewModel.selectedWorkout.set(it.workout)
-            mainViewModel.selectedPartner.initPartner(dataStorage.getFullPartnerById(it.workout.partner.id))
+            val workout = it.workout
+            logger.debug { "Change workout: $workout" }
+            mainViewModel.selectedWorkout.set(workout)
+            mainViewModel.selectedPartner.initPartner(dataStorage.getFullPartnerById(workout.partner.id))
         }
-        subscribe<SavePartnerFXEvent>() {
-            logger.debug { "Saving partner: ${it.modifications}" }
-            dataStorage.updatePartner(it.modifications)
+        subscribe<PartnerWorkoutSelectedFXEvent>() {
+            val workout = it.workout
+            logger.debug { "Change workout: $workout" }
+            mainViewModel.selectedWorkout.set(dataStorage.toFullWorkout(workout))
+            // no partner update
+        }
+        subscribe<UpdatePartnerFXEvent>() {
+            logger.debug { "Updating partner: ${it.modifications}" }
+            dataStorage.updatePartner(it.modifications) // FIXME propagate down to database
             mainViewModel.sortedFilteredWorkouts.refilter()
         }
     }
 }
-

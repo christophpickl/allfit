@@ -8,6 +8,7 @@ import tornadofx.View
 import tornadofx.borderpane
 import tornadofx.center
 import tornadofx.hgrow
+import tornadofx.onDoubleClick
 import tornadofx.onSelectionChange
 import tornadofx.right
 import tornadofx.selectedItem
@@ -21,9 +22,10 @@ class MainView : View() {
     private val partnerDetailView: PartnerDetailView by inject()
     private val workoutDetailView: WorkoutDetailView by inject()
     private val mainViewModel: MainViewModel by inject()
-    private val workoutsTable = WorkoutsTable(mainViewModel.sortedFilteredWorkouts)
+    private val workoutsTable = WorkoutsTable()
 
     init {
+        mainViewModel.sortedFilteredWorkouts.bindTo(workoutsTable)
         title = "AllFit " + (if (Environment.current == Environment.Development) " - DEV" else "")
 
         with(workoutsTable) {
@@ -32,9 +34,15 @@ class MainView : View() {
                     fire(WorkoutSelectedFXEvent(it))
                 }
             }
+            onDoubleClick {
+                selectedItem?.let {
+                    fire(WorkoutSelectedFXEvent(it))
+                }
+            }
         }
     }
 
+    // layout help: https://docs.tornadofx.io/0_subsection/7_layouts_and_menus
     override val root = borderpane {
         top {
             vgrow = Priority.NEVER

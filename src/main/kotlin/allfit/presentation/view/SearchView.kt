@@ -2,18 +2,22 @@ package allfit.presentation.view
 
 import allfit.presentation.SearchFXEvent
 import allfit.presentation.logic.CheckinSearchRequest
-import allfit.presentation.logic.FavouriteSearchRequest
+import allfit.presentation.logic.DateSearchRequest
+import allfit.presentation.logic.FavoriteSearchRequest
 import allfit.presentation.logic.SearchRequest
 import allfit.presentation.logic.SubSearchRequest
+import allfit.service.toZonedDate
 import javafx.event.EventTarget
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
+import javafx.scene.control.DatePicker
 import javafx.scene.layout.HBox
 import tornadofx.View
 import tornadofx.action
 import tornadofx.bind
 import tornadofx.checkbox
 import tornadofx.combobox
+import tornadofx.datepicker
 import tornadofx.getProperty
 import tornadofx.label
 import tornadofx.opcr
@@ -39,7 +43,11 @@ class SearchView : View() {
 
     private var previousSearchRequest = SearchRequest.empty
 
-    private val searches: List<SearchPane> = listOf(CheckinsSearch(::checkSearch), FavouriteSearch(::checkSearch))
+    private val searches: List<SearchPane> = listOf(
+        CheckinsSearch(::checkSearch),
+        FavoriteSearch(::checkSearch),
+        DateSearch(::checkSearch),
+    )
 
     override val root = vbox {
         searches.forEach {
@@ -92,7 +100,7 @@ abstract class SearchPane : HBox() {
 
     abstract var searchFieldPane: SearchFieldPane
 
-    protected abstract fun buildSearchRequest(): SubSearchRequest
+    protected abstract fun buildSearchRequest(): SubSearchRequest?
 
     fun maybeBuildSearchRequest(): SubSearchRequest? =
         if (searchFieldPane.isEnabled) buildSearchRequest() else null
@@ -124,16 +132,15 @@ class CheckinsSearch(checkSearch: () -> Unit) : SearchPane() {
     )
 }
 
-
-class FavouriteSearch(checkSearch: () -> Unit) : SearchPane() {
+class FavoriteSearch(checkSearch: () -> Unit) : SearchPane() {
     override var searchFieldPane: SearchFieldPane by singleAssign()
-    private var favouriteOperand: CheckBox by singleAssign()
+    private var favoriteOperand: CheckBox by singleAssign()
 
     init {
         searchFieldPane = searchField {
-            title = "Favourited"
+            title = "Favorited"
             enabledAction = OnEnabledAction { checkSearch() }
-            favouriteOperand = checkbox {
+            favoriteOperand = checkbox {
                 action {
                     checkSearch()
                 }
@@ -141,5 +148,28 @@ class FavouriteSearch(checkSearch: () -> Unit) : SearchPane() {
         }
     }
 
-    override fun buildSearchRequest() = FavouriteSearchRequest(operand = favouriteOperand.isSelected)
+    override fun buildSearchRequest() = FavoriteSearchRequest(operand = favoriteOperand.isSelected)
+}
+
+class DateSearch(checkSearch: () -> Unit) : SearchPane() {
+    override var searchFieldPane: SearchFieldPane by singleAssign()
+    var dateInput: DatePicker by singleAssign()
+
+    init {
+        searchFieldPane = searchField {
+            title = "Date"
+            enabledAction = OnEnabledAction { checkSearch() }
+            dateInput = datepicker {
+                prefWidth = 120.0
+                isShowWeekNumbers = false
+                setOnAction {
+                    checkSearch()
+                }
+            }
+        }
+    }
+
+    override fun buildSearchRequest() = dateInput.value?.let {
+        DateSearchRequest(operand = it.toZonedDate())
+    }
 }

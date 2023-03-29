@@ -1,5 +1,6 @@
 package allfit.service
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -22,3 +23,7 @@ fun ZonedDateTime.toUtcLocalDateTime(): LocalDateTime =
 
 fun LocalDateTime.fromUtcToAmsterdamZonedDateTime(): ZonedDateTime =
     ZonedDateTime.of(this, zoneUtc).withZoneSameInstant(zoneAmsterdam)
+
+fun LocalDate.toZonedDate(): ZonedDateTime =
+    atStartOfDay(zoneAmsterdam)
+

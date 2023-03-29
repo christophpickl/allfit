@@ -1,5 +1,6 @@
 package allfit.sync
 
+import allfit.api.OnefitUtils
 import allfit.service.requireOk
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
@@ -22,7 +23,7 @@ data class WorkoutUrl(
     val workoutId: Int,
     val workoutSlug: String,
 ) {
-    val url = "https://one.fit/en-nl/workouts/$workoutId/$workoutSlug"
+    val url = OnefitUtils.workoutUrl(workoutId, workoutSlug)
 }
 
 data class WorkoutFetch(

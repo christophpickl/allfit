@@ -34,7 +34,7 @@ fun Arb.Companion.partnerEntity() = arbitrary {
         facilities = string().next(),
         imageUrl = string().next(),
         isDeleted = boolean().next(),
-        isStarred = boolean().next(),
+        isWishlisted = boolean().next(),
         isHidden = boolean().next(),
         isFavorited = boolean().next(),
     )
