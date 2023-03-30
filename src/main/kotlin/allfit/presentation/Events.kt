@@ -1,8 +1,8 @@
 package allfit.presentation
 
-import allfit.presentation.logic.SearchRequest
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.search.SearchRequest
 import tornadofx.FXEvent
 
 object ApplicationStartedFxEvent : FXEvent()

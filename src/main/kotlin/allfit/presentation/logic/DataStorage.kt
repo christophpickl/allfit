@@ -1,13 +1,14 @@
-package allfit.service
+package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
 import allfit.presentation.PartnerModifications
+import allfit.presentation.PresentationConstants
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
-import allfit.presentation.view.WorkoutsTable
+import allfit.service.InMemoryImageStorage
 import javafx.scene.image.Image
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -15,6 +16,8 @@ import java.time.temporal.ChronoUnit
 interface DataStorage {
     fun getFutureFullWorkouts(): List<FullWorkout>
     fun getFullPartnerById(partnerId: Int): FullPartner
+
+    // for real impl, here we do database operations
     fun updatePartner(modifications: PartnerModifications)
     fun toFullWorkout(workout: SimpleWorkout): FullWorkout
 }
@@ -25,7 +28,7 @@ object InMemoryDataStorage : DataStorage {
         Image(
             InMemoryImageStorage::class.java.getResourceAsStream("/images/$fileName")
                 ?: error("Could not find image at path: $fileName"),
-            WorkoutsTable.tableImageWidth, 0.0, true, true
+            PresentationConstants.tableImageWidth, 0.0, true, true
         )
 
     private val now = ZonedDateTime.now()
@@ -203,19 +206,3 @@ object InMemoryDataStorage : DataStorage {
     override fun toFullWorkout(workout: SimpleWorkout): FullWorkout =
         allFullWorkouts.firstOrNull { it.id == workout.id } ?: error("Could not find workout by ID: ${workout.id}")
 }
-
-//class DataStorageImpl(
-//    private val categoriesRepo: CategoriesRepo
-//): DataStorage {
-//    private val lazyCategories: List<Category> by lazy {
-//        categoriesRepo.selectAll().filter { !it.isDeleted }.map { it.toCategory() }
-//    }
-//
-//    fun getCategories(): List<Category> = lazyCategories
-//}
-//
-//private fun CategoryEntity.toCategory() = Category(
-//    id = id,
-//    name = name,
-//    isDeleted = isDeleted,
-//)

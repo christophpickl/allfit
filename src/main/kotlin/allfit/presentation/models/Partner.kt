@@ -36,7 +36,6 @@ interface Partner {
     var isWishlisted: Boolean
     fun isWishlistedProperty(): ObjectProperty<Boolean>
 
-    // TODO in menu bar, enable "is hidden visible YES/NO"; with right click in table, can be made hidden/unhidden (plus make filterable) ... or a custom dialog for it?! in menu bar, "Manage hidden partners"
     var isHidden: Boolean
     fun isHiddenProperty(): ObjectProperty<Boolean>
 

@@ -6,7 +6,6 @@ import allfit.presentation.SearchFXEvent
 import allfit.presentation.UpdatePartnerFXEvent
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
-import allfit.service.DataStorage
 import mu.KotlinLogging.logger
 import tornadofx.Controller
 import tornadofx.toObservable
@@ -41,7 +40,7 @@ class MainController : Controller() {
         }
         subscribe<UpdatePartnerFXEvent>() {
             logger.debug { "Updating partner: ${it.modifications}" }
-            dataStorage.updatePartner(it.modifications) // FIXME propagate down to database
+            dataStorage.updatePartner(it.modifications)
             mainViewModel.sortedFilteredWorkouts.refilter()
         }
     }

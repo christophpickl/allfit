@@ -1,5 +1,6 @@
 package allfit.presentation.view
 
+import allfit.presentation.PresentationConstants
 import allfit.presentation.StaticImage
 import allfit.presentation.StaticImageStorage
 import allfit.presentation.models.FullWorkout
@@ -20,18 +21,13 @@ import tornadofx.smartResize
 import tornadofx.weightedWidth
 
 class WorkoutsTable() : TableView<FullWorkout>() {
-    companion object {
-        const val tableImageWidth = 50.0
-    }
-
     init {
         smartResize()
 
-        // TODO right click, make "isHidden = true"
         selectionModel.selectionMode = SelectionMode.SINGLE
 
         column<FullWorkout, Image>("") { it.value.imageProperty() }
-            .fixedWidth(tableImageWidth + 10)
+            .fixedWidth(PresentationConstants.tableImageWidth + 10)
             .cellFormat {
                 graphic = imageview(it)
             }
@@ -57,7 +53,7 @@ class WorkoutsTable() : TableView<FullWorkout>() {
             }
 
         column<FullWorkout, Image>("") { it.value.partner.imageProperty() }
-            .fixedWidth(tableImageWidth + 10)
+            .fixedWidth(PresentationConstants.tableImageWidth + 10)
             .cellFormat {
                 graphic = imageview(it)
             }

@@ -7,6 +7,10 @@ import javafx.event.EventTarget
 import javafx.scene.web.WebView
 import tornadofx.webview
 
+object PresentationConstants {
+    const val tableImageWidth = 50.0
+}
+
 private val starsMap = mapOf(
     0 to "",
     1 to "⭐️",
@@ -33,7 +37,6 @@ data class PartnerModifications(
     }
 }
 
-// TODO specify nice default font
 fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit = {}) {
     webview {
         html.addListener { _, _, newValue ->
