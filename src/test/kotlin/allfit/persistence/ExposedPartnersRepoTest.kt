@@ -3,6 +3,8 @@ package allfit.persistence
 import allfit.persistence.domain.CategoriesTable
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.PartnerEntity
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton

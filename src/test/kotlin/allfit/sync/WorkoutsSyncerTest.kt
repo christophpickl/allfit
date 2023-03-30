@@ -5,10 +5,10 @@ import allfit.api.models.WorkoutJson
 import allfit.api.models.workoutJson
 import allfit.api.models.workoutPartnerJson
 import allfit.api.models.workoutsJson
-import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.checkinEntity
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.InMemoryWorkoutsRepo
 import allfit.persistence.domain.WorkoutEntity

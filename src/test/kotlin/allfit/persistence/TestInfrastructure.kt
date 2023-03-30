@@ -3,7 +3,9 @@ package allfit.persistence
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryWorkoutsRepo
+import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.WorkoutEntity
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe

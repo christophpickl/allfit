@@ -5,11 +5,11 @@ import allfit.api.models.CheckinJson
 import allfit.api.models.CheckinsJson
 import allfit.api.models.MetaJson
 import allfit.api.models.checkinJson
-import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.checkinEntity
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryWorkoutsRepo
 import allfit.persistence.partnerEntity
 import allfit.persistence.singleShould

@@ -2,6 +2,7 @@ package allfit.persistence
 
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.ExposedCheckinsRepository
+import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec

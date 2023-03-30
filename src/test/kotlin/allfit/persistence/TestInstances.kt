@@ -3,6 +3,7 @@ package allfit.persistence
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.LocationEntity
+import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.domain.WorkoutEntity
 import io.kotest.property.Arb

@@ -3,6 +3,7 @@ package allfit.persistence
 import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.ExposedCheckinsRepository
 import allfit.persistence.domain.ExposedLocationsRepo
+import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedReservationsRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
 import io.kotest.core.spec.style.StringSpec

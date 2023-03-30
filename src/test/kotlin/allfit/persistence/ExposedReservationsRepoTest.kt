@@ -1,6 +1,7 @@
 package allfit.persistence
 
 import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedReservationsRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
 import allfit.persistence.domain.ReservationEntity
