@@ -47,14 +47,14 @@ fun Arb.Companion.partnerJson() = arbitrary {
     )
 }
 
-fun Arb.Companion.partnersJson() = arbitrary {
-    PartnersJson(
+fun Arb.Companion.partnersJsonRoot() = arbitrary {
+    PartnersJsonRoot(
         data = list(partnerJson(), 0..3).next(),
     )
 }
 
-fun partnersJson(vararg partners: PartnerJson) =
-    PartnersJson(partners.toList())
+fun partnersJsonRoot(vararg partners: PartnerJson) =
+    PartnersJsonRoot(partners.toList())
 
 fun Arb.Companion.headerImageJson() = arbitrary {
     HeaderImageJson(
@@ -113,8 +113,8 @@ fun Arb.Companion.partnerSubCategoryJson() = arbitrary {
     )
 }
 
-fun Arb.Companion.workoutsJson() = arbitrary {
-    WorkoutsJson(
+fun Arb.Companion.workoutsJsonRoot() = arbitrary {
+    WorkoutsJsonRoot(
         data = list(workoutJson(), 0..5).next(),
         meta = metaJson().next(),
     )
@@ -173,8 +173,8 @@ fun Arb.Companion.metaPaginationJson() = arbitrary {
     )
 }
 
-fun Arb.Companion.reservationsJson() = arbitrary {
-    ReservationsJson(
+fun Arb.Companion.reservationsJsonRoot() = arbitrary {
+    ReservationsJsonRoot(
         data = list(reservationJson(), 0..5).next(),
     )
 }

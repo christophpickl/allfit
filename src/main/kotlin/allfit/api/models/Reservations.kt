@@ -7,7 +7,7 @@ import kotlinx.serialization.UseSerializers
 import java.time.ZonedDateTime
 
 @Serializable
-data class ReservationsJson(
+data class ReservationsJsonRoot(
     val data: List<ReservationJson>
 )
 

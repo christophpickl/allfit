@@ -8,7 +8,7 @@ interface CategoryJsonDefinition : SyncableJson {
 }
 
 @Serializable
-data class CategoriesJson(
+data class CategoriesJsonRoot(
     override val data: List<CategoryJson>
 ) : SyncableJsonContainer<CategoryJson>
 

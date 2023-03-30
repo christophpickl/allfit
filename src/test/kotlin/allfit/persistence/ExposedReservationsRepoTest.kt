@@ -25,7 +25,8 @@ class ExposedReservationsRepoTest : DescribeSpec() {
     private val reservation2 = Arb.reservationEntity().next().copy(uuid = uuid2)
     private val now = LocalDateTime.now()
     private val category = Arb.categoryEntity().next()
-    private val partnerWithCategory = Arb.partnerEntity().next().copy(categoryIds = listOf(category.id))
+    private val partnerWithCategory = Arb.partnerEntity().next()
+        .copy(primaryCategoryId = category.id, secondaryCategoryIds = emptyList())
     private val workoutWithPartner = Arb.workoutEntity().next().copy(partnerId = partnerWithCategory.id)
 
     init {

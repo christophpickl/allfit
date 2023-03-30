@@ -3,7 +3,7 @@ package allfit.sync
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.ReservationJson
 import allfit.api.models.reservationJson
-import allfit.api.models.reservationsJson
+import allfit.api.models.reservationsJsonRoot
 import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.reservationEntity
@@ -65,5 +65,5 @@ class ReservationsSyncerTest : StringSpec() {
 }
 
 private fun InMemoryOnefitClient.mockReservationsResponse(vararg reservations: ReservationJson) {
-    reservationsJson = Arb.reservationsJson().next().copy(data = reservations.toList())
+    reservationsJson = Arb.reservationsJsonRoot().next().copy(data = reservations.toList())
 }

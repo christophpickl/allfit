@@ -1,5 +1,6 @@
 package allfit.persistence
 
+import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.ExposedLocationsRepo
 import allfit.persistence.domain.ExposedPartnersRepo
 import io.kotest.core.spec.style.DescribeSpec
@@ -11,10 +12,12 @@ import io.kotest.property.arbitrary.next
 class ExposedLocationsRepoTest : DescribeSpec() {
 
     private val repo = ExposedLocationsRepo
+    private val category = Arb.categoryEntity().next()
     private val partner = Arb.partnerEntity().next().copy(
-        categoryIds = emptyList()
+        primaryCategoryId = category.id,
+        secondaryCategoryIds = emptyList(),
     )
-    private val locationWithPartner = Arb.locationEntity().next().copy(
+    private val location = Arb.locationEntity().next().copy(
         partnerId = partner.id
     )
 
@@ -28,18 +31,23 @@ class ExposedLocationsRepoTest : DescribeSpec() {
         }
         describe("When insert") {
             it("Then succeed") {
-                ExposedPartnersRepo.insertAll(listOf(partner))
-                repo.insertAllIfNotYetExists(listOf(locationWithPartner))
+                setupRequirements()
+                repo.insertAllIfNotYetExists(listOf(location))
 
-                repo.selectAll().shouldBeSingleton().first() shouldBe locationWithPartner
+                repo.selectAll().shouldBeSingleton().first() shouldBe location
             }
             it("Given same Then ignore") {
-                ExposedPartnersRepo.insertAll(listOf(partner))
-                repo.insertAllIfNotYetExists(listOf(locationWithPartner))
+                setupRequirements()
+                repo.insertAllIfNotYetExists(listOf(location))
 
-                repo.insertAllIfNotYetExists(listOf(locationWithPartner))
-                repo.selectAll().shouldBeSingleton().first() shouldBe locationWithPartner
+                repo.insertAllIfNotYetExists(listOf(location))
+                repo.selectAll().shouldBeSingleton().first() shouldBe location
             }
         }
+    }
+
+    private fun setupRequirements() {
+        ExposedCategoriesRepo.insertAll(listOf(category))
+        ExposedPartnersRepo.insertAll(listOf(partner))
     }
 }

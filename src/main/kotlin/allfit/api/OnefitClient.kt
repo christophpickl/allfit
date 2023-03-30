@@ -1,22 +1,22 @@
 package allfit.api
 
-import allfit.api.models.CategoriesJson
-import allfit.api.models.CheckinsJson
-import allfit.api.models.PartnersJson
-import allfit.api.models.ReservationsJson
-import allfit.api.models.SingleWorkoutJson
-import allfit.api.models.WorkoutsJson
+import allfit.api.models.CategoriesJsonRoot
+import allfit.api.models.CheckinsJsonRoot
+import allfit.api.models.PartnersJsonRoot
+import allfit.api.models.ReservationsJsonRoot
+import allfit.api.models.SingleWorkoutJsonRoot
+import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.formatOnefit
 import java.time.ZonedDateTime
 
 interface OnefitClient {
 
-    suspend fun getCategories(): CategoriesJson
-    suspend fun getPartners(params: PartnerSearchParams): PartnersJson
-    suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJson
-    suspend fun getWorkoutById(id: Int): SingleWorkoutJson
-    suspend fun getReservations(): ReservationsJson
-    suspend fun getCheckins(params: CheckinSearchParams): CheckinsJson
+    suspend fun getCategories(): CategoriesJsonRoot
+    suspend fun getPartners(params: PartnerSearchParams): PartnersJsonRoot
+    suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJsonRoot
+    suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot
+    suspend fun getReservations(): ReservationsJsonRoot
+    suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot
 
 }
 

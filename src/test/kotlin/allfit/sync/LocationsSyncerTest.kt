@@ -4,7 +4,7 @@ import allfit.api.models.PartnerLocationJson
 import allfit.api.models.partnerJson
 import allfit.api.models.partnerLocationGroupsJson
 import allfit.api.models.partnerLocationJson
-import allfit.api.models.partnersJson
+import allfit.api.models.partnersJsonRoot
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.LocationEntity
 import io.kotest.core.spec.style.StringSpec
@@ -27,7 +27,7 @@ class LocationsSyncerTest : StringSpec() {
 
     init {
         "When partner has location Then insert it" {
-            syncer.sync(partnersJson(partnerWithLocations(location)))
+            syncer.sync(partnersJsonRoot(partnerWithLocations(location)))
 
             locationsRepo.selectAll().shouldBeSingleton().first() shouldBe LocationEntity(
                 id = location.id.toInt(),

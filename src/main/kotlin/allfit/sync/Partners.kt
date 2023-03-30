@@ -1,7 +1,7 @@
 package allfit.sync
 
 import allfit.api.models.PartnerJson
-import allfit.api.models.PartnersJson
+import allfit.api.models.PartnersJsonRoot
 import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersRepo
 import allfit.service.ImageStorage
@@ -9,7 +9,7 @@ import allfit.service.PartnerAndImageUrl
 import mu.KotlinLogging.logger
 
 interface PartnersSyncer {
-    suspend fun sync(partners: PartnersJson)
+    suspend fun sync(partners: PartnersJsonRoot)
 }
 
 class PartnersSyncerImpl(
@@ -18,7 +18,7 @@ class PartnersSyncerImpl(
 ) : PartnersSyncer {
     private val log = logger {}
 
-    override suspend fun sync(partners: PartnersJson) {
+    override suspend fun sync(partners: PartnersJsonRoot) {
         log.debug { "Syncing partners ..." }
         val report = syncAny(partnersRepo, partners.data) {
             it.toPartnerEntity()
@@ -31,10 +31,8 @@ class PartnersSyncerImpl(
 
 private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     id = id,
-    categoryIds = mutableListOf<Int>().apply {
-        add(category.id)
-        addAll(categories.map { it.id })
-    }.distinct(), // OneFit sends corrupt data :-/
+    primaryCategoryId = category.id,
+    secondaryCategoryIds = categories.map { it.id }.distinct().minus(category.id), // OneFit sends corrupt data :-/
     name = name,
     slug = slug,
     description = description,

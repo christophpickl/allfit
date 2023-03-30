@@ -2,11 +2,13 @@ package allfit.sync
 
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.CheckinJson
-import allfit.api.models.CheckinsJson
+import allfit.api.models.CheckinsJsonRoot
 import allfit.api.models.MetaJson
 import allfit.api.models.checkinJson
+import allfit.persistence.categoryEntity
 import allfit.persistence.checkinEntity
 import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryCheckinsRepository
 import allfit.persistence.domain.InMemoryPartnersRepo
@@ -94,8 +96,13 @@ class CheckinsSyncerTest : StringSpec() {
             )
         }
         "Given requirements exist for new checkin When sync Then only insert checkin" {
-            val partner = Arb.partnerEntity().next()
-                .copy(id = checkinJson.workout.partner.id, categoryIds = emptyList())
+            val category = Arb.categoryEntity().next()
+            ExposedCategoriesRepo.insertAll(listOf(category))
+            val partner = Arb.partnerEntity().next().copy(
+                id = checkinJson.workout.partner.id,
+                primaryCategoryId = category.id,
+                secondaryCategoryIds = emptyList()
+            )
             partnersRepo.insertAll(listOf(partner))
             val workout = Arb.workoutEntity().next().copy(id = checkinJson.workout.id, partnerId = partner.id)
             workoutsRepo.insertAll(listOf(workout))
@@ -119,6 +126,6 @@ class CheckinsSyncerTest : StringSpec() {
     }
 
     private fun InMemoryOnefitClient.mockCheckins(vararg checkins: CheckinJson) {
-        client.checkinsJson = CheckinsJson(data = checkins.toList(), meta = MetaJson.empty)
+        client.checkinsJson = CheckinsJsonRoot(data = checkins.toList(), meta = MetaJson.empty)
     }
 }

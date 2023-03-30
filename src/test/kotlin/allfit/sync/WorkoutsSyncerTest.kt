@@ -4,7 +4,7 @@ import allfit.api.InMemoryOnefitClient
 import allfit.api.models.WorkoutJson
 import allfit.api.models.workoutJson
 import allfit.api.models.workoutPartnerJson
-import allfit.api.models.workoutsJson
+import allfit.api.models.workoutsJsonRoot
 import allfit.persistence.checkinEntity
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.InMemoryCheckinsRepository
@@ -151,5 +151,5 @@ private fun workoutWithPartnerId(partnerId: Int) = Arb.workoutJson().next()
     .copy(partner = Arb.workoutPartnerJson().next().copy(id = partnerId))
 
 private fun InMemoryOnefitClient.mockWorkoutsResponse(vararg workouts: WorkoutJson) {
-    workoutsJson = Arb.workoutsJson().next().copy(data = workouts.toList())
+    workoutsJson = Arb.workoutsJsonRoot().next().copy(data = workouts.toList())
 }

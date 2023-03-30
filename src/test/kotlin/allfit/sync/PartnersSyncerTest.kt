@@ -2,7 +2,7 @@ package allfit.sync
 
 import allfit.api.models.HeaderImageJson
 import allfit.api.models.PartnerJson
-import allfit.api.models.PartnersJson
+import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.api.models.partnerSubCategoryJson
@@ -14,7 +14,9 @@ import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
@@ -22,7 +24,7 @@ import io.kotest.property.arbitrary.next
 class PartnersSyncerTest : StringSpec() {
 
     private val imageUrl = "imageUrl"
-    private val partner = Arb.partnerJson().next()
+    private val partnerJson = Arb.partnerJson().next()
 
     private lateinit var syncer: PartnersSyncer
     private lateinit var imageStorage: InMemoryImageStorage
@@ -40,19 +42,17 @@ class PartnersSyncerTest : StringSpec() {
 
     init {
         "When sync partner Then insert entity" {
-            sync(partner)
+            sync(partnerJson)
 
             partnersRepo.selectAll().shouldBeSingleton().first() shouldBe PartnerEntity(
-                id = partner.id,
-                categoryIds = mutableListOf<Int>().also {
-                    it += partner.category.id
-                    it += partner.categories.map { it.id }
-                },
-                name = partner.name,
-                slug = partner.slug,
-                description = partner.description,
-                imageUrl = partner.header_image.orig,
-                facilities = partner.facilities.joinToString(","),
+                id = partnerJson.id,
+                primaryCategoryId = partnerJson.category.id,
+                secondaryCategoryIds = partnerJson.categories.map { it.id },
+                name = partnerJson.name,
+                slug = partnerJson.slug,
+                description = partnerJson.description,
+                imageUrl = partnerJson.header_image.orig,
+                facilities = partnerJson.facilities.joinToString(","),
                 note = "",
                 isDeleted = false,
                 isFavorited = false,
@@ -61,29 +61,47 @@ class PartnersSyncerTest : StringSpec() {
 
                 )
         }
-        "When sync partner with duplicate categories Then insert single only" {
+        "When sync partner with duplicate secondary categories Then insert only one" {
             sync(
-                partner.copy(
-                    category = Arb.partnerCategoryJson().next().copy(id = 1), categories = listOf(
+                partnerJson.copy(
+                    category = Arb.partnerCategoryJson().next().copy(id = 42),
+                    categories = listOf(
+                        Arb.partnerSubCategoryJson().next().copy(id = 2),
+                        Arb.partnerSubCategoryJson().next().copy(id = 2),
+                    )
+                )
+            )
+
+            partnersRepo.selectAll().shouldBeSingleton().first().also {
+                it.secondaryCategoryIds shouldContainExactly listOf(2)
+            }
+        }
+        "When sync partner with duplicate primary and secondary category Then insert only primary" {
+            sync(
+                partnerJson.copy(
+                    category = Arb.partnerCategoryJson().next().copy(id = 1),
+                    categories = listOf(
                         Arb.partnerSubCategoryJson().next().copy(id = 1),
                         Arb.partnerSubCategoryJson().next().copy(id = 1),
                     )
                 )
             )
 
-            partnersRepo.selectAll().shouldBeSingleton().first()
-                .categoryIds.shouldBeSingleton().first() shouldBe 1
+            partnersRepo.selectAll().shouldBeSingleton().first().also {
+                it.primaryCategoryId shouldBe 1
+                it.secondaryCategoryIds.shouldBeEmpty()
+            }
         }
         "When sync partner Then image is saved" {
-            sync(partner.copy(header_image = HeaderImageJson(imageUrl)))
+            sync(partnerJson.copy(header_image = HeaderImageJson(imageUrl)))
 
             imageStorage.savedPartnerImages.shouldBeSingleton().first() shouldBe PartnerAndImageUrl(
-                partner.id,
+                partnerJson.id,
                 imageUrl
             )
         }
     }
 
     private suspend fun sync(vararg partners: PartnerJson) =
-        syncer.sync(PartnersJson(partners.toList()))
+        syncer.sync(PartnersJsonRoot(partners.toList()))
 }

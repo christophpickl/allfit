@@ -14,6 +14,7 @@ import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.ImageStorage
 import allfit.service.toUtcLocalDateTime
+import mu.KotlinLogging.logger
 import java.util.UUID
 
 interface CheckinsSyncer {
@@ -29,8 +30,12 @@ class CheckinsSyncerImpl(
     private val imageStorage: ImageStorage,
 ) : CheckinsSyncer {
 
+    private val log = logger {}
+
     override suspend fun sync() {
+        log.info { "Syncing checkins." }
         val toBeInserted = checkinsToBeInserted()
+        log.debug { "Inserting ${toBeInserted.size} checkins." }
         syncRequirements(toBeInserted)
         checkinsRepo.insertAll(toBeInserted.map { it.toCheckinEntity() })
     }
@@ -54,6 +59,7 @@ class CheckinsSyncerImpl(
         val toBeInserted = remoteCheckins.filter {
             !localCategoryIds.contains(it.workout.partner.category.id)
         }
+        log.debug { "Inserting ${toBeInserted.size} missing categories for checkins." }
         categoriesRepo.insertAll(toBeInserted.map {
             it.workout.partner.category.toCategoryEntity()
         })
@@ -64,6 +70,7 @@ class CheckinsSyncerImpl(
         val toBeInserted = remoteCheckins.filter {
             !localPartnerIds.contains(it.workout.partner.id)
         }
+        log.debug { "Inserting ${toBeInserted.size} missing partners for checkins." }
         partnersRepo.insertAll(toBeInserted.map {
             it.workout.partner.toPartnerEntity()
         })
@@ -75,6 +82,7 @@ class CheckinsSyncerImpl(
         val toBeInserted = remoteCheckins.filter {
             !localWorkoutIds.contains(it.workout.id)
         }
+        log.debug { "Inserting ${toBeInserted.size} missing workouts for checkins." }
         workoutsRepo.insertAll(toBeInserted.map {
             it.workout.toWorkoutEntity()
         })
@@ -84,7 +92,8 @@ class CheckinsSyncerImpl(
 
 private fun PartnerWorkoutCheckinJson.toPartnerEntity() = PartnerEntity(
     id = id,
-    categoryIds = listOf(category.id),
+    primaryCategoryId = category.id,
+    secondaryCategoryIds = emptyList(), // when getting partner via checkin, no secondary groups are available
     name = name,
     slug = slug,
     description = "N/A",

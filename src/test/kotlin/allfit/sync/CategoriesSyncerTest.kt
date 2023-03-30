@@ -1,13 +1,13 @@
 package allfit.sync
 
 import allfit.api.InMemoryOnefitClient
-import allfit.api.models.CategoriesJson
+import allfit.api.models.CategoriesJsonRoot
 import allfit.api.models.CategoryJson
 import allfit.api.models.categoryJson
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.api.models.partnerSubCategoryJson
-import allfit.api.models.partnersJson
+import allfit.api.models.partnersJsonRoot
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import io.kotest.core.spec.style.StringSpec
@@ -23,7 +23,7 @@ class CategoriesSyncerTest : StringSpec() {
     private val category = Arb.categoryJson().next()
     private val partnerCategory = Arb.partnerCategoryJson().next()
     private val partnerSubCategory = Arb.partnerSubCategoryJson().next()
-    private val partners = Arb.partnersJson().next()
+    private val partners = Arb.partnersJsonRoot().next()
     private val partner = Arb.partnerJson().next()
     private val emptyPartnersJson = partners.copy(data = emptyList())
     private lateinit var syncer: CategoriesSyncer
@@ -88,6 +88,6 @@ class CategoriesSyncerTest : StringSpec() {
     }
 
     private fun mockClientReturnsCategories(vararg categories: CategoryJson) {
-        client.categoriesJson = CategoriesJson(categories.toList())
+        client.categoriesJson = CategoriesJsonRoot(categories.toList())
     }
 }

@@ -3,7 +3,7 @@ package allfit.api.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PartnersJson(
+data class PartnersJsonRoot(
     override val data: List<PartnerJson>
 ) : SyncableJsonContainer<PartnerJson>
 

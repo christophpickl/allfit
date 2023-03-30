@@ -98,6 +98,9 @@
             <column name="CATEGORY_ID" type="integer">
                 <constraints primaryKey="true" primaryKeyName="PK_PARTNERS_CATEGORIES" nullable="false"/>
             </column>
+            <column name="IS_PRIMARY" type="boolean">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint constraintName="FK_PARTNERS_CATEGORIES_CATEGORY_ID"
                                  baseTableName="PARTNERS_CATEGORIES" baseColumnNames="CATEGORY_ID"

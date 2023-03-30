@@ -2,14 +2,14 @@ package allfit.api
 
 import allfit.api.models.AuthJson
 import allfit.api.models.AuthResponseJson
-import allfit.api.models.CategoriesJson
-import allfit.api.models.CheckinsJson
+import allfit.api.models.CategoriesJsonRoot
+import allfit.api.models.CheckinsJsonRoot
 import allfit.api.models.MetaJson
 import allfit.api.models.PagedJson
-import allfit.api.models.PartnersJson
-import allfit.api.models.ReservationsJson
-import allfit.api.models.SingleWorkoutJson
-import allfit.api.models.WorkoutsJson
+import allfit.api.models.PartnersJsonRoot
+import allfit.api.models.ReservationsJsonRoot
+import allfit.api.models.SingleWorkoutJsonRoot
+import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import allfit.service.kotlinxSerializer
@@ -82,10 +82,10 @@ class OnefitHttpClient(
     private val log = logger {}
     private val client = buildClient(authToken)
 
-    override suspend fun getCategories(): CategoriesJson =
+    override suspend fun getCategories(): CategoriesJsonRoot =
         get("partners/categories")
 
-    override suspend fun getPartners(params: PartnerSearchParams): PartnersJson =
+    override suspend fun getPartners(params: PartnerSearchParams): PartnersJsonRoot =
         // slightly different result from partners/city/AMS, but this one is better ;)
         get("partners/search") {
             parameter("city", params.city)
@@ -96,29 +96,29 @@ class OnefitHttpClient(
             // query
         }
 
-    override suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJson =
+    override suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJsonRoot =
         getPaged(params, ::getWorkoutsPage) { data, meta ->
-            WorkoutsJson(data, meta)
+            WorkoutsJsonRoot(data, meta)
         }
 
-    override suspend fun getWorkoutById(id: Int): SingleWorkoutJson =
+    override suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot =
         get("workouts/$id")
 
-    override suspend fun getReservations(): ReservationsJson =
+    override suspend fun getReservations(): ReservationsJsonRoot =
         get("members/schedule/reservations")
 
-    override suspend fun getCheckins(params: CheckinSearchParams): CheckinsJson =
+    override suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot =
         getPaged(params, ::getCheckinsPage) { data, meta ->
-            CheckinsJson(data, meta)
+            CheckinsJsonRoot(data, meta)
         }
 
-    private suspend fun getCheckinsPage(params: CheckinSearchParams): CheckinsJson =
+    private suspend fun getCheckinsPage(params: CheckinSearchParams): CheckinsJsonRoot =
         get("members/check-ins") {
             parameter("limit", params.limit)
             parameter("page", params.page)
         }
 
-    private suspend fun getWorkoutsPage(params: WorkoutSearchParams): WorkoutsJson =
+    private suspend fun getWorkoutsPage(params: WorkoutSearchParams): WorkoutsJsonRoot =
         get("workouts/search") {
             parameter("city", params.city)
             parameter("limit", params.limit)

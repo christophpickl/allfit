@@ -1,10 +1,10 @@
 package allfit.sync
 
 import allfit.api.OnefitClient
-import allfit.api.models.CategoriesJson
+import allfit.api.models.CategoriesJsonRoot
 import allfit.api.models.CategoryJson
 import allfit.api.models.PartnerCategoryJson
-import allfit.api.models.PartnersJson
+import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.persistence.DbListener
@@ -60,8 +60,8 @@ class CompositeSyncerTest : StringSpec() {
                 categories = emptyList(),
             )
             val categoryJson = partnerCategoryJson.toCategoryJson()
-            coEvery { client.getPartners(any()) } returns PartnersJson(listOf(partnerJson))
-            coEvery { client.getCategories() } returns CategoriesJson(listOf(categoryJson))
+            coEvery { client.getPartners(any()) } returns PartnersJsonRoot(listOf(partnerJson))
+            coEvery { client.getCategories() } returns CategoriesJsonRoot(listOf(categoryJson))
             coEvery { partnersSyncer.sync(any()) } throws syncException
 
             shouldThrow<Exception> {

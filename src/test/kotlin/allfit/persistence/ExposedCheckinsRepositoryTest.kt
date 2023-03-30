@@ -1,6 +1,7 @@
 package allfit.persistence
 
 import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.ExposedCheckinsRepository
 import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
@@ -35,7 +36,10 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
     }
 
     private fun insertCheckinForeignReferences(): CheckinEntity {
-        val partner = Arb.partnerEntity().next().copy(categoryIds = emptyList())
+        val category = Arb.categoryEntity().next()
+        ExposedCategoriesRepo.insertAll(listOf(category))
+        val partner = Arb.partnerEntity().next()
+            .copy(primaryCategoryId = category.id, secondaryCategoryIds = emptyList())
         ExposedPartnersRepo.insertAll(listOf(partner))
         val workout = Arb.workoutEntity().next().copy(partnerId = partner.id)
         ExposedWorkoutsRepo.insertAll(listOf(workout))

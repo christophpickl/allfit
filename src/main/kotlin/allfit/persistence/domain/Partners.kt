@@ -28,20 +28,20 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
 object PartnersCategoriesTable : Table("PUBLIC.PARTNERS_CATEGORIES") {
     val partnerId = reference("PARTNER_ID", PartnersTable)
     val categoryId = reference("CATEGORY_ID", CategoriesTable)
+    val isPrimary = bool("IS_PRIMARY")
     override val primaryKey = PrimaryKey(partnerId, categoryId, name = "PK_PARTNERS_CATEGORIES")
-
-    fun selectAllCategoryIdsByPartnerIds(): Map<Int, List<Int>> {
-        val categoryIdsByPartnerIds = mutableMapOf<Int, MutableList<Int>>()
-        PartnersCategoriesTable.selectAll().map {
-            it[partnerId].value to it[categoryId].value
-        }.groupByTo(categoryIdsByPartnerIds, { it.first }, { it.second })
-        return categoryIdsByPartnerIds
-    }
 }
+
+data class PartnerCategoryEntity(
+    val partnerId: Int,
+    val categoryId: Int,
+    val isPrimary: Boolean,
+)
 
 data class PartnerEntity(
     override val id: Int,
-    val categoryIds: List<Int>,
+    val primaryCategoryId: Int,
+    val secondaryCategoryIds: List<Int>,
     val name: String,
     val slug: String,
     val description: String,
@@ -85,8 +85,30 @@ object ExposedPartnersRepo : PartnersRepo {
 
     override fun selectAll() = transaction {
         log.debug { "Loading partners." }
-        val categories = PartnersCategoriesTable.selectAllCategoryIdsByPartnerIds()
-        PartnersTable.selectAll().map { it.toPartnerEntity(categories[it[PartnersTable.id].value]!!) }
+        val categoriesByPartnerId = selectAllPartnerCategories().groupBy {
+            it.partnerId
+        }
+        PartnersTable.selectAll().map { result ->
+            val partnerId = result[PartnersTable.id].value
+            val categeoriesForPartner = categoriesByPartnerId[partnerId]
+                ?: error("No categories found for partner with ID: $partnerId")
+            val primaryCategory = categeoriesForPartner.first { it.isPrimary }
+            val secondaryCategories = categeoriesForPartner.filter { !it.isPrimary }
+            result.toPartnerEntity(
+                primaryCategoryId = primaryCategory.categoryId,
+                secondaryCategoryIds = secondaryCategories.map { it.categoryId }
+            )
+        }
+    }
+
+    fun selectAllPartnerCategories(): List<PartnerCategoryEntity> = transaction {
+        PartnersCategoriesTable.selectAll().map {
+            PartnerCategoryEntity(
+                partnerId = it[PartnersCategoriesTable.partnerId].value,
+                categoryId = it[PartnersCategoriesTable.categoryId].value,
+                isPrimary = it[PartnersCategoriesTable.isPrimary],
+            )
+        }
     }
 
     override fun insertAll(entities: List<PartnerEntity>) {
@@ -106,10 +128,16 @@ object ExposedPartnersRepo : PartnersRepo {
                     it[isHidden] = partner.isHidden
                     it[isDeleted] = partner.isDeleted
                 }
-                partner.categoryIds.forEach { categoryId ->
+                PartnersCategoriesTable.insert {
+                    it[partnerId] = partner.id
+                    it[categoryId] = partner.primaryCategoryId
+                    it[isPrimary] = true
+                }
+                partner.secondaryCategoryIds.forEach { secondaryCategoryId ->
                     PartnersCategoriesTable.insert {
                         it[partnerId] = partner.id
-                        it[this.categoryId] = categoryId
+                        it[categoryId] = secondaryCategoryId
+                        it[isPrimary] = false
                     }
                 }
             }
@@ -129,9 +157,10 @@ object ExposedPartnersRepo : PartnersRepo {
     }
 }
 
-private fun ResultRow.toPartnerEntity(categoryIds: List<Int>) = PartnerEntity(
+private fun ResultRow.toPartnerEntity(primaryCategoryId: Int, secondaryCategoryIds: List<Int>) = PartnerEntity(
     id = this[PartnersTable.id].value,
-    categoryIds = categoryIds,
+    primaryCategoryId = primaryCategoryId,
+    secondaryCategoryIds = secondaryCategoryIds,
     name = this[PartnersTable.name],
     slug = this[PartnersTable.slug],
     description = this[PartnersTable.description],

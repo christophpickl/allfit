@@ -24,7 +24,8 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedCategoriesRepo.insertAll(listOf(category))
             ExposedCategoriesRepo.selectAll().shouldBeSingleton().first() shouldBe category
 
-            val partner = Arb.partnerEntity().next().copy(categoryIds = listOf(category.id))
+            val partner = Arb.partnerEntity().next()
+                .copy(primaryCategoryId = category.id, secondaryCategoryIds = emptyList())
             ExposedPartnersRepo.insertAll(listOf(partner))
             ExposedPartnersRepo.selectAll().shouldBeSingleton().first() shouldBe partner
 

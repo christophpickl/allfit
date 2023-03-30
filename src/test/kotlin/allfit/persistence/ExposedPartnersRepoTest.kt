@@ -4,10 +4,12 @@ import allfit.persistence.domain.CategoriesTable
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.PartnerCategoryEntity
 import allfit.persistence.domain.PartnerEntity
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
@@ -21,6 +23,8 @@ class ExposedPartnersRepoTest : DescribeSpec() {
     private val repo = ExposedPartnersRepo
     private val partner = Arb.partnerEntity().next()
     private val category = Arb.categoryEntity().next()
+    private val category1 = Arb.categoryEntity().next()
+    private val category2 = Arb.categoryEntity().next()
 
     init {
         extension(DbListener())
@@ -31,17 +35,33 @@ class ExposedPartnersRepoTest : DescribeSpec() {
             }
         }
         describe("When insert") {
-            it("Given category Then partner is persisted") {
-                ExposedCategoriesRepo.insertAll(listOf(category))
-                val partnerWithCategory = partner.copy(categoryIds = listOf(category.id))
+            it("Given partner and his categories Then partner and category references are persisted") {
+                ExposedCategoriesRepo.insertAll(listOf(category1, category2))
+                val partnerWithCategory = partner.copy(
+                    primaryCategoryId = category1.id,
+                    secondaryCategoryIds = listOf(category2.id)
+                )
 
                 repo.insertAll(listOf(partnerWithCategory))
 
                 repo.selectAll().shouldBeSingleton().first() shouldBe partnerWithCategory
+                repo.selectAllPartnerCategories().shouldContainExactlyInAnyOrder(
+                    listOf(
+                        PartnerCategoryEntity(partnerId = partner.id, categoryId = category1.id, isPrimary = true),
+                        PartnerCategoryEntity(partnerId = partner.id, categoryId = category2.id, isPrimary = false),
+                    )
+                )
             }
             it("Given no category Then fail with foreign key violation") {
                 shouldThrow<ExposedSQLException> {
-                    ExposedPartnersRepo.insertAll(listOf(partner.copy(categoryIds = listOf(category.id))))
+                    ExposedPartnersRepo.insertAll(
+                        listOf(
+                            partner.copy(
+                                primaryCategoryId = category.id,
+                                secondaryCategoryIds = emptyList()
+                            )
+                        )
+                    )
                 }.message shouldContain category.id.toString()
             }
         }
@@ -74,7 +94,10 @@ class ExposedPartnersRepoTest : DescribeSpec() {
 
     private fun insertPartner(mutateDomainObject: (PartnerEntity) -> PartnerEntity): PartnerEntity {
         ExposedCategoriesRepo.insertIfNotExists(listOf(category))
-        val partnerWithCategory = partner.copy(categoryIds = listOf(category.id)).let(mutateDomainObject)
+        val partnerWithCategory = partner.copy(
+            primaryCategoryId = category.id,
+            secondaryCategoryIds = emptyList(),
+        ).let(mutateDomainObject)
         repo.insertAll(listOf(partnerWithCategory))
         return partnerWithCategory
     }

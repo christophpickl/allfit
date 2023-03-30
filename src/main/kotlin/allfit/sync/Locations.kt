@@ -1,13 +1,13 @@
 package allfit.sync
 
 import allfit.api.models.PartnerLocationJson
-import allfit.api.models.PartnersJson
+import allfit.api.models.PartnersJsonRoot
 import allfit.persistence.domain.LocationEntity
 import allfit.persistence.domain.LocationsRepo
 import mu.KotlinLogging.logger
 
 interface LocationsSyncer {
-    fun sync(partners: PartnersJson)
+    fun sync(partners: PartnersJsonRoot)
 }
 
 class LocationsSyncerImpl(
@@ -15,7 +15,7 @@ class LocationsSyncerImpl(
 ) : LocationsSyncer {
     private val log = logger {}
 
-    override fun sync(partners: PartnersJson) {
+    override fun sync(partners: PartnersJsonRoot) {
         log.debug { "Syncing locations..." }
         val locations = partners.data.map { partner ->
             partner.location_groups.map { it.locations }.flatten()

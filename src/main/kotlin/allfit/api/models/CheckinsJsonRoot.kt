@@ -7,7 +7,7 @@ import kotlinx.serialization.UseSerializers
 import java.time.ZonedDateTime
 
 @Serializable
-data class CheckinsJson(
+data class CheckinsJsonRoot(
     override val data: List<CheckinJson>,
     override val meta: MetaJson,
 ) : PagedJson<CheckinJson>

@@ -7,7 +7,7 @@ import kotlinx.serialization.UseSerializers
 import java.time.ZonedDateTime
 
 @Serializable
-data class WorkoutsJson(
+data class WorkoutsJsonRoot(
     override val data: List<WorkoutJson>,
     override val meta: MetaJson,
 ) : PagedJson<WorkoutJson>
@@ -50,7 +50,7 @@ data class WorkoutLocationJson(
 )
 
 @Serializable
-data class SingleWorkoutJson(
+data class SingleWorkoutJsonRoot(
     val data: SingleWorkoutDataJson,
 )
 

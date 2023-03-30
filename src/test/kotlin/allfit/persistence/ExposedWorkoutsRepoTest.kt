@@ -19,7 +19,8 @@ class ExposedWorkoutsRepoTest : DescribeSpec() {
 
     private val repo = ExposedWorkoutsRepo
     private val category = Arb.categoryEntity().next()
-    private val partnerWithCategory = Arb.partnerEntity().next().copy(categoryIds = listOf(category.id))
+    private val partnerWithCategory = Arb.partnerEntity().next()
+        .copy(primaryCategoryId = category.id, secondaryCategoryIds = emptyList())
     private val now = SystemClock.now().toUtcLocalDateTime()
     private val workout = Arb.workoutEntity().next().copy(start = now, end = now.plusHours(1))
     private val past = now.minusSeconds(1)

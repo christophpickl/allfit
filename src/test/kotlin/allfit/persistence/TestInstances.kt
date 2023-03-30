@@ -32,7 +32,8 @@ fun Arb.Companion.categoryEntity() = arbitrary {
 fun Arb.Companion.partnerEntity() = arbitrary {
     PartnerEntity(
         id = int(min = 1).next(),
-        categoryIds = list(int(min = 1), 1..5).next().distinct(),
+        primaryCategoryId = int(min = 1).next(),
+        secondaryCategoryIds = list(int(min = 1), 1..5).next().distinct(),
         name = string().next(),
         slug = string().next(),
         description = string().next(),
