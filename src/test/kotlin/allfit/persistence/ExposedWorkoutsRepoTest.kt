@@ -1,5 +1,8 @@
 package allfit.persistence
 
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.WorkoutEntity
 import allfit.service.SystemClock
 import allfit.service.toUtcLocalDateTime
 import io.kotest.assertions.throwables.shouldThrow

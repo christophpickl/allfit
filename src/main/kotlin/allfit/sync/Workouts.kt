@@ -3,11 +3,11 @@ package allfit.sync
 import allfit.api.OnefitClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.models.WorkoutJson
-import allfit.persistence.CheckinsRepository
-import allfit.persistence.PartnersRepo
-import allfit.persistence.ReservationsRepo
-import allfit.persistence.WorkoutEntity
-import allfit.persistence.WorkoutsRepo
+import allfit.persistence.domain.CheckinsRepository
+import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.ReservationsRepo
+import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.ImageStorage
 import allfit.service.SystemClock
 import allfit.service.WorkoutAndImageUrl

@@ -1,5 +1,7 @@
-package allfit.persistence
+package allfit.persistence.domain
 
+import allfit.persistence.BaseEntity
+import allfit.persistence.BaseRepo
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable

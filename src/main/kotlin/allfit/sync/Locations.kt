@@ -2,8 +2,8 @@ package allfit.sync
 
 import allfit.api.models.PartnerLocationJson
 import allfit.api.models.PartnersJson
-import allfit.persistence.LocationEntity
-import allfit.persistence.LocationsRepo
+import allfit.persistence.domain.LocationEntity
+import allfit.persistence.domain.LocationsRepo
 import mu.KotlinLogging.logger
 
 interface LocationsSyncer {

@@ -1,6 +1,18 @@
 package allfit.persistence
 
 import allfit.AppConfig
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCheckinsRepository
+import allfit.persistence.domain.ExposedLocationsRepo
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.ExposedReservationsRepo
+import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.InMemoryCategoriesRepo
+import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryLocationsRepo
+import allfit.persistence.domain.InMemoryPartnersRepo
+import allfit.persistence.domain.InMemoryReservationsRepo
+import allfit.persistence.domain.InMemoryWorkoutsRepo
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import mu.KotlinLogging.logger

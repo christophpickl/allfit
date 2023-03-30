@@ -4,8 +4,8 @@ import allfit.api.InMemoryOnefitClient
 import allfit.api.models.ReservationJson
 import allfit.api.models.reservationJson
 import allfit.api.models.reservationsJson
-import allfit.persistence.InMemoryReservationsRepo
-import allfit.persistence.ReservationEntity
+import allfit.persistence.domain.InMemoryReservationsRepo
+import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.reservationEntity
 import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.StringSpec

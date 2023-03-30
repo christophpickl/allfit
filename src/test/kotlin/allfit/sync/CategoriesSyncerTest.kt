@@ -8,8 +8,8 @@ import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.api.models.partnerSubCategoryJson
 import allfit.api.models.partnersJson
-import allfit.persistence.CategoryEntity
-import allfit.persistence.InMemoryCategoriesRepo
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.InMemoryCategoriesRepo
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton

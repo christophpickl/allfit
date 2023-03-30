@@ -1,5 +1,17 @@
 package allfit.persistence
 
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.InMemoryCategoriesRepo
+import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryLocationsRepo
+import allfit.persistence.domain.InMemoryPartnersRepo
+import allfit.persistence.domain.InMemoryReservationsRepo
+import allfit.persistence.domain.InMemoryWorkoutsRepo
+import allfit.persistence.domain.LocationEntity
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.domain.WorkoutEntity
 import allfit.service.SystemClock
 import allfit.service.toUtcLocalDateTime
 import java.time.LocalDateTime

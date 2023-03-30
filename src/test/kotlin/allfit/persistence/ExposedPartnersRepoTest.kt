@@ -1,5 +1,8 @@
 package allfit.persistence
 
+import allfit.persistence.domain.CategoriesTable
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.ExposedCategoriesRepo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton

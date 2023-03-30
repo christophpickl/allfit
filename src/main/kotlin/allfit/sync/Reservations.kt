@@ -2,8 +2,8 @@ package allfit.sync
 
 import allfit.api.OnefitClient
 import allfit.api.models.ReservationJson
-import allfit.persistence.ReservationEntity
-import allfit.persistence.ReservationsRepo
+import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.domain.ReservationsRepo
 import allfit.service.SystemClock
 import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger

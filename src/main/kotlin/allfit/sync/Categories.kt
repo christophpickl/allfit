@@ -4,8 +4,8 @@ import allfit.api.OnefitClient
 import allfit.api.models.CategoriesJson
 import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.PartnersJson
-import allfit.persistence.CategoriesRepo
-import allfit.persistence.CategoryEntity
+import allfit.persistence.domain.CategoriesRepo
+import allfit.persistence.domain.CategoryEntity
 import mu.KotlinLogging.logger
 
 interface CategoriesSyncer {

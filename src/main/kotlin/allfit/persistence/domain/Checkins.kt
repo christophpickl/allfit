@@ -1,4 +1,4 @@
-package allfit.persistence
+package allfit.persistence.domain
 
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.ResultRow

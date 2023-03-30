@@ -1,5 +1,6 @@
 package allfit.persistence
 
+import allfit.persistence.domain.ExposedLocationsRepo
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe

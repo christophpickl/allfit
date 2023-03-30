@@ -6,10 +6,10 @@ import allfit.api.models.PartnersJson
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.api.models.partnerSubCategoryJson
-import allfit.persistence.InMemoryCategoriesRepo
-import allfit.persistence.InMemoryLocationsRepo
 import allfit.persistence.InMemoryPartnersRepo
 import allfit.persistence.PartnerEntity
+import allfit.persistence.domain.InMemoryCategoriesRepo
+import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
 import io.kotest.core.spec.style.StringSpec

@@ -6,6 +6,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* for partner: primaryCategory vs additionalCategories?
 * Filter group
 * Filter time (just like website)
 * make sure all persisted fields are displayed in UI (compare entities with view models)
@@ -20,7 +21,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * adjust column sizes in table
 * bigger images-pictures in detail view
 * log file writer for PROD env
-* ? for partner: primaryCategory vs additionalCategories?
 * make domain objects things var which are changeable (e.g. rating, favorited, ignored, visits, notes, ...)
 * UI any clickable element with blue rounded background color
 

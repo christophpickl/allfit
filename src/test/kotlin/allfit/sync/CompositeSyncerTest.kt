@@ -8,7 +8,7 @@ import allfit.api.models.PartnersJson
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.persistence.DbListener
-import allfit.persistence.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCategoriesRepo
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase

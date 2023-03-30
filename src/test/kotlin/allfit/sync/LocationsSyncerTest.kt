@@ -5,8 +5,8 @@ import allfit.api.models.partnerJson
 import allfit.api.models.partnerLocationGroupsJson
 import allfit.api.models.partnerLocationJson
 import allfit.api.models.partnersJson
-import allfit.persistence.InMemoryLocationsRepo
-import allfit.persistence.LocationEntity
+import allfit.persistence.domain.InMemoryLocationsRepo
+import allfit.persistence.domain.LocationEntity
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton

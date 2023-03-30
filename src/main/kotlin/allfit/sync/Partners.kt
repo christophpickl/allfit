@@ -2,8 +2,8 @@ package allfit.sync
 
 import allfit.api.models.PartnerJson
 import allfit.api.models.PartnersJson
-import allfit.persistence.PartnerEntity
-import allfit.persistence.PartnersRepo
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.PartnersRepo
 import allfit.service.ImageStorage
 import allfit.service.PartnerAndImageUrl
 import mu.KotlinLogging.logger
