@@ -12,14 +12,17 @@ interface Partner {
     val name: String
     fun nameProperty(): ObjectProperty<String>
 
+    val description: String
+    fun descriptionProperty(): ObjectProperty<String>
+
+    var note: String
+    fun noteProperty(): ObjectProperty<String>
+
     val url: String
     fun urlProperty(): ObjectProperty<String>
 
-    val groups: List<String>
-    fun groupsProperty(): ObjectProperty<List<String>>
-
-    val description: String
-    fun descriptionProperty(): ObjectProperty<String>
+    val categories: List<String>
+    fun categoriesProperty(): ObjectProperty<List<String>>
 
     val facilities: String
     fun facilitiesProperty(): ObjectProperty<String>
@@ -41,16 +44,13 @@ interface Partner {
 
     var isHidden: Boolean
     fun isHiddenProperty(): ObjectProperty<Boolean>
-
-    var note: String
-    fun noteProperty(): ObjectProperty<String>
 }
 
 class SimplePartner(
     id: Int,
     name: String,
     url: String,
-    groups: List<String>,
+    categories: List<String>,
     note: String,
     description: String,
     facilities: String,
@@ -65,8 +65,8 @@ class SimplePartner(
     override fun idProperty() = getProperty(SimplePartner::id)
     override var name: String by property(name)
     override fun nameProperty() = getProperty(SimplePartner::name)
-    override var groups: List<String> by property(groups)
-    override fun groupsProperty() = getProperty(SimplePartner::groups)
+    override var categories: List<String> by property(categories)
+    override fun categoriesProperty() = getProperty(SimplePartner::categories)
     override var checkins: Int by property(checkins)
     override fun checkinsProperty() = getProperty(SimplePartner::checkins)
     override var rating: Rating by property(rating)

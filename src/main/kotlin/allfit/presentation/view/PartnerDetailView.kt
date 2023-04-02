@@ -128,8 +128,8 @@ class PartnerDetailView : View() {
             }
         }
         label {
-            bind(mainViewModel.selectedPartner.groups.map { groups ->
-                "Groups: " + if (groups.isEmpty()) "None" else groups.joinToString()
+            bind(mainViewModel.selectedPartner.categories.map { categories ->
+                "Categories: " + if (categories.isEmpty()) "None" else categories.joinToString()
             })
         }
         label {

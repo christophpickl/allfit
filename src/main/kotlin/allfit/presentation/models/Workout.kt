@@ -24,6 +24,9 @@ interface Workout {
     val date: DateRange
     fun dateProperty(): ObjectProperty<DateRange>
 
+    val address: String
+    fun addressProperty(): ObjectProperty<String>
+
     val image: Image
     fun imageProperty(): ObjectProperty<Image>
 
@@ -36,6 +39,7 @@ class SimpleWorkout(
     name: String,
     about: String,
     specifics: String,
+    address: String,
     date: DateRange,
     image: Image,
     url: String,
@@ -49,6 +53,8 @@ class SimpleWorkout(
     override fun aboutProperty() = getProperty(SimpleWorkout::about)
     override var specifics: String by property(specifics)
     override fun specificsProperty() = getProperty(SimpleWorkout::specifics)
+    override var address: String by property(address)
+    override fun addressProperty() = getProperty(SimpleWorkout::address)
     override var url: String by property(url)
     override fun urlProperty() = getProperty(SimpleWorkout::url)
     override var date: DateRange by property(date)

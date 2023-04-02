@@ -32,6 +32,9 @@ class WorkoutDetailView : View() {
             bind(mainViewModel.selectedWorkout.map { it.name })
             addClass(Styles.header1)
         }
+        label().bind(mainViewModel.selectedWorkout.map {
+            "Address: ${it.address}"
+        })
         label().bind(mainViewModel.selectedWorkout.map { it.date.prettyString })
         imageview(mainViewModel.selectedWorkout.map { it.image })
 

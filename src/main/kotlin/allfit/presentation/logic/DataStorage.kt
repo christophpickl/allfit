@@ -43,6 +43,7 @@ object InMemoryDataStorage : DataStorage {
         about = "About <b>EMS</b> HTML.",
         specifics = "",
         date = defaultDateRange,
+        address = "Main Street 1",
         image = readImage("workouts/ems.jpg"),
         url = OnefitUtils.workoutUrl(11101386, "ems-health-studio-ems-training-ems-training"),
         isReserved = true,
@@ -52,6 +53,7 @@ object InMemoryDataStorage : DataStorage {
         name = "Yin Yoga",
         about = "",
         specifics = "",
+        address = "",
         date = DateRange(now.plusDays(1), now.plusDays(1).plusHours(1)),
         image = readImage("workouts/yoga_yin.jpg"),
         url = "https://nu.nl",
@@ -62,6 +64,7 @@ object InMemoryDataStorage : DataStorage {
         name = "Hot Yoga",
         about = "",
         specifics = "",
+        address = "",
         date = DateRange(defaultTime.plusHours(3), defaultTime.plusHours(4).plusMinutes(30)),
         image = readImage("workouts/yoga_hot.jpg"),
         url = "https://nu.nl",
@@ -72,6 +75,7 @@ object InMemoryDataStorage : DataStorage {
         name = "Open Gym",
         about = "",
         specifics = "",
+        address = "",
         date = defaultDateRange,
         image = readImage("workouts/gym.jpg"),
         url = "https://nu.nl",
@@ -82,6 +86,7 @@ object InMemoryDataStorage : DataStorage {
         name = "Jumping",
         about = "",
         specifics = "",
+        address = "",
         date = defaultDateRange,
         image = readImage("workouts/trampoline.jpg"),
         url = "https://nu.nl",
@@ -92,6 +97,7 @@ object InMemoryDataStorage : DataStorage {
         name = "Open Gym",
         about = "",
         specifics = "",
+        address = "",
         date = pastDateRange,
         image = readImage("workouts/gym.jpg"),
         url = "https://nu.nl",
@@ -105,7 +111,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 1,
             name = "EMS Studio",
-            groups = listOf("EMS"),
+            categories = listOf("EMS"),
             checkins = 0,
             rating = 0,
             isFavorited = false,
@@ -124,7 +130,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 2,
             name = "Yoga School",
-            groups = listOf("Yoga", "Breathwork"),
+            categories = listOf("Yoga", "Breathwork"),
             checkins = 0,
             rating = 5,
             isFavorited = true,
@@ -143,7 +149,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 3,
             name = "The Gym",
-            groups = listOf("Gym"),
+            categories = listOf("Gym"),
             checkins = 1,
             rating = 3,
             isFavorited = false,
@@ -162,7 +168,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 4,
             name = "Foobar",
-            groups = emptyList(),
+            categories = emptyList(),
             checkins = 0,
             rating = 0,
             isFavorited = false,
@@ -212,5 +218,5 @@ object InMemoryDataStorage : DataStorage {
         allFullWorkouts.firstOrNull { it.id == workout.id } ?: error("Could not find workout by ID: ${workout.id}")
 
     override fun getAllGroups(): List<String> =
-        allFullPartners.map { it.groups }.flatten().distinct().sorted()
+        allFullPartners.map { it.categories }.flatten().distinct().sorted()
 }

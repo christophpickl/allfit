@@ -6,7 +6,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* make sure all persisted fields are displayed in UI (compare entities with view models)
 * sync in progress dialog (mockup with delay; only update message string)
 * dry run with prod data
 

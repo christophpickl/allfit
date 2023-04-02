@@ -11,7 +11,7 @@ data class GroupSearchRequest(
     val searchGroup: String,
 ) : SubSearchRequest {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
-        workout.partner.groups.contains(searchGroup)
+        workout.partner.categories.contains(searchGroup)
     }
 }
 
