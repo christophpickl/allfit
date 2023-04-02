@@ -3,6 +3,7 @@ package allfit.presentation.search
 import javafx.event.EventTarget
 import javafx.scene.control.CheckBox
 import javafx.scene.layout.HBox
+import tornadofx.View
 import tornadofx.action
 import tornadofx.bind
 import tornadofx.checkbox
@@ -12,18 +13,21 @@ import tornadofx.opcr
 import tornadofx.property
 import tornadofx.singleAssign
 
-abstract class SearchPane : HBox() {
+abstract class SearchPane : View() {
 
     companion object {
         fun buildAll(checkSearch: () -> Unit): List<SearchPane> = listOf(
-            CheckinSearchPane(checkSearch),
-            FavoriteSearchPane(checkSearch),
             DateSearchPane(checkSearch),
+            GroupSearchPane(checkSearch),
+            CheckinSearchPane(checkSearch),
+            WishlistedSearchPane(checkSearch),
+            FavoriteSearchPane(checkSearch),
             ReservedSearch(checkSearch),
         )
     }
 
     abstract var searchFieldPane: SearchFieldPane
+    override val root get() = searchFieldPane
 
     protected abstract fun buildSearchRequest(): SubSearchRequest?
 

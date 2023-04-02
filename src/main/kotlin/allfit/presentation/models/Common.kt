@@ -1,25 +1,17 @@
 package allfit.presentation.models
 
+import allfit.service.formatStartAndEnd
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 
 typealias Rating = Int
-
 
 data class DateRange(
     val start: ZonedDateTime,
     val end: ZonedDateTime,
 ) : Comparable<DateRange> {
-    companion object {
-        private val formatterDateTime = DateTimeFormatter.ofPattern("E dd.MM. HH:mm", Locale.ENGLISH)
-        private val formatterTime = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
-        private fun format(date: DateRange) =
-            date.start.format(formatterDateTime) + "-" + date.end.format(formatterTime)
-    }
 
-    val prettyString = format(this)
+    val prettyString = formatStartAndEnd()
     val durationInMinutes = ChronoUnit.MINUTES.between(start, end)
 
     init {

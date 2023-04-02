@@ -15,6 +15,7 @@ class MainViewModel : ViewModel() {
     val sortedFilteredWorkouts = SortedFilteredList<FullWorkout>(allWorkouts)
     val selectedPartner = CurrentPartnerViewModel()
     val selectedWorkout = SimpleObjectProperty<FullWorkout>()
+    val allGroups = FXCollections.observableArrayList<String>()!!
 }
 
 class CurrentPartnerViewModel : ViewModel() {

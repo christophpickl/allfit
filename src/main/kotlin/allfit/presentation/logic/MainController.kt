@@ -21,6 +21,7 @@ class MainController : Controller() {
             logger.debug { "Application started." }
             val workouts = dataStorage.getFutureFullWorkouts()
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
+            mainViewModel.allGroups.addAll(dataStorage.getAllGroups())
         }
         subscribe<SearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }

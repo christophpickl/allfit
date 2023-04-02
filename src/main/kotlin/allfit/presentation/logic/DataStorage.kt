@@ -20,6 +20,7 @@ interface DataStorage {
     // for real impl, here we do database operations
     fun updatePartner(modifications: PartnerModifications)
     fun toFullWorkout(workout: SimpleWorkout): FullWorkout
+    fun getAllGroups(): List<String>
 }
 
 object InMemoryDataStorage : DataStorage {
@@ -104,6 +105,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 1,
             name = "EMS Studio",
+            groups = listOf("EMS"),
             checkins = 0,
             rating = 0,
             isFavorited = false,
@@ -122,6 +124,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 2,
             name = "Yoga School",
+            groups = listOf("Yoga", "Breathwork"),
             checkins = 0,
             rating = 5,
             isFavorited = true,
@@ -140,6 +143,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 3,
             name = "The Gym",
+            groups = listOf("Gym"),
             checkins = 1,
             rating = 3,
             isFavorited = false,
@@ -158,6 +162,7 @@ object InMemoryDataStorage : DataStorage {
         SimplePartner(
             id = 4,
             name = "Foobar",
+            groups = emptyList(),
             checkins = 0,
             rating = 0,
             isFavorited = false,
@@ -205,4 +210,7 @@ object InMemoryDataStorage : DataStorage {
 
     override fun toFullWorkout(workout: SimpleWorkout): FullWorkout =
         allFullWorkouts.firstOrNull { it.id == workout.id } ?: error("Could not find workout by ID: ${workout.id}")
+
+    override fun getAllGroups(): List<String> =
+        allFullPartners.map { it.groups }.flatten().distinct().sorted()
 }

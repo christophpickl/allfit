@@ -18,22 +18,19 @@ data class CheckinSearchRequest(
 class CheckinSearchPane(checkSearch: () -> Unit) : SearchPane() {
 
     private val checkinOptions = listOf(0, 1, 5, 10, 20)
-    override var searchFieldPane: SearchFieldPane by singleAssign()
     private var checkinsOperator: ComboBox<String> by singleAssign()
     private var checkinsOperand: ComboBox<Int> by singleAssign()
 
-    init {
-        searchFieldPane = searchField {
-            title = "Checkins"
-            enabledAction = OnEnabledAction { checkSearch() }
-            checkinsOperator = combobox(values = NumericOperator.values().map { it.symbol }) {
-                selectionModel.select(0)
-                setOnAction { checkSearch() }
-            }
-            checkinsOperand = combobox(values = checkinOptions) {
-                selectionModel.select(0)
-                setOnAction { checkSearch() }
-            }
+    override var searchFieldPane: SearchFieldPane = searchField {
+        title = "Checkins"
+        enabledAction = OnEnabledAction { checkSearch() }
+        checkinsOperator = combobox(values = NumericOperator.values().map { it.symbol }) {
+            selectionModel.select(0)
+            setOnAction { checkSearch() }
+        }
+        checkinsOperand = combobox(values = checkinOptions) {
+            selectionModel.select(0)
+            setOnAction { checkSearch() }
         }
     }
 

@@ -28,7 +28,7 @@ class DateKtTest : DescribeSpec() {
         }
         describe("Formatter") {
             it("ZonedDateTime.formatOnefit") {
-                ZonedDateTime.of(2000, 1, 2, 10, 11, 12, 0, zoneUtc).formatOnefit() shouldBe "2000-01-02T10:11:12Z"
+                ZonedDateTime.of(2000, 1, 2, 10, 11, 12, 0, zoneUtc).formatIsoOffset() shouldBe "2000-01-02T10:11:12Z"
             }
         }
         describe("SystemClock") {

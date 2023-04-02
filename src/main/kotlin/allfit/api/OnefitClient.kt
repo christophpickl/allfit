@@ -6,7 +6,7 @@ import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
 import allfit.api.models.WorkoutsJsonRoot
-import allfit.service.formatOnefit
+import allfit.service.formatIsoOffset
 import java.time.ZonedDateTime
 
 interface OnefitClient {
@@ -66,8 +66,8 @@ data class WorkoutSearchParams(
     val isDigital: Boolean
 ) : PagedParams<WorkoutSearchParams> {
 
-    val startFormatted = start.formatOnefit()
-    val endFormatted = end.formatOnefit()
+    val startFormatted = start.formatIsoOffset()
+    val endFormatted = end.formatIsoOffset()
 
     override fun nextPage() = copy(page = page + 1)
 

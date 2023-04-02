@@ -15,20 +15,19 @@ data class FavoriteSearchRequest(
 }
 
 class FavoriteSearchPane(checkSearch: () -> Unit) : SearchPane() {
-    override var searchFieldPane: SearchFieldPane by singleAssign()
+
     private var favoriteOperand: CheckBox by singleAssign()
 
-    init {
-        searchFieldPane = searchField {
-            title = "Favorited"
-            enabledAction = OnEnabledAction { checkSearch() }
-            favoriteOperand = checkbox {
-                action {
-                    checkSearch()
-                }
+    override var searchFieldPane = searchField {
+        title = "Favorited"
+        enabledAction = OnEnabledAction { checkSearch() }
+        favoriteOperand = checkbox {
+            action {
+                checkSearch()
             }
         }
     }
+
 
     override fun buildSearchRequest() = FavoriteSearchRequest(operand = favoriteOperand.isSelected)
 }

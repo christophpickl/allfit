@@ -15,6 +15,9 @@ interface Partner {
     val url: String
     fun urlProperty(): ObjectProperty<String>
 
+    val groups: List<String>
+    fun groupsProperty(): ObjectProperty<List<String>>
+
     val description: String
     fun descriptionProperty(): ObjectProperty<String>
 
@@ -47,6 +50,7 @@ class SimplePartner(
     id: Int,
     name: String,
     url: String,
+    groups: List<String>,
     note: String,
     description: String,
     facilities: String,
@@ -61,6 +65,8 @@ class SimplePartner(
     override fun idProperty() = getProperty(SimplePartner::id)
     override var name: String by property(name)
     override fun nameProperty() = getProperty(SimplePartner::name)
+    override var groups: List<String> by property(groups)
+    override fun groupsProperty() = getProperty(SimplePartner::groups)
     override var checkins: Int by property(checkins)
     override fun checkinsProperty() = getProperty(SimplePartner::checkins)
     override var rating: Rating by property(rating)
