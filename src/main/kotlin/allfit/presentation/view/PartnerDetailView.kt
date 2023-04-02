@@ -128,13 +128,17 @@ class PartnerDetailView : View() {
             }
         }
         label {
+            bind(mainViewModel.selectedPartner.groups.map { groups ->
+                "Groups: " + if (groups.isEmpty()) "None" else groups.joinToString()
+            })
+        }
+        label {
             bind(mainViewModel.selectedPartner.facilities.map { facilities ->
                 "Facilities: " + facilities.split(",").joinToString(", ").let {
                     it.ifEmpty { "None" }
                 }
             })
         }
-
         textarea("Description:") {
             isEditable = false
             bind(mainViewModel.selectedPartner.description)
