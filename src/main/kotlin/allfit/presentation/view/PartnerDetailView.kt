@@ -16,7 +16,6 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
-import javafx.scene.paint.Color
 import tornadofx.FXEvent
 import tornadofx.View
 import tornadofx.action
@@ -41,14 +40,12 @@ import tornadofx.onSelectionChange
 import tornadofx.readonlyColumn
 import tornadofx.selectedItem
 import tornadofx.singleAssign
-import tornadofx.style
 import tornadofx.textarea
 import tornadofx.tooltip
 import tornadofx.vbox
 import java.awt.Desktop
 import java.net.URI
 
-// model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation
 class PartnerDetailView : View() {
 
     private val mainViewModel: MainViewModel by inject()
@@ -62,9 +59,6 @@ class PartnerDetailView : View() {
     }
 
     override val root = vbox {
-        style {
-            backgroundColor += Color.YELLOW
-        }
         label("Partner") {
             bind(mainViewModel.selectedPartner.name)
             addClass(Styles.header1)

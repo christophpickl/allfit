@@ -4,9 +4,10 @@ import allfit.api.ClassPathOnefitClient
 import allfit.api.OnefitClient
 import allfit.api.authenticateOneFit
 import allfit.presentation.TornadoFxEntryPoint
+import allfit.presentation.UiSyncer
 import allfit.service.CredentialsLoader
-import allfit.sync.Syncer
 import kotlinx.coroutines.runBlocking
+import mu.KLogger
 import mu.KotlinLogging.logger
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
@@ -17,11 +18,25 @@ import tornadofx.launch
 import kotlin.reflect.KClass
 
 object AllFit {
-    private val log = logger {}
+
+    private var log: KLogger
+
+    init {
+        reconfigureLog()
+        log = logger {}
+    }
 
     @JvmStatic
     fun main(args: Array<String>) {
-        log.info { "Starting up AllFit." }
+        val log = logger {}
+        log.info {
+            """Starting up AllFit.
+ ______   _        _        ______ _____ _______ 
+| |  | | | |      | |      | |      | |    | |   
+| |__| | | |   _  | |   _  | |----  | |    | |   
+|_|  |_| |_|__|_| |_|__|_| |_|     _|_|_   |_|   
+"""
+        }
         runBlocking {
             startupKoin().get<AllFitStarter>().start()
         }
@@ -44,13 +59,14 @@ object AllFit {
         }
 }
 
-class AllFitStarter(private val syncer: Syncer) {
+class AllFitStarter(private val uiSyncer: UiSyncer) {
 
     private val log = logger {}
 
     fun start() {
-        syncer.syncAll()
-        startTornadoFx()
+        uiSyncer.start {
+            startTornadoFx()
+        }
     }
 
     private fun startTornadoFx() {

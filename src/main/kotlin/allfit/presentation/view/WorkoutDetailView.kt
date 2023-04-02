@@ -5,7 +5,6 @@ import allfit.presentation.StaticImageStorage
 import allfit.presentation.Styles
 import allfit.presentation.htmlview
 import allfit.presentation.models.MainViewModel
-import javafx.scene.paint.Color
 import tornadofx.View
 import tornadofx.action
 import tornadofx.addClass
@@ -13,7 +12,6 @@ import tornadofx.bind
 import tornadofx.button
 import tornadofx.imageview
 import tornadofx.label
-import tornadofx.style
 import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.visibleWhen
@@ -25,9 +23,6 @@ class WorkoutDetailView : View() {
     private val mainViewModel: MainViewModel by inject()
 
     override val root = vbox {
-        style {
-            backgroundColor += Color.RED
-        }
         label("Workout") {
             bind(mainViewModel.selectedWorkout.map { it.name })
             addClass(Styles.header1)

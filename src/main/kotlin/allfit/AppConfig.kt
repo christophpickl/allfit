@@ -1,7 +1,5 @@
 package allfit
 
-//private val enabled = Environment.current != Environment.Production
-
 @Suppress("SimplifyBooleanWithConstants")
 data class AppConfig(
     val mockClient: Boolean,

@@ -2,6 +2,7 @@ package allfit
 
 import allfit.api.OnefitClient
 import allfit.persistence.persistenceModule
+import allfit.presentation.UiSyncer
 import allfit.presentation.logic.DataStorage
 import allfit.presentation.logic.InMemoryDataStorage
 import allfit.service.DirectoryEntry
@@ -21,6 +22,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     }
 
     single<DataStorage> { InMemoryDataStorage }
+    single { UiSyncer(get()) }
     single { AllFitStarter(get()) }
 
     includes(persistenceModule(config))
