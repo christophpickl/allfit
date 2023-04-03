@@ -17,6 +17,7 @@ import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DatabaseConfig
 import org.koin.dsl.module
 
 private val log = logger {}
@@ -53,5 +54,7 @@ private fun connectToDatabase() {
     val jdbcUrl = "jdbc:h2:file:${dbDir.absolutePath}/h2"
     log.info { "Connecting to database: $jdbcUrl" }
     LiquibaseMigrator.migrate(LiquibaseConfig("", "", jdbcUrl))
-    Database.connect(jdbcUrl)
+    Database.connect(jdbcUrl, databaseConfig = DatabaseConfig {
+        defaultRepetitionAttempts = 1
+    })
 }

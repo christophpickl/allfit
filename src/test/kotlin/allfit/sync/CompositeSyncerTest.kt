@@ -1,5 +1,7 @@
 package allfit.sync
 
+import allfit.api.JsonLogFileManager
+import allfit.api.NoOpJsonLogFileManager
 import allfit.api.OnefitClient
 import allfit.api.models.CategoriesJsonRoot
 import allfit.api.models.CategoryJson
@@ -30,6 +32,7 @@ class CompositeSyncerTest : StringSpec() {
     private lateinit var reservationsSyncer: ReservationsSyncer
     private lateinit var checkinsSyncer: CheckinsSyncer
     private lateinit var syncer: CompositeSyncer
+    private val jsonLogFileManager: JsonLogFileManager = NoOpJsonLogFileManager
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = mockk()
@@ -46,7 +49,9 @@ class CompositeSyncerTest : StringSpec() {
             locationsSyncer,
             workoutsSyncer,
             reservationsSyncer,
-            checkinsSyncer
+            checkinsSyncer,
+            SyncListenerManagerImpl(),
+            jsonLogFileManager,
         )
     }
 

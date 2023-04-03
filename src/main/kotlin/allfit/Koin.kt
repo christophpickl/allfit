@@ -1,5 +1,7 @@
 package allfit
 
+import allfit.api.JsonLogFileManager
+import allfit.api.JsonLogFileManagerImpl
 import allfit.api.OnefitClient
 import allfit.persistence.persistenceModule
 import allfit.presentation.UiSyncer
@@ -24,6 +26,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single<DataStorage> { InMemoryDataStorage }
     single { UiSyncer(get()) }
     single { AllFitStarter(get()) }
+    single<JsonLogFileManager> { JsonLogFileManagerImpl() }
 
     includes(persistenceModule(config))
     includes(syncModule(config))

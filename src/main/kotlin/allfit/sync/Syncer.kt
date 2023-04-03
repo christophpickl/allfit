@@ -1,5 +1,6 @@
 package allfit.sync
 
+import allfit.api.JsonLogFileManager
 import allfit.api.OnefitClient
 import allfit.api.PartnerSearchParams
 import allfit.api.models.SyncableJson
@@ -15,43 +16,82 @@ interface Syncer {
 }
 
 interface SyncListener {
-    fun onSyncStep(stepNumber: Int, stepsTotalCount: Int, message: String)
-    fun onSyncDone()
+    fun onSyncStart(steps: List<String>)
+    fun onSyncStepDone()
+    fun onSyncDetail(message: String)
+    fun onSyncEnd()
 }
 
-object NoOpSyncer : Syncer {
+class NoOpSyncer(
+    private val listeners: SyncListenerManagerImpl
+) : Syncer, SyncListenerManager by listeners {
     private val log = logger {}
-    private val listeners = mutableListOf<SyncListener>()
-    override fun registerListener(listener: SyncListener) {
-        listeners += listener
-    }
 
     override fun syncAll() {
         log.info { "No-op syncer is not doing anything." }
-        listeners.forEach {
-            it.onSyncDone()
-        }
+        listeners.onSyncStart(listOf("No operation dummy syncer."))
+        listeners.onSyncStepDone()
+        listeners.onSyncEnd()
     }
 }
 
-object DelayedSyncer : Syncer {
-    private val log = logger {}
+interface SyncListenerManager : SyncListener {
+    fun registerListener(listener: SyncListener)
+}
+
+class SyncListenerManagerImpl : SyncListenerManager {
+
     private val listeners = mutableListOf<SyncListener>()
+
     override fun registerListener(listener: SyncListener) {
         listeners += listener
     }
 
+    override fun onSyncStart(steps: List<String>) {
+        listeners.forEach {
+            it.onSyncStart(steps)
+        }
+    }
+
+    override fun onSyncStepDone() {
+        listeners.forEach {
+            it.onSyncStepDone()
+        }
+    }
+
+    override fun onSyncDetail(message: String) {
+        listeners.forEach {
+            it.onSyncDetail(message)
+        }
+    }
+
+    override fun onSyncEnd() {
+        listeners.forEach {
+            it.onSyncEnd()
+        }
+    }
+}
+
+class DelayedSyncer(
+    private val listeners: SyncListenerManagerImpl
+) : Syncer, SyncListenerManager by listeners {
+
+    private val log = logger {}
+    private val steps = listOf("First step", "Second step", "Third step", "Second last step", "Last step")
+
     override fun syncAll() {
         log.info { "Delayed syncer is running..." }
-        (1..5).forEach { step ->
-            listeners.forEach {
-                it.onSyncStep(step, 5, "Step $step working...")
-            }
-            Thread.sleep(1000 * 1)
+        listeners.onSyncStart(steps)
+        steps.forEach {
+            listeners.onSyncDetail("Detail #1 for step: $it")
+            Thread.sleep(1500)
+            listeners.onSyncDetail("Detail #2 for step: $it")
+            Thread.sleep(1500)
+            listeners.onSyncDetail("Detail #3 for step: $it")
+            Thread.sleep(1500)
+            listeners.onSyncStepDone()
         }
-        listeners.forEach {
-            it.onSyncDone()
-        }
+        listeners.onSyncEnd()
     }
 }
 
@@ -63,46 +103,46 @@ class CompositeSyncer(
     private val workoutsSyncer: WorkoutsSyncer,
     private val reservationsSyncer: ReservationsSyncer,
     private val checkinsSyncer: CheckinsSyncer,
-) : Syncer {
+    private val listeners: SyncListenerManagerImpl,
+    private val jsonLogFileManager: JsonLogFileManager,
+) : Syncer, SyncListenerManager by listeners {
 
     private val log = logger {}
-    private val totalSteps = 7
-    private val listeners = mutableListOf<SyncListener>()
-
-    override fun registerListener(listener: SyncListener) {
-        listeners += listener
-    }
+    private val syncSteps = listOf(
+        "Fetching partners",
+        "Syncing categories",
+        "Syncing partners",
+        "Syncing locations",
+        "Syncing workouts",
+        "Syncing reservations",
+        "Syncing checkins",
+        "Cleanup logs",
+    )
 
     override fun syncAll() {
-        var currentStep = 1
         transaction {
+            listeners.onSyncStart(syncSteps)
             runBlocking {
                 log.info { "Sync started ..." }
-                broadcastStep(currentStep++, "Fetching partners...")
                 val partners = client.getPartners(PartnerSearchParams.simple())
-                broadcastStep(currentStep++, "Syncing categories...")
+                listeners.onSyncStepDone()
                 categoriesSyncer.sync(partners)
-                broadcastStep(currentStep++, "Syncing partners...")
+                listeners.onSyncStepDone()
                 partnersSyncer.sync(partners)
-                broadcastStep(currentStep++, "Syncing locations...")
+                listeners.onSyncStepDone()
                 locationsSyncer.sync(partners)
-                broadcastStep(currentStep++, "Syncing workouts...")
+                listeners.onSyncStepDone()
                 workoutsSyncer.sync()
-                broadcastStep(currentStep++, "Syncing reservations...")
+                listeners.onSyncStepDone()
                 reservationsSyncer.sync()
-                broadcastStep(currentStep++, "Syncing checkins...")
+                listeners.onSyncStepDone()
                 checkinsSyncer.sync()
+                listeners.onSyncStepDone()
+                jsonLogFileManager.deleteOldLogs()
+                listeners.onSyncStepDone()
             }
         }
-        listeners.forEach {
-            it.onSyncDone()
-        }
-    }
-
-    private fun broadcastStep(currentStep: Int, message: String) {
-        listeners.forEach {
-            it.onSyncStep(currentStep, totalSteps, message)
-        }
+        listeners.onSyncEnd()
     }
 }
 

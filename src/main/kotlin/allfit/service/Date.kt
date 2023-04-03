@@ -8,17 +8,19 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+private val zoneAmsterdam: ZoneId = ZoneId.of("Europe/Amsterdam")
+private val zoneUtc: ZoneId = ZoneId.of("UTC")
+
 private val isoOffsetFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME // 2011-12-03T10:15:30+01:00
 private val dayDateAndTimeFormatter = DateTimeFormatter.ofPattern("E dd.MM. HH:mm", Locale.ENGLISH)
 private val dayDateFormatter = DateTimeFormatter.ofPattern("E dd.MM.", Locale.ENGLISH)
 private val timeOnlyFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.ENGLISH)
-
-private val zoneAmsterdam: ZoneId = ZoneId.of("Europe/Amsterdam")
-private val zoneUtc: ZoneId = ZoneId.of("UTC")
+val fileSafeFormatter = DateTimeFormatter.ofPattern("YYYY_MM_dd-HH_mm_ss", Locale.ENGLISH)
 
 fun ZonedDateTime.formatIsoOffset(): String = isoOffsetFormatter.format(this)
 fun ZonedDateTime.formatDayDate(): String = dayDateFormatter.format(this)
 fun ZonedDateTime.formatTime(): String = timeOnlyFormatter.format(this)
+fun ZonedDateTime.formatFileSafe(): String = fileSafeFormatter.format(this)
 
 object SystemClock {
     fun now(): ZonedDateTime = ZonedDateTime.now(zoneAmsterdam)

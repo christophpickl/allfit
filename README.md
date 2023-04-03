@@ -15,6 +15,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 * adjust column sizes in table
 * UI any clickable element with blue rounded background color
+* improve sync dialog: how many partners/workouts (left); show progress with progress bar as total amount is known
 
 ### Future
 

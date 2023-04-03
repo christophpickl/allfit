@@ -58,6 +58,9 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
     override fun insertAll(workouts: List<WorkoutEntity>) {
         log.debug { "Inserting ${workouts.size} workouts." }
         workouts.forEach {
+            if (this.workouts.containsKey(it.id)) {
+                error("Unique key constraint violation for ID: ${it.id}")
+            }
             this.workouts[it.id] = it
         }
     }

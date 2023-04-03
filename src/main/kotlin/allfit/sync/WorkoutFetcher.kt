@@ -1,7 +1,6 @@
 package allfit.sync
 
 import allfit.api.OnefitUtils
-import allfit.service.requireOk
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
@@ -32,16 +31,40 @@ data class WorkoutFetch(
     override val specifics: String,
     override val address: String,
     val imageUrls: List<String>, // add "?w=123" to define width
-) : WorkoutHtmlMetaData
+) : WorkoutHtmlMetaData {
+    companion object {
+        fun empty(workoutId: Int) = WorkoutFetch(
+            workoutId = workoutId, about = "", specifics = "", address = "", imageUrls = emptyList()
+        )
+    }
+}
 
 class WorkoutFetcherImpl : WorkoutFetcher {
+
     private val log = logger {}
     private val client = HttpClient()
+    private val maxRetries = 5
+
     override suspend fun fetch(url: WorkoutUrl): WorkoutFetch {
         log.debug { "Fetch workout data from: ${url.url}" }
+        return fetchRetriable(url, 1)
+    }
+
+    private suspend fun fetchRetriable(url: WorkoutUrl, attempt: Int): WorkoutFetch {
         val response = client.get(url.url)
-        response.requireOk()
-        return WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())
+        return when (response.status.value) {
+            200 -> WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())
+            404 -> WorkoutFetch.empty(url.workoutId)
+            500, 502 -> {
+                if (attempt == maxRetries) {
+                    error("Invalid 500 response after last attempt for URL: ${url.url}")
+                } else {
+                    log.warn { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
+                    fetchRetriable(url, attempt + 1)
+                }
+            }
+            else -> error("Invalid HTTP response ${response.status} for URL: ${url.url}")
+        }
     }
 }
 
@@ -64,9 +87,12 @@ object WorkoutHtmlParser {
             .select(".readMore--aboutLesson > div:nth-child(1) > p:nth-child(1)")[0].html()
     }
 
-    private fun parseSpecifics(body: Element) =
-        body.getElementsByClass("specifics").requireOneChild()
+    private fun parseSpecifics(body: Element): String {
+        val specifics = body.getElementsByClass("specifics")
+        if (specifics.size == 0) return ""
+        return specifics.requireOneChild()
             .select(".readMore--specifics > div:nth-child(1) > p:nth-child(1)")[0].html()
+    }
 
     private fun parseAddress(body: Element) =
         body.select("div.address").text()

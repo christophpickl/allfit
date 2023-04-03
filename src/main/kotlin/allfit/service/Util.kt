@@ -49,7 +49,6 @@ suspend fun HttpResponse.requireOk() {
     }
 }
 
-
 suspend fun <T> List<T>.workParallel(numberOfCoroutines: Int, worker: suspend (T) -> Unit) {
     log.debug { "Starting parallel job with $numberOfCoroutines coroutines for $size items ..." }
     require(numberOfCoroutines >= 1)

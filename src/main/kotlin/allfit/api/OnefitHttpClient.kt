@@ -10,8 +10,7 @@ import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
 import allfit.api.models.WorkoutsJsonRoot
-import allfit.service.DirectoryEntry
-import allfit.service.FileResolver
+import allfit.service.SystemClock
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
@@ -33,7 +32,6 @@ import io.ktor.client.statement.request
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
-import java.io.File
 
 private val log = logger {}
 private val authClient = buildClient(null)
@@ -77,6 +75,7 @@ private fun buildClient(authToken: String?) = HttpClient(CIO) {
 
 class OnefitHttpClient(
     authToken: String,
+    private val jsonLogFileManager: JsonLogFileManager = JsonLogFileManagerImpl()
 ) : OnefitClient {
 
     private val log = logger {}
@@ -142,9 +141,10 @@ class OnefitHttpClient(
     }
 
     private suspend fun HttpResponse.logJsonResponse(path: String) {
-        val fileName = "${path.replace("/", "_")}-${status.value}.json"
-        val jsonResponseString = kotlinxSerializer.toPrettyString(bodyAsText())
-        File(FileResolver.resolve(DirectoryEntry.JsonLogs), fileName).writeText(jsonResponseString)
+        jsonLogFileManager.save(
+            JsonLogFileName(path, status.value, SystemClock.now()),
+            kotlinxSerializer.toPrettyString(bodyAsText())
+        )
     }
 
     private suspend fun <

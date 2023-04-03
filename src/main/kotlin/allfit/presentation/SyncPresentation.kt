@@ -1,0 +1,144 @@
+package allfit.presentation
+
+import allfit.sync.DelayedSyncer
+import allfit.sync.SyncListener
+import allfit.sync.SyncListenerManagerImpl
+import allfit.sync.Syncer
+import mu.KotlinLogging.logger
+import java.awt.BorderLayout
+import java.awt.Dimension
+import javax.swing.BoxLayout
+import javax.swing.JDialog
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTextArea
+
+class UiSyncer(private val syncer: Syncer) {
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            UiSyncer(DelayedSyncer(SyncListenerManagerImpl())).start {
+                println("done")
+            }
+        }
+    }
+
+    private val log = logger {}
+
+    fun start(finishCallback: (Result<Unit>) -> Unit) {
+        log.info { "Start syncing via UI. " }
+        StatefulUiSyncer(syncer, finishCallback).start()
+    }
+
+}
+
+private class StatefulUiSyncer(
+    private val syncer: Syncer,
+    private val finishCallback: (Result<Unit>) -> Unit,
+) : SyncListener {
+
+    private val log = logger {}
+    private val syncDialog = SyncProgressDialog()
+    private var currentStep = 1
+    private var syncSteps = emptyList<String>()
+
+    init {
+        syncer.registerListener(this)
+    }
+
+    fun start() {
+        syncDialog.setLocationRelativeTo(null)
+        syncDialog.isVisible = true
+        try {
+            syncer.syncAll()
+        } catch (e: Exception) {
+            finish(e)
+        }
+    }
+
+    override fun onSyncStart(steps: List<String>) {
+        syncSteps = steps
+        syncDialog.initSteps(steps)
+    }
+
+    override fun onSyncStepDone() {
+        syncDialog.stepDone(currentStep)
+        currentStep++
+    }
+
+    override fun onSyncDetail(message: String) {
+        syncDialog.detailMessage(message)
+    }
+
+    override fun onSyncEnd() {
+        log.debug { "sync done." }
+        finish(null)
+    }
+
+    private fun finish(exception: Exception?) {
+        syncDialog.isVisible = false
+        syncDialog.dispose()
+        finishCallback(if (exception == null) Result.success(Unit) else Result.failure(exception))
+    }
+}
+
+private class SyncProgressDialog : JDialog() {
+
+    private val stepsPanel = JPanel()
+    private val detailsText = JTextArea().apply {
+        isEditable = false
+    }
+    private val stepsLabels = mutableListOf<JLabel>()
+
+    private val iconWorking = "⏳"
+    private val iconDone = "✅"
+    private val iconWaiting = "❔"
+
+    init {
+        title = "Synchronizing"
+        stepsPanel.layout = BoxLayout(stepsPanel, BoxLayout.Y_AXIS)
+        val northPanel = JPanel()
+        northPanel.add(stepsPanel)
+
+        val mainPanel = JPanel(BorderLayout())
+        mainPanel.add(northPanel, BorderLayout.NORTH)
+        mainPanel.add(JScrollPane(detailsText), BorderLayout.CENTER)
+        rootPane.contentPane.add(mainPanel)
+        size = Dimension(800, 500)
+    }
+
+    fun initSteps(steps: List<String>) {
+        steps.forEachIndexed { index, step ->
+            val label = JLabel().apply {
+                text = "$iconWaiting - ${index + 1}: $step"
+            }
+            stepsLabels.add(label)
+            stepsPanel.add(label)
+        }
+        updateStepIcon(1, iconWorking)
+        revalidate()
+    }
+
+    fun stepDone(stepNumber: Int) {
+        updateStepIcon(stepNumber, iconDone)
+        if ((stepNumber - 1) != (stepsLabels.size)) {
+            updateStepIcon(stepNumber + 1, iconWorking)
+        }
+        addDetail("Step $stepNumber/${stepsLabels.size} done.")
+    }
+
+    private fun updateStepIcon(stepNumber: Int, icon: String) {
+        val oldText = stepsLabels[stepNumber - 1].text
+        stepsLabels[stepNumber - 1].text = icon + oldText.substring(1)
+    }
+
+    fun detailMessage(message: String) {
+        addDetail(message)
+    }
+
+    private fun addDetail(message: String) {
+        detailsText.text = message + "\n" + detailsText.text
+    }
+}

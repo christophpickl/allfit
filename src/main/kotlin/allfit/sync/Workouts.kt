@@ -12,6 +12,8 @@ import allfit.service.ImageStorage
 import allfit.service.SystemClock
 import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
+import allfit.service.workParallel
+import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 
 interface WorkoutsSyncer {
@@ -26,15 +28,28 @@ class WorkoutsSyncerImpl(
     private val imageStorage: ImageStorage,
     private val checkinsRepository: CheckinsRepository,
     private val reservationsRepo: ReservationsRepo,
+    private val syncListeners: SyncListenerManager
 ) : WorkoutsSyncer {
+
     private val log = logger {}
+    private val parallelFetchers = 6
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
         val workoutsToBeSyncedJson = getWorkoutsToBeSynced()
-        val metaFetchById = workoutsToBeSyncedJson.map {
-            workoutFetcher.fetch(WorkoutUrl(workoutId = it.id, workoutSlug = it.slug))
-        }.associateBy { it.workoutId }
+        log.debug { "Fetching metadata for ${workoutsToBeSyncedJson.size} workouts." }
+        syncListeners.onSyncDetail("Fetching metadata for ${workoutsToBeSyncedJson.size} workouts.")
+        val metaFetchById = mutableMapOf<Int, WorkoutFetch>()
+        workoutsToBeSyncedJson.workParallel(parallelFetchers) { workout ->
+            metaFetchById[workout.id] = workoutFetcher.fetch(
+                WorkoutUrl(
+                    workoutId = workout.id,
+                    workoutSlug = workout.slug
+                )
+            )
+            delay(30) // artificial delay to soothen possible cloudflare's DoS anger :)
+        }
+
         workoutsRepo.insertAll(workoutsToBeSyncedJson.map { it.toWorkoutEntity(metaFetchById[it.id]!!) })
         imageStorage.saveWorkoutImages(metaFetchById.values
             .filter { it.imageUrls.isNotEmpty() }
@@ -52,17 +67,21 @@ class WorkoutsSyncerImpl(
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
         val from = SystemClock.todayBeginOfDay()
-        val workouts = client.getWorkouts(WorkoutSearchParams.simple(from = from, plusDays = 14)).data
-        val workoutIdsToBeInserted = workouts.map { it.id }.toMutableList()
+        val rawWorkouts = client.getWorkouts(WorkoutSearchParams.simple(from = from, plusDays = 14)).data
+        val distinctWorkouts = rawWorkouts.distinctBy { it.id }
+        if (rawWorkouts.size != distinctWorkouts.size) {
+            log.warn { "Dropped ${rawWorkouts.size - distinctWorkouts.size} workouts because of duplicate IDs." }
+        }
+        val workoutIdsToBeInserted = distinctWorkouts.map { it.id }.toMutableList()
         val entities = workoutsRepo.selectAllStartingFrom(from.toUtcLocalDateTime())
         entities.forEach {
             workoutIdsToBeInserted.remove(it.id)
         }
-        val maybeInsert = workouts.filter { workoutIdsToBeInserted.contains(it.id) }
+        val maybeInsertWorkouts = distinctWorkouts.filter { workoutIdsToBeInserted.contains(it.id) }
 
         // remove all workouts without an existing partner (partner seems disabled, yet workout is being returned)
         val partnerIds = partnersRepo.selectAll().map { it.id }
-        return maybeInsert.filter {
+        return maybeInsertWorkouts.filter {
             val existing = partnerIds.contains(it.partner.id)
             if (!existing) {
                 log.warn { "Dropping workout because partner is not known (set inactive by OneFit?!): $it" }

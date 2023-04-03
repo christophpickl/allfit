@@ -26,5 +26,9 @@ class WorkoutHtmlParserTest : StringSpec() {
             val workout = WorkoutHtmlParser.parse(anyWorkoutId, readHtmlResponse("workout-no_about.html"))
             workout.about shouldBe ""
         }
+        "When parse HTML without specifics Then return empty string" {
+            val workout = WorkoutHtmlParser.parse(workoutId, readHtmlResponse("workout-no_specifics.html"))
+            workout.specifics shouldBe ""
+        }
     }
 }

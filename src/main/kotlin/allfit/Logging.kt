@@ -15,16 +15,15 @@ import ch.qos.logback.core.spi.FilterReply
 import org.slf4j.LoggerFactory
 import java.io.File
 
-fun reconfigureLog() {
+fun reconfigureLog(useFileAppender: Boolean) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext
     val rootLogger = context.getLogger(Logger.ROOT_LOGGER_NAME)
     rootLogger.detachAndStopAllAppenders()
 
-//    when (Environment.current) {
-//        Environment.Production -> rootLogger.reconfigureProdLog(context)
-//        Environment.Development -> rootLogger.reconfigureDevLog(context)
-//    }
-    rootLogger.reconfigureProdLog(context)
+    if (useFileAppender) {
+        rootLogger.addFileAppender(context)
+    }
+    rootLogger.addConsoleAppender(context)
     rootLogger.level = Level.WARN
 
     mapOf(
@@ -36,7 +35,7 @@ fun reconfigureLog() {
     }
 }
 
-private fun Logger.reconfigureProdLog(context: LoggerContext) {
+private fun Logger.addFileAppender(context: LoggerContext) {
     val targetLogFile = File(FileResolver.resolve(DirectoryEntry.ApplicationLogs), "allfit.log")
     println("[AllFit] Writing logs to: ${targetLogFile.absolutePath}")
     addAppender(RollingFileAppender<ILoggingEvent>().also { appender ->
@@ -58,7 +57,7 @@ private fun Logger.reconfigureProdLog(context: LoggerContext) {
     })
 }
 
-private fun Logger.reconfigureDevLog(context: LoggerContext) {
+private fun Logger.addConsoleAppender(context: LoggerContext) {
     addAppender(ConsoleAppender<ILoggingEvent>().also { appender ->
         appender.context = context
         appender.name = "AllFitConsoleAppender"

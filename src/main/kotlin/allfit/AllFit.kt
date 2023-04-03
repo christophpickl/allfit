@@ -15,14 +15,16 @@ import org.koin.core.context.startKoin
 import tornadofx.DIContainer
 import tornadofx.FX
 import tornadofx.launch
+import javax.swing.JOptionPane
 import kotlin.reflect.KClass
 
 object AllFit {
 
-    private var log: KLogger
+    private val config = if (Environment.current == Environment.Development) AppConfig.develop else AppConfig.prod
+    private val log: KLogger
 
     init {
-        reconfigureLog()
+        reconfigureLog(config.useFileAppender)
         log = logger {}
     }
 
@@ -38,12 +40,16 @@ object AllFit {
 """
         }
         runBlocking {
-            startupKoin().get<AllFitStarter>().start()
+            try {
+                startupKoin().get<AllFitStarter>().start()
+            } catch (e: Exception) {
+                log.error(e) { "Startup failed!" }
+                showStartupError(e)
+            }
         }
     }
 
     private suspend fun startupKoin(): Koin {
-        val config = if (Environment.current == Environment.Development) AppConfig.develop else AppConfig.prod
         val client = buildClient(config)
         return startKoin {
             log.debug { "Starting up Koin context." }
@@ -51,12 +57,11 @@ object AllFit {
         }.koin
     }
 
-    private suspend fun buildClient(config: AppConfig): OnefitClient =
-        if (config.mockClient) {
-            ClassPathOnefitClient
-        } else {
-            authenticateOneFit(CredentialsLoader.load())
-        }
+    private suspend fun buildClient(config: AppConfig): OnefitClient = if (config.mockClient) {
+        ClassPathOnefitClient
+    } else {
+        authenticateOneFit(CredentialsLoader.load())
+    }
 }
 
 class AllFitStarter(private val uiSyncer: UiSyncer) {
@@ -64,8 +69,16 @@ class AllFitStarter(private val uiSyncer: UiSyncer) {
     private val log = logger {}
 
     fun start() {
-        uiSyncer.start {
-            startTornadoFx()
+        uiSyncer.start { result ->
+            result.fold(
+                onSuccess = {
+                    startTornadoFx()
+                },
+                onFailure = {
+                    log.error(it) { "Sync failed!" }
+                    showStartupError(it)
+                },
+            )
         }
     }
 
@@ -78,4 +91,10 @@ class AllFitStarter(private val uiSyncer: UiSyncer) {
         }
         launch<TornadoFxEntryPoint>(emptyArray())
     }
+}
+
+private fun showStartupError(exception: Throwable) {
+    JOptionPane.showMessageDialog(
+        null, exception.message ?: "See log for details.", "Startup Error!", JOptionPane.ERROR_MESSAGE
+    )
 }

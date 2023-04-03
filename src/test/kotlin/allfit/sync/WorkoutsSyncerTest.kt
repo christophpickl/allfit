@@ -25,6 +25,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.maps.shouldBeEmpty
+import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
@@ -61,7 +62,8 @@ class WorkoutsSyncerTest : StringSpec() {
             partnersRepo,
             imageStorage,
             checkinsRepository,
-            reservationsRepo
+            reservationsRepo,
+            SyncListenerManagerImpl(),
         )
     }
 
@@ -103,6 +105,17 @@ class WorkoutsSyncerTest : StringSpec() {
 
             workoutsRepo.workouts.shouldBeEmpty()
             imageStorage.savedPartnerImages.shouldBeEmpty()
+        }
+        "Given duplicate workouts Then filter them out" {
+            partnersRepo.insertAll(listOf(partnerEntity))
+            val partnerJson = Arb.workoutPartnerJson().next().copy(id = partnerEntity.id)
+            val workoutJson1 = Arb.workoutJson().next().copy(id = 1, partner = partnerJson)
+            val workoutJson2 = Arb.workoutJson().next().copy(id = 1, partner = partnerJson)
+            client.mockWorkoutsResponse(workoutJson1, workoutJson2)
+
+            syncer.sync()
+
+            workoutsRepo.workouts shouldHaveSize 1
         }
         "Given workout already in DB Then do nothing" {
             workoutsRepo.insertAll(listOf(workoutEntity))
