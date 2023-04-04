@@ -1,17 +1,23 @@
 package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCheckinsRepository
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.ExposedReservationsRepo
+import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.WorkoutEntity
 import allfit.presentation.PartnerModifications
-import allfit.presentation.PresentationConstants
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
-import allfit.service.InMemoryImageStorage
+import allfit.service.ImageStorage
+import allfit.service.SystemClock
+import allfit.service.fromUtcToAmsterdamZonedDateTime
 import javafx.scene.image.Image
-import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 
 interface DataStorage {
     fun getFutureFullWorkouts(): List<FullWorkout>
@@ -19,204 +25,137 @@ interface DataStorage {
 
     // for real impl, here we do database operations
     fun updatePartner(modifications: PartnerModifications)
-    fun toFullWorkout(workout: SimpleWorkout): FullWorkout
-    fun getAllGroups(): List<String>
+    fun getFullWorkoutById(workoutId: Int): FullWorkout
+    fun getAllCategories(): List<String>
 }
 
-object InMemoryDataStorage : DataStorage {
+class ExposedDataStorage(
+    private val imageStorage: ImageStorage,
+) : DataStorage {
 
-    private fun readImage(fileName: String) =
-        Image(
-            InMemoryImageStorage::class.java.getResourceAsStream("/images/$fileName")
-                ?: error("Could not find image at path: $fileName"),
-            PresentationConstants.tableImageWidth, 0.0, true, true
-        )
+    private val simplePartners by lazy {
+        val categoriesById = ExposedCategoriesRepo.selectAll().associateBy { it.id }
+        val partnerEntities = ExposedPartnersRepo.selectAll()
+        val partnerImagesByPartnerId = imageStorage.loadPartnerImages(partnerEntities.map { it.id })
+            .associateBy { it.partnerId }
 
-    private val now = ZonedDateTime.now()
-    private val defaultTime = ZonedDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(2)
-    private val defaultDateRange = DateRange(defaultTime, defaultTime.plusHours(1))
-    private val pastDateRange = DateRange(defaultTime.minusDays(1), defaultTime.minusDays(1).plusHours(1))
+        val checkinsByPartnerId = ExposedCheckinsRepository.selectCountForPartners().associateBy { it.partnerId }
 
-    private val workoutEms = SimpleWorkout(
-        id = 1,
-        name = "EMS",
-        about = "About <b>EMS</b> HTML.",
-        specifics = "",
-        date = defaultDateRange,
-        address = "Main Street 1",
-        image = readImage("workouts/ems.jpg"),
-        url = OnefitUtils.workoutUrl(11101386, "ems-health-studio-ems-training-ems-training"),
-        isReserved = true,
-    )
-    private val workoutYogaYin = SimpleWorkout(
-        id = 2,
-        name = "Yin Yoga",
-        about = "",
-        specifics = "",
-        address = "",
-        date = DateRange(now.plusDays(1), now.plusDays(1).plusHours(1)),
-        image = readImage("workouts/yoga_yin.jpg"),
-        url = "https://nu.nl",
-        isReserved = false,
-    )
-    private val workoutYogaHot = SimpleWorkout(
-        id = 3,
-        name = "Hot Yoga",
-        about = "",
-        specifics = "",
-        address = "",
-        date = DateRange(defaultTime.plusHours(3), defaultTime.plusHours(4).plusMinutes(30)),
-        image = readImage("workouts/yoga_hot.jpg"),
-        url = "https://nu.nl",
-        isReserved = false,
-    )
-    private val workoutGym = SimpleWorkout(
-        id = 4,
-        name = "Open Gym",
-        about = "",
-        specifics = "",
-        address = "",
-        date = defaultDateRange,
-        image = readImage("workouts/gym.jpg"),
-        url = "https://nu.nl",
-        isReserved = false,
-    )
-    private val workoutJump = SimpleWorkout(
-        id = 5,
-        name = "Jumping",
-        about = "",
-        specifics = "",
-        address = "",
-        date = defaultDateRange,
-        image = readImage("workouts/trampoline.jpg"),
-        url = "https://nu.nl",
-        isReserved = false,
-    )
-    private val pastWorkoutGym = SimpleWorkout(
-        id = 6,
-        name = "Open Gym",
-        about = "",
-        specifics = "",
-        address = "",
-        date = pastDateRange,
-        image = readImage("workouts/gym.jpg"),
-        url = "https://nu.nl",
-        isReserved = false,
-    )
-
-    private val futureSimpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutGym, workoutJump)
-    private val pastSimpleWorkouts = listOf(pastWorkoutGym)
-
-    private val partnerEms = FullPartner(
-        SimplePartner(
-            id = 1,
-            name = "EMS Studio",
-            categories = listOf("EMS"),
-            checkins = 0,
-            rating = 0,
-            isFavorited = false,
-            isWishlisted = false,
-            isHidden = false,
-            image = readImage("partners/ems.jpg"),
-            url = OnefitUtils.partnerUrl(16456, "ems-health-studio-ems-training-amsterdam"),
-            note = "This URL actually works.",
-            description = "Super intense nice <b>workout</b> with HTML.",
-            facilities = "",
-        ),
-        pastWorkouts = listOf(),
-        currentWorkouts = listOf(workoutEms),
-    )
-    private val partnerYoga = FullPartner(
-        SimplePartner(
-            id = 2,
-            name = "Yoga School",
-            categories = listOf("Yoga", "Breathwork"),
-            checkins = 0,
-            rating = 5,
-            isFavorited = true,
-            isWishlisted = false,
-            isHidden = false,
-            image = readImage("partners/yoga.jpg"),
-            url = "https://nu.nl",
-            note = "my custom note",
-            description = "Esoteric stuff.",
-            facilities = "Mats",
-        ),
-        pastWorkouts = listOf(),
-        currentWorkouts = listOf(workoutYogaYin, workoutYogaHot)
-    )
-    private val partnerGym = FullPartner(
-        SimplePartner(
-            id = 3,
-            name = "The Gym",
-            categories = listOf("Gym"),
-            checkins = 1,
-            rating = 3,
-            isFavorited = false,
-            isWishlisted = false,
-            isHidden = false,
-            image = readImage("partners/gym.jpg"),
-            url = "https://nu.nl",
-            note = "",
-            description = "Train your body.",
-            facilities = "Shower,Locker",
-        ),
-        pastWorkouts = listOf(pastWorkoutGym),
-        currentWorkouts = listOf(workoutGym)
-    )
-    private val partnerFoobar = FullPartner(
-        SimplePartner(
-            id = 4,
-            name = "Foobar",
-            categories = emptyList(),
-            checkins = 0,
-            rating = 0,
-            isFavorited = false,
-            isWishlisted = true,
-            isHidden = false,
-            image = readImage("partners/foobar.jpg"),
-            url = "https://nu.nl",
-            note = "This is weird.",
-            description = "Haha.",
-            facilities = "",
-        ),
-        pastWorkouts = listOf(),
-        currentWorkouts = listOf(workoutJump)
-    )
-    private val allFullPartners = listOf(partnerEms, partnerYoga, partnerGym, partnerFoobar)
-
-    private val allFutureFullWorkouts = futureSimpleWorkouts.map { simpleWorkout ->
-        FullWorkout(
-            simpleWorkout = simpleWorkout,
-            partner = allFullPartners.first { partner ->
-                partner.currentWorkouts.map { it.id }.contains(simpleWorkout.id)
-            }.simplePartner,
-        )
+        partnerEntities.map { partnerEntity ->
+            partnerEntity.toSimplePartner(
+                image = Image(partnerImagesByPartnerId[partnerEntity.id]!!.inputStream()),
+                categories = mutableListOf<String>().also { list ->
+                    list.add(categoriesById[partnerEntity.primaryCategoryId]!!.name)
+                    list.addAll(partnerEntity.secondaryCategoryIds.map { secondaryCategoryId ->
+                        categoriesById[secondaryCategoryId]!!.name
+                    })
+                },
+                url = OnefitUtils.partnerUrl(partnerEntity.id, partnerEntity.slug),
+                checkins = checkinsByPartnerId[partnerEntity.id]!!.checkinsCount,
+            )
+        }
     }
-    private val allPastFullWorkouts = pastSimpleWorkouts.map { simpleWorkout ->
-        FullWorkout(
-            simpleWorkout = simpleWorkout,
-            partner = allFullPartners.first { partner ->
-                partner.pastWorkouts.map { it.id }.contains(simpleWorkout.id)
-            }.simplePartner,
-        )
+
+    private val simplePartnersById by lazy {
+        simplePartners.associateBy { it.id }
     }
-    private val allFullWorkouts = allFutureFullWorkouts + allPastFullWorkouts
 
-    override fun getFutureFullWorkouts() = allFutureFullWorkouts
+    private val simpleWorkouts by lazy {
+        val reservations = ExposedReservationsRepo.selectAll().map { it.workoutId }.toSet()
+        val workoutEntities = ExposedWorkoutsRepo.selectAll()
+        val workoutImages = imageStorage.loadWorkoutImages(workoutEntities.map { it.id }).associateBy { it.workoutId }
+        workoutEntities.map { workoutEntity ->
+            workoutEntity.toSimpleWorkout(
+                isReserved = reservations.contains(workoutEntity.id),
+                image = Image(workoutImages[workoutEntity.id]!!.inputStream())
+            )
+        }
+    }
 
-    override fun getFullPartnerById(partnerId: Int) =
-        allFullPartners.firstOrNull { it.id == partnerId }
-            ?: error("Could not find partner by ID: $partnerId")
+    private val futureSimpleWorkouts by lazy {
+        val now = SystemClock.now()
+        simpleWorkouts.filter {
+            it.date.start >= now
+        }
+    }
+
+    private val fullWorkouts by lazy {
+        futureSimpleWorkouts.map { simpleWorkout ->
+            FullWorkout(
+                simpleWorkout = simpleWorkout,
+                partner = simplePartnersById[simpleWorkout.partnerId]!!
+            )
+        }
+    }
+
+    private val fullWorkoutsById by lazy {
+        fullWorkouts.associateBy { it.id }
+    }
+
+    // avoid JVM name clash ;-)
+    private val futureFullWorkoutss by lazy {
+        val now = SystemClock.now()
+        fullWorkouts.filter { it.date.start > now }
+    }
+
+    private val fullPartnersById by lazy {
+        val now = SystemClock.now()
+        simplePartners.map { simplePartner ->
+            FullPartner(
+                simplePartner = simplePartner,
+                pastWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start <= now },
+                currentWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
+            )
+        }.associateBy { it.id }
+    }
+
+    override fun getAllCategories(): List<String> =
+        ExposedCategoriesRepo.selectAll().map { it.name }
+
+    override fun getFutureFullWorkouts() =
+        futureFullWorkoutss
+
+    override fun getFullPartnerById(partnerId: Int): FullPartner =
+        fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
+
+    override fun getFullWorkoutById(workoutId: Int): FullWorkout =
+        fullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
 
     override fun updatePartner(modifications: PartnerModifications) {
-        val storedPartner = getFullPartnerById(modifications.partnerId)
-        modifications.update(storedPartner.simplePartner)
+        ExposedPartnersRepo.update(modifications)
     }
-
-    override fun toFullWorkout(workout: SimpleWorkout): FullWorkout =
-        allFullWorkouts.firstOrNull { it.id == workout.id } ?: error("Could not find workout by ID: ${workout.id}")
-
-    override fun getAllGroups(): List<String> =
-        allFullPartners.map { it.categories }.flatten().distinct().sorted()
 }
+
+private fun PartnerEntity.toSimplePartner(
+    image: Image,
+    categories: List<String>,
+    url: String,
+    checkins: Int,
+) = SimplePartner(
+    image = image,
+    categories = categories,
+    url = url,
+    checkins = checkins,
+    id = id,
+    name = name,
+    note = note,
+    description = description,
+    facilities = facilities,
+    rating = rating,
+    isFavorited = isFavorited,
+    isWishlisted = isWishlisted,
+    isHidden = isHidden,
+)
+
+private fun WorkoutEntity.toSimpleWorkout(isReserved: Boolean, image: Image) = SimpleWorkout(
+    id = id,
+    partnerId = partnerId,
+    name = name,
+    about = about,
+    specifics = specifics,
+    address = address,
+    date = DateRange(start = start.fromUtcToAmsterdamZonedDateTime(), end = end.fromUtcToAmsterdamZonedDateTime()),
+    image = image,
+    url = OnefitUtils.workoutUrl(id, slug),
+    isReserved = isReserved,
+)

@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 
@@ -37,6 +38,7 @@ data class WorkoutEntity(
 )
 
 interface WorkoutsRepo {
+    fun selectAll(): List<WorkoutEntity>
     fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<WorkoutEntity>
     fun selectAllBefore(untilExclusive: LocalDateTime): List<WorkoutEntity>
     fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity>
@@ -48,6 +50,9 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
 
     private val log = logger {}
     val workouts = mutableMapOf<Int, WorkoutEntity>()
+
+    override fun selectAll(): List<WorkoutEntity> =
+        workouts.values.toList()
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
         workouts.values.filter { it.start >= fromInclusive }
@@ -80,6 +85,11 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
 object ExposedWorkoutsRepo : WorkoutsRepo {
 
     private val log = logger {}
+
+    override fun selectAll() = transaction {
+        log.debug { "Selecting all workouts" }
+        WorkoutsTable.selectAll().map { it.toWorkoutEntity() }
+    }
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) = transaction {
         log.debug { "Selecting workouts after: $fromInclusive" }

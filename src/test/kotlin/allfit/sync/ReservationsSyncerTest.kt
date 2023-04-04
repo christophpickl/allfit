@@ -6,7 +6,7 @@ import allfit.api.models.reservationJson
 import allfit.api.models.reservationsJsonRoot
 import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.ReservationEntity
-import allfit.persistence.reservationEntity
+import allfit.persistence.testInfra.reservationEntity
 import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase

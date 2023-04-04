@@ -32,10 +32,13 @@ interface Workout {
 
     val isReserved: Boolean
     fun isReservedProperty(): ObjectProperty<Boolean>
+
+    val partnerId: Int
 }
 
 class SimpleWorkout(
     id: Int,
+    override val partnerId: Int,
     name: String,
     about: String,
     specifics: String,
@@ -63,6 +66,32 @@ class SimpleWorkout(
     override fun imageProperty() = getProperty(SimpleWorkout::image)
     override var isReserved: Boolean by property(isReserved)
     override fun isReservedProperty() = getProperty(SimpleWorkout::isReserved)
+
+    init {
+        require(id >= 0) { "Invalid ID: $id" }
+        require(partnerId >= 0) { "Invalid partner ID: $id" }
+    }
+
+    override fun toString() =
+        "SimpleWorkout[id=$id, partnerId=$partnerId, name=$name, about=$about, specifics=$specifics, isReserved=$isReserved, url=$url, address=$address, date=$date, image]"
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (this === other) return true
+        if (other !is SimpleWorkout) return false
+        return id == other.id &&
+                partnerId == other.partnerId &&
+                name == other.name &&
+                about == other.about &&
+                specifics == other.specifics &&
+                isReserved == other.isReserved &&
+                url == other.url &&
+                address == other.address &&
+                date == other.date &&
+                image == other.image
+    }
+
+    override fun hashCode() = id.hashCode()
 }
 
 data class FullWorkout(

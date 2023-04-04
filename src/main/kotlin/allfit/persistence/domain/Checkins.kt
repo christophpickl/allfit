@@ -1,8 +1,11 @@
 package allfit.persistence.domain
 
 import mu.KotlinLogging.logger
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.selectAll
@@ -13,7 +16,13 @@ import java.util.UUID
 interface CheckinsRepository {
     fun selectAll(): List<CheckinEntity>
     fun insertAll(checkins: List<CheckinEntity>)
+    fun selectCountForPartners(): List<PartnerAndCheckins>
 }
+
+data class PartnerAndCheckins(
+    val partnerId: Int,
+    val checkinsCount: Int,
+)
 
 object CheckinsTable : Table("PUBLIC.CHECKINS") {
     val uuid = varchar("UUID", 36)
@@ -29,11 +38,17 @@ data class CheckinEntity(
 )
 
 class InMemoryCheckinsRepository : CheckinsRepository {
+
     var checkins = mutableListOf<CheckinEntity>()
+    var partnerAndCheckins = mutableListOf<PartnerAndCheckins>()
+
     override fun selectAll() = checkins
     override fun insertAll(checkins: List<CheckinEntity>) {
         this.checkins.addAll(checkins)
     }
+
+    override fun selectCountForPartners() =
+        partnerAndCheckins
 }
 
 object ExposedCheckinsRepository : CheckinsRepository {
@@ -56,6 +71,24 @@ object ExposedCheckinsRepository : CheckinsRepository {
                 }
             }
         }
+    }
+
+    override fun selectCountForPartners(): List<PartnerAndCheckins> = transaction {
+        log.debug { "selectCountForPartners()" }
+        val countColumn = CheckinsTable.workoutId.count().alias("countCheckinsByWorkoutId")
+        PartnersTable.join(
+            WorkoutsTable, JoinType.LEFT, onColumn = PartnersTable.id, otherColumn = WorkoutsTable.partnerId
+        )
+            .join(CheckinsTable, JoinType.LEFT, onColumn = CheckinsTable.workoutId, otherColumn = WorkoutsTable.id)
+            .slice(PartnersTable.id, countColumn)
+            .selectAll()
+            .groupBy(PartnersTable.id)
+            .map {
+                PartnerAndCheckins(
+                    partnerId = it[PartnersTable.id].value,
+                    checkinsCount = it[countColumn].toInt(),
+                )
+            }
     }
 }
 

@@ -19,10 +19,10 @@ abstract class SearchPane : View() {
         fun buildAll(checkSearch: () -> Unit): List<SearchPane> = listOf(
             DateSearchPane(checkSearch),
             GroupSearchPane(checkSearch),
-            CheckinSearchPane(checkSearch),
-            WishlistedSearchPane(checkSearch),
+            PartnerCheckinSearchPane(checkSearch),
+            IsWishlistedSearchPane(checkSearch),
             FavoriteSearchPane(checkSearch),
-            ReservedSearch(checkSearch),
+            IsWorkoutReservedSearchPane(checkSearch),
         )
     }
 

@@ -2,12 +2,14 @@ package allfit.persistence.domain
 
 import allfit.persistence.BaseEntity
 import allfit.persistence.BaseRepo
+import allfit.presentation.PartnerModifications
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -20,6 +22,7 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val imageUrl = varchar("IMAGE_URL", 256)
     val facilities = text("FACILITIES") // comma separated list
     val isDeleted = bool("IS_DELETED") // custom
+    val rating = integer("RATING") // custom
     val isFavorited = bool("IS_FAVORITED") // custom
     val isWishlisted = bool("IS_WISHLISTED") // custom
     val isHidden = bool("IS_HIDDEN") // custom
@@ -47,6 +50,7 @@ data class PartnerEntity(
     val description: String,
     val note: String,
     val facilities: String,
+    val rating: Int,
     override val isDeleted: Boolean,
     val imageUrl: String,
     val isFavorited: Boolean,
@@ -54,12 +58,20 @@ data class PartnerEntity(
     val isHidden: Boolean,
 ) : BaseEntity
 
-interface PartnersRepo : BaseRepo<PartnerEntity>
+interface PartnersRepo : BaseRepo<PartnerEntity> {
+    fun update(modifications: PartnerModifications)
+}
 
 class InMemoryPartnersRepo : PartnersRepo {
 
     private val log = logger {}
     val partners = mutableMapOf<Int, PartnerEntity>()
+
+    override fun update(modifications: PartnerModifications) {
+        val old = partners[modifications.partnerId]!!
+        val new = modifications.modify(old)
+        partners[new.id] = new
+    }
 
     override fun selectAll() = partners.values.toList()
 
@@ -103,12 +115,13 @@ object ExposedPartnersRepo : PartnersRepo {
 
     fun selectAllPartnerCategories(): List<PartnerCategoryEntity> = transaction {
         PartnersCategoriesTable.selectAll().map {
-            PartnerCategoryEntity(
-                partnerId = it[PartnersCategoriesTable.partnerId].value,
-                categoryId = it[PartnersCategoriesTable.categoryId].value,
-                isPrimary = it[PartnersCategoriesTable.isPrimary],
-            )
+            it.toPartnerCategoryEntity()
         }
+    }
+
+    private fun selectPartnerCategoriesFor(partnerId: Int): List<PartnerCategoryEntity> = transaction {
+        PartnersCategoriesTable.select { PartnersCategoriesTable.partnerId eq partnerId }
+            .map { it.toPartnerCategoryEntity() }
     }
 
     override fun insertAll(entities: List<PartnerEntity>) {
@@ -121,6 +134,7 @@ object ExposedPartnersRepo : PartnersRepo {
                     it[slug] = partner.slug
                     it[description] = partner.description
                     it[note] = partner.note
+                    it[rating] = partner.rating
                     it[facilities] = partner.facilities
                     it[imageUrl] = partner.imageUrl
                     it[isWishlisted] = partner.isWishlisted
@@ -144,6 +158,26 @@ object ExposedPartnersRepo : PartnersRepo {
         }
     }
 
+    override fun update(modifications: PartnerModifications) = transaction {
+        log.info { "Update: $modifications" }
+        val list = PartnersTable.select { PartnersTable.id eq modifications.partnerId }.toList()
+        require(list.size == 1) { "Expected 1 but got ${list.size} partners for ID: ${modifications.partnerId}" }
+        val categories = selectPartnerCategoriesFor(modifications.partnerId)
+        val primaryCategoryId = categories.first { it.isPrimary }.categoryId
+        val secondaryCategoryIds = categories.filter { !it.isPrimary }.map { it.categoryId }
+        val old = list.first().toPartnerEntity(
+            primaryCategoryId = primaryCategoryId,
+            secondaryCategoryIds = secondaryCategoryIds,
+        )
+        val new = modifications.modify(old)
+        PartnersTable.update(where = {
+            PartnersTable.id eq new.id
+        }) {
+            modifications.prepare(new, it)
+        }
+        Unit
+    }
+
     override fun deleteAll(ids: List<Int>) {
         require(ids.isNotEmpty())
         transaction {
@@ -165,6 +199,7 @@ private fun ResultRow.toPartnerEntity(primaryCategoryId: Int, secondaryCategoryI
     slug = this[PartnersTable.slug],
     description = this[PartnersTable.description],
     note = this[PartnersTable.note],
+    rating = this[PartnersTable.rating],
     facilities = this[PartnersTable.facilities],
     imageUrl = this[PartnersTable.imageUrl],
     isDeleted = this[PartnersTable.isDeleted],
@@ -172,3 +207,10 @@ private fun ResultRow.toPartnerEntity(primaryCategoryId: Int, secondaryCategoryI
     isHidden = this[PartnersTable.isHidden],
     isWishlisted = this[PartnersTable.isWishlisted],
 )
+
+private fun ResultRow.toPartnerCategoryEntity() = PartnerCategoryEntity(
+    partnerId = this[PartnersCategoriesTable.partnerId].value,
+    categoryId = this[PartnersCategoriesTable.categoryId].value,
+    isPrimary = this[PartnersCategoriesTable.isPrimary],
+)
+

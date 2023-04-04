@@ -100,6 +100,7 @@ private fun PartnerWorkoutCheckinJson.toPartnerEntity() = PartnerEntity(
     imageUrl = "",
     note = "",
     facilities = "",
+    rating = 0,
     isDeleted = false,
     isFavorited = false,
     isWishlisted = false,

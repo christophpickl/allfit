@@ -1,7 +1,9 @@
 package allfit.persistence
 
-import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.testInfra.DbListener
+import allfit.persistence.testInfra.ExposedTestRepo
+import allfit.persistence.testInfra.categoryEntity
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -36,15 +38,15 @@ class ExposedCategoriesRepoTest : DescribeSpec() {
                 }
             }
             it("Given non-deleted category Then mark as deleted") {
-                val categoryNotDeleted = insertCategory { it.copy(isDeleted = false) }
+                val categoryNotDeleted = ExposedTestRepo.insertCategory { it.copy(isDeleted = false) }
 
                 repo.deleteAll(listOf(categoryNotDeleted.id))
 
                 repo.selectAll().shouldBeSingleton().first().isDeleted shouldBe true
             }
             it("Given two non-deleted categories Then mark only one as deleted") {
-                val categoryToBeDeleted = insertCategory { it.copy(id = 1, isDeleted = false) }
-                insertCategory { it.copy(id = 2, isDeleted = false) }
+                val categoryToBeDeleted = ExposedTestRepo.insertCategory { it.copy(id = 1, isDeleted = false) }
+                ExposedTestRepo.insertCategory { it.copy(id = 2, isDeleted = false) }
 
                 repo.deleteAll(listOf(categoryToBeDeleted.id))
 
@@ -54,11 +56,5 @@ class ExposedCategoriesRepoTest : DescribeSpec() {
                 }
             }
         }
-    }
-
-    private fun insertCategory(code: (CategoryEntity) -> CategoryEntity): CategoryEntity {
-        val categoryToBeInserted = category.let(code)
-        repo.insertAll(listOf(categoryToBeInserted))
-        return categoryToBeInserted
     }
 }

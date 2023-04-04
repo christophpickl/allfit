@@ -56,7 +56,7 @@ data class JsonLogFileName(
     val status: Int,
     val date: ZonedDateTime,
 ) {
-    val fileName = "${path.replace("/", "_")}-$status-${date.formatFileSafe()}.json"
+    val fileName = "${path.replace("/", "_").replace("-", "_")}-$status-${date.formatFileSafe()}.json"
 
     companion object {
         fun parseDate(fileName: String): LocalDateTime {

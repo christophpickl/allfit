@@ -1,10 +1,12 @@
 package allfit.persistence
 
-import allfit.persistence.domain.CheckinEntity
-import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.ExposedCheckinsRepository
-import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.PartnerAndCheckins
+import allfit.persistence.testInfra.DbListener
+import allfit.persistence.testInfra.ExposedTestRepo
+import allfit.persistence.testInfra.checkinEntity
+import allfit.persistence.testInfra.workoutEntity
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -26,23 +28,44 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
             }
         }
         "Given checkin and requirements inserted When select all Then return it" {
-            val checkin = insertCheckinForeignReferences()
-            repo.insertAll(listOf(checkin))
+            val checkin = ExposedTestRepo.insertCategoryPartnerWorkoutAndCheckin().fourth
 
             val checkins = repo.selectAll()
 
             checkins.shouldBeSingleton().first() shouldBe checkin
         }
-    }
+        "Given partner with 1 checkin When selectCountForPartners Then return 1" {
+            val partner = ExposedTestRepo.insertCategoryPartnerWorkoutAndCheckin().second
 
-    private fun insertCheckinForeignReferences(): CheckinEntity {
-        val category = Arb.categoryEntity().next()
-        ExposedCategoriesRepo.insertAll(listOf(category))
-        val partner = Arb.partnerEntity().next()
-            .copy(primaryCategoryId = category.id, secondaryCategoryIds = emptyList())
-        ExposedPartnersRepo.insertAll(listOf(partner))
-        val workout = Arb.workoutEntity().next().copy(partnerId = partner.id)
-        ExposedWorkoutsRepo.insertAll(listOf(workout))
-        return Arb.checkinEntity().next().copy(workoutId = workout.id)
+            val checkins = repo.selectCountForPartners()
+
+            checkins.shouldBeSingleton().first() shouldBe PartnerAndCheckins(
+                partnerId = partner.id,
+                checkinsCount = 1,
+            )
+        }
+        "Given partner with 2 checkins When selectCountForPartners Then return 2" {
+            val partner = ExposedTestRepo.insertCategoryPartnerWorkoutAndCheckin().second
+            val workout2 = Arb.workoutEntity().next().copy(partnerId = partner.id)
+            ExposedWorkoutsRepo.insertAll(listOf(workout2))
+            ExposedCheckinsRepository.insertAll(listOf(Arb.checkinEntity().next().copy(workoutId = workout2.id)))
+
+            val checkins = repo.selectCountForPartners()
+
+            checkins.shouldBeSingleton().first() shouldBe PartnerAndCheckins(
+                partnerId = partner.id,
+                checkinsCount = 2,
+            )
+        }
+        "Given partner without checkin When selectCountForPartners Then return 0" {
+            val partner = ExposedTestRepo.insertCategoryPartnerAndWorkout().second
+
+            val checkins = repo.selectCountForPartners()
+
+            checkins.shouldBeSingleton().first() shouldBe PartnerAndCheckins(
+                partnerId = partner.id,
+                checkinsCount = 0,
+            )
+        }
     }
 }

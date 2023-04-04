@@ -1,8 +1,8 @@
 package allfit.presentation.view
 
 import allfit.presentation.PresentationConstants
-import allfit.presentation.StaticImage
-import allfit.presentation.StaticImageStorage
+import allfit.presentation.logic.StaticImage
+import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.Rating
 import allfit.presentation.renderStars

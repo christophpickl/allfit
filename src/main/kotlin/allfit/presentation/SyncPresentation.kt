@@ -6,13 +6,16 @@ import allfit.sync.SyncListenerManagerImpl
 import allfit.sync.Syncer
 import mu.KotlinLogging.logger
 import java.awt.BorderLayout
+import java.awt.Cursor
 import java.awt.Dimension
 import javax.swing.BoxLayout
 import javax.swing.JDialog
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JProgressBar
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
+import javax.swing.SwingUtilities
 
 class UiSyncer(private val syncer: Syncer) {
 
@@ -49,8 +52,10 @@ private class StatefulUiSyncer(
     }
 
     fun start() {
-        syncDialog.setLocationRelativeTo(null)
-        syncDialog.isVisible = true
+        SwingUtilities.invokeLater {
+            syncDialog.setLocationRelativeTo(null)
+            syncDialog.isVisible = true
+        }
         try {
             syncer.syncAll()
         } catch (e: Exception) {
@@ -90,14 +95,19 @@ private class SyncProgressDialog : JDialog() {
     private val detailsText = JTextArea().apply {
         isEditable = false
     }
+    private val progressBar = JProgressBar().apply {
+        value = 0
+        isVisible = true
+        isIndeterminate = false
+    }
     private val stepsLabels = mutableListOf<JLabel>()
-
     private val iconWorking = "⏳"
     private val iconDone = "✅"
     private val iconWaiting = "❔"
 
     init {
-        title = "Synchronizing"
+        title = "Synchronizing OneFit data ..."
+        cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
         stepsPanel.layout = BoxLayout(stepsPanel, BoxLayout.Y_AXIS)
         val northPanel = JPanel()
         northPanel.add(stepsPanel)
@@ -105,11 +115,14 @@ private class SyncProgressDialog : JDialog() {
         val mainPanel = JPanel(BorderLayout())
         mainPanel.add(northPanel, BorderLayout.NORTH)
         mainPanel.add(JScrollPane(detailsText), BorderLayout.CENTER)
+        mainPanel.add(progressBar, BorderLayout.SOUTH)
         rootPane.contentPane.add(mainPanel)
         size = Dimension(800, 500)
     }
 
     fun initSteps(steps: List<String>) {
+        progressBar.minimum = 0
+        progressBar.maximum = steps.size
         steps.forEachIndexed { index, step ->
             val label = JLabel().apply {
                 text = "$iconWaiting - ${index + 1}: $step"
@@ -122,6 +135,7 @@ private class SyncProgressDialog : JDialog() {
     }
 
     fun stepDone(stepNumber: Int) {
+        progressBar.value = stepNumber
         updateStepIcon(stepNumber, iconDone)
         if ((stepNumber - 1) != (stepsLabels.size)) {
             updateStepIcon(stepNumber + 1, iconWorking)

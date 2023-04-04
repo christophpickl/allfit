@@ -1,5 +1,6 @@
 package allfit.service
 
+import allfit.sync.SyncListenerManager
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -20,12 +21,46 @@ interface ImageStorage {
     fun deleteWorkoutImages(workoutIds: List<Int>)
 }
 
+object DummyImageStorage : ImageStorage {
+
+    override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> {
+        return workoutIds.map { WorkoutAndImagesBytes(it, byteArrayOf()) }
+    }
+
+    override fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes> {
+        return partnerIds.map { PartnerAndImageBytes(it, byteArrayOf()) }
+    }
+
+    override suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>) {
+    }
+
+    override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
+    }
+
+    override suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
+    }
+
+    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
+    }
+
+    override fun deleteWorkoutImages(workoutIds: List<Int>) {
+    }
+}
+
 class InMemoryImageStorage : ImageStorage {
     val savedPartnerImages = mutableListOf<PartnerAndImageUrl>()
     val partnerImagesToBeLoaded = mutableMapOf<Int, PartnerAndImageBytes>()
     val savedWorkoutImages = mutableListOf<WorkoutAndImageUrl>()
     val workoutImagesToBeLoaded = mutableMapOf<Int, WorkoutAndImagesBytes>()
     val deletedWorkoutImages = mutableListOf<Int>()
+
+    fun addWorkoutImagesToBeLoaded(workout: WorkoutAndImagesBytes) {
+        workoutImagesToBeLoaded[workout.workoutId] = workout
+    }
+
+    fun addPartnerImagesToBeLoaded(partner: PartnerAndImageBytes) {
+        partnerImagesToBeLoaded[partner.partnerId] = partner
+    }
 
     override suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>) {
         savedPartnerImages += partners
@@ -61,6 +96,7 @@ class InMemoryImageStorage : ImageStorage {
 class FileSystemImageStorage(
     private val partnersFolder: File,
     private val workoutsFolder: File,
+    private val syncListeners: SyncListenerManager,
 ) : ImageStorage {
 
     private val log = logger {}
@@ -101,7 +137,9 @@ class FileSystemImageStorage(
         log.debug { "Saving ${workouts.size} workout images." }
         workouts.map { it.imageUrl }.requireAllEndsWithExtension(extension)
 
-        workouts.workParallel(parallelWorkersCount) { workout ->
+        workouts.workParallel(parallelWorkersCount, {
+            syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of workout images done.")
+        }) { workout ->
             val bytes = client.getBytes("${workout.imageUrl}?w=$width")
             workoutTarget(workout.workoutId).saveAndLog(bytes)
             delay(delayBetweenEachDownloadInMs)
@@ -192,6 +230,7 @@ class PartnerAndImageBytes(
     val partnerId: Int,
     val imageBytes: ByteArray,
 ) {
+    fun inputStream() = imageBytes.inputStream()
     override fun toString() = "PartnerAndImageBytes[partnerId=$partnerId,imageBytes=...]"
 }
 
@@ -204,5 +243,6 @@ class WorkoutAndImagesBytes(
     val workoutId: Int,
     val imageBytes: ByteArray,
 ) {
+    fun inputStream() = imageBytes.inputStream()
     override fun toString() = "WorkoutAndImagesBytes[workoutId=$workoutId,imageBytes...]"
 }

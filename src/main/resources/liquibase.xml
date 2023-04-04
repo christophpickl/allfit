@@ -41,6 +41,9 @@
             <column name="NOTE" type="longvarchar">
                 <constraints nullable="false"/>
             </column>
+            <column name="RATING" type="integer">
+                <constraints nullable="false"/>
+            </column>
             <column name="FACILITIES" type="longvarchar">
                 <constraints nullable="false"/>
             </column>

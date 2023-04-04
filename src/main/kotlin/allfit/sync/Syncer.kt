@@ -3,6 +3,7 @@ package allfit.sync
 import allfit.api.JsonLogFileManager
 import allfit.api.OnefitClient
 import allfit.api.PartnerSearchParams
+import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.SyncableJson
 import allfit.persistence.BaseRepo
 import allfit.persistence.HasIntId
@@ -23,7 +24,7 @@ interface SyncListener {
 }
 
 class NoOpSyncer(
-    private val listeners: SyncListenerManagerImpl
+    private val listeners: SyncListenerManager
 ) : Syncer, SyncListenerManager by listeners {
     private val log = logger {}
 
@@ -73,7 +74,7 @@ class SyncListenerManagerImpl : SyncListenerManager {
 }
 
 class DelayedSyncer(
-    private val listeners: SyncListenerManagerImpl
+    private val listeners: SyncListenerManager
 ) : Syncer, SyncListenerManager by listeners {
 
     private val log = logger {}
@@ -95,6 +96,11 @@ class DelayedSyncer(
     }
 }
 
+private data class SyncStep(
+    val message: String,
+    val code: suspend () -> Unit,
+)
+
 class CompositeSyncer(
     private val client: OnefitClient,
     private val categoriesSyncer: CategoriesSyncer,
@@ -103,43 +109,50 @@ class CompositeSyncer(
     private val workoutsSyncer: WorkoutsSyncer,
     private val reservationsSyncer: ReservationsSyncer,
     private val checkinsSyncer: CheckinsSyncer,
-    private val listeners: SyncListenerManagerImpl,
+    private val listeners: SyncListenerManager,
     private val jsonLogFileManager: JsonLogFileManager,
 ) : Syncer, SyncListenerManager by listeners {
 
+    private lateinit var partners: PartnersJsonRoot
     private val log = logger {}
+
     private val syncSteps = listOf(
-        "Fetching partners",
-        "Syncing categories",
-        "Syncing partners",
-        "Syncing locations",
-        "Syncing workouts",
-        "Syncing reservations",
-        "Syncing checkins",
-        "Cleanup logs",
+        SyncStep("Fetching partners") {
+            partners = client.getPartners(PartnerSearchParams.simple())
+        },
+        SyncStep("Syncing categories") {
+            categoriesSyncer.sync(partners)
+        },
+        SyncStep("Syncing partners") {
+            partnersSyncer.sync(partners)
+        },
+        SyncStep("Syncing locations") {
+            locationsSyncer.sync(partners)
+        },
+        SyncStep("Syncing workouts") {
+            workoutsSyncer.sync()
+        },
+        SyncStep("Syncing reservations") {
+            reservationsSyncer.sync()
+        },
+        SyncStep("Syncing checkins") {
+            checkinsSyncer.sync()
+        },
+        SyncStep("Cleanup logs") {
+            jsonLogFileManager.deleteOldLogs()
+        },
     )
 
     override fun syncAll() {
         transaction {
-            listeners.onSyncStart(syncSteps)
+            listeners.onSyncStart(syncSteps.map { it.message })
             runBlocking {
                 log.info { "Sync started ..." }
-                val partners = client.getPartners(PartnerSearchParams.simple())
-                listeners.onSyncStepDone()
-                categoriesSyncer.sync(partners)
-                listeners.onSyncStepDone()
-                partnersSyncer.sync(partners)
-                listeners.onSyncStepDone()
-                locationsSyncer.sync(partners)
-                listeners.onSyncStepDone()
-                workoutsSyncer.sync()
-                listeners.onSyncStepDone()
-                reservationsSyncer.sync()
-                listeners.onSyncStepDone()
-                checkinsSyncer.sync()
-                listeners.onSyncStepDone()
-                jsonLogFileManager.deleteOldLogs()
-                listeners.onSyncStepDone()
+                syncSteps.forEach {
+                    log.debug { "Executing sync step: ${it.message}" }
+                    it.code()
+                    listeners.onSyncStepDone()
+                }
             }
         }
         listeners.onSyncEnd()

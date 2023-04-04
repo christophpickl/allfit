@@ -1,10 +1,9 @@
 package allfit.persistence
 
-import allfit.persistence.domain.ExposedCategoriesRepo
-import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedReservationsRepo
-import allfit.persistence.domain.ExposedWorkoutsRepo
-import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.testInfra.DbListener
+import allfit.persistence.testInfra.ExposedTestRepo
+import allfit.persistence.testInfra.reservationEntity
 import allfit.uuid1
 import allfit.uuid2
 import io.kotest.assertions.throwables.shouldThrow
@@ -24,17 +23,13 @@ class ExposedReservationsRepoTest : DescribeSpec() {
     private val reservation1 = Arb.reservationEntity().next().copy(uuid = uuid1)
     private val reservation2 = Arb.reservationEntity().next().copy(uuid = uuid2)
     private val now = LocalDateTime.now()
-    private val category = Arb.categoryEntity().next()
-    private val partnerWithCategory = Arb.partnerEntity().next()
-        .copy(primaryCategoryId = category.id, secondaryCategoryIds = emptyList())
-    private val workoutWithPartner = Arb.workoutEntity().next().copy(partnerId = partnerWithCategory.id)
 
     init {
         extension(DbListener())
 
         describe("When Insert") {
             it("Given requirements Then selected") {
-                val reservation = insertReservationsRequirements()
+                val reservation = ExposedTestRepo.insertCategoryPartnerAndWorkoutForReservation()
                 repo.insertAll(listOf(reservation))
 
                 repo.selectAllStartingFrom(reservation.workoutStart).shouldBeSingleton().first() shouldBe reservation
@@ -47,7 +42,7 @@ class ExposedReservationsRepoTest : DescribeSpec() {
         }
         describe("When select") {
             it("Given requirements When select before start Then return nothing") {
-                val reservation = insertReservationsRequirements()
+                val reservation = ExposedTestRepo.insertCategoryPartnerAndWorkoutForReservation()
                 repo.insertAll(listOf(reservation))
 
                 repo.selectAllStartingFrom(reservation.workoutStart.plusSeconds(1L)).shouldBeEmpty()
@@ -55,10 +50,10 @@ class ExposedReservationsRepoTest : DescribeSpec() {
         }
         describe("When delete") {
             it("Given workout and two reservations When delete one Then only keep other") {
-                insertReservationsRequirements()
+                val preparedReservation = ExposedTestRepo.insertCategoryPartnerAndWorkoutForReservation()
                 repo.insertAll(listOf(reservation1, reservation2).map {
                     it.copy(
-                        workoutId = workoutWithPartner.id,
+                        workoutId = preparedReservation.workoutId,
                         workoutStart = now
                     )
                 })
@@ -70,10 +65,4 @@ class ExposedReservationsRepoTest : DescribeSpec() {
         }
     }
 
-    private fun insertReservationsRequirements(code: (ReservationEntity) -> ReservationEntity = { it }): ReservationEntity {
-        ExposedCategoriesRepo.insertAll(listOf(category))
-        ExposedPartnersRepo.insertAll(listOf(partnerWithCategory))
-        ExposedWorkoutsRepo.insertAll(listOf(workoutWithPartner))
-        return reservation.let(code).copy(workoutId = workoutWithPartner.id)
-    }
 }

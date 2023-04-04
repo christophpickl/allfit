@@ -1,10 +1,13 @@
 package allfit.presentation
 
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.PartnersTable
 import allfit.presentation.models.Rating
 import allfit.presentation.models.SimplePartner
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.web.WebView
+import org.jetbrains.exposed.sql.statements.UpdateStatement
 import tornadofx.webview
 
 object PresentationConstants {
@@ -31,10 +34,26 @@ data class PartnerModifications(
 ) {
     fun update(storedPartner: SimplePartner) {
         storedPartner.rating = rating
+        storedPartner.note = note
         storedPartner.isFavorited = isFavorited
         storedPartner.isWishlisted = isWishlisted
-        storedPartner.note = note
     }
+
+    fun prepare(new: PartnerEntity, stmt: UpdateStatement) {
+        stmt[PartnersTable.rating] = new.rating
+        stmt[PartnersTable.note] = new.note
+        stmt[PartnersTable.isFavorited] = new.isFavorited
+        stmt[PartnersTable.isWishlisted] = new.isWishlisted
+    }
+
+    fun modify(old: PartnerEntity): PartnerEntity =
+        old.copy(
+            rating = rating,
+            note = note,
+            isFavorited = isFavorited,
+            isWishlisted = isWishlisted,
+        )
+
 }
 
 fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit = {}) {

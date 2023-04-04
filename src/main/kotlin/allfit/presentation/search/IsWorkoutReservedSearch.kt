@@ -6,27 +6,29 @@ import tornadofx.action
 import tornadofx.checkbox
 import tornadofx.singleAssign
 
-data class WishlistedSearchRequest(
+data class IsWorkoutReservedSearchRequest(
     val operand: Boolean,
 ) : SubSearchRequest {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
-        workout.partner.isWishlisted == operand
+        workout.isReserved == operand
     }
 }
 
-class WishlistedSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class IsWorkoutReservedSearchPane(checkSearch: () -> Unit) : SearchPane() {
 
-    private var wishlistedOperand: CheckBox by singleAssign()
+    var reservedCheckBox: CheckBox by singleAssign()
 
     override var searchFieldPane = searchField {
-        title = "Wishlisted"
+        title = "Reserved"
         enabledAction = OnEnabledAction { checkSearch() }
-        wishlistedOperand = checkbox {
+        reservedCheckBox = checkbox {
             action {
                 checkSearch()
             }
         }
     }
 
-    override fun buildSearchRequest() = WishlistedSearchRequest(operand = wishlistedOperand.isSelected)
+    override fun buildSearchRequest() =
+        IsWorkoutReservedSearchRequest(operand = reservedCheckBox.isSelected)
+
 }

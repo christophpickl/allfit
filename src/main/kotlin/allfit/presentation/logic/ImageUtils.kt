@@ -1,4 +1,4 @@
-package allfit.presentation
+package allfit.presentation.logic
 
 import javafx.scene.image.Image
 

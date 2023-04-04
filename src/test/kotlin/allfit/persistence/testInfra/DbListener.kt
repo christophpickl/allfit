@@ -1,5 +1,6 @@
-package allfit.persistence
+package allfit.persistence.testInfra
 
+import allfit.persistence.allTables
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.test.TestCase

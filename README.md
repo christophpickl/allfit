@@ -15,12 +15,16 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 * adjust column sizes in table
 * UI any clickable element with blue rounded background color
-* improve sync dialog: how many partners/workouts (left); show progress with progress bar as total amount is known
+* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total
+  amount is known
+* PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days
+  to all existing data)
+* fetch usage: https://api.one.fit/v2/en-nl/members/usage; display how many credits in total/left (date range until; how
+  many days left)
 
 ### Future
 
 * sync available spots
-* display how many credits in total/left (date range until; how many days left)
 * reservation button
 * model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation
 

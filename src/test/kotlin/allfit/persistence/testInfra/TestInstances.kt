@@ -1,4 +1,4 @@
-package allfit.persistence
+package allfit.persistence.testInfra
 
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.CheckinEntity
@@ -40,6 +40,7 @@ fun Arb.Companion.partnerEntity() = arbitrary {
         note = string().next(),
         facilities = string().next(),
         imageUrl = string().next(),
+        rating = int(min = 0, max = 5).next(),
         isDeleted = boolean().next(),
         isWishlisted = boolean().next(),
         isHidden = boolean().next(),
@@ -67,7 +68,7 @@ fun Arb.Companion.workoutEntity() = arbitrary {
         name = string().next(),
         slug = string(minSize = 1, maxSize = 20, codepoints = Codepoint.alphanumeric()).next(),
         start = LocalDateTime.now(),
-        end = LocalDateTime.now(),
+        end = LocalDateTime.now().plusHours(1),
         about = string().next(),
         specifics = string().next(),
         address = string().next(),

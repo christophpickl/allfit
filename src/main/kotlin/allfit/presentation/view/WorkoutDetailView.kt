@@ -1,9 +1,9 @@
 package allfit.presentation.view
 
-import allfit.presentation.StaticImage
-import allfit.presentation.StaticImageStorage
 import allfit.presentation.Styles
 import allfit.presentation.htmlview
+import allfit.presentation.logic.StaticImage
+import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.MainViewModel
 import tornadofx.View
 import tornadofx.action

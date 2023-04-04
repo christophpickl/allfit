@@ -21,7 +21,7 @@ class MainController : Controller() {
             logger.debug { "Application started." }
             val workouts = dataStorage.getFutureFullWorkouts()
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
-            mainViewModel.allGroups.addAll(dataStorage.getAllGroups())
+            mainViewModel.allGroups.addAll(dataStorage.getAllCategories())
         }
         subscribe<SearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }
@@ -36,7 +36,7 @@ class MainController : Controller() {
         subscribe<PartnerWorkoutSelectedFXEvent>() {
             val workout = it.workout
             logger.debug { "Change workout: $workout" }
-            mainViewModel.selectedWorkout.set(dataStorage.toFullWorkout(workout))
+            mainViewModel.selectedWorkout.set(dataStorage.getFullWorkoutById(workout.id))
             // no partner update
         }
         subscribe<UpdatePartnerFXEvent>() {

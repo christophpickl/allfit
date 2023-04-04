@@ -31,13 +31,15 @@ class PartnersSyncerTest : StringSpec() {
     private lateinit var categoriesRepo: InMemoryCategoriesRepo
     private lateinit var partnersRepo: InMemoryPartnersRepo
     private lateinit var locationsRepo: InMemoryLocationsRepo
+    private lateinit var listeners: SyncListenerManager
 
     override suspend fun beforeEach(testCase: TestCase) {
         imageStorage = InMemoryImageStorage()
         categoriesRepo = InMemoryCategoriesRepo()
         partnersRepo = InMemoryPartnersRepo()
         locationsRepo = InMemoryLocationsRepo()
-        syncer = PartnersSyncerImpl(partnersRepo, imageStorage)
+        listeners = SyncListenerManagerImpl()
+        syncer = PartnersSyncerImpl(partnersRepo, imageStorage, listeners)
     }
 
     init {
@@ -54,12 +56,12 @@ class PartnersSyncerTest : StringSpec() {
                 imageUrl = partnerJson.header_image.orig,
                 facilities = partnerJson.facilities.joinToString(","),
                 note = "",
+                rating = 0,
                 isDeleted = false,
                 isFavorited = false,
                 isWishlisted = false,
                 isHidden = false,
-
-                )
+            )
         }
         "When sync partner with duplicate secondary categories Then insert only one" {
             sync(

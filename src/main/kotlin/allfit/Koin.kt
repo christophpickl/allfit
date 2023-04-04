@@ -5,7 +5,7 @@ import allfit.api.JsonLogFileManagerImpl
 import allfit.api.OnefitClient
 import allfit.persistence.persistenceModule
 import allfit.presentation.UiSyncer
-import allfit.presentation.logic.DataStorage
+import allfit.presentation.logic.ExposedDataStorage
 import allfit.presentation.logic.InMemoryDataStorage
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
@@ -20,10 +20,10 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
         FileSystemImageStorage(
             partnersFolder = FileResolver.resolve(DirectoryEntry.ImagesPartners),
             workoutsFolder = FileResolver.resolve(DirectoryEntry.ImagesWorkouts),
+            syncListeners = get(),
         )
     }
-
-    single<DataStorage> { InMemoryDataStorage }
+    single { if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(get()) }
     single { UiSyncer(get()) }
     single { AllFitStarter(get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }

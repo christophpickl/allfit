@@ -5,6 +5,7 @@ data class AppConfig(
     val mockClient: Boolean,
     val mockSyncer: Boolean,
     val mockDb: Boolean,
+    val mockDataStore: Boolean,
     val useFileAppender: Boolean,
 ) {
     companion object {
@@ -12,12 +13,14 @@ data class AppConfig(
             mockClient = false,
             mockSyncer = false,
             mockDb = false,
-            useFileAppender = false,
+            mockDataStore = false,
+            useFileAppender = true,
         )
         val prod = AppConfig(
             mockClient = false,
             mockSyncer = false,
             mockDb = false,
+            mockDataStore = false,
             useFileAppender = true,
         )
     }

@@ -92,6 +92,30 @@ class SimplePartner(
         require(id >= 0) { "Invalid ID: $id" }
         require(rating in 0..5) { "Invalid rating: $rating" }
     }
+
+    override fun toString() =
+        "SimplePartner[id=$id, name=$name, url=$url, categories=$categories, note=$note, description=$description, facilities=$facilities, checkins=$checkins, rating=$rating, isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, image]"
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (this === other) return true
+        if (other !is SimplePartner) return false
+        return id == other.id &&
+                name == other.name &&
+                url == other.url &&
+                categories == other.categories &&
+                note == other.note &&
+                description == other.description &&
+                facilities == other.facilities &&
+                checkins == other.checkins &&
+                rating == other.rating &&
+                isFavorited == other.isFavorited &&
+                isWishlisted == other.isWishlisted &&
+                isHidden == other.isHidden &&
+                image == other.image
+    }
+
+    override fun hashCode() = id.hashCode()
 }
 
 data class FullPartner(

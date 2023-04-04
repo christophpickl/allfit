@@ -6,7 +6,7 @@ import tornadofx.combobox
 import tornadofx.selectedItem
 import tornadofx.singleAssign
 
-data class CheckinSearchRequest(
+data class PartnerCheckinSearchRequest(
     val operand: Int,
     val operator: NumericOperator,
 ) : SubSearchRequest {
@@ -15,7 +15,7 @@ data class CheckinSearchRequest(
     }
 }
 
-class CheckinSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class PartnerCheckinSearchPane(checkSearch: () -> Unit) : SearchPane() {
 
     private val checkinOptions = listOf(0, 1, 5, 10, 20)
     private var checkinsOperator: ComboBox<String> by singleAssign()
@@ -34,7 +34,7 @@ class CheckinSearchPane(checkSearch: () -> Unit) : SearchPane() {
         }
     }
 
-    override fun buildSearchRequest() = CheckinSearchRequest(
+    override fun buildSearchRequest() = PartnerCheckinSearchRequest(
         operand = checkinsOperand.selectedItem!!,
         operator = NumericOperator.bySymbol(checkinsOperator.selectedItem!!),
     )

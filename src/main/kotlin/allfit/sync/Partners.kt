@@ -14,7 +14,8 @@ interface PartnersSyncer {
 
 class PartnersSyncerImpl(
     private val partnersRepo: PartnersRepo,
-    private val imageStorage: ImageStorage
+    private val imageStorage: ImageStorage,
+    private val listeners: SyncListenerManager,
 ) : PartnersSyncer {
     private val log = logger {}
 
@@ -23,6 +24,7 @@ class PartnersSyncerImpl(
         val report = syncAny(partnersRepo, partners.data) {
             it.toPartnerEntity()
         }
+        listeners.onSyncDetail("Fetching ${report.toInsert.size} partner images.")
         imageStorage.savePartnerImages(report.toInsert.map {
             PartnerAndImageUrl(it.id, it.imageUrl)
         })
@@ -36,9 +38,11 @@ private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     name = name,
     slug = slug,
     description = description,
-    note = "",
     imageUrl = header_image.orig,
     facilities = facilities.joinToString(","),
+    // custom fields:
+    note = "",
+    rating = 0,
     isDeleted = false,
     isFavorited = false,
     isHidden = false,

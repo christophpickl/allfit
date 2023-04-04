@@ -1,11 +1,12 @@
 package allfit.persistence
 
-import allfit.persistence.domain.CategoriesTable
-import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.PartnerCategoryEntity
-import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.testInfra.DbListener
+import allfit.persistence.testInfra.ExposedTestRepo
+import allfit.persistence.testInfra.categoryEntity
+import allfit.persistence.testInfra.partnerEntity
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -15,8 +16,6 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import org.jetbrains.exposed.exceptions.ExposedSQLException
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
 
 class ExposedPartnersRepoTest : DescribeSpec() {
 
@@ -72,15 +71,20 @@ class ExposedPartnersRepoTest : DescribeSpec() {
                 }
             }
             it("Given non-deleted partner Then mark as deleted") {
-                val partnerNotDeleted = insertPartner { it.copy(isDeleted = false) }
+                val partnerNotDeleted = ExposedTestRepo.insertCategoryIfNotExistingAndPartner { it.copy(isDeleted = false) }
 
                 repo.deleteAll(listOf(partnerNotDeleted.id))
 
                 repo.selectAll().shouldBeSingleton().first().isDeleted shouldBe true
             }
             it("Given two non-deleted partners Then mark only one as deleted") {
-                val partnerToBeDeleted = insertPartner { it.copy(id = 1, isDeleted = false) }
-                insertPartner { it.copy(id = 2, isDeleted = false) }
+                val partnerToBeDeleted = ExposedTestRepo.insertCategoryIfNotExistingAndPartner {
+                    it.copy(
+                        id = 1,
+                        isDeleted = false
+                    )
+                }
+                ExposedTestRepo.insertCategoryIfNotExistingAndPartner { it.copy(id = 2, isDeleted = false) }
 
                 repo.deleteAll(listOf(partnerToBeDeleted.id))
 
@@ -92,24 +96,4 @@ class ExposedPartnersRepoTest : DescribeSpec() {
         }
     }
 
-    private fun insertPartner(mutateDomainObject: (PartnerEntity) -> PartnerEntity): PartnerEntity {
-        ExposedCategoriesRepo.insertIfNotExists(listOf(category))
-        val partnerWithCategory = partner.copy(
-            primaryCategoryId = category.id,
-            secondaryCategoryIds = emptyList(),
-        ).let(mutateDomainObject)
-        repo.insertAll(listOf(partnerWithCategory))
-        return partnerWithCategory
-    }
-}
-
-private fun ExposedCategoriesRepo.insertIfNotExists(categories: List<CategoryEntity>) {
-    transaction {
-        val categoryIds = categories.map { it.id }
-        val existingCategoryIds = CategoriesTable.select { CategoriesTable.id inList categoryIds }
-            .map { it[CategoriesTable.id].value }
-        val toInsertCategoryIds = categoryIds.subtract(existingCategoryIds.toSet())
-        val toInsertCategories = categories.filter { toInsertCategoryIds.contains(it.id) }
-        insertAll(toInsertCategories)
-    }
 }

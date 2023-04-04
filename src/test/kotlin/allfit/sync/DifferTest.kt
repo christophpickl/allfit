@@ -2,7 +2,7 @@ package allfit.sync
 
 import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.categoryJson
-import allfit.persistence.categoryEntity
+import allfit.persistence.testInfra.categoryEntity
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton

@@ -6,6 +6,12 @@ import allfit.persistence.domain.ExposedLocationsRepo
 import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedReservationsRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.testInfra.categoryEntity
+import allfit.persistence.testInfra.checkinEntity
+import allfit.persistence.testInfra.locationEntity
+import allfit.persistence.testInfra.partnerEntity
+import allfit.persistence.testInfra.reservationEntity
+import allfit.persistence.testInfra.workoutEntity
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe

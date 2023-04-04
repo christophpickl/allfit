@@ -49,9 +49,17 @@ suspend fun HttpResponse.requireOk() {
     }
 }
 
-suspend fun <T> List<T>.workParallel(numberOfCoroutines: Int, worker: suspend (T) -> Unit) {
+
+suspend fun <T> List<T>.workParallel(
+    numberOfCoroutines: Int,
+    percentageProgressCallback: (Double) -> Unit = {},
+    percentageBroadcastIntervalInMs: Long = 3_000,
+    worker: suspend (T) -> Unit
+) {
     log.debug { "Starting parallel job with $numberOfCoroutines coroutines for $size items ..." }
     require(numberOfCoroutines >= 1)
+    percentageProgressCallback(0.0)
+    var lastPercentageBroadcasted = System.currentTimeMillis()
     val items = ConcurrentLinkedQueue(toMutableList())
     runBlocking {
         (1..numberOfCoroutines).map { coroutine ->
@@ -62,8 +70,22 @@ suspend fun <T> List<T>.workParallel(numberOfCoroutines: Int, worker: suspend (T
                     worker(item)
                     item = items.poll()
                     log.trace { "Items left to be processed: ${items.size}" }
+                    val now = System.currentTimeMillis()
+                    val msSinceLastMessage = now - lastPercentageBroadcasted
+                    if (msSinceLastMessage > percentageBroadcastIntervalInMs) {
+                        val leftOver = this@workParallel.size - items.size
+                        percentageProgressCallback(leftOver.toDouble() / this@workParallel.size)
+                        lastPercentageBroadcasted = now
+                    }
                 }
             }
         }.joinAll()
     }
 }
+
+data class Quadrupel<V1, V2, V3, V4>(
+    val first: V1,
+    val second: V2,
+    val third: V3,
+    val fourth: V4,
+)

@@ -1,4 +1,4 @@
-package allfit.persistence
+package allfit.persistence.testInfra
 
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.InMemoryCategoriesRepo

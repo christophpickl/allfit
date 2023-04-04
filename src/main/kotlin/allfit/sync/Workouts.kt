@@ -28,7 +28,7 @@ class WorkoutsSyncerImpl(
     private val imageStorage: ImageStorage,
     private val checkinsRepository: CheckinsRepository,
     private val reservationsRepo: ReservationsRepo,
-    private val syncListeners: SyncListenerManager
+    private val syncListeners: SyncListenerManager,
 ) : WorkoutsSyncer {
 
     private val log = logger {}
@@ -40,7 +40,9 @@ class WorkoutsSyncerImpl(
         log.debug { "Fetching metadata for ${workoutsToBeSyncedJson.size} workouts." }
         syncListeners.onSyncDetail("Fetching metadata for ${workoutsToBeSyncedJson.size} workouts.")
         val metaFetchById = mutableMapOf<Int, WorkoutFetch>()
-        workoutsToBeSyncedJson.workParallel(parallelFetchers) { workout ->
+        workoutsToBeSyncedJson.workParallel(parallelFetchers, {
+            syncListeners.onSyncDetail("Fetched ${(it * 100).toInt()}% of workout metadata.")
+        }) { workout ->
             metaFetchById[workout.id] = workoutFetcher.fetch(
                 WorkoutUrl(
                     workoutId = workout.id,
@@ -50,11 +52,13 @@ class WorkoutsSyncerImpl(
             delay(30) // artificial delay to soothen possible cloudflare's DoS anger :)
         }
 
+        syncListeners.onSyncDetail("Inserting ${workoutsToBeSyncedJson.size} workouts into DB.")
         workoutsRepo.insertAll(workoutsToBeSyncedJson.map { it.toWorkoutEntity(metaFetchById[it.id]!!) })
-        imageStorage.saveWorkoutImages(metaFetchById.values
+        val workoutsFetchImages = metaFetchById.values
             .filter { it.imageUrls.isNotEmpty() }
-            .map { WorkoutAndImageUrl(it.workoutId, it.imageUrls.first()) })
-
+            .map { WorkoutAndImageUrl(it.workoutId, it.imageUrls.first()) }
+        syncListeners.onSyncDetail("Fetching ${workoutsFetchImages.size} workout images.")
+        imageStorage.saveWorkoutImages(workoutsFetchImages)
 
         val startDeletion = SystemClock.todayBeginOfDay().toUtcLocalDateTime()
         reservationsRepo.deleteAllBefore(startDeletion)
