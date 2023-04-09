@@ -13,6 +13,8 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### Medium
 
+* make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k
+  workouts, every 2 secs)
 * adjust column sizes in table
 * UI any clickable element with blue rounded background color
 * improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total
@@ -21,6 +23,8 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
   to all existing data)
 * fetch usage: https://api.one.fit/v2/en-nl/members/usage; display how many credits in total/left (date range until; how
   many days left)
+* in sync dialog, show report at the end: X foo inserted, Y bar deleted
+* get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 
 ### Future
 

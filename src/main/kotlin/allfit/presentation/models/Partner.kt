@@ -5,7 +5,21 @@ import javafx.scene.image.Image
 import tornadofx.getProperty
 import tornadofx.property
 
-interface Partner {
+interface PartnerCustomAttributesRead {
+    val rating: Rating
+    val note: String
+    val isFavorited: Boolean
+    val isWishlisted: Boolean
+}
+
+interface PartnerCustomAttributesWrite : PartnerCustomAttributesRead {
+    override var rating: Rating
+    override var note: String
+    override var isFavorited: Boolean
+    override var isWishlisted: Boolean
+}
+
+interface Partner : PartnerCustomAttributesWrite {
     val id: Int
     fun idProperty(): ObjectProperty<Int>
 
@@ -15,7 +29,7 @@ interface Partner {
     val description: String
     fun descriptionProperty(): ObjectProperty<String>
 
-    var note: String
+    override var note: String
     fun noteProperty(): ObjectProperty<String>
 
     val url: String
@@ -27,7 +41,7 @@ interface Partner {
     val facilities: String
     fun facilitiesProperty(): ObjectProperty<String>
 
-    var rating: Rating
+    override var rating: Rating
     fun ratingProperty(): ObjectProperty<Rating>
 
     val checkins: Int
@@ -36,10 +50,10 @@ interface Partner {
     val image: Image
     fun imageProperty(): ObjectProperty<Image>
 
-    var isFavorited: Boolean
+    override var isFavorited: Boolean
     fun isFavoritedProperty(): ObjectProperty<Boolean>
 
-    var isWishlisted: Boolean
+    override var isWishlisted: Boolean
     fun isWishlistedProperty(): ObjectProperty<Boolean>
 
     var isHidden: Boolean

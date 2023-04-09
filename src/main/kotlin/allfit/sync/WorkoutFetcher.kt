@@ -3,11 +3,13 @@ package allfit.sync
 import allfit.api.OnefitUtils
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import mu.KotlinLogging.logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import java.io.IOException
 
 interface WorkoutFetcher {
     suspend fun fetch(url: WorkoutUrl): WorkoutFetch
@@ -43,7 +45,7 @@ class WorkoutFetcherImpl : WorkoutFetcher {
 
     private val log = logger {}
     private val client = HttpClient()
-    private val maxRetries = 5
+    private val maxRetries = 6
 
     override suspend fun fetch(url: WorkoutUrl): WorkoutFetch {
         log.debug { "Fetch workout data from: ${url.url}" }
@@ -51,15 +53,22 @@ class WorkoutFetcherImpl : WorkoutFetcher {
     }
 
     private suspend fun fetchRetriable(url: WorkoutUrl, attempt: Int): WorkoutFetch {
-        val response = client.get(url.url)
+        val response: HttpResponse
+        try {
+            response = client.get(url.url)
+        } catch (e: IOException) {
+            // maybe a io.ktor.network.tls.TLSException?!
+            log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
+            return fetchRetriable(url, attempt + 1)
+        }
         return when (response.status.value) {
             200 -> WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())
             404 -> WorkoutFetch.empty(url.workoutId)
             500, 502 -> {
                 if (attempt == maxRetries) {
-                    error("Invalid 500 response after last attempt for URL: ${url.url}")
+                    error("Invalid response after last attempt for URL: ${url.url}")
                 } else {
-                    log.warn { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
+                    log.warn { "Retrying after receiving ${response.status} to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
                     fetchRetriable(url, attempt + 1)
                 }
             }

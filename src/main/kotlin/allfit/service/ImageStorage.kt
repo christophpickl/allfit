@@ -109,7 +109,9 @@ class FileSystemImageStorage(
     override suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>) {
         log.debug { "Saving ${partners.size} partner images." }
         partners.map { it.imageUrl }.requireAllEndsWithExtension(extension)
-        partners.workParallel(parallelWorkersCount) {
+        partners.workParallel(parallelWorkersCount, {
+            syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of partner images done.")
+        }) {
             val bytes = client.getBytes("${it.imageUrl}?w=$width")
             partnerTarget(it.partnerId).saveAndLog(bytes)
             delay(delayBetweenEachDownloadInMs)

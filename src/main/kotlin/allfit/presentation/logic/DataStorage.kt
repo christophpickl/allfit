@@ -123,6 +123,8 @@ class ExposedDataStorage(
 
     override fun updatePartner(modifications: PartnerModifications) {
         ExposedPartnersRepo.update(modifications)
+        val storedPartner = getFullPartnerById(modifications.partnerId)
+        modifications.update(storedPartner.simplePartner)
     }
 }
 

@@ -3,6 +3,7 @@ package allfit.persistence.domain
 import allfit.persistence.BaseEntity
 import allfit.persistence.BaseRepo
 import allfit.presentation.PartnerModifications
+import allfit.presentation.models.PartnerCustomAttributesRead
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -48,15 +49,15 @@ data class PartnerEntity(
     val name: String,
     val slug: String,
     val description: String,
-    val note: String,
+    override val note: String,
     val facilities: String,
-    val rating: Int,
+    override val rating: Int,
     override val isDeleted: Boolean,
     val imageUrl: String,
-    val isFavorited: Boolean,
-    val isWishlisted: Boolean,
+    override val isFavorited: Boolean,
+    override val isWishlisted: Boolean,
     val isHidden: Boolean,
-) : BaseEntity
+) : BaseEntity, PartnerCustomAttributesRead
 
 interface PartnersRepo : BaseRepo<PartnerEntity> {
     fun update(modifications: PartnerModifications)

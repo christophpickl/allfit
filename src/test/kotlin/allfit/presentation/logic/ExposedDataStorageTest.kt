@@ -15,6 +15,7 @@ import allfit.presentation.PartnerModifications
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.PartnerCustomAttributesRead
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.DummyImageStorage
@@ -32,7 +33,6 @@ import javafx.scene.image.Image
 import java.time.LocalDateTime
 
 class ExposedDataStorageTest : StringSpec() {
-
 
     private fun dataStorageWithImages(withImageStorage: (InMemoryImageStorage) -> Unit): ExposedDataStorage {
         val imageStorage = InMemoryImageStorage().also(withImageStorage)
@@ -154,34 +154,53 @@ class ExposedDataStorageTest : StringSpec() {
             )
         }
 
-        "When updatePartner" {
-            val (_, partner) = ExposedTestRepo.insertCategoryAndPartner(withPartner = {
-                it.copy(
-                    rating = 0,
-                    note = "old",
-                    isFavorited = false,
-                    isWishlisted = false,
-                )
-            })
-            val modifications = PartnerModifications(
-                partnerId = partner.id,
-                rating = 1,
-                note = "new",
-                isFavorited = true,
-                isWishlisted = true,
-            )
+        "Given partner When updatePartner Then updated in database" {
+            val (_, modifications) = insertPartnerAndGetModifications()
+
             dataStorageWithStaticImages().updatePartner(modifications)
 
-            ExposedPartnersRepo.selectAll().shouldBeSingleton().first().also {
-                it.rating shouldBe modifications.rating
-                it.note shouldBe modifications.note
-                it.isFavorited shouldBe modifications.isFavorited
-                it.isWishlisted shouldBe modifications.isWishlisted
-            }
+            modifications.assertOn(ExposedPartnersRepo.selectAll().shouldBeSingleton().first())
+        }
+
+        "Given partner When updatePartner Then updated in UI representation" {
+            val (partner, modifications) = insertPartnerAndGetModifications()
+            val storage = dataStorageWithStaticImages()
+            storage.getFullPartnerById(partner.id) // prefetch so it will be stored
+
+            storage.updatePartner(modifications)
+
+            modifications.assertOn(storage.getFullPartnerById(partner.id).simplePartner.also {
+                println(it)
+            })
         }
     }
 }
 
+private fun PartnerModifications.assertOn(partner: PartnerCustomAttributesRead) {
+    partner.rating shouldBe rating
+    partner.note shouldBe note
+    partner.isFavorited shouldBe isFavorited
+    partner.isWishlisted shouldBe isWishlisted
+}
+
+private fun insertPartnerAndGetModifications(): Pair<PartnerEntity, PartnerModifications> {
+    val (_, partner) = ExposedTestRepo.insertCategoryAndPartner(withPartner = {
+        it.copy(
+            rating = 0,
+            note = "old",
+            isFavorited = false,
+            isWishlisted = false,
+        )
+    })
+    val modifications = PartnerModifications(
+        partnerId = partner.id,
+        rating = 1,
+        note = "new",
+        isFavorited = true,
+        isWishlisted = true,
+    )
+    return Pair(partner, modifications)
+}
 
 private fun WorkoutEntity.toSimpleWorkout(
     isReserved: Boolean,

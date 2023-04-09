@@ -2,8 +2,8 @@ package allfit.presentation
 
 import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersTable
+import allfit.presentation.models.PartnerCustomAttributesWrite
 import allfit.presentation.models.Rating
-import allfit.presentation.models.SimplePartner
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.web.WebView
@@ -32,11 +32,11 @@ data class PartnerModifications(
     val isFavorited: Boolean,
     val isWishlisted: Boolean,
 ) {
-    fun update(storedPartner: SimplePartner) {
-        storedPartner.rating = rating
-        storedPartner.note = note
-        storedPartner.isFavorited = isFavorited
-        storedPartner.isWishlisted = isWishlisted
+    fun update(partner: PartnerCustomAttributesWrite) {
+        partner.rating = rating
+        partner.note = note
+        partner.isFavorited = isFavorited
+        partner.isWishlisted = isWishlisted
     }
 
     fun prepare(new: PartnerEntity, stmt: UpdateStatement) {
@@ -53,7 +53,6 @@ data class PartnerModifications(
             isFavorited = isFavorited,
             isWishlisted = isWishlisted,
         )
-
 }
 
 fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit = {}) {
