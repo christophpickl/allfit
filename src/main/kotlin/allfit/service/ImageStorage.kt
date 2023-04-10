@@ -9,6 +9,11 @@ import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 import java.io.File
 
+private val notFoundDefaultImage: ByteArray =
+    ImageStorage::class.java.classLoader
+        .getResourceAsStream("images/not_found_default_image.jpg")?.readAllBytes()
+        ?: error("Classpath image 'not_found_default_image.jpg' not found!")
+
 interface ImageStorage {
 
     suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>)
@@ -161,18 +166,17 @@ class FileSystemImageStorage(
         return workoutIds.map { id ->
             WorkoutAndImagesBytes(
                 workoutId = id,
-                imageBytes = loadImageBytesFor(id),
+                imageBytes = loadWorkoutImage(id),
             )
         }
     }
 
-    private fun loadImageBytesFor(workoutId: Int): ByteArray {
-        val prefix = "$workoutId-"
-        return workoutsFolder.list { _, name ->
-            name.startsWith(prefix)
-        }!!.first().let {
-            val image = File(workoutsFolder, it)
-            image.readBytes()
+    private fun loadWorkoutImage(workoutId: Int): ByteArray {
+        val file = File(workoutsFolder, "$workoutId.$extension")
+        return if (file.exists()) {
+            file.readBytes()
+        } else {
+            notFoundDefaultImage
         }
     }
 
@@ -199,10 +203,6 @@ private fun List<String>.requireAllEndsWithExtension(extension: String) {
 
 private val log = logger {}
 
-private val notFoundDefaultImage: ByteArray =
-    ImageStorage::class.java.classLoader
-        .getResourceAsStream("images/not_found_default_image.jpg")?.readAllBytes()
-        ?: error("Classpath image 'not_found_default_image.jpg' not found!")
 
 private suspend fun HttpClient.getBytes(url: String): ByteArray? {
     val response = get(url)
