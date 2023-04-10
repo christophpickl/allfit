@@ -44,7 +44,6 @@ private class StatefulUiSyncer(
 
     private val log = logger {}
     private val syncDialog = SyncProgressDialog()
-    private var currentStep = 1
     private var syncSteps = emptyList<String>()
 
     init {
@@ -68,9 +67,8 @@ private class StatefulUiSyncer(
         syncDialog.initSteps(steps)
     }
 
-    override fun onSyncStepDone() {
+    override fun onSyncStepDone(currentStep: Int) {
         syncDialog.stepDone(currentStep)
-        currentStep++
     }
 
     override fun onSyncDetail(message: String) {
@@ -130,22 +128,22 @@ private class SyncProgressDialog : JDialog() {
             stepsLabels.add(label)
             stepsPanel.add(label)
         }
-        updateStepIcon(1, iconWorking)
+        updateStepIcon(0, iconWorking)
         revalidate()
     }
 
     fun stepDone(stepNumber: Int) {
         progressBar.value = stepNumber
         updateStepIcon(stepNumber, iconDone)
-        if ((stepNumber - 1) != (stepsLabels.size)) {
+        if (stepNumber != (stepsLabels.size - 1)) {
             updateStepIcon(stepNumber + 1, iconWorking)
         }
-        addDetail("Step $stepNumber/${stepsLabels.size} done.")
+        addDetail("Step ${stepNumber + 1}/${stepsLabels.size} done.")
     }
 
     private fun updateStepIcon(stepNumber: Int, icon: String) {
-        val oldText = stepsLabels[stepNumber - 1].text
-        stepsLabels[stepNumber - 1].text = icon + oldText.substring(1)
+        val oldText = stepsLabels[stepNumber].text
+        stepsLabels[stepNumber].text = icon + oldText.substring(1)
     }
 
     fun detailMessage(message: String) {
