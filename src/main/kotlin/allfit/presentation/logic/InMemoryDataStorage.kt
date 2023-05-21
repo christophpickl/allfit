@@ -3,11 +3,7 @@ package allfit.presentation.logic
 import allfit.api.OnefitUtils
 import allfit.presentation.PartnerModifications
 import allfit.presentation.PresentationConstants
-import allfit.presentation.models.DateRange
-import allfit.presentation.models.FullPartner
-import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.SimplePartner
-import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.models.*
 import allfit.service.InMemoryImageStorage
 import javafx.scene.image.Image
 import java.time.ZonedDateTime
@@ -27,16 +23,16 @@ object InMemoryDataStorage : DataStorage {
     private val defaultDateRange = DateRange(defaultTime, defaultTime.plusHours(1))
     private val pastDateRange = DateRange(defaultTime.minusDays(1), defaultTime.minusDays(1).plusHours(1))
 
-    private val partnerEmsId = 1
-    private val partnerYogaId = 2
-    private val partnerGymId = 3
-    private val partnerFoobarId = 4
+    private const val partnerEmsId = 1
+    private const val partnerYogaId = 2
+    private const val partnerGymId = 3
+    private const val partnerFoobarId = 4
     private val workoutEms = SimpleWorkout(
         id = 1,
         partnerId = partnerEmsId,
         name = "EMS",
         about = "About <b>EMS</b> HTML.",
-        specifics = "",
+        specifics = "About specifics in HTML.",
         date = defaultDateRange,
         address = "Main Street 1",
         image = readImage("workouts/ems.jpg"),
@@ -47,8 +43,8 @@ object InMemoryDataStorage : DataStorage {
         id = 2,
         partnerId = partnerYogaId,
         name = "Yin Yoga",
-        about = "",
-        specifics = "",
+        about = "About yoga.",
+        specifics = "Specifics.",
         address = "",
         date = DateRange(now.plusDays(1), now.plusDays(1).plusHours(1)),
         image = readImage("workouts/yoga_yin.jpg"),

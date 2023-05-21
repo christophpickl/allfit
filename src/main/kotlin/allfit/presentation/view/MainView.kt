@@ -3,18 +3,9 @@ package allfit.presentation.view
 import allfit.Environment
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
+import javafx.scene.control.Label
 import javafx.scene.layout.Priority
-import tornadofx.View
-import tornadofx.borderpane
-import tornadofx.center
-import tornadofx.hgrow
-import tornadofx.onDoubleClick
-import tornadofx.onSelectionChange
-import tornadofx.right
-import tornadofx.selectedItem
-import tornadofx.top
-import tornadofx.vbox
-import tornadofx.vgrow
+import tornadofx.*
 
 class MainView : View() {
 
@@ -42,7 +33,6 @@ class MainView : View() {
         }
     }
 
-    // layout help: https://docs.tornadofx.io/0_subsection/7_layouts_and_menus
     override val root = borderpane {
         top {
             vgrow = Priority.NEVER
@@ -58,8 +48,9 @@ class MainView : View() {
                 right {
                     hgrow = Priority.NEVER
                     vbox {
-                        add(partnerDetailView)
                         add(workoutDetailView)
+                        add(Label()) // layout hack ;)
+                        add(partnerDetailView)
                     }
                 }
             }

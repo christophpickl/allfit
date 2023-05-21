@@ -24,7 +24,7 @@ object AllFit {
     private val log: KLogger
 
     init {
-        reconfigureLog(config.useFileAppender)
+        reconfigureLog(config.useLogFileAppender)
         log = logger {}
     }
 

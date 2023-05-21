@@ -1,27 +1,26 @@
 package allfit
 
-@Suppress("SimplifyBooleanWithConstants")
 data class AppConfig(
     val mockClient: Boolean,
     val mockSyncer: Boolean,
     val mockDb: Boolean,
     val mockDataStore: Boolean,
-    val useFileAppender: Boolean,
+    val useLogFileAppender: Boolean,
 ) {
     companion object {
         val develop = AppConfig(
             mockClient = false,
             mockSyncer = false,
             mockDb = false,
-            mockDataStore = false,
-            useFileAppender = true,
+            mockDataStore = true,
+            useLogFileAppender = true,
         )
         val prod = AppConfig(
             mockClient = false,
             mockSyncer = false,
             mockDb = false,
             mockDataStore = false,
-            useFileAppender = true,
+            useLogFileAppender = true,
         )
     }
 }

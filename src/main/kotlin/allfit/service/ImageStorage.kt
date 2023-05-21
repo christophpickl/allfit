@@ -1,13 +1,22 @@
 package allfit.service
 
 import allfit.sync.SyncListenerManager
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.http.HttpStatusCode
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 import java.io.File
+import kotlin.collections.List
+import kotlin.collections.any
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.mapNotNull
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.plusAssign
+import kotlin.collections.set
 
 private val notFoundDefaultImage: ByteArray =
     ImageStorage::class.java.classLoader
@@ -110,22 +119,43 @@ class FileSystemImageStorage(
     private val extension = "jpg"
     private val parallelWorkersCount = 3
     private val delayBetweenEachDownloadInMs = 40L
+    private val maxRetryDownloadAttempts = 3
 
     override suspend fun savePartnerImages(partners: List<PartnerAndImageUrl>) {
         log.debug { "Saving ${partners.size} partner images." }
-        partners.map { it.imageUrl }.requireAllEndsWithExtension(extension)
+        partners.mapNotNull { it.imageUrl }.requireAllEndsWithExtension(extension)
         partners.workParallel(parallelWorkersCount, {
             syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of partner images done.")
         }) {
-            val bytes = client.getBytes("${it.imageUrl}?w=$width")
-            partnerTarget(it.partnerId).saveAndLog(bytes)
+            val partnerId = it.partnerId
+            val imageUrl = it.imageUrl
+            val bytes: ByteArray? = imageUrl?.let { url ->
+                val fullUrl = "${url}?w=$width"
+                log.debug { "Downloading partner (ID=${partnerId}) image from: $fullUrl" }
+                retryGetBytes(fullUrl, 1)
+            } ?: null.also {
+                log.debug { "No partner image defined with ID: $partnerId" }
+            }
+            partnerTarget(partnerId).saveAndLogOrDefault(bytes)
             delay(delayBetweenEachDownloadInMs)
         }
     }
 
+    private suspend fun retryGetBytes(url: String, attempt: Int): ByteArray? =
+        try {
+            client.getBytes(url)
+        } catch (e: Exception) {
+            log.warn(e) { "Failed to download image attempt $attempt/$maxRetryDownloadAttempts from: $url" }
+            if (attempt == maxRetryDownloadAttempts) {
+                throw e
+            } else {
+                retryGetBytes(url, attempt + 1)
+            }
+        }
+
     override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
         partnerIds.forEach { id ->
-            partnerTarget(id).saveAndLog(null)
+            partnerTarget(id).saveAndLogOrDefault(null)
         }
     }
 
@@ -148,14 +178,14 @@ class FileSystemImageStorage(
             syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of workout images done.")
         }) { workout ->
             val bytes = client.getBytes("${workout.imageUrl}?w=$width")
-            workoutTarget(workout.workoutId).saveAndLog(bytes)
+            workoutTarget(workout.workoutId).saveAndLogOrDefault(bytes)
             delay(delayBetweenEachDownloadInMs)
         }
     }
 
     override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
         workoutIds.forEach { id ->
-            workoutTarget(id).saveAndLog(null)
+            workoutTarget(id).saveAndLogOrDefault(null)
         }
     }
 
@@ -196,7 +226,7 @@ class FileSystemImageStorage(
 private fun List<String>.requireAllEndsWithExtension(extension: String) {
     forEach {
         if (!it.endsWith(".$extension")) {
-            error("Invalid image URL (must end with '.$extension'): ${it}")
+            error("Invalid image URL (must end with '.$extension'): $it")
         }
     }
 }
@@ -214,9 +244,9 @@ private suspend fun HttpClient.getBytes(url: String): ByteArray? {
     return response.body<ByteArray>()
 }
 
-private fun File.saveAndLog(imageBinaryData: ByteArray?) {
+private fun File.saveAndLogOrDefault(imageBinaryData: ByteArray?) {
     if (exists()) {
-        log.warn { "Overwriting image file $absolutePath" }
+        log.debug { "Overwriting image file $absolutePath" }
     } else {
         log.trace { "Saving image to file $absolutePath" }
     }
@@ -225,7 +255,7 @@ private fun File.saveAndLog(imageBinaryData: ByteArray?) {
 
 data class PartnerAndImageUrl(
     val partnerId: Int,
-    val imageUrl: String,
+    val imageUrl: String?,
 )
 
 class PartnerAndImageBytes(

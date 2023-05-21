@@ -40,7 +40,7 @@ fun Arb.Companion.partnerJson() = arbitrary {
         categories = list(partnerSubCategoryJson(), 0..5).next(),
         slug = string(minSize = 1, maxSize = 8).next(),
         description = string(minSize = 1, maxSize = 20).next(),
-        header_image = headerImageJson().next(),
+        header_image = headerImageJson().orNull().next(),
         settlement_options = settlementOptionsJson().next(),
         location_groups = list(partnerLocationGroupsJson(), 0..3).next(),
         facilities = list(string(maxSize = 5), 0..5).next(),

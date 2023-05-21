@@ -6,13 +6,15 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* move search filter to the left
+* rework detail view (table rows, etc...)
+
+### Medium
+
 * bigger images-pictures in detail view
 * isHidden, right click, for partner only!
   * plus: in menu bar, enable "is hidden visible YES/NO"; with right click in table, can be made hidden/unhidden (plus
     make filterable) ... or a custom dialog for it?! in menu bar, "Manage hidden partners"
-
-### Medium
-
 * make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k
   workouts, every 2 secs)
 * adjust column sizes in table
@@ -36,3 +38,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 * ad credentials loader: encrypt password (using local username); prompt dialog if file doesn't exist
 * release on tag, deploy JAR file
+
+## Resources
+
+* Layout help: https://docs.tornadofx.io/0_subsection/7_layouts_and_menus

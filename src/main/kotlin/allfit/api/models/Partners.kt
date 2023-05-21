@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 package allfit.api.models
 
 import kotlinx.serialization.Serializable
@@ -15,7 +17,7 @@ data class PartnerJson(
     val description: String,
     val category: PartnerCategoryJson,
     val categories: List<PartnerSubCategoryJson>,
-    val header_image: HeaderImageJson,
+    val header_image: HeaderImageJson? = null,
     val settlement_options: SettlementOptionsJson,
     val location_groups: List<PartnerLocationGroupsJson>,
     val facilities: List<String>,

@@ -7,20 +7,15 @@ import allfit.presentation.models.PartnerCustomAttributesRead
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
     val slug = varchar("SLUG", 256)
     val description = text("DESCRIPTION")
     val note = text("NOTE") // custom
-    val imageUrl = varchar("IMAGE_URL", 256)
+    val imageUrl = varchar("IMAGE_URL", 256).nullable()
     val facilities = text("FACILITIES") // comma separated list
     val isDeleted = bool("IS_DELETED") // custom
     val rating = integer("RATING") // custom
@@ -53,7 +48,7 @@ data class PartnerEntity(
     val facilities: String,
     override val rating: Int,
     override val isDeleted: Boolean,
-    val imageUrl: String,
+    val imageUrl: String?,
     override val isFavorited: Boolean,
     override val isWishlisted: Boolean,
     val isHidden: Boolean,

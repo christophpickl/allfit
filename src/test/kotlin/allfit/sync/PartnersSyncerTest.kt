@@ -1,11 +1,6 @@
 package allfit.sync
 
-import allfit.api.models.HeaderImageJson
-import allfit.api.models.PartnerJson
-import allfit.api.models.PartnersJsonRoot
-import allfit.api.models.partnerCategoryJson
-import allfit.api.models.partnerJson
-import allfit.api.models.partnerSubCategoryJson
+import allfit.api.models.*
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.InMemoryPartnersRepo
@@ -53,7 +48,7 @@ class PartnersSyncerTest : StringSpec() {
                 name = partnerJson.name,
                 slug = partnerJson.slug,
                 description = partnerJson.description,
-                imageUrl = partnerJson.header_image.orig,
+                imageUrl = partnerJson.header_image?.orig,
                 facilities = partnerJson.facilities.joinToString(","),
                 note = "",
                 rating = 0,

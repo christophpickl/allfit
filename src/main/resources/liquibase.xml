@@ -33,7 +33,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="IMAGE_URL" type="varchar(256)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="DESCRIPTION" type="longvarchar">
                 <constraints nullable="false"/>

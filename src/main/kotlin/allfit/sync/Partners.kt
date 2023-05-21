@@ -38,7 +38,7 @@ private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     name = name,
     slug = slug,
     description = description,
-    imageUrl = header_image.orig,
+    imageUrl = header_image?.orig,
     facilities = facilities.joinToString(","),
     // custom fields:
     note = "",
