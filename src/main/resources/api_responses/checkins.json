@@ -1,6 +1,52 @@
 {
   "data": [
     {
+      "uuid": "9e63e25a-6e57-4637-a073-2303d4dd9be0",
+      "type": "drop-in",
+      "created_at": "2023-05-15T07:30:40+02:00",
+      "invalid_reason": null,
+      "checked_out_at": null,
+      "partner": {
+        "id": 3630,
+        "name": "TrainMore Oosterdok",
+        "slug": "trainmore-oosterdok-amsterdam",
+        "waitlist_enabled": true,
+        "check_in_radius": 200,
+        "header_image": {
+          "desktop": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1680",
+          "xxxhdpi": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1440",
+          "xxhdpi": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1080",
+          "tablet": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1024",
+          "mobile": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=768",
+          "xhdpi": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=720",
+          "hdpi": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=540",
+          "mdpi": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=480",
+          "ldpi": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=320",
+          "thumbnail": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=150",
+          "orig": "https://edge.one.fit/image/partner/image/3630/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg"
+        },
+        "category": {
+          "id": 1,
+          "name": "Gym",
+          "slugs": {
+            "nl": "gym",
+            "en": "gym",
+            "es": "gym"
+          }
+        }
+      },
+      "location": {
+        "street_name": "Oosterdokskade",
+        "house_number": "63",
+        "addition": "",
+        "city": "Amsterdam",
+        "zip_code": "1011 DL",
+        "latitude": 52.376116,
+        "longitude": 4.906419,
+        "meeting_notes": null
+      }
+    },
+    {
       "uuid": "9bd95a69-897d-4212-a886-85f684173dec",
       "type": "workout",
       "created_at": "2023-03-17T13:30:00+01:00",

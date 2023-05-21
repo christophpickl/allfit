@@ -1,11 +1,6 @@
 package allfit.persistence.testInfra
 
-import allfit.persistence.domain.CategoryEntity
-import allfit.persistence.domain.CheckinEntity
-import allfit.persistence.domain.LocationEntity
-import allfit.persistence.domain.PartnerEntity
-import allfit.persistence.domain.ReservationEntity
-import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.*
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
@@ -19,6 +14,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import java.time.LocalDateTime
+import java.util.*
 
 fun Arb.Companion.categoryEntity() = arbitrary {
     CategoryEntity(
@@ -85,9 +81,29 @@ fun Arb.Companion.reservationEntity() = arbitrary {
 }
 
 fun Arb.Companion.checkinEntity() = arbitrary {
+    if (Random().nextBoolean()) {
+        checkinEntityWorkout().next()
+    } else {
+        checkinEntityDropin().next()
+    }
+}
+
+fun Arb.Companion.checkinEntityWorkout() = arbitrary {
     CheckinEntity(
         id = uuid().next(),
-        workoutId = int(min = 1).next(),
         createdAt = LocalDateTime.now(),
+        type = CheckinType.WORKOUT,
+        partnerId = int(min = 1).next(),
+        workoutId = int(min = 1).next(),
+    )
+}
+
+fun Arb.Companion.checkinEntityDropin() = arbitrary {
+    CheckinEntity(
+        id = uuid().next(),
+        createdAt = LocalDateTime.now(),
+        type = CheckinType.DROP_IN,
+        partnerId = int(min = 1).next(),
+        workoutId = null,
     )
 }

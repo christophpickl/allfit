@@ -9,11 +9,11 @@ data class AppConfig(
 ) {
     companion object {
         val develop = AppConfig(
-            mockClient = false,
-            mockSyncer = false,
-            mockDb = false,
+            mockClient = true,
+            mockSyncer = true,
+            mockDb = true,
             mockDataStore = true,
-            useLogFileAppender = true,
+            useLogFileAppender = false,
         )
         val prod = AppConfig(
             mockClient = false,

@@ -5,17 +5,8 @@ import allfit.api.models.WorkoutJson
 import allfit.api.models.workoutJson
 import allfit.api.models.workoutPartnerJson
 import allfit.api.models.workoutsJsonRoot
-import allfit.persistence.domain.CheckinsRepository
-import allfit.persistence.domain.InMemoryCheckinsRepository
-import allfit.persistence.domain.InMemoryPartnersRepo
-import allfit.persistence.domain.InMemoryReservationsRepo
-import allfit.persistence.domain.InMemoryWorkoutsRepo
-import allfit.persistence.domain.WorkoutEntity
-import allfit.persistence.testInfra.checkinEntity
-import allfit.persistence.testInfra.partnerEntity
-import allfit.persistence.testInfra.reservationEntity
-import allfit.persistence.testInfra.singletonShouldBe
-import allfit.persistence.testInfra.workoutEntity
+import allfit.persistence.domain.*
+import allfit.persistence.testInfra.*
 import allfit.service.InMemoryImageStorage
 import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
@@ -145,7 +136,7 @@ class WorkoutsSyncerTest : StringSpec() {
         }
         "Given past workout with association When sync Then keep it" {
             val pastWorkout = workoutEntity.copy(start = pastDateTime)
-            checkinsRepository.insertAll(listOf(Arb.checkinEntity().next().copy(workoutId = pastWorkout.id)))
+            checkinsRepository.insertAll(listOf(Arb.checkinEntityWorkout().next().copy(workoutId = pastWorkout.id)))
             workoutsRepo.insertAll(listOf(pastWorkout))
 
             syncer.sync()

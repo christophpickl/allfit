@@ -1,4 +1,5 @@
 @file:UseSerializers(ZonedDateTimeSerializer::class)
+@file:Suppress("PropertyName")
 
 package allfit.api.models
 
@@ -15,12 +16,41 @@ data class CheckinsJsonRoot(
 @Serializable
 data class CheckinJson(
     val uuid: String,
-    val type: String, // enum: workout, ...
+    val type: String,
     val created_at: ZonedDateTime,
-    val workout: WorkoutCheckinJson,
+    val workout: WorkoutCheckinJson? = null,
+    val partner: PartnerWorkoutCheckinJson? = null,
     // invalid_reason: X?,
     // checked_out_at: X?,
-)
+) {
+    companion object {
+        const val TYPE_WORKOUT = "workout"
+        const val TYPE_DROPIN = "drop-in"
+    }
+
+    init {
+        when (type) {
+            TYPE_WORKOUT -> {
+                require(workout != null)
+                require(partner == null)
+            }
+
+            TYPE_DROPIN -> {
+                require(workout == null)
+                require(partner != null)
+            }
+
+            else -> error("Unsupported type: '$type'")
+        }
+    }
+
+    val isTypeWorkout = type == TYPE_WORKOUT
+    val typeSafePartner = when (type) {
+        TYPE_WORKOUT -> workout!!.partner
+        TYPE_DROPIN -> partner!!
+        else -> error("Unsupported type: '$type'")
+    }
+}
 
 @Serializable
 data class WorkoutCheckinJson(

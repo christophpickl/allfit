@@ -65,8 +65,10 @@ private val allLocations = listOf(location1)
 
 private val checkin1 = CheckinEntity(
     id = UUID.randomUUID(),
-    workoutId = workout1.id,
     createdAt = LocalDateTime.now(),
+    type = CheckinType.WORKOUT,
+    partnerId = partner1.id,
+    workoutId = workout1.id,
 )
 
 private val allCheckins = listOf(checkin1)

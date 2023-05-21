@@ -1,28 +1,10 @@
 package allfit.presentation.logic
 
-import allfit.persistence.domain.CategoryEntity
-import allfit.persistence.domain.ExposedCheckinsRepository
-import allfit.persistence.domain.ExposedPartnersRepo
-import allfit.persistence.domain.ExposedWorkoutsRepo
-import allfit.persistence.domain.PartnerEntity
-import allfit.persistence.domain.WorkoutEntity
-import allfit.persistence.testInfra.DbListener
-import allfit.persistence.testInfra.ExposedTestRepo
-import allfit.persistence.testInfra.checkinEntity
-import allfit.persistence.testInfra.withFutureStart
-import allfit.persistence.testInfra.workoutEntity
+import allfit.persistence.domain.*
+import allfit.persistence.testInfra.*
 import allfit.presentation.PartnerModifications
-import allfit.presentation.models.DateRange
-import allfit.presentation.models.FullPartner
-import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.PartnerCustomAttributesRead
-import allfit.presentation.models.SimplePartner
-import allfit.presentation.models.SimpleWorkout
-import allfit.service.DummyImageStorage
-import allfit.service.InMemoryImageStorage
-import allfit.service.PartnerAndImageBytes
-import allfit.service.WorkoutAndImagesBytes
-import allfit.service.fromUtcToAmsterdamZonedDateTime
+import allfit.presentation.models.*
+import allfit.service.*
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
@@ -94,7 +76,7 @@ class ExposedDataStorageTest : StringSpec() {
         }
 
         "Given workout with partner with checkin When getFutureFullWorkouts Then partner has checkin count set" {
-            ExposedTestRepo.insertCategoryPartnerWorkoutAndCheckin(withWorkout = {
+            ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin(withWorkout = {
                 it.withFutureStart()
             })
 
@@ -127,7 +109,11 @@ class ExposedDataStorageTest : StringSpec() {
             val currentWorkout = Arb.workoutEntity().next()
                 .copy(partnerId = partner.id, start = future, end = future.plusHours(1))
             ExposedWorkoutsRepo.insertAll(listOf(currentWorkout))
-            ExposedCheckinsRepository.insertAll(listOf(Arb.checkinEntity().next().copy(workoutId = pastWorkout.id)))
+            ExposedCheckinsRepository.insertAll(
+                listOf(
+                    Arb.checkinEntityWorkout().next().copy(workoutId = pastWorkout.id)
+                )
+            )
 
             val fullPartner = dataStorageWithStaticImages().getFullPartnerById(partner.id)
 

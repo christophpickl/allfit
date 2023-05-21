@@ -15,6 +15,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import java.time.ZonedDateTime
+import java.util.*
 
 fun Arb.Companion.categoryJson() = arbitrary {
     CategoryJson(
@@ -202,13 +203,33 @@ fun Arb.Companion.workoutReservationPartnerJson() = arbitrary {
 }
 
 fun Arb.Companion.checkinJson() = arbitrary {
+    if (Random().nextBoolean()) {
+        checkinJsonWorkout().next()
+    } else {
+        checkinJsonDropin().next()
+    }
+}
+
+fun Arb.Companion.checkinJsonWorkout() = arbitrary {
     CheckinJson(
         uuid = uuid().next().toString(),
         type = "workout",
         created_at = ZonedDateTime.now(),
         workout = workoutCheckinJson().next(),
+        partner = null,
     )
 }
+
+fun Arb.Companion.checkinJsonDropin() = arbitrary {
+    CheckinJson(
+        uuid = uuid().next().toString(),
+        type = "drop-in",
+        created_at = ZonedDateTime.now(),
+        workout = null,
+        partner = partnerWorkoutCheckinJson().next(),
+    )
+}
+
 
 fun Arb.Companion.workoutCheckinJson() = arbitrary {
     WorkoutCheckinJson(
