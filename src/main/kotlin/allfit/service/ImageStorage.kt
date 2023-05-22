@@ -1,5 +1,6 @@
 package allfit.service
 
+import allfit.presentation.PresentationConstants
 import allfit.sync.SyncListenerManager
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -8,14 +9,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 import java.io.File
-import kotlin.collections.List
-import kotlin.collections.any
-import kotlin.collections.forEach
-import kotlin.collections.map
-import kotlin.collections.mapNotNull
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.plusAssign
 import kotlin.collections.set
 
 private val notFoundDefaultImage: ByteArray =
@@ -115,7 +108,7 @@ class FileSystemImageStorage(
 
     private val log = logger {}
     private val client = HttpClient()
-    private val width = 300
+    private val width = PresentationConstants.downloadImageWidth
     private val extension = "jpg"
     private val parallelWorkersCount = 3
     private val delayBetweenEachDownloadInMs = 40L

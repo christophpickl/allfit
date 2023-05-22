@@ -89,7 +89,7 @@ object ExposedTestRepo {
         withWorkout: (WorkoutEntity) -> WorkoutEntity = { it },
     ): Quadrupel<CategoryEntity, PartnerEntity, WorkoutEntity, CheckinEntity> {
         val (category, partner, workout) = insertCategoryPartnerAndWorkout(withCategory, withPartner, withWorkout)
-        val checkin = Arb.checkinEntityWorkout().next().copy(workoutId = workout.id)
+        val checkin = Arb.checkinEntityWorkout().next().copy(partnerId = partner.id, workoutId = workout.id)
         ExposedCheckinsRepository.insertAll(listOf(checkin))
         return Quadrupel(category, partner, workout, checkin)
     }

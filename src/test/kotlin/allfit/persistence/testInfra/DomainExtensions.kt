@@ -4,14 +4,14 @@ import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.domain.WorkoutEntity
 import java.time.LocalDateTime
 
-fun WorkoutEntity.withFutureStart(): WorkoutEntity {
-    val future = LocalDateTime.now().plusDays(1)
+fun WorkoutEntity.withFutureStart(now: LocalDateTime): WorkoutEntity {
+    val future = now.plusDays(1)
     return copy(
         start = future,
         end = future.plusHours(1),
     )
 }
 
-fun ReservationEntity.withFutureStart(): ReservationEntity = copy(
-    workoutStart = LocalDateTime.now().plusDays(1)
+fun ReservationEntity.withFutureStart(now: LocalDateTime): ReservationEntity = copy(
+    workoutStart = now.plusDays(1)
 )

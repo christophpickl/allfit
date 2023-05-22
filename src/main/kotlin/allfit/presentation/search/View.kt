@@ -3,28 +3,9 @@ package allfit.presentation.search
 import javafx.event.EventTarget
 import javafx.scene.control.CheckBox
 import javafx.scene.layout.HBox
-import tornadofx.View
-import tornadofx.action
-import tornadofx.bind
-import tornadofx.checkbox
-import tornadofx.getProperty
-import tornadofx.label
-import tornadofx.opcr
-import tornadofx.property
-import tornadofx.singleAssign
+import tornadofx.*
 
 abstract class SearchPane : View() {
-
-    companion object {
-        fun buildAll(checkSearch: () -> Unit): List<SearchPane> = listOf(
-            DateSearchPane(checkSearch),
-            GroupSearchPane(checkSearch),
-            PartnerCheckinSearchPane(checkSearch),
-            IsWishlistedSearchPane(checkSearch),
-            FavoriteSearchPane(checkSearch),
-            IsWorkoutReservedSearchPane(checkSearch),
-        )
-    }
 
     abstract var searchFieldPane: SearchFieldPane
     override val root get() = searchFieldPane

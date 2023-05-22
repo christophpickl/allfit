@@ -12,6 +12,7 @@ import tornadofx.webview
 
 object PresentationConstants {
     const val tableImageWidth = 50.0
+    const val downloadImageWidth = 300
 }
 
 private val starsMap = mapOf(

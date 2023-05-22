@@ -4,10 +4,10 @@ import allfit.api.OnefitClient
 import allfit.api.models.ReservationJson
 import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.domain.ReservationsRepo
-import allfit.service.SystemClock
+import allfit.service.Clock
 import allfit.service.toUtcLocalDateTime
 import mu.KotlinLogging.logger
-import java.util.UUID
+import java.util.*
 
 interface ReservationsSyncer {
     suspend fun sync()
@@ -16,13 +16,14 @@ interface ReservationsSyncer {
 class ReservationsSyncerImpl(
     private val client: OnefitClient,
     private val reservationsRepo: ReservationsRepo,
+    private val clock: Clock,
 ) : ReservationsSyncer {
     private val log = logger {}
 
     override suspend fun sync() {
         log.debug { "Syncing reservations..." }
         val reservationsRemote = client.getReservations()
-        val reservationsLocal = reservationsRepo.selectAllStartingFrom(SystemClock.now().toUtcLocalDateTime())
+        val reservationsLocal = reservationsRepo.selectAllStartingFrom(clock.now().toUtcLocalDateTime())
 
         val toBeInserted = reservationsRemote.data.associateBy { UUID.fromString(it.uuid) }.toMutableMap()
         reservationsLocal.forEach {

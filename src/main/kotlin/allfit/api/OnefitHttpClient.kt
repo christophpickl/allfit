@@ -1,42 +1,28 @@
 package allfit.api
 
-import allfit.api.models.AuthJson
-import allfit.api.models.AuthResponseJson
-import allfit.api.models.CategoriesJsonRoot
-import allfit.api.models.CheckinsJsonRoot
-import allfit.api.models.MetaJson
-import allfit.api.models.PagedJson
-import allfit.api.models.PartnersJsonRoot
-import allfit.api.models.ReservationsJsonRoot
-import allfit.api.models.SingleWorkoutJsonRoot
-import allfit.api.models.WorkoutsJsonRoot
-import allfit.service.SystemClock
+import allfit.api.models.*
+import allfit.service.Clock
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.parameter
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.request
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
 
 private val log = logger {}
 private val authClient = buildClient(null)
 
-suspend fun authenticateOneFit(credentials: Credentials): OnefitClient {
+suspend fun authenticateOneFit(
+    credentials: Credentials,
+    clock: Clock
+): OnefitClient {
     val response = authClient.post("") {
         header("Content-Type", "application/json")
         setBody(
@@ -48,7 +34,7 @@ suspend fun authenticateOneFit(credentials: Credentials): OnefitClient {
     }
     response.requireOk()
     log.info { "Login success." }
-    return OnefitHttpClient(response.body<AuthResponseJson>().access_token)
+    return OnefitHttpClient(response.body<AuthResponseJson>().access_token, clock = clock)
 }
 
 private fun buildClient(authToken: String?) = HttpClient(CIO) {
@@ -75,7 +61,8 @@ private fun buildClient(authToken: String?) = HttpClient(CIO) {
 
 class OnefitHttpClient(
     authToken: String,
-    private val jsonLogFileManager: JsonLogFileManager = JsonLogFileManagerImpl()
+    private val clock: Clock,
+    private val jsonLogFileManager: JsonLogFileManager = JsonLogFileManagerImpl(),
 ) : OnefitClient {
 
     private val log = logger {}
@@ -142,7 +129,7 @@ class OnefitHttpClient(
 
     private suspend fun HttpResponse.logJsonResponse(path: String) {
         jsonLogFileManager.save(
-            JsonLogFileName(path, status.value, SystemClock.now()),
+            JsonLogFileName(path, status.value, clock.now()),
             kotlinxSerializer.toPrettyString(bodyAsText())
         )
     }

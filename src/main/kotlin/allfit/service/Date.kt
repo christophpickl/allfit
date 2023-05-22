@@ -6,7 +6,27 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.*
+
+interface Clock {
+    fun now(): ZonedDateTime
+
+    fun todayBeginOfDay(): ZonedDateTime =
+        now().withHour(0).withMinute(0).withSecond(0)
+}
+
+object SystemClock : Clock {
+    override fun now(): ZonedDateTime =
+        ZonedDateTime.now(zoneAmsterdam)
+}
+
+class DummyDayClock(private val fixedDate: LocalDate) : Clock {
+    override fun now(): ZonedDateTime =
+        ZonedDateTime.now(zoneAmsterdam)
+            .withYear(fixedDate.year)
+            .withMonth(fixedDate.monthValue)
+            .withDayOfMonth(fixedDate.dayOfMonth)
+}
 
 private val zoneAmsterdam: ZoneId = ZoneId.of("Europe/Amsterdam")
 private val zoneUtc: ZoneId = ZoneId.of("UTC")
@@ -22,10 +42,6 @@ fun ZonedDateTime.formatDayDate(): String = dayDateFormatter.format(this)
 fun ZonedDateTime.formatTime(): String = timeOnlyFormatter.format(this)
 fun ZonedDateTime.formatFileSafe(): String = fileSafeFormatter.format(this)
 
-object SystemClock {
-    fun now(): ZonedDateTime = ZonedDateTime.now(zoneAmsterdam)
-    fun todayBeginOfDay(): ZonedDateTime = now().withHour(0).withMinute(0).withSecond(0)
-}
 
 fun ZonedDateTime.toUtcLocalDateTime(): LocalDateTime =
     withZoneSameInstant(zoneUtc).toLocalDateTime()

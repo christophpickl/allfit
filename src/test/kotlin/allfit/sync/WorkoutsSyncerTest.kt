@@ -1,5 +1,6 @@
 package allfit.sync
 
+import allfit.TestDates
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.WorkoutJson
 import allfit.api.models.workoutJson
@@ -20,15 +21,15 @@ import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import java.time.LocalDateTime
 
 class WorkoutsSyncerTest : StringSpec() {
 
-    private val pastDateTime = LocalDateTime.of(2000, 1, 1, 0, 0)
     private val partnerEntity = Arb.partnerEntity().next()
     private val workoutJson = Arb.workoutJson().next()
     private val workoutFetch = Arb.workoutFetch().next()
     private val workoutEntity = Arb.workoutEntity().next()
+    private val pastDateTime = TestDates.now.minusYears(1)
+    private val clock = TestDates.clock
     private lateinit var syncer: WorkoutsSyncer
     private lateinit var client: InMemoryOnefitClient
     private lateinit var workoutFetcher: DummyWorkoutFetcher
@@ -55,6 +56,7 @@ class WorkoutsSyncerTest : StringSpec() {
             checkinsRepository,
             reservationsRepo,
             SyncListenerManagerImpl(),
+            clock,
         )
     }
 

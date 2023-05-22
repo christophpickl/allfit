@@ -7,15 +7,17 @@ import allfit.persistence.persistenceModule
 import allfit.presentation.UiSyncer
 import allfit.presentation.logic.ExposedDataStorage
 import allfit.presentation.logic.InMemoryDataStorage
-import allfit.service.DirectoryEntry
-import allfit.service.FileResolver
-import allfit.service.FileSystemImageStorage
-import allfit.service.ImageStorage
+import allfit.service.*
 import allfit.sync.syncModule
 import org.koin.dsl.module
 
 fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single { onefitClient }
+    single<Clock> {
+        config.dummyDate?.let {
+            DummyDayClock(it)
+        } ?: SystemClock
+    }
     single<ImageStorage> {
         FileSystemImageStorage(
             partnersFolder = FileResolver.resolve(DirectoryEntry.ImagesPartners),
@@ -23,7 +25,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
             syncListeners = get(),
         )
     }
-    single { if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(get()) }
+    single { if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(get(), get()) }
     single { UiSyncer(get()) }
     single { AllFitStarter(get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }

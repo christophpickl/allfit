@@ -1,21 +1,11 @@
 package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
-import allfit.persistence.domain.ExposedCategoriesRepo
-import allfit.persistence.domain.ExposedCheckinsRepository
-import allfit.persistence.domain.ExposedPartnersRepo
-import allfit.persistence.domain.ExposedReservationsRepo
-import allfit.persistence.domain.ExposedWorkoutsRepo
-import allfit.persistence.domain.PartnerEntity
-import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.*
 import allfit.presentation.PartnerModifications
-import allfit.presentation.models.DateRange
-import allfit.presentation.models.FullPartner
-import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.SimplePartner
-import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.models.*
+import allfit.service.Clock
 import allfit.service.ImageStorage
-import allfit.service.SystemClock
 import allfit.service.fromUtcToAmsterdamZonedDateTime
 import javafx.scene.image.Image
 
@@ -31,6 +21,7 @@ interface DataStorage {
 
 class ExposedDataStorage(
     private val imageStorage: ImageStorage,
+    private val clock: Clock,
 ) : DataStorage {
 
     private val simplePartners by lazy {
@@ -73,7 +64,7 @@ class ExposedDataStorage(
     }
 
     private val futureSimpleWorkouts by lazy {
-        val now = SystemClock.now()
+        val now = clock.now()
         simpleWorkouts.filter {
             it.date.start >= now
         }
@@ -92,14 +83,14 @@ class ExposedDataStorage(
         fullWorkouts.associateBy { it.id }
     }
 
-    // avoid JVM name clash ;-)
+    // "futureFullWorkoutss" with double ss to avoid JVM name clash ;-)
     private val futureFullWorkoutss by lazy {
-        val now = SystemClock.now()
+        val now = clock.now()
         fullWorkouts.filter { it.date.start > now }
     }
 
     private val fullPartnersById by lazy {
-        val now = SystemClock.now()
+        val now = clock.now()
         simplePartners.map { simplePartner ->
             FullPartner(
                 simplePartner = simplePartner,

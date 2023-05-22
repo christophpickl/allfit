@@ -1,5 +1,6 @@
 package allfit.sync
 
+import allfit.TestDates
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.ReservationJson
 import allfit.api.models.reservationJson
@@ -15,12 +16,14 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import java.util.UUID
+import java.util.*
 
 class ReservationsSyncerTest : StringSpec() {
 
     private val reservationEntity = Arb.reservationEntity().next()
     private val reservationJson = Arb.reservationJson().next()
+
+    private val clock = TestDates.clock
 
     private lateinit var syncer: ReservationsSyncer
     private lateinit var client: InMemoryOnefitClient
@@ -29,7 +32,7 @@ class ReservationsSyncerTest : StringSpec() {
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         reservationsRepo = InMemoryReservationsRepo()
-        syncer = ReservationsSyncerImpl(client, reservationsRepo)
+        syncer = ReservationsSyncerImpl(client, reservationsRepo, clock)
     }
 
     init {

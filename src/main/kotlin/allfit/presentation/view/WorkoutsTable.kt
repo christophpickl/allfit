@@ -6,19 +6,13 @@ import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.Rating
 import allfit.presentation.renderStars
+import javafx.beans.value.ObservableValue
 import javafx.geometry.Pos
 import javafx.scene.control.SelectionMode
+import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.image.Image
-import tornadofx.cellFormat
-import tornadofx.column
-import tornadofx.fixedWidth
-import tornadofx.imageview
-import tornadofx.label
-import tornadofx.readonlyColumn
-import tornadofx.remainingWidth
-import tornadofx.smartResize
-import tornadofx.weightedWidth
+import tornadofx.*
 
 class WorkoutsTable() : TableView<FullWorkout>() {
     init {
@@ -26,11 +20,7 @@ class WorkoutsTable() : TableView<FullWorkout>() {
 
         selectionModel.selectionMode = SelectionMode.SINGLE
 
-        column<FullWorkout, Image>("") { it.value.imageProperty() }
-            .fixedWidth(PresentationConstants.tableImageWidth + 10)
-            .cellFormat {
-                graphic = imageview(it)
-            }
+        imageColumn { it.value.imageProperty() }
 
         column<FullWorkout, String>("Workout") { it.value.nameProperty() }
             .remainingWidth()
@@ -52,11 +42,7 @@ class WorkoutsTable() : TableView<FullWorkout>() {
                 }
             }
 
-        column<FullWorkout, Image>("") { it.value.partner.imageProperty() }
-            .fixedWidth(PresentationConstants.tableImageWidth + 10)
-            .cellFormat {
-                graphic = imageview(it)
-            }
+        imageColumn { it.value.partner.imageProperty() }
 
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }
             .remainingWidth()
@@ -74,16 +60,29 @@ class WorkoutsTable() : TableView<FullWorkout>() {
         column<FullWorkout, Boolean>("Favorite") { it.value.partner.isFavoritedProperty() }
             .fixedWidth(60)
             .cellFormat { isFavorite ->
-                graphic = imageview(StaticImageStorage.get(if (isFavorite) StaticImage.FavoriteFull else StaticImage.FavoriteOutline)) {
-                    alignment = Pos.CENTER
-                }
+                graphic =
+                    imageview(StaticImageStorage.get(if (isFavorite) StaticImage.FavoriteFull else StaticImage.FavoriteOutline)) {
+                        alignment = Pos.CENTER
+                    }
             }
 
         column<FullWorkout, Boolean>("Wishlist") { it.value.partner.isWishlistedProperty() }
             .fixedWidth(60)
             .cellFormat { isWishlisted ->
-                graphic = imageview(StaticImageStorage.get(if (isWishlisted) StaticImage.WishlistFull else StaticImage.WishlistOutline)) {
-                    alignment = Pos.CENTER
+                graphic =
+                    imageview(StaticImageStorage.get(if (isWishlisted) StaticImage.WishlistFull else StaticImage.WishlistOutline)) {
+                        alignment = Pos.CENTER
+                    }
+            }
+    }
+
+    private fun TableView<FullWorkout>.imageColumn(valueProvider: (TableColumn.CellDataFeatures<FullWorkout, Image>) -> ObservableValue<Image>) {
+        column<FullWorkout, Image>("", valueProvider)
+            .fixedWidth(PresentationConstants.tableImageWidth + 10)
+            .cellFormat {
+                graphic = imageview(it) {
+                    fitWidth = PresentationConstants.tableImageWidth
+                    isPreserveRatio = true
                 }
             }
     }

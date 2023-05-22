@@ -6,11 +6,12 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* move search filter to the left
+* on startup, set dummy partner&workout
 * rework detail view (table rows, etc...)
 
 ### Medium
 
+* new window: list of partner (filters applicable, e.g. yet visited)
 * bigger images-pictures in detail view
 * isHidden, right click, for partner only!
   * plus: in menu bar, enable "is hidden visible YES/NO"; with right click in table, can be made hidden/unhidden (plus
@@ -39,6 +40,32 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * ad credentials loader: encrypt password (using local username); prompt dialog if file doesn't exist
 * release on tag, deploy JAR file
 
-## Resources
+## Guides
+
+### Limit production data
+
+1. Connect directly to H2 DB and execute the following:
+
+```sql
+delete
+from WORKOUTS
+where START < '2023-05-26';
+
+delete
+from CHECKINS
+where WORKOUT_ID in (select WORKOUT_ID
+                     from WORKOUTS
+                     where START < '2023-05-26');
+
+delete
+from RESERVATIONS
+where WORKOUT_ID in (select WORKOUT_ID
+                     from WORKOUTS
+                     where START < '2023-05-26')
+```
+
+2. In the app-config, set the proper dummy date.
+
+### Resources
 
 * Layout help: https://docs.tornadofx.io/0_subsection/7_layouts_and_menus

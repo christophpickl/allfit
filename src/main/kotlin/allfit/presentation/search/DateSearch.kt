@@ -1,16 +1,12 @@
 package allfit.presentation.search
 
 import allfit.presentation.models.FullWorkout
-import allfit.service.SystemClock
+import allfit.service.Clock
 import allfit.service.formatDayDate
 import allfit.service.formatTime
 import allfit.service.toDaysUntil
 import javafx.scene.control.ComboBox
-import tornadofx.action
-import tornadofx.button
-import tornadofx.combobox
-import tornadofx.selectedItem
-import tornadofx.singleAssign
+import tornadofx.*
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -24,7 +20,10 @@ data class DateSearchRequest(
     }
 }
 
-class DateSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class DateSearchPane(
+    private val clock: Clock,
+    checkSearch: () -> Unit,
+) : SearchPane() {
 
     private val searchIntoFutureInDays = 14
     private val dayStartsAt = 6
@@ -62,17 +61,17 @@ class DateSearchPane(checkSearch: () -> Unit) : SearchPane() {
             setOnAction {
                 checkSearch()
             }
-            val timeHour = SystemClock.now().hour
+            val timeHour = clock.now().hour
             if (timeHour in dayStartsAt..dayEndsAt) {
                 selectionModel.select(timeHour - dayStartsAt)
             }
         }
     }
 
-    private fun buildDays() = SystemClock.todayBeginOfDay().toDaysUntil(searchIntoFutureInDays)
+    private fun buildDays() = clock.todayBeginOfDay().toDaysUntil(searchIntoFutureInDays)
 
     private fun buildTimes(): List<ZonedDateTime> {
-        val today = SystemClock.now().truncatedTo(ChronoUnit.DAYS)
+        val today = clock.now().truncatedTo(ChronoUnit.DAYS)
         return (dayStartsAt..dayEndsAt).map {
             today.withHour(it)
         }

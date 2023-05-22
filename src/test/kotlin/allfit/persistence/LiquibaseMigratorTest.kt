@@ -39,7 +39,7 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedReservationsRepo.selectAll().shouldBeSingleton()
                 .first() shouldBe reservation
 
-            val checkin = Arb.checkinEntityWorkout().next().copy(workoutId = workout.id)
+            val checkin = Arb.checkinEntityWorkout().next().copy(workoutId = workout.id, partnerId = partner.id)
             ExposedCheckinsRepository.insertAll(listOf(checkin))
             ExposedCheckinsRepository.selectAll().shouldBeSingleton().first() shouldBe checkin
         }

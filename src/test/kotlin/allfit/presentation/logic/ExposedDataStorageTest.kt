@@ -1,5 +1,8 @@
+@file:Suppress("SameParameterValue")
+
 package allfit.presentation.logic
 
+import allfit.TestDates
 import allfit.persistence.domain.*
 import allfit.persistence.testInfra.*
 import allfit.presentation.PartnerModifications
@@ -12,17 +15,19 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
 import javafx.scene.image.Image
-import java.time.LocalDateTime
 
 class ExposedDataStorageTest : StringSpec() {
 
+    private val now = TestDates.now
+    private val clock = TestDates.clock
+
     private fun dataStorageWithImages(withImageStorage: (InMemoryImageStorage) -> Unit): ExposedDataStorage {
         val imageStorage = InMemoryImageStorage().also(withImageStorage)
-        return ExposedDataStorage(imageStorage)
+        return ExposedDataStorage(imageStorage, clock)
     }
 
     private fun dataStorageWithStaticImages(): ExposedDataStorage =
-        ExposedDataStorage(DummyImageStorage)
+        ExposedDataStorage(DummyImageStorage, clock)
 
     init {
         extension(DbListener())
@@ -37,7 +42,7 @@ class ExposedDataStorageTest : StringSpec() {
 
         "Given future workout and requirements When getFutureFullWorkouts Then return it" {
             val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout {
-                it.withFutureStart()
+                it.withFutureStart(now)
             }
             val workoutImage = workout.toWorkoutAndImagesBytes()
             val partnerImage = partner.toPartnerAndImageBytes()
@@ -63,10 +68,10 @@ class ExposedDataStorageTest : StringSpec() {
         "Given reserved workout When getFutureFullWorkouts Then flag as reserved" {
             ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation(
                 withWorkout = {
-                    it.withFutureStart()
+                    it.withFutureStart(now)
                 },
                 withReservation = {
-                    it.withFutureStart()
+                    it.withFutureStart(now)
                 }
             )
 
@@ -77,7 +82,7 @@ class ExposedDataStorageTest : StringSpec() {
 
         "Given workout with partner with checkin When getFutureFullWorkouts Then partner has checkin count set" {
             ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin(withWorkout = {
-                it.withFutureStart()
+                it.withFutureStart(now)
             })
 
             val workouts = dataStorageWithStaticImages().getFutureFullWorkouts()
@@ -101,17 +106,17 @@ class ExposedDataStorageTest : StringSpec() {
 
         "Given checkins and past and current workouts When getFullPartnerById Then return it" {
             val (_, partner) = ExposedTestRepo.insertCategoryAndPartner()
-            val past = LocalDateTime.now().minusDays(1)
+            val past = now.minusDays(1)
             val pastWorkout = Arb.workoutEntity().next()
                 .copy(partnerId = partner.id, start = past, end = past.plusHours(1))
             ExposedWorkoutsRepo.insertAll(listOf(pastWorkout))
-            val future = LocalDateTime.now().plusDays(1)
+            val future = now.plusDays(1)
             val currentWorkout = Arb.workoutEntity().next()
                 .copy(partnerId = partner.id, start = future, end = future.plusHours(1))
             ExposedWorkoutsRepo.insertAll(listOf(currentWorkout))
             ExposedCheckinsRepository.insertAll(
                 listOf(
-                    Arb.checkinEntityWorkout().next().copy(workoutId = pastWorkout.id)
+                    Arb.checkinEntityWorkout().next().copy(partnerId = partner.id, workoutId = pastWorkout.id)
                 )
             )
 

@@ -23,11 +23,13 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
                 repo.insertAll(listOf(Arb.checkinEntityWorkout().next()))
             }
         }
+
         "When insert dropin-checkin without foreign references Then fail" {
             shouldThrow<Exception> {
                 repo.insertAll(listOf(Arb.checkinEntityDropin().next()))
             }
         }
+
         "Given workout-checkin and requirements inserted When select all Then return it" {
             val checkin = ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin().fourth
 
@@ -35,6 +37,7 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
 
             checkins.shouldBeSingleton().first() shouldBe checkin
         }
+
         "Given partner with 1 workout-checkin When selectCountForPartners Then return 1" {
             val partner = ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin().second
 
@@ -45,6 +48,7 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
                 checkinsCount = 1,
             )
         }
+
         "Given partner with 1 dropin-checkin When selectCountForPartners Then return 1" {
             val partner = ExposedTestRepo.insertCategoryPartnerAndDropinCheckin().second
 
@@ -55,11 +59,17 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
                 checkinsCount = 1,
             )
         }
+
         "Given partner with 2 workout-checkins When selectCountForPartners Then return 2" {
             val partner = ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin().second
             val workout2 = Arb.workoutEntity().next().copy(partnerId = partner.id)
             ExposedWorkoutsRepo.insertAll(listOf(workout2))
-            ExposedCheckinsRepository.insertAll(listOf(Arb.checkinEntityWorkout().next().copy(workoutId = workout2.id)))
+            ExposedCheckinsRepository.insertAll(
+                listOf(
+                    Arb.checkinEntityWorkout().next()
+                        .copy(partnerId = partner.id, workoutId = workout2.id)
+                )
+            )
 
             val checkins = repo.selectCountForPartners()
 
@@ -68,6 +78,7 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
                 checkinsCount = 2,
             )
         }
+
         "Given partner without checkin When selectCountForPartners Then return 0" {
             val partner = ExposedTestRepo.insertCategoryPartnerAndWorkout().second
 

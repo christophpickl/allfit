@@ -6,6 +6,7 @@ import allfit.api.authenticateOneFit
 import allfit.presentation.TornadoFxEntryPoint
 import allfit.presentation.UiSyncer
 import allfit.service.CredentialsLoader
+import allfit.service.SystemClock
 import kotlinx.coroutines.runBlocking
 import mu.KLogger
 import mu.KotlinLogging.logger
@@ -60,7 +61,7 @@ object AllFit {
     private suspend fun buildClient(config: AppConfig): OnefitClient = if (config.mockClient) {
         ClassPathOnefitClient
     } else {
-        authenticateOneFit(CredentialsLoader.load())
+        authenticateOneFit(CredentialsLoader.load(), clock = SystemClock)
     }
 }
 
