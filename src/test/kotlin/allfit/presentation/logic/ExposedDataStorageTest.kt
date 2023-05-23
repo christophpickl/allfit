@@ -3,22 +3,28 @@
 package allfit.presentation.logic
 
 import allfit.TestDates
-import allfit.persistence.domain.*
-import allfit.persistence.testInfra.*
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.testInfra.DbListener
+import allfit.persistence.testInfra.ExposedTestRepo
+import allfit.persistence.testInfra.withFutureStart
 import allfit.presentation.PartnerModifications
 import allfit.presentation.models.*
 import allfit.service.*
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.next
 import javafx.scene.image.Image
 
-class ExposedDataStorageTest : StringSpec() {
+class ExposedDataStorageTest : DescribeSpec() {
 
     private val now = TestDates.now
+    private val past = now.minusDays(1)
+    private val future = now.plusDays(1)
     private val clock = TestDates.clock
 
     private fun dataStorageWithImages(withImageStorage: (InMemoryImageStorage) -> Unit): ExposedDataStorage {
@@ -32,137 +38,167 @@ class ExposedDataStorageTest : StringSpec() {
     init {
         extension(DbListener())
 
-        "Given a cateogry When getAllCategories Then return it" {
-            val category = ExposedTestRepo.insertCategory()
+        describe("When getCategories") {
+            it("Given a category Then return it") {
+                val category = ExposedTestRepo.insertCategory()
 
-            val categories = dataStorageWithStaticImages().getAllCategories()
+                val categories = dataStorageWithStaticImages().getCategories()
 
-            categories shouldContainExactly listOf(category.name)
-        }
-
-        "Given future workout and requirements When getFutureFullWorkouts Then return it" {
-            val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout {
-                it.withFutureStart(now)
+                categories shouldContainExactly listOf(category.name)
             }
-            val workoutImage = workout.toWorkoutAndImagesBytes()
-            val partnerImage = partner.toPartnerAndImageBytes()
-
-            val futureFullWorkouts = dataStorageWithImages { imageStorage ->
-                imageStorage.addWorkoutImagesToBeLoaded(workoutImage)
-                imageStorage.addPartnerImagesToBeLoaded(partnerImage)
-            }.getFutureFullWorkouts()
-
-            val futureFullWorkout = futureFullWorkouts.shouldBeSingleton().first()
-            futureFullWorkout shouldBe buildFullWorkout(
-                workout = workout,
-                partner = partner,
-                category = category,
-                workoutImage = futureFullWorkout.image,
-                partnerImage = futureFullWorkout.partner.image,
-                isWorkoutReserved = false,
-                partnerCheckins = 0,
-            )
-
-        }
-
-        "Given reserved workout When getFutureFullWorkouts Then flag as reserved" {
-            ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation(
-                withWorkout = {
-                    it.withFutureStart(now)
-                },
-                withReservation = {
-                    it.withFutureStart(now)
+            it("Given some categories Then return them sorted") {
+                val names = listOf("a", "b", "c")
+                names.shuffled().forEach { name ->
+                    ExposedTestRepo.insertCategory {
+                        it.copy(name = name)
+                    }
                 }
-            )
 
-            val workouts = dataStorageWithStaticImages().getFutureFullWorkouts()
+                val categories = dataStorageWithStaticImages().getCategories()
 
-            workouts.shouldBeSingleton().first().simpleWorkout.isReserved shouldBe true
+                categories shouldContainExactly names
+            }
         }
 
-        "Given workout with partner with checkin When getFutureFullWorkouts Then partner has checkin count set" {
-            ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin(withWorkout = {
-                it.withFutureStart(now)
-            })
+        describe("When getUpcomingWorkouts") {
+            it("Given future workout and requirements  Then return it") {
+                val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout { _, _, w ->
+                    w.withFutureStart(now)
+                }
+                val workoutImage = workout.toWorkoutAndImagesBytes()
+                val partnerImage = partner.toPartnerAndImageBytes()
 
-            val workouts = dataStorageWithStaticImages().getFutureFullWorkouts()
+                val upcomingFullWorkouts = dataStorageWithImages { imageStorage ->
+                    imageStorage.addWorkoutImagesToBeLoaded(workoutImage)
+                    imageStorage.addPartnerImagesToBeLoaded(partnerImage)
+                }.getUpcomingWorkouts()
 
-            workouts.shouldBeSingleton().first().partner.checkins shouldBe 1
-        }
-
-        "Given no checkins and no workouts When getFullPartnerById Then return it" {
-            val (category, partner) = ExposedTestRepo.insertCategoryAndPartner()
-
-            val fullPartner = dataStorageWithStaticImages().getFullPartnerById(partner.id)
-
-            fullPartner shouldBe partner.toFullPartner(
-                image = fullPartner.image,
-                checkins = 0,
-                categories = listOf(category.name),
-                pastWorkouts = emptyList(),
-                currentWorkouts = emptyList(),
-            )
-        }
-
-        "Given checkins and past and current workouts When getFullPartnerById Then return it" {
-            val (_, partner) = ExposedTestRepo.insertCategoryAndPartner()
-            val past = now.minusDays(1)
-            val pastWorkout = Arb.workoutEntity().next()
-                .copy(partnerId = partner.id, start = past, end = past.plusHours(1))
-            ExposedWorkoutsRepo.insertAll(listOf(pastWorkout))
-            val future = now.plusDays(1)
-            val currentWorkout = Arb.workoutEntity().next()
-                .copy(partnerId = partner.id, start = future, end = future.plusHours(1))
-            ExposedWorkoutsRepo.insertAll(listOf(currentWorkout))
-            ExposedCheckinsRepository.insertAll(
-                listOf(
-                    Arb.checkinEntityWorkout().next().copy(partnerId = partner.id, workoutId = pastWorkout.id)
+                val futureFullWorkout = upcomingFullWorkouts.shouldBeSingleton().first()
+                futureFullWorkout shouldBe buildFullWorkout(
+                    workout = workout,
+                    partner = partner,
+                    category = category,
+                    workoutImage = futureFullWorkout.image,
+                    partnerImage = futureFullWorkout.partner.image,
+                    isWorkoutReserved = false,
+                    partnerCheckins = 0,
                 )
-            )
+            }
 
-            val fullPartner = dataStorageWithStaticImages().getFullPartnerById(partner.id)
+            it("Given reserved workout Then flag as reserved") {
+                ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation(
+                    withWorkout = { _, _, w ->
+                        w.withFutureStart(now)
+                    },
+                    withReservation = {
+                        it.withFutureStart(now)
+                    }
+                )
 
-            fullPartner.checkins shouldBe 1
-            fullPartner.pastWorkouts.shouldBeSingleton().first().id shouldBe pastWorkout.id
-            fullPartner.currentWorkouts.shouldBeSingleton().first().id shouldBe currentWorkout.id
+                val workouts = dataStorageWithStaticImages().getUpcomingWorkouts()
+
+                workouts.shouldBeSingleton().first().simpleWorkout.isReserved shouldBe true
+            }
+
+            it("Given workout with partner with checkin Then partner has checkin count set") {
+                ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin(withWorkout = { _, _, w ->
+                    w.withFutureStart(now)
+                })
+
+                val workouts = dataStorageWithStaticImages().getUpcomingWorkouts()
+
+                workouts.shouldBeSingleton().first().partner.checkins shouldBe 1
+            }
         }
 
-        "Given workout When toFullWorkout Then return it" {
-            val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
+        describe("When getPartnerById") {
+            it("Given no checkins and no workouts Then return it") {
+                val (category, partner) = ExposedTestRepo.insertCategoryAndPartner()
 
-            val fullWorkout = dataStorageWithStaticImages().getFullWorkoutById(workout.id)
+                val fullPartner = dataStorageWithStaticImages().getPartnerById(partner.id)
 
-            fullWorkout shouldBe FullWorkout(
-                simpleWorkout = workout.toSimpleWorkout(
-                    isReserved = false,
-                    image = fullWorkout.image,
-                ),
-                partner = partner.toSimplePartner(
-                    image = fullWorkout.partner.image,
+                fullPartner shouldBe partner.toFullPartner(
+                    image = fullPartner.image,
                     checkins = 0,
-                    categories = listOf(category.name)
-                ),
-            )
+                    categories = listOf(category.name),
+                    visitedWorkouts = emptyList(),
+                    upcomingWorkouts = emptyList(),
+                )
+            }
+
+            it("Given future workout for partner Then return that upcoming workout") {
+                val (_, givenPartner, givenWorkout) = ExposedTestRepo.insertCategoryPartnerAndWorkout(withWorkout = { _, p, w ->
+                    w.copy(partnerId = p.id, start = future, end = future.plusHours(1))
+                })
+
+                val fullPartner = dataStorageWithStaticImages().getPartnerById(givenPartner.id)
+
+                fullPartner.upcomingWorkouts.shouldBeSingleton().first().id shouldBe givenWorkout.id
+            }
+
+            it("Given past workout for partner with checkin Then return that visited workout") {
+                val (_, givenPartner, givenWorkout, _) = ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin { _, p, w ->
+                    w.copy(partnerId = p.id, start = past, end = past.plusHours(1))
+                }
+
+                val fullPartner = dataStorageWithStaticImages().getPartnerById(givenPartner.id)
+
+                fullPartner.checkins shouldBe 1
+                fullPartner.visitedWorkouts.map { it.id }.shouldBeSingleton().first() shouldBe givenWorkout.id
+            }
+
+            it("Given past workout for partner without checkin Then return empty visited workouts") {
+                val (_, givenPartner, _) = ExposedTestRepo.insertCategoryPartnerAndWorkout(withWorkout = { _, p, w ->
+                    w.copy(partnerId = p.id, start = past, end = past.plusHours(1))
+                })
+
+                val fullPartner = dataStorageWithStaticImages().getPartnerById(givenPartner.id)
+
+                fullPartner.checkins shouldBe 0
+                fullPartner.visitedWorkouts.shouldBeEmpty()
+            }
         }
 
-        "Given partner When updatePartner Then updated in database" {
-            val (_, modifications) = insertPartnerAndGetModifications()
+        describe("When getWorkoutById") {
+            it("Given category, partner and workout Then return workout") {
+                val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
 
-            dataStorageWithStaticImages().updatePartner(modifications)
+                val fullWorkout = dataStorageWithStaticImages().getWorkoutById(workout.id)
 
-            modifications.assertOn(ExposedPartnersRepo.selectAll().shouldBeSingleton().first())
+                fullWorkout shouldBe FullWorkout(
+                    simpleWorkout = workout.toSimpleWorkout(
+                        isReserved = false,
+                        image = fullWorkout.image,
+                    ),
+                    partner = partner.toSimplePartner(
+                        image = fullWorkout.partner.image,
+                        checkins = 0,
+                        categories = listOf(category.name)
+                    ),
+                )
+            }
         }
 
-        "Given partner When updatePartner Then updated in UI representation" {
-            val (partner, modifications) = insertPartnerAndGetModifications()
-            val storage = dataStorageWithStaticImages()
-            storage.getFullPartnerById(partner.id) // prefetch so it will be stored
+        describe("When updatePartner") {
+            it("Given partner  Then updated in database") {
+                val (_, modifications) = insertPartnerAndGetModifications()
 
-            storage.updatePartner(modifications)
+                dataStorageWithStaticImages().updatePartner(modifications)
 
-            modifications.assertOn(storage.getFullPartnerById(partner.id).simplePartner.also {
-                println(it)
-            })
+                modifications.assertOn(ExposedPartnersRepo.selectAll().shouldBeSingleton().first())
+            }
+
+            it("Given partner Then updated in UI representation") {
+                val (partner, modifications) = insertPartnerAndGetModifications()
+                val storage = dataStorageWithStaticImages()
+                storage.getPartnerById(partner.id) // prefetch so it will be stored
+
+                storage.updatePartner(modifications)
+
+                modifications.assertOn(storage.getPartnerById(partner.id).simplePartner.also {
+                    println(it)
+                })
+            }
         }
     }
 }
@@ -233,11 +269,11 @@ private fun PartnerEntity.toFullPartner(
     image: Image,
     checkins: Int,
     categories: List<String>,
-    pastWorkouts: List<SimpleWorkout>,
-    currentWorkouts: List<SimpleWorkout>,
+    visitedWorkouts: List<SimpleWorkout>,
+    upcomingWorkouts: List<SimpleWorkout>,
 ) = FullPartner(
-    pastWorkouts = pastWorkouts,
-    currentWorkouts = currentWorkouts,
+    visitedWorkouts = visitedWorkouts,
+    upcomingWorkouts = upcomingWorkouts,
     simplePartner = toSimplePartner(image, checkins, categories)
 )
 
@@ -290,3 +326,4 @@ private fun buildFullWorkout(
         image = partnerImage,
     )
 )
+

@@ -1,5 +1,6 @@
 package allfit.presentation.models
 
+import allfit.service.Images
 import javafx.beans.property.ObjectProperty
 import javafx.scene.image.Image
 import tornadofx.getProperty
@@ -134,6 +135,28 @@ class SimplePartner(
 
 data class FullPartner(
     val simplePartner: SimplePartner,
-    val pastWorkouts: List<SimpleWorkout>,
-    val currentWorkouts: List<SimpleWorkout>,
-) : Partner by simplePartner
+    val visitedWorkouts: List<SimpleWorkout>,
+    val upcomingWorkouts: List<SimpleWorkout>,
+) : Partner by simplePartner {
+    companion object {
+        val prototype = FullPartner(
+            simplePartner = SimplePartner(
+                id = 0,
+                name = "Partner",
+                url = "",
+                categories = listOf(),
+                note = "Note",
+                description = "Description",
+                facilities = "Facilities",
+                checkins = 0,
+                rating = 0,
+                isFavorited = false,
+                isWishlisted = false,
+                isHidden = false,
+                image = Images.prototype,
+            ),
+            visitedWorkouts = listOf(),
+            upcomingWorkouts = listOf()
+        )
+    }
+}

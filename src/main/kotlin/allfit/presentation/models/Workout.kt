@@ -1,9 +1,11 @@
 package allfit.presentation.models
 
+import allfit.service.Images
 import javafx.beans.property.ObjectProperty
 import javafx.scene.image.Image
 import tornadofx.getProperty
 import tornadofx.property
+import java.time.ZonedDateTime
 
 interface Workout {
     val id: Int
@@ -97,4 +99,22 @@ class SimpleWorkout(
 data class FullWorkout(
     val simpleWorkout: SimpleWorkout,
     val partner: SimplePartner,
-) : Workout by simpleWorkout
+) : Workout by simpleWorkout {
+    companion object {
+        val prototype = FullWorkout(
+            simpleWorkout = SimpleWorkout(
+                id = 0,
+                partnerId = 0,
+                name = "Workout",
+                about = "About",
+                specifics = "Specifics",
+                address = "Address",
+                date = DateRange(start = ZonedDateTime.now(), end = ZonedDateTime.now()),
+                image = Images.prototype,
+                url = "",
+                isReserved = false
+            ),
+            partner = FullPartner.prototype.simplePartner
+        )
+    }
+}

@@ -18,7 +18,7 @@ data class GroupSearchRequest(
 class GroupSearchPane(checkSearch: () -> Unit) : SearchPane() {
 
     private val mainViewModel: MainViewModel by inject()
-    var selectedGroup: ComboBox<String> by singleAssign()
+    private var selectedGroup: ComboBox<String> by singleAssign()
 
     override var searchFieldPane = searchField {
         title = "Group"

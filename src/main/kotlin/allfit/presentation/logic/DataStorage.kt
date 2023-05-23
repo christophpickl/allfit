@@ -10,13 +10,11 @@ import allfit.service.fromUtcToAmsterdamZonedDateTime
 import javafx.scene.image.Image
 
 interface DataStorage {
-    fun getFutureFullWorkouts(): List<FullWorkout>
-    fun getFullPartnerById(partnerId: Int): FullPartner
-
-    // for real impl, here we do database operations
+    fun getCategories(): List<String>
+    fun getPartnerById(partnerId: Int): FullPartner
+    fun getWorkoutById(workoutId: Int): FullWorkout
+    fun getUpcomingWorkouts(): List<FullWorkout>
     fun updatePartner(modifications: PartnerModifications)
-    fun getFullWorkoutById(workoutId: Int): FullWorkout
-    fun getAllCategories(): List<String>
 }
 
 class ExposedDataStorage(
@@ -63,7 +61,7 @@ class ExposedDataStorage(
         }
     }
 
-    private val futureSimpleWorkouts by lazy {
+    private val upcomingSimpleWorkouts by lazy {
         val now = clock.now()
         simpleWorkouts.filter {
             it.date.start >= now
@@ -71,7 +69,7 @@ class ExposedDataStorage(
     }
 
     private val fullWorkouts by lazy {
-        futureSimpleWorkouts.map { simpleWorkout ->
+        upcomingSimpleWorkouts.map { simpleWorkout ->
             FullWorkout(
                 simpleWorkout = simpleWorkout,
                 partner = simplePartnersById[simpleWorkout.partnerId]!!
@@ -83,8 +81,8 @@ class ExposedDataStorage(
         fullWorkouts.associateBy { it.id }
     }
 
-    // "futureFullWorkoutss" with double ss to avoid JVM name clash ;-)
-    private val futureFullWorkoutss by lazy {
+    // "upcomingFullWorkoutss" with double ss to avoid JVM name clash ;-)
+    private val upcomingFullWorkoutss by lazy {
         val now = clock.now()
         fullWorkouts.filter { it.date.start > now }
     }
@@ -94,27 +92,35 @@ class ExposedDataStorage(
         simplePartners.map { simplePartner ->
             FullPartner(
                 simplePartner = simplePartner,
-                pastWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start <= now },
-                currentWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
+                visitedWorkouts = simpleWorkouts.filter {
+                    it.partnerId == simplePartner.id && it.date.start <= now && visitedWorkoutIds.contains(
+                        it.id
+                    )
+                },
+                upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
             )
         }.associateBy { it.id }
     }
 
-    override fun getAllCategories(): List<String> =
-        ExposedCategoriesRepo.selectAll().map { it.name }
+    private val visitedWorkoutIds by lazy {
+        ExposedCheckinsRepository.selectAll().mapNotNull { it.workoutId }
+    }
 
-    override fun getFutureFullWorkouts() =
-        futureFullWorkoutss
+    override fun getCategories(): List<String> =
+        ExposedCategoriesRepo.selectAll().map { it.name }.distinct().sorted()
 
-    override fun getFullPartnerById(partnerId: Int): FullPartner =
+    override fun getUpcomingWorkouts() =
+        upcomingFullWorkoutss
+
+    override fun getPartnerById(partnerId: Int): FullPartner =
         fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
 
-    override fun getFullWorkoutById(workoutId: Int): FullWorkout =
+    override fun getWorkoutById(workoutId: Int): FullWorkout =
         fullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
 
     override fun updatePartner(modifications: PartnerModifications) {
         ExposedPartnersRepo.update(modifications)
-        val storedPartner = getFullPartnerById(modifications.partnerId)
+        val storedPartner = getPartnerById(modifications.partnerId)
         modifications.update(storedPartner.simplePartner)
     }
 }

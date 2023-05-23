@@ -60,11 +60,11 @@ object ExposedTestRepo {
     fun insertCategoryPartnerAndWorkout(
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
-        withWorkout: (WorkoutEntity) -> WorkoutEntity = { it },
+        withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, w -> w },
     ): Triple<CategoryEntity, PartnerEntity, WorkoutEntity> {
         val (category, partner) = insertCategoryAndPartner(withCategory, withPartner)
 
-        val workout = Arb.workoutEntity().next().let(withWorkout).copy(
+        val workout = Arb.workoutEntity().next().let { withWorkout(category, partner, it) }.copy(
             partnerId = partner.id,
 //            start = LocalDateTime.now().plusDays(1)
         )
@@ -86,7 +86,7 @@ object ExposedTestRepo {
     fun insertCategoryPartnerWorkoutAndWorkoutCheckin(
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
-        withWorkout: (WorkoutEntity) -> WorkoutEntity = { it },
+        withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, x -> x },
     ): Quadrupel<CategoryEntity, PartnerEntity, WorkoutEntity, CheckinEntity> {
         val (category, partner, workout) = insertCategoryPartnerAndWorkout(withCategory, withPartner, withWorkout)
         val checkin = Arb.checkinEntityWorkout().next().copy(partnerId = partner.id, workoutId = workout.id)
@@ -107,7 +107,7 @@ object ExposedTestRepo {
     fun insertCategoryPartnerAndWorkoutForReservation(
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
-        withWorkout: (WorkoutEntity) -> WorkoutEntity = { it },
+        withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, w -> w },
         withReservation: (ReservationEntity) -> ReservationEntity = { it },
     ): ReservationEntity {
         val (_, _, workout) = insertCategoryPartnerAndWorkout(withCategory, withPartner, withWorkout)
@@ -118,7 +118,7 @@ object ExposedTestRepo {
     fun insertCategoryPartnerWorkoutAndReservation(
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
-        withWorkout: (WorkoutEntity) -> WorkoutEntity = { it },
+        withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, w -> w },
         withReservation: (ReservationEntity) -> ReservationEntity = { it },
     ): ReservationEntity {
         val reservation = insertCategoryPartnerAndWorkoutForReservation(

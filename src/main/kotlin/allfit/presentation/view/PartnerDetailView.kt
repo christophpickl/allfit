@@ -1,50 +1,18 @@
 package allfit.presentation.view
 
-import allfit.presentation.PartnerModifications
-import allfit.presentation.PartnerWorkoutSelectedFXEvent
-import allfit.presentation.Styles
-import allfit.presentation.UpdatePartnerFXEvent
+import allfit.presentation.*
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.SimpleWorkout
-import allfit.presentation.renderStars
+import allfit.presentation.tornadofx.setAllHeights
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
-import javafx.geometry.Orientation
-import javafx.scene.control.CheckBox
-import javafx.scene.control.ComboBox
-import javafx.scene.control.SelectionMode
-import javafx.scene.control.TableView
-import javafx.scene.control.TextArea
-import tornadofx.FXEvent
-import tornadofx.View
-import tornadofx.action
-import tornadofx.addClass
-import tornadofx.attachTo
-import tornadofx.bind
-import tornadofx.button
-import tornadofx.cellFormat
-import tornadofx.checkbox
-import tornadofx.column
-import tornadofx.combobox
-import tornadofx.enableWhen
-import tornadofx.field
-import tornadofx.fieldset
-import tornadofx.fixedWidth
-import tornadofx.form
-import tornadofx.hbox
-import tornadofx.imageview
-import tornadofx.label
-import tornadofx.onDoubleClick
-import tornadofx.onSelectionChange
-import tornadofx.readonlyColumn
-import tornadofx.selectedItem
-import tornadofx.singleAssign
-import tornadofx.textarea
-import tornadofx.tooltip
-import tornadofx.vbox
+import javafx.scene.control.*
+import javafx.scene.layout.Border
+import tornadofx.*
 import java.awt.Desktop
 import java.net.URI
+import kotlin.error
 
 class PartnerDetailView : View() {
 
@@ -59,93 +27,105 @@ class PartnerDetailView : View() {
     }
 
     override val root = vbox {
-        label("Partner") {
-            bind(mainViewModel.selectedPartner.name)
-            addClass(Styles.header1)
-        }
-        imageview(mainViewModel.selectedPartner.image)
-        form {
-            fieldset(labelPosition = Orientation.HORIZONTAL) {
 
-                field("Rating:") {
-                    ratingInput = combobox(values = listOf<Number>(0, 1, 2, 3, 4, 5)) {
-                        bind(mainViewModel.selectedPartner.rating)
-                        cellFormat {
-                            text = it.toInt().renderStars()
+        hbox {
+            scrollpane(fitToHeight = true) {
+                setAllHeights(ViewConstants.bigImageHeight)
+                imageview(mainViewModel.selectedPartner.image)
+            }
+
+            vbox {
+                label("Partner") {
+                    bind(mainViewModel.selectedPartner.name)
+                    addClass(Styles.header1)
+                }
+
+                label {
+                    bind(mainViewModel.selectedPartner.categories.map { categories ->
+                        "Categories: " + if (categories.isEmpty()) "None" else categories.joinToString()
+                    })
+                }
+                label {
+                    bind(mainViewModel.selectedPartner.facilities.map { facilities ->
+                        "Facilities: " + facilities.split(",").joinToString(", ").let {
+                            it.ifEmpty { "None" }
                         }
-                    }
+                    })
                 }
-                field("Favorite:") {
-                    favoriteCheckbox = checkbox {
-                        bind(mainViewModel.selectedPartner.isFavorited)
-                        enableWhen(enabledChecker)
-                    }
+
+                textarea {
+                    isEditable = false
+                    border = Border.EMPTY
+                    isWrapText = true
+                    bind(mainViewModel.selectedPartner.description)
+                    setAllHeights(50.0)
                 }
-                field("Wishlist:") {
-                    wishlistCheckbox = checkbox {
-                        bind(mainViewModel.selectedPartner.isWishlisted)
-                        enableWhen(enabledChecker)
+
+                button("Open Website") {
+                    tooltip {
+                        this@tooltip.textProperty().bind(mainViewModel.selectedPartner.url)
                     }
-                }
-                field("Note:") {
-                    noteText = textarea {
-                        bind(mainViewModel.selectedPartner.note)
-                        enableWhen(enabledChecker)
+                    action {
+                        Desktop.getDesktop().browse(URI(mainViewModel.selectedPartner.url.value))
                     }
                 }
             }
         }
+
         hbox {
-            button("Update Partner") {
+            label("Rating: ")
+            ratingInput = combobox(values = listOf<Number>(0, 1, 2, 3, 4, 5)) {
+                bind(mainViewModel.selectedPartner.rating)
+                cellFormat {
+                    text = it.toInt().renderStars()
+                }
+            }
+
+            label("Favorite: ")
+            favoriteCheckbox = checkbox {
+                bind(mainViewModel.selectedPartner.isFavorited)
                 enableWhen(enabledChecker)
-                action {
-                    fire(
-                        UpdatePartnerFXEvent(
-                            PartnerModifications(
-                                partnerId = mainViewModel.selectedPartner.id.get(),
-                                note = noteText.text,
-                                rating = ratingInput.selectedItem?.toInt() ?: error("No rating selected!"),
-                                isFavorited = favoriteCheckbox.isSelected,
-                                isWishlisted = wishlistCheckbox.isSelected,
-                            )
+            }
+
+            label("Wishlist: ")
+            wishlistCheckbox = checkbox {
+                bind(mainViewModel.selectedPartner.isWishlisted)
+                enableWhen(enabledChecker)
+            }
+        }
+
+        label("Note:")
+        noteText = textarea {
+            bind(mainViewModel.selectedPartner.note)
+            enableWhen(enabledChecker)
+            setAllHeights(50.0)
+        }
+
+        button("Update Partner") {
+            enableWhen(enabledChecker)
+            action {
+                fire(
+                    UpdatePartnerFXEvent(
+                        PartnerModifications(
+                            partnerId = mainViewModel.selectedPartner.id.get(),
+                            note = noteText.text,
+                            rating = ratingInput.selectedItem?.toInt() ?: error("No rating selected!"),
+                            isFavorited = favoriteCheckbox.isSelected,
+                            isWishlisted = wishlistCheckbox.isSelected,
                         )
                     )
-                }
+                )
             }
-            button("Open Website") {
-                tooltip {
-                    this@tooltip.textProperty().bind(mainViewModel.selectedPartner.url)
-                }
-                action {
-                    Desktop.getDesktop().browse(URI(mainViewModel.selectedPartner.url.value))
-                }
-            }
-        }
-        label {
-            bind(mainViewModel.selectedPartner.categories.map { categories ->
-                "Categories: " + if (categories.isEmpty()) "None" else categories.joinToString()
-            })
-        }
-        label {
-            bind(mainViewModel.selectedPartner.facilities.map { facilities ->
-                "Facilities: " + facilities.split(",").joinToString(", ").let {
-                    it.ifEmpty { "None" }
-                }
-            })
-        }
-        textarea("Description:") {
-            isEditable = false
-            bind(mainViewModel.selectedPartner.description)
         }
 
         label("Visited Workouts:")
-        workoutTable(mainViewModel.selectedPartner.pastWorkouts, ::fireDelegate) {
-            prefHeight = 200.0
+        workoutTable(mainViewModel.selectedPartner.visitedWorkouts, ::fireDelegate) {
+            setAllHeights(100.0)
         }
 
-        label("Available Workouts:")
-        workoutTable(mainViewModel.selectedPartner.currentWorkouts, ::fireDelegate) {
-            prefHeight = 400.0
+        label("Upcoming Workouts:")
+        workoutTable(mainViewModel.selectedPartner.upcomingWorkouts, ::fireDelegate) {
+            setAllHeights(200.0)
         }
     }
 

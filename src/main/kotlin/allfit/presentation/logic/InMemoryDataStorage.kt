@@ -87,7 +87,7 @@ object InMemoryDataStorage : DataStorage {
         url = "https://nu.nl",
         isReserved = false,
     )
-    private val pastWorkoutGym = SimpleWorkout(
+    private val visitedWorkoutGym = SimpleWorkout(
         id = 6,
         partnerId = partnerGymId,
         name = "Open Gym",
@@ -100,8 +100,8 @@ object InMemoryDataStorage : DataStorage {
         isReserved = false,
     )
 
-    private val futureSimpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutGym, workoutJump)
-    private val pastSimpleWorkouts = listOf(pastWorkoutGym)
+    private val upcomingSimpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutGym, workoutJump)
+    private val pastSimpleWorkouts = listOf(visitedWorkoutGym)
 
     private val partnerEms = FullPartner(
         SimplePartner(
@@ -119,8 +119,8 @@ object InMemoryDataStorage : DataStorage {
             description = "Super intense nice <b>workout</b> with HTML.",
             facilities = "",
         ),
-        pastWorkouts = listOf(),
-        currentWorkouts = listOf(workoutEms),
+        visitedWorkouts = listOf(),
+        upcomingWorkouts = listOf(workoutEms),
     )
     private val partnerYoga = FullPartner(
         SimplePartner(
@@ -138,8 +138,8 @@ object InMemoryDataStorage : DataStorage {
             description = "Esoteric stuff.",
             facilities = "Mats",
         ),
-        pastWorkouts = listOf(),
-        currentWorkouts = listOf(workoutYogaYin, workoutYogaHot)
+        visitedWorkouts = listOf(),
+        upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot)
     )
     private val partnerGym = FullPartner(
         SimplePartner(
@@ -157,8 +157,8 @@ object InMemoryDataStorage : DataStorage {
             description = "Train your body.",
             facilities = "Shower,Locker",
         ),
-        pastWorkouts = listOf(pastWorkoutGym),
-        currentWorkouts = listOf(workoutGym)
+        visitedWorkouts = listOf(visitedWorkoutGym),
+        upcomingWorkouts = listOf(workoutGym)
     )
     private val partnerFoobar = FullPartner(
         SimplePartner(
@@ -176,43 +176,43 @@ object InMemoryDataStorage : DataStorage {
             description = "Haha.",
             facilities = "",
         ),
-        pastWorkouts = listOf(),
-        currentWorkouts = listOf(workoutJump)
+        visitedWorkouts = listOf(),
+        upcomingWorkouts = listOf(workoutJump)
     )
     private val allFullPartners = listOf(partnerEms, partnerYoga, partnerGym, partnerFoobar)
 
-    private val allFutureFullWorkouts = futureSimpleWorkouts.map { simpleWorkout ->
+    private val allUpcomingFullWorkouts = upcomingSimpleWorkouts.map { simpleWorkout ->
         FullWorkout(
             simpleWorkout = simpleWorkout,
             partner = allFullPartners.first { partner ->
-                partner.currentWorkouts.map { it.id }.contains(simpleWorkout.id)
+                partner.upcomingWorkouts.map { it.id }.contains(simpleWorkout.id)
             }.simplePartner,
         )
     }
-    private val allPastFullWorkouts = pastSimpleWorkouts.map { simpleWorkout ->
+    private val allVisitedFullWorkouts = pastSimpleWorkouts.map { simpleWorkout ->
         FullWorkout(
             simpleWorkout = simpleWorkout,
             partner = allFullPartners.first { partner ->
-                partner.pastWorkouts.map { it.id }.contains(simpleWorkout.id)
+                partner.visitedWorkouts.map { it.id }.contains(simpleWorkout.id)
             }.simplePartner,
         )
     }
-    private val allFullWorkouts = allFutureFullWorkouts + allPastFullWorkouts
+    private val allFullWorkouts = allUpcomingFullWorkouts + allVisitedFullWorkouts
 
-    override fun getFutureFullWorkouts() = allFutureFullWorkouts
+    override fun getUpcomingWorkouts() = allUpcomingFullWorkouts
 
-    override fun getFullPartnerById(partnerId: Int) =
+    override fun getPartnerById(partnerId: Int) =
         allFullPartners.firstOrNull { it.id == partnerId }
             ?: error("Could not find partner by ID: $partnerId")
 
     override fun updatePartner(modifications: PartnerModifications) {
-        val storedPartner = getFullPartnerById(modifications.partnerId)
+        val storedPartner = getPartnerById(modifications.partnerId)
         modifications.update(storedPartner.simplePartner)
     }
 
-    override fun getFullWorkoutById(workoutId: Int): FullWorkout =
+    override fun getWorkoutById(workoutId: Int): FullWorkout =
         allFullWorkouts.firstOrNull { it.id == workoutId } ?: error("Could not find workout by ID: $workoutId")
 
-    override fun getAllCategories(): List<String> =
+    override fun getCategories(): List<String> =
         allFullPartners.map { it.categories }.flatten().distinct().sorted()
 }

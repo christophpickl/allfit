@@ -17,6 +17,7 @@ class MainView : View() {
 
     init {
         mainViewModel.sortedFilteredWorkouts.bindTo(workoutsTable)
+        workoutsTable.applySort()
         title = "AllFit " + (if (Environment.current == Environment.Development) " - DEV" else "")
 
         with(workoutsTable) {

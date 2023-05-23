@@ -3,6 +3,7 @@ package allfit.presentation.view
 import allfit.presentation.PresentationConstants
 import allfit.presentation.logic.StaticImage
 import allfit.presentation.logic.StaticImageStorage
+import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.Rating
 import allfit.presentation.renderStars
@@ -15,6 +16,9 @@ import javafx.scene.image.Image
 import tornadofx.*
 
 class WorkoutsTable() : TableView<FullWorkout>() {
+
+    private val dateColumn: TableColumn<FullWorkout, DateRange>
+
     init {
         smartResize()
 
@@ -26,11 +30,12 @@ class WorkoutsTable() : TableView<FullWorkout>() {
             .remainingWidth()
             .weightedWidth(0.5)
 
-        readonlyColumn("Date", FullWorkout::date)
-            .fixedWidth(150)
-            .cellFormat { date ->
+        dateColumn = readonlyColumn("Date", FullWorkout::date).apply {
+            fixedWidth(150)
+            cellFormat { date ->
                 text = date.prettyString
             }
+        }
 
         column<FullWorkout, Boolean>("Reserved") { it.value.isReservedProperty() }
             .fixedWidth(60)
@@ -74,6 +79,15 @@ class WorkoutsTable() : TableView<FullWorkout>() {
                         alignment = Pos.CENTER
                     }
             }
+
+    }
+
+    // has to be invoked after init
+    fun applySort() {
+        dateColumn.isSortable = true
+        dateColumn.sortType = TableColumn.SortType.ASCENDING
+        sortOrder.add(dateColumn)
+        sort()
     }
 
     private fun TableView<FullWorkout>.imageColumn(valueProvider: (TableColumn.CellDataFeatures<FullWorkout, Image>) -> ObservableValue<Image>) {

@@ -6,15 +6,25 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import javafx.scene.image.Image
 import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 import java.io.File
 import kotlin.collections.set
 
-private val notFoundDefaultImage: ByteArray =
+private val notFoundDefaultImageBytes: ByteArray =
     ImageStorage::class.java.classLoader
         .getResourceAsStream("images/not_found_default_image.jpg")?.readAllBytes()
         ?: error("Classpath image 'not_found_default_image.jpg' not found!")
+private val prototypeImageBytes: ByteArray =
+    ImageStorage::class.java.classLoader
+        .getResourceAsStream("images/prototype.jpg")?.readAllBytes()
+        ?: error("Classpath image 'prototype_image.jpg' not found!")
+
+object Images {
+    val prototype = Image(prototypeImageBytes.inputStream())
+    val notFound = Image(notFoundDefaultImageBytes.inputStream())
+}
 
 interface ImageStorage {
 
@@ -199,7 +209,7 @@ class FileSystemImageStorage(
         return if (file.exists()) {
             file.readBytes()
         } else {
-            notFoundDefaultImage
+            notFoundDefaultImageBytes
         }
     }
 
@@ -243,7 +253,7 @@ private fun File.saveAndLogOrDefault(imageBinaryData: ByteArray?) {
     } else {
         log.trace { "Saving image to file $absolutePath" }
     }
-    writeBytes(imageBinaryData ?: notFoundDefaultImage)
+    writeBytes(imageBinaryData ?: notFoundDefaultImageBytes)
 }
 
 data class PartnerAndImageUrl(
