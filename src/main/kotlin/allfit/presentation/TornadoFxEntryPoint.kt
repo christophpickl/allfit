@@ -1,11 +1,16 @@
 package allfit.presentation
 
 import allfit.presentation.logic.MainController
+import allfit.presentation.logic.SyncController
 import allfit.presentation.view.MainView
 import javafx.application.Platform
 import javafx.stage.Stage
 import mu.KotlinLogging.logger
-import tornadofx.*
+import tornadofx.App
+import tornadofx.View
+import tornadofx.find
+import tornadofx.textarea
+import tornadofx.vbox
 
 class TornadoFxEntryPoint : App(
     primaryView = MainView::class,
@@ -44,6 +49,7 @@ class TornadoFxEntryPoint : App(
 
     private fun registerEagerSingletons() {
         find(MainController::class)
+        find(SyncController::class)
     }
 }
 

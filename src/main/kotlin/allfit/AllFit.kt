@@ -4,9 +4,11 @@ import allfit.api.ClassPathOnefitClient
 import allfit.api.OnefitClient
 import allfit.api.authenticateOneFit
 import allfit.presentation.TornadoFxEntryPoint
-import allfit.presentation.UiSyncer
+import allfit.presentation.UiPreSyncer
 import allfit.service.CredentialsLoader
 import allfit.service.SystemClock
+import javax.swing.JOptionPane
+import kotlin.reflect.KClass
 import kotlinx.coroutines.runBlocking
 import mu.KLogger
 import mu.KotlinLogging.logger
@@ -16,8 +18,6 @@ import org.koin.core.context.startKoin
 import tornadofx.DIContainer
 import tornadofx.FX
 import tornadofx.launch
-import javax.swing.JOptionPane
-import kotlin.reflect.KClass
 
 object AllFit {
 
@@ -66,15 +66,15 @@ object AllFit {
 }
 
 class AllFitStarter(
-    private val syncEnabled: Boolean,
-    private val uiSyncer: UiSyncer,
+    private val preSyncEnabled: Boolean,
+    private val uiPreSyncer: UiPreSyncer,
 ) {
 
     private val log = logger {}
 
     fun start() {
-        if (syncEnabled) {
-            uiSyncer.start { result ->
+        if (preSyncEnabled) {
+            uiPreSyncer.start { result ->
                 result.fold(
                     onSuccess = {
                         startTornadoFx()

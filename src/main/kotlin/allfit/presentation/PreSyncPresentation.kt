@@ -1,10 +1,9 @@
 package allfit.presentation
 
-import allfit.sync.DelayedSyncer
-import allfit.sync.SyncListener
-import allfit.sync.SyncListenerManagerImpl
-import allfit.sync.Syncer
-import mu.KotlinLogging.logger
+import allfit.sync.presync.NoOpPreSyncer
+import allfit.sync.presync.PreSyncListener
+import allfit.sync.presync.PreSyncListenerManagerImpl
+import allfit.sync.presync.PreSyncer
 import java.awt.BorderLayout
 import java.awt.Cursor
 import java.awt.Dimension
@@ -16,13 +15,14 @@ import javax.swing.JProgressBar
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
+import mu.KotlinLogging.logger
 
-class UiSyncer(private val syncer: Syncer) {
+class UiPreSyncer(private val preSyncer: PreSyncer) {
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            UiSyncer(DelayedSyncer(SyncListenerManagerImpl())).start {
+            UiPreSyncer(NoOpPreSyncer(PreSyncListenerManagerImpl())).start {
                 println("done")
             }
         }
@@ -32,22 +32,22 @@ class UiSyncer(private val syncer: Syncer) {
 
     fun start(finishCallback: (Result<Unit>) -> Unit) {
         log.info { "Start syncing via UI. " }
-        StatefulUiSyncer(syncer, finishCallback).start()
+        StatefulUiPreSyncer(preSyncer, finishCallback).start()
     }
 
 }
 
-private class StatefulUiSyncer(
-    private val syncer: Syncer,
+private class StatefulUiPreSyncer(
+    private val preSyncer: PreSyncer,
     private val finishCallback: (Result<Unit>) -> Unit,
-) : SyncListener {
+) : PreSyncListener {
 
     private val log = logger {}
     private val syncDialog = SyncProgressDialog()
     private var syncSteps = emptyList<String>()
 
     init {
-        syncer.registerListener(this)
+        preSyncer.registerListener(this)
     }
 
     fun start() {
@@ -56,7 +56,7 @@ private class StatefulUiSyncer(
             syncDialog.isVisible = true
         }
         try {
-            syncer.syncAll()
+            preSyncer.sync()
         } catch (e: Exception) {
             finish(e)
         }

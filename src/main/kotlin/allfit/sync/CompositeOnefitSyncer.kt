@@ -5,10 +5,10 @@ import allfit.api.OnefitClient
 import allfit.api.PartnerSearchParams
 import allfit.api.models.PartnersJsonRoot
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging
+import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.transactions.transaction
 
-class CompositeSyncer(
+class CompositeOnefitSyncer(
     private val client: OnefitClient,
     private val categoriesSyncer: CategoriesSyncer,
     private val partnersSyncer: PartnersSyncer,
@@ -21,7 +21,7 @@ class CompositeSyncer(
 ) : Syncer, SyncListenerManager by listeners {
 
     private lateinit var partners: PartnersJsonRoot
-    private val log = KotlinLogging.logger {}
+    private val log = logger {}
 
     private val syncSteps = listOf(
         SyncStep("Fetching partners") {

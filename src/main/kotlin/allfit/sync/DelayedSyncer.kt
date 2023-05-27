@@ -17,6 +17,9 @@ class DelayedSyncer(
             Thread.sleep(500)
             listeners.onSyncDetail("Detail #2 for step: $s")
             Thread.sleep(500)
+//            if(index == 2) {
+//                error("deliberate exception thrown")
+//            }
             listeners.onSyncDetail("Detail #3 for step: $s")
             Thread.sleep(500)
             listeners.onSyncStepDone(index)

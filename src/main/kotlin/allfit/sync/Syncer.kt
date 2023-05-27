@@ -3,24 +3,25 @@ package allfit.sync
 import allfit.api.models.SyncableJson
 import allfit.persistence.BaseRepo
 import allfit.persistence.HasIntId
+import mu.KotlinLogging.logger
 
 interface Syncer {
     fun registerListener(listener: SyncListener)
     fun syncAll()
 }
 
-//class NoOpSyncer(
-//    private val listeners: SyncListenerManager
-//) : Syncer, SyncListenerManager by listeners {
-//    private val log = logger {}
-//
-//    override fun syncAll() {
-//        log.info { "No-op syncer is not doing anything." }
-//        listeners.onSyncStart(listOf("No operation dummy syncer."))
-//        listeners.onSyncStepDone(0)
-//        listeners.onSyncEnd()
-//    }
-//}
+class NoOpSyncer(
+    private val listeners: SyncListenerManager
+) : Syncer, SyncListenerManager by listeners {
+    private val log = logger {}
+
+    override fun syncAll() {
+        log.info { "No-op syncer is not doing anything." }
+        listeners.onSyncStart(listOf("No operation dummy syncer."))
+        listeners.onSyncStepDone(0)
+        listeners.onSyncEnd()
+    }
+}
 
 fun <
         REPO : BaseRepo<ENTITY>,

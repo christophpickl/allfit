@@ -4,10 +4,16 @@ import allfit.api.JsonLogFileManager
 import allfit.api.JsonLogFileManagerImpl
 import allfit.api.OnefitClient
 import allfit.persistence.persistenceModule
-import allfit.presentation.UiSyncer
+import allfit.presentation.UiPreSyncer
 import allfit.presentation.logic.ExposedDataStorage
 import allfit.presentation.logic.InMemoryDataStorage
-import allfit.service.*
+import allfit.service.Clock
+import allfit.service.DirectoryEntry
+import allfit.service.DummyDayClock
+import allfit.service.FileResolver
+import allfit.service.FileSystemImageStorage
+import allfit.service.ImageStorage
+import allfit.service.SystemClock
 import allfit.sync.syncModule
 import org.koin.dsl.module
 
@@ -26,10 +32,10 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
         )
     }
     single { if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(get(), get()) }
-    single { UiSyncer(get()) }
-    single { AllFitStarter(config.syncEnabled, get()) }
+    single { UiPreSyncer(get()) }
+    single { AllFitStarter(config.preSyncEnabled, get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
 
     includes(persistenceModule(config))
-    includes(syncModule())
+    includes(syncModule(config))
 }

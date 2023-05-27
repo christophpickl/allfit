@@ -31,7 +31,7 @@ class CompositeSyncerTest : StringSpec() {
     private lateinit var workoutsSyncer: WorkoutsSyncer
     private lateinit var reservationsSyncer: ReservationsSyncer
     private lateinit var checkinsSyncer: CheckinsSyncer
-    private lateinit var syncer: CompositeSyncer
+    private lateinit var syncer: CompositeOnefitSyncer
     private val jsonLogFileManager: JsonLogFileManager = NoOpJsonLogFileManager
 
     override suspend fun beforeEach(testCase: TestCase) {
@@ -42,7 +42,7 @@ class CompositeSyncerTest : StringSpec() {
         workoutsSyncer = mockk()
         reservationsSyncer = mockk()
         checkinsSyncer = mockk()
-        syncer = CompositeSyncer(
+        syncer = CompositeOnefitSyncer(
             client,
             categoriesSyncer,
             partnersSyncer,
