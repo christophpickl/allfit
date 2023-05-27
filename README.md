@@ -6,13 +6,21 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* bug: check whether "visited workouts" works properly
+* also render year, if it is not this year!
+* when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * sync while application is running (don't block startup); keep data in memory, and reconnect database to insert
+* search-filter with freetext (checkbox for: workout title, workout descriptions, partner title, partner descriptions/notes)
 * new window: list of partner (filters applicable, e.g. yet visited)
 * isHidden, right click, for partner only! plus: in menu bar, enable "is hidden visible YES/NO"; with right click in table, can be made hidden/unhidden (plus make filterable) ... or a custom dialog for it?! in menu bar, "Manage hidden partners"
+* use up full vertical space (make some parts grow; notes)
+* UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
+* only show date filter days for days where there are workouts (maybe also display total number of workouts that day, as in: "Wed 25.3. (513)")
 
 ### Medium
 
+* make application start-able also when there is no internet connection
+* render distance in km to my place (calculate via google during sync)
+* search-filter for rating
 * make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k workouts, every 2 secs)
 * adjust column sizes in table
 * UI any clickable element with blue rounded background color
@@ -24,6 +32,8 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### Future
 
+* display location on map
+* display more (all) pictures
 * sync available spots
 * reservation button
 * model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation

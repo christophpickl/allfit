@@ -27,9 +27,9 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     }
     single { if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(get(), get()) }
     single { UiSyncer(get()) }
-    single { AllFitStarter(get()) }
+    single { AllFitStarter(config.syncEnabled, get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
 
     includes(persistenceModule(config))
-    includes(syncModule(config))
+    includes(syncModule())
 }

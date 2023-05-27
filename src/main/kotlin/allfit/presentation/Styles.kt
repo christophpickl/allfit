@@ -12,25 +12,29 @@ class Styles : Stylesheet() {
 
     companion object {
         val header1 by cssclass()
+        val detailPrompt by cssclass()
         val htmlview by cssclass()
 
         val blue = c("#477ADB")
-
     }
 
     init {
         Stylesheet.root {
             backgroundColor += Color.WHITE
-            padding = tornadofx.box(10.px)
+            padding = box(10.px)
         }
         label {
             fontSize = 14.px
         }
         header1 {
-            fontSize = 24.px
+            fontSize = 28.px
             fontWeight = FontWeight.EXTRA_BOLD
-            textFill = Color.WHITE
-            backgroundColor += blue
+            textFill = blue
+//            backgroundColor += blue
+        }
+        detailPrompt {
+            // TODO bold doesnt work?! fontWeight = FontWeight.EXTRA_BOLD
+            textFill = Color.GRAY
         }
         htmlview {
             borderColor += box(Color.DARKGRAY)
@@ -44,9 +48,11 @@ class Styles : Stylesheet() {
             )
             borderWidth += box(5.px)
         }
-//        button {
+//        button, checkBox, Stylesheet.comboBox {
 //            backgroundColor += blue
 //        }
+        // button:hover
+
 //        textArea {
 //            content {
 //                +flat

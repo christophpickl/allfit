@@ -4,7 +4,7 @@ import java.time.LocalDate
 
 data class AppConfig(
     val mockClient: Boolean,
-    val mockSyncer: Boolean,
+    val syncEnabled: Boolean,
     val mockDb: Boolean,
     val mockDataStore: Boolean,
     val useLogFileAppender: Boolean,
@@ -13,7 +13,7 @@ data class AppConfig(
     companion object {
         val develop = AppConfig(
             mockClient = true,
-            mockSyncer = true,
+            syncEnabled = false,
             mockDb = false,
             mockDataStore = false,
             dummyDate = LocalDate.parse("2023-05-26"),
@@ -21,7 +21,7 @@ data class AppConfig(
         )
         val prod = AppConfig(
             mockClient = false,
-            mockSyncer = false,
+            syncEnabled = true,
             mockDb = false,
             mockDataStore = false,
             useLogFileAppender = true,

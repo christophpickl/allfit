@@ -109,7 +109,12 @@ class SimplePartner(
     }
 
     override fun toString() =
-        "SimplePartner[id=$id, name=$name, url=$url, categories=$categories, note=$note, description=$description, facilities=$facilities, checkins=$checkins, rating=$rating, isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, image]"
+        "SimplePartner[id=$id, name=$name, checkins=$checkins, rating=$rating, isFavorited=$isFavorited, isWishlisted=$isWishlisted, isHidden=$isHidden, url=$url, categories=$categories, facilities=$facilities, note=${
+            note.substring(
+                0,
+                10
+            )
+        }, description=${description.substring(0, 10)}, image]"
 
     override fun equals(other: Any?): Boolean {
         if (other == null) return false

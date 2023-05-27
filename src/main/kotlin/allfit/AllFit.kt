@@ -65,21 +65,28 @@ object AllFit {
     }
 }
 
-class AllFitStarter(private val uiSyncer: UiSyncer) {
+class AllFitStarter(
+    private val syncEnabled: Boolean,
+    private val uiSyncer: UiSyncer,
+) {
 
     private val log = logger {}
 
     fun start() {
-        uiSyncer.start { result ->
-            result.fold(
-                onSuccess = {
-                    startTornadoFx()
-                },
-                onFailure = {
-                    log.error(it) { "Sync failed!" }
-                    showStartupError(it)
-                },
-            )
+        if (syncEnabled) {
+            uiSyncer.start { result ->
+                result.fold(
+                    onSuccess = {
+                        startTornadoFx()
+                    },
+                    onFailure = {
+                        log.error(it) { "Sync failed!" }
+                        showStartupError(it)
+                    },
+                )
+            }
+        } else {
+            startTornadoFx()
         }
     }
 

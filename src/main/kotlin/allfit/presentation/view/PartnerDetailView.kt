@@ -3,6 +3,9 @@ package allfit.presentation.view
 import allfit.presentation.*
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.tornadofx.labelDetail
+import allfit.presentation.tornadofx.labelPrompt
+import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
@@ -10,8 +13,6 @@ import javafx.event.EventTarget
 import javafx.scene.control.*
 import javafx.scene.layout.Border
 import tornadofx.*
-import java.awt.Desktop
-import java.net.URI
 import kotlin.error
 
 class PartnerDetailView : View() {
@@ -40,19 +41,10 @@ class PartnerDetailView : View() {
                     addClass(Styles.header1)
                 }
 
-                label {
-                    bind(mainViewModel.selectedPartner.categories.map { categories ->
-                        "Categories: " + if (categories.isEmpty()) "None" else categories.joinToString()
-                    })
-                }
-                label {
-                    bind(mainViewModel.selectedPartner.facilities.map { facilities ->
-                        "Facilities: " + facilities.split(",").joinToString(", ").let {
-                            it.ifEmpty { "None" }
-                        }
-                    })
-                }
+                labelDetail("Categories", mainViewModel.selectedPartner.categoriesRendered)
+                labelDetail("Facilities", mainViewModel.selectedPartner.facilitiesRendered)
 
+                labelPrompt("Description")
                 textarea {
                     isEditable = false
                     border = Border.EMPTY
@@ -61,19 +53,12 @@ class PartnerDetailView : View() {
                     setAllHeights(50.0)
                 }
 
-                button("Open Website") {
-                    tooltip {
-                        this@tooltip.textProperty().bind(mainViewModel.selectedPartner.url)
-                    }
-                    action {
-                        Desktop.getDesktop().browse(URI(mainViewModel.selectedPartner.url.value))
-                    }
-                }
+                openWebsiteButton(mainViewModel.selectedPartner.url)
             }
         }
 
         hbox {
-            label("Rating: ")
+            labelPrompt("Rating")
             ratingInput = combobox(values = listOf<Number>(0, 1, 2, 3, 4, 5)) {
                 bind(mainViewModel.selectedPartner.rating)
                 cellFormat {
@@ -81,20 +66,20 @@ class PartnerDetailView : View() {
                 }
             }
 
-            label("Favorite: ")
+            labelPrompt("Favorite")
             favoriteCheckbox = checkbox {
                 bind(mainViewModel.selectedPartner.isFavorited)
                 enableWhen(enabledChecker)
             }
 
-            label("Wishlist: ")
+            labelPrompt("Wishlist")
             wishlistCheckbox = checkbox {
                 bind(mainViewModel.selectedPartner.isWishlisted)
                 enableWhen(enabledChecker)
             }
         }
 
-        label("Note:")
+        labelPrompt("Note")
         noteText = textarea {
             bind(mainViewModel.selectedPartner.note)
             enableWhen(enabledChecker)
@@ -118,14 +103,19 @@ class PartnerDetailView : View() {
             }
         }
 
-        label("Visited Workouts:")
-        workoutTable(mainViewModel.selectedPartner.visitedWorkouts, ::fireDelegate) {
-            setAllHeights(100.0)
-        }
-
-        label("Upcoming Workouts:")
-        workoutTable(mainViewModel.selectedPartner.upcomingWorkouts, ::fireDelegate) {
-            setAllHeights(200.0)
+        hbox {
+            vbox {
+                labelPrompt("Upcoming Workouts")
+                workoutTable(mainViewModel.selectedPartner.upcomingWorkouts, ::fireDelegate) {
+                    setAllHeights(140.0)
+                }
+            }
+            vbox {
+                labelPrompt("Visited Workouts")
+                workoutTable(mainViewModel.selectedPartner.visitedWorkouts, ::fireDelegate) {
+                    setAllHeights(140.0)
+                }
+            }
         }
     }
 
@@ -156,11 +146,20 @@ class WorkoutTable(items: ObservableList<SimpleWorkout>, onSelected: (PartnerWor
             }
         }
 
-        column<SimpleWorkout, String>("Name") { it.value.nameProperty() }
-        readonlyColumn("Date", SimpleWorkout::date)
-            .fixedWidth(150)
-            .cellFormat { date ->
+        column<SimpleWorkout, String>("Name") {
+            it.value.nameProperty()
+        }.apply {
+            minWidth = 250.0
+            remainingWidth()
+        }
+
+        readonlyColumn("Date", SimpleWorkout::date).apply {
+            fixedWidth(150)
+            cellFormat { date ->
                 text = date.prettyString
             }
+        }
+
+        smartResize()
     }
 }

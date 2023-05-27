@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
+import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.scene.image.Image
 import tornadofx.SortedFilteredList
@@ -26,7 +27,15 @@ class CurrentPartnerViewModel : ViewModel() {
     val note = SimpleStringProperty()
     val url = SimpleStringProperty()
     val facilities = SimpleStringProperty()
+    val facilitiesRendered: ObservableValue<String> = facilities.map { facilities ->
+        facilities.split(",").joinToString(", ").let {
+            it.ifEmpty { "None" }
+        }
+    }
     val categories = SimpleObjectProperty<List<String>>()
+    val categoriesRendered: ObservableValue<String> = categories.map { categories ->
+        if (categories.isEmpty()) "None" else categories.joinToString()
+    }
     val description = SimpleStringProperty()
     val isFavorited = SimpleBooleanProperty()
     val isWishlisted = SimpleBooleanProperty()

@@ -75,7 +75,12 @@ class SimpleWorkout(
     }
 
     override fun toString() =
-        "SimpleWorkout[id=$id, partnerId=$partnerId, name=$name, about=$about, specifics=$specifics, isReserved=$isReserved, url=$url, address=$address, date=$date, image]"
+        "SimpleWorkout[id=$id, partnerId=$partnerId, name=$name, isReserved=$isReserved, date=$date, url=$url, address=$address, about=${
+            about.substring(
+                0,
+                10
+            )
+        }, specifics=${specifics.substring(0, 10)}, image]"
 
     override fun equals(other: Any?): Boolean {
         if (other == null) return false

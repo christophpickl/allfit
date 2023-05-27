@@ -5,10 +5,11 @@ import allfit.presentation.htmlview
 import allfit.presentation.logic.StaticImage
 import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.MainViewModel
+import allfit.presentation.tornadofx.labelDetail
+import allfit.presentation.tornadofx.labelPrompt
+import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
 import tornadofx.*
-import java.awt.Desktop
-import java.net.URI
 
 class WorkoutDetailView : View() {
 
@@ -38,27 +39,18 @@ class WorkoutDetailView : View() {
                     }
                 }
 
-                label().bind(mainViewModel.selectedWorkout.map {
-                    it.date.prettyString
-                })
-                label().bind(mainViewModel.selectedWorkout.map {
-                    "Address: ${it.address}"
-                })
+                labelDetail("When", mainViewModel.selectedWorkout.map { it.date.prettyString })
+                labelDetail("Where", mainViewModel.selectedWorkout.map { it.address })
 
-                button("Open Website") {
-                    tooltip {
-                        this@tooltip.textProperty().bind(mainViewModel.selectedWorkout.map { it.url })
-                    }
-                    action {
-                        Desktop.getDesktop().browse(URI(mainViewModel.selectedWorkout.value.url))
-                    }
-                }
+                openWebsiteButton(mainViewModel.selectedWorkout.map { it.url })
             }
         }
-
+        labelPrompt("About")
         htmlview(mainViewModel.selectedWorkout.map { it.about }) {
             setAllHeights(ViewConstants.detailTextHeight)
         }
+
+        labelPrompt("Specifics")
         htmlview(mainViewModel.selectedWorkout.map { it.specifics }) {
             setAllHeights(ViewConstants.detailTextHeight)
         }

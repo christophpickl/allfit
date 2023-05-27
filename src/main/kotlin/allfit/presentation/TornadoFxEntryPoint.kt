@@ -33,6 +33,12 @@ class TornadoFxEntryPoint : App(
         log.error(throwable) { "Uncaught exception detected!" }
         val dialog = ErrorDialog(throwable)
         dialog.dialog("Fatal error!") {
+            textarea(throwable.stackTraceToString())
+//            button("Dismiss") {
+//                action {
+//                    dialog.close()
+//                }
+//            }
         }
     }
 
@@ -43,7 +49,7 @@ class TornadoFxEntryPoint : App(
 
 class ErrorDialog(private val throwable: Throwable) : View() {
     override val root = vbox {
-        textarea(throwable.stackTraceToString())
+        // nope, this has no effect
+//        textarea(throwable.stackTraceToString())
     }
-
 }
