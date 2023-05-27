@@ -1,11 +1,12 @@
 package allfit.presentation.models
 
 import allfit.service.Images
+import allfit.service.ensureMaxLength
+import java.time.ZonedDateTime
 import javafx.beans.property.ObjectProperty
 import javafx.scene.image.Image
 import tornadofx.getProperty
 import tornadofx.property
-import java.time.ZonedDateTime
 
 interface Workout {
     val id: Int
@@ -75,12 +76,9 @@ class SimpleWorkout(
     }
 
     override fun toString() =
-        "SimpleWorkout[id=$id, partnerId=$partnerId, name=$name, isReserved=$isReserved, date=$date, url=$url, address=$address, about=${
-            about.substring(
-                0,
-                10
-            )
-        }, specifics=${specifics.substring(0, 10)}, image]"
+        "SimpleWorkout[id=$id, partnerId=$partnerId, name=$name, isReserved=$isReserved, date=$date, url=$url, " +
+                "address=$address, about=${about.ensureMaxLength(10)}, " +
+                "specifics=${specifics.ensureMaxLength(10)}, image]"
 
     override fun equals(other: Any?): Boolean {
         if (other == null) return false

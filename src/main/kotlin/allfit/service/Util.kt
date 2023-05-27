@@ -4,6 +4,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -11,7 +12,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
-import java.util.concurrent.ConcurrentLinkedQueue
 
 private val log = logger {}
 
@@ -89,3 +89,10 @@ data class Quadrupel<V1, V2, V3, V4>(
     val third: V3,
     val fourth: V4,
 )
+
+private const val tooLongIndicator = " ..."
+fun String.ensureMaxLength(maxLength: Int): String {
+    require(maxLength > 5)
+    return if (length <= maxLength) this
+    else substring(0, maxLength - tooLongIndicator.length) + tooLongIndicator
+}
