@@ -1,7 +1,15 @@
 package allfit.presentation.view
 
 import allfit.presentation.SearchFXEvent
-import allfit.presentation.search.*
+import allfit.presentation.search.DateSearchPane
+import allfit.presentation.search.FavoriteSearchPane
+import allfit.presentation.search.GroupSearchPane
+import allfit.presentation.search.IsWishlistedSearchPane
+import allfit.presentation.search.IsWorkoutReservedSearchPane
+import allfit.presentation.search.PartnerCheckinSearchPane
+import allfit.presentation.search.SearchPane
+import allfit.presentation.search.SearchRequest
+import allfit.presentation.search.TextSearchPane
 import allfit.service.Clock
 import javafx.event.EventTarget
 import tornadofx.View
@@ -21,6 +29,7 @@ class SearchView : View() {
 
     override val root = hbox {
         vbox {
+            addIt(TextSearchPane(::checkSearch))
             addIt(DateSearchPane(clock, ::checkSearch))
             addIt(GroupSearchPane(::checkSearch))
             addIt(PartnerCheckinSearchPane(::checkSearch))

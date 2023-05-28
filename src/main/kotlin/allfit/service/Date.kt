@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
 
 interface Clock {
     fun now(): ZonedDateTime
@@ -26,6 +26,9 @@ class DummyDayClock(private val fixedDate: LocalDate) : Clock {
             .withYear(fixedDate.year)
             .withMonth(fixedDate.monthValue)
             .withDayOfMonth(fixedDate.dayOfMonth)
+            .withHour(0)
+            .withMinute(0)
+            .withSecond(0)
 }
 
 private val zoneAmsterdam: ZoneId = ZoneId.of("Europe/Amsterdam")

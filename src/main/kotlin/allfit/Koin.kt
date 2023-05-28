@@ -15,12 +15,16 @@ import allfit.service.FileSystemImageStorage
 import allfit.service.ImageStorage
 import allfit.service.SystemClock
 import allfit.sync.syncModule
+import mu.KotlinLogging
 import org.koin.dsl.module
+
+private val log = KotlinLogging.logger {}
 
 fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single { onefitClient }
     single<Clock> {
         config.dummyDate?.let {
+            log.info { "Static dummy date configured at: $it" }
             DummyDayClock(it)
         } ?: SystemClock
     }

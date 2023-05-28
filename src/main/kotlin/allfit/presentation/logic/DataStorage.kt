@@ -1,9 +1,19 @@
 package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
-import allfit.persistence.domain.*
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCheckinsRepository
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.ExposedReservationsRepo
+import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.WorkoutEntity
 import allfit.presentation.PartnerModifications
-import allfit.presentation.models.*
+import allfit.presentation.models.DateRange
+import allfit.presentation.models.FullPartner
+import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.SimplePartner
+import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
 import allfit.service.ImageStorage
 import allfit.service.fromUtcToAmsterdamZonedDateTime
