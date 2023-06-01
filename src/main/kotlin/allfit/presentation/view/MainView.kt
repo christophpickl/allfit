@@ -3,13 +3,30 @@ package allfit.presentation.view
 import allfit.Environment
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
+import allfit.presentation.partnersview.PartnersView
 import javafx.scene.control.Label
 import javafx.scene.layout.Priority
-import tornadofx.*
+import javafx.stage.Modality
+import tornadofx.View
+import tornadofx.action
+import tornadofx.borderpane
+import tornadofx.center
+import tornadofx.hgrow
+import tornadofx.item
+import tornadofx.menu
+import tornadofx.menubar
+import tornadofx.onDoubleClick
+import tornadofx.onSelectionChange
+import tornadofx.right
+import tornadofx.selectedItem
+import tornadofx.top
+import tornadofx.vbox
+import tornadofx.vgrow
 
 class MainView : View() {
 
     private val searchView: SearchView by inject()
+    private val partnersWindow: PartnersView by inject()
     private val partnerDetailView: PartnerDetailView by inject()
     private val workoutDetailView: WorkoutDetailView by inject()
     private val mainViewModel: MainViewModel by inject()
@@ -34,24 +51,33 @@ class MainView : View() {
         }
     }
 
-    override val root = borderpane {
-        top {
-            vgrow = Priority.NEVER
-            add(searchView)
-        }
-        center {
-            vgrow = Priority.ALWAYS
-            borderpane {
-                center {
-                    hgrow = Priority.ALWAYS
-                    add(workoutsTable)
+    override val root = vbox {
+        menubar {
+            menu("View") {
+                item("Partners", "Shortcut+P").action {
+                    partnersWindow.openModal(modality = Modality.NONE, resizable = true)
                 }
-                right {
-                    hgrow = Priority.NEVER
-                    vbox {
-                        add(workoutDetailView)
-                        add(Label()) // layout hack ;)
-                        add(partnerDetailView)
+            }
+        }
+        borderpane {
+            top {
+                vgrow = Priority.NEVER
+                add(searchView)
+            }
+            center {
+                vgrow = Priority.ALWAYS
+                borderpane {
+                    center {
+                        hgrow = Priority.ALWAYS
+                        add(workoutsTable)
+                    }
+                    right {
+                        hgrow = Priority.NEVER
+                        vbox {
+                            add(workoutDetailView)
+                            add(Label()) // layout hack ;)
+                            add(partnerDetailView)
+                        }
                     }
                 }
             }

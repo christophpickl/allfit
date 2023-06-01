@@ -3,11 +3,15 @@ package allfit.presentation.logic
 import allfit.api.OnefitUtils
 import allfit.presentation.PartnerModifications
 import allfit.presentation.PresentationConstants
-import allfit.presentation.models.*
+import allfit.presentation.models.DateRange
+import allfit.presentation.models.FullPartner
+import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.SimplePartner
+import allfit.presentation.models.SimpleWorkout
 import allfit.service.InMemoryImageStorage
-import javafx.scene.image.Image
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import javafx.scene.image.Image
 
 object InMemoryDataStorage : DataStorage {
 
@@ -215,4 +219,7 @@ object InMemoryDataStorage : DataStorage {
 
     override fun getCategories(): List<String> =
         allFullPartners.map { it.categories }.flatten().distinct().sorted()
+
+    override fun getPartners(): List<FullPartner> =
+        allFullPartners
 }

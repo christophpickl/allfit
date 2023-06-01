@@ -9,7 +9,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * also render year, if it is not this year!
 * when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * new window: list of partner (filters applicable, e.g. yet visited)
-* isHidden, right click, for partner only! plus: in menu bar, enable "is hidden visible YES/NO"; with right click in table, can be made hidden/unhidden (plus make filterable) ... or a custom dialog for it?! in menu bar, "Manage hidden partners"
 * use up full vertical space (make some parts grow; notes)
 * UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
 * only show date filter days for days where there are workouts (maybe also display total number of workouts that day, as in: "Wed 25.3. (513)")

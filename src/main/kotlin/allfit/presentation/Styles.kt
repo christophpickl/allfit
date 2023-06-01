@@ -6,7 +6,11 @@ import javafx.scene.shape.StrokeLineCap
 import javafx.scene.shape.StrokeLineJoin
 import javafx.scene.shape.StrokeType
 import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.c
+import tornadofx.cssclass
+import tornadofx.px
 
 class Styles : Stylesheet() {
 
@@ -21,7 +25,7 @@ class Styles : Stylesheet() {
     init {
         Stylesheet.root {
             backgroundColor += Color.WHITE
-            padding = box(10.px)
+            padding = box(0.px)
         }
         label {
             fontSize = 14.px

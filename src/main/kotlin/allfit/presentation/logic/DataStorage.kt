@@ -21,6 +21,7 @@ import javafx.scene.image.Image
 
 interface DataStorage {
     fun getCategories(): List<String>
+    fun getPartners(): List<FullPartner>
     fun getPartnerById(partnerId: Int): FullPartner
     fun getWorkoutById(workoutId: Int): FullWorkout
     fun getUpcomingWorkouts(): List<FullWorkout>
@@ -97,7 +98,7 @@ class ExposedDataStorage(
         fullWorkouts.filter { it.date.start > now }
     }
 
-    private val fullPartnersById by lazy {
+    private val fullPartners by lazy {
         val now = clock.now()
         simplePartners.map { simplePartner ->
             FullPartner(
@@ -109,7 +110,10 @@ class ExposedDataStorage(
                 },
                 upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
             )
-        }.associateBy { it.id }
+        }
+    }
+    private val fullPartnersById by lazy {
+        fullPartners.associateBy { it.id }
     }
 
     private val visitedWorkoutIds by lazy {
@@ -118,6 +122,9 @@ class ExposedDataStorage(
 
     override fun getCategories(): List<String> =
         ExposedCategoriesRepo.selectAll().map { it.name }.distinct().sorted()
+
+    override fun getPartners(): List<FullPartner> =
+        fullPartners
 
     override fun getUpcomingWorkouts() =
         upcomingFullWorkoutss
