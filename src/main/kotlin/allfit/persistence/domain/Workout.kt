@@ -1,5 +1,6 @@
 package allfit.persistence.domain
 
+import java.time.LocalDateTime
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -11,7 +12,6 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
 
 object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
     val partnerId = reference("PARTNER_ID", PartnersTable)
@@ -87,8 +87,9 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
     private val log = logger {}
 
     override fun selectAll() = transaction {
-        log.debug { "Selecting all workouts" }
-        WorkoutsTable.selectAll().map { it.toWorkoutEntity() }
+        WorkoutsTable.selectAll().map { it.toWorkoutEntity() }.also {
+            log.debug { "Selecting all returns ${it.size} workouts." }
+        }
     }
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) = transaction {

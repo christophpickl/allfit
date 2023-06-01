@@ -15,7 +15,7 @@ data class DateRange(
     val durationInMinutes = ChronoUnit.MINUTES.between(start, end)
 
     init {
-        require(start.isBefore(end)) { "Start ($start) must be before end ($end)." }
+        require(start.isEqual(end) || start.isBefore(end)) { "START $start must be before-equal END $end." }
     }
 
     override fun compareTo(other: DateRange): Int {

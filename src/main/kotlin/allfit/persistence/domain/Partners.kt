@@ -7,8 +7,13 @@ import allfit.presentation.models.PartnerCustomAttributesRead
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
 
 object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val name = varchar("NAME", 256)
@@ -92,7 +97,6 @@ object ExposedPartnersRepo : PartnersRepo {
     private val log = logger {}
 
     override fun selectAll() = transaction {
-        log.debug { "Loading partners." }
         val categoriesByPartnerId = selectAllPartnerCategories().groupBy {
             it.partnerId
         }
@@ -106,6 +110,8 @@ object ExposedPartnersRepo : PartnersRepo {
                 primaryCategoryId = primaryCategory.categoryId,
                 secondaryCategoryIds = secondaryCategories.map { it.categoryId }
             )
+        }.also {
+            log.debug { "Selecting all returns ${it.size} partners." }
         }
     }
 

@@ -1,5 +1,7 @@
 package allfit.persistence.domain
 
+import java.time.LocalDateTime
+import java.util.UUID
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
@@ -11,8 +13,6 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.LocalDateTime
-import java.util.UUID
 
 object ReservationsTable : Table("PUBLIC.RESERVATIONS") {
     val uuid = varchar("ID", 36)
@@ -74,15 +74,18 @@ object ExposedReservationsRepo : ReservationsRepo {
     private val log = logger {}
 
     override fun selectAll(): List<ReservationEntity> = transaction {
-        log.debug { "Selecting all reservations." }
-        ReservationsTable.selectAll().map { it.toReservationsEntity() }
+        ReservationsTable.selectAll().map { it.toReservationsEntity() }.also {
+            log.debug { "Selecting all returns ${it.size} reservations." }
+        }
     }
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<ReservationEntity> = transaction {
-        log.debug { "Selecting reservations from: $fromInclusive" }
+
         ReservationsTable.select {
             ReservationsTable.workoutStart greaterEq fromInclusive
-        }.map { it.toReservationsEntity() }
+        }.map { it.toReservationsEntity() }.also {
+            log.debug { "Selecting from $fromInclusive returns ${it.size} reservations." }
+        }
     }
 
     override fun insertAll(reservations: List<ReservationEntity>) {

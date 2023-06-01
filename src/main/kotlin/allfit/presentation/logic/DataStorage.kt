@@ -18,6 +18,7 @@ import allfit.service.Clock
 import allfit.service.ImageStorage
 import allfit.service.fromUtcToAmsterdamZonedDateTime
 import javafx.scene.image.Image
+import mu.KotlinLogging.logger
 
 interface DataStorage {
     fun getCategories(): List<String>
@@ -32,6 +33,8 @@ class ExposedDataStorage(
     private val imageStorage: ImageStorage,
     private val clock: Clock,
 ) : DataStorage {
+
+    private val log = logger {}
 
     private val simplePartners by lazy {
         val categoriesById = ExposedCategoriesRepo.selectAll().associateBy { it.id }
@@ -65,10 +68,15 @@ class ExposedDataStorage(
         val workoutEntities = ExposedWorkoutsRepo.selectAll()
         val workoutImages = imageStorage.loadWorkoutImages(workoutEntities.map { it.id }).associateBy { it.workoutId }
         workoutEntities.map { workoutEntity ->
-            workoutEntity.toSimpleWorkout(
-                isReserved = reservations.contains(workoutEntity.id),
-                image = Image(workoutImages[workoutEntity.id]!!.inputStream())
-            )
+            try {
+                workoutEntity.toSimpleWorkout(
+                    isReserved = reservations.contains(workoutEntity.id),
+                    image = Image(workoutImages[workoutEntity.id]!!.inputStream())
+                )
+            } catch (e: Exception) {
+                log.error("Corrupt workout with ID: ${workoutEntity.id}")
+                throw e
+            }
         }
     }
 

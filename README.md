@@ -6,6 +6,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* disable open website button if prototype selected
 * also render year, if it is not this year!
 * when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * new window: list of partner (filters applicable, e.g. yet visited)

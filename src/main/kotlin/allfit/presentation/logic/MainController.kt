@@ -9,6 +9,7 @@ import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.PartnersViewModel
+import allfit.presentation.tornadofx.safeSubscribe
 import mu.KotlinLogging.logger
 import tornadofx.Controller
 import tornadofx.toObservable
@@ -24,7 +25,7 @@ class MainController : Controller() {
         mainViewModel.selectedPartner.initPartner(FullPartner.prototype)
         mainViewModel.selectedWorkout.set(FullWorkout.prototype)
 
-        subscribe<ApplicationStartedFxEvent>() {
+        safeSubscribe<ApplicationStartedFxEvent>() {
             logger.debug { "Application started." }
             val workouts = dataStorage.getUpcomingWorkouts()
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
@@ -54,4 +55,5 @@ class MainController : Controller() {
             mainViewModel.sortedFilteredWorkouts.refilter()
         }
     }
+
 }
