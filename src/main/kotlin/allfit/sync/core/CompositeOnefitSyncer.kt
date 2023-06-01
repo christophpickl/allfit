@@ -1,9 +1,15 @@
-package allfit.sync
+package allfit.sync.core
 
 import allfit.api.JsonLogFileManager
 import allfit.api.OnefitClient
 import allfit.api.PartnerSearchParams
 import allfit.api.models.PartnersJsonRoot
+import allfit.sync.domain.CategoriesSyncer
+import allfit.sync.domain.CheckinsSyncer
+import allfit.sync.domain.LocationsSyncer
+import allfit.sync.domain.PartnersSyncer
+import allfit.sync.domain.ReservationsSyncer
+import allfit.sync.domain.WorkoutsSyncer
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.transactions.transaction

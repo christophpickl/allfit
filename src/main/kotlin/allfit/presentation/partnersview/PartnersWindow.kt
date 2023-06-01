@@ -1,5 +1,6 @@
 package allfit.presentation.partnersview
 
+import allfit.presentation.Styles
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.tornadofx.applyInitSort
@@ -7,19 +8,32 @@ import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.layout.Priority
+import tornadofx.App
 import tornadofx.View
 import tornadofx.borderpane
 import tornadofx.center
 import tornadofx.column
 import tornadofx.fixedWidth
 import tornadofx.label
+import tornadofx.launch
 import tornadofx.remainingWidth
 import tornadofx.smartResize
 import tornadofx.top
 import tornadofx.vgrow
 import tornadofx.weightedWidth
 
-class PartnersView : View() {
+class PartnersWindowApp : App(
+    primaryView = PartnersWindow::class,
+    stylesheet = Styles::class,
+)
+
+class PartnersWindow : View() {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            launch<PartnersWindowApp>()
+        }
+    }
 
     private val partnersViewModel: PartnersViewModel by inject()
     private val partnersTable = PartnersTable()

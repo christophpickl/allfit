@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.OnefitClient
 import allfit.api.models.CategoriesJsonRoot

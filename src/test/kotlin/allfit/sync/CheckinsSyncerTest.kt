@@ -1,20 +1,37 @@
 package allfit.sync
 
 import allfit.api.InMemoryOnefitClient
-import allfit.api.models.*
-import allfit.persistence.domain.*
-import allfit.persistence.testInfra.*
+import allfit.api.models.CheckinJson
+import allfit.api.models.CheckinsJsonRoot
+import allfit.api.models.MetaJson
+import allfit.api.models.checkinJson
+import allfit.api.models.checkinJsonDropin
+import allfit.api.models.checkinJsonWorkout
+import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.CheckinType
+import allfit.persistence.domain.InMemoryCategoriesRepo
+import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryPartnersRepo
+import allfit.persistence.domain.InMemoryWorkoutsRepo
+import allfit.persistence.testInfra.categoryEntity
+import allfit.persistence.testInfra.checkinEntityWorkout
+import allfit.persistence.testInfra.partnerEntity
+import allfit.persistence.testInfra.singleShould
+import allfit.persistence.testInfra.singletonShouldBe
+import allfit.persistence.testInfra.workoutEntity
 import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
 import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
+import allfit.sync.domain.CheckinsSyncer
+import allfit.sync.domain.CheckinsSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import java.util.*
+import java.util.UUID
 
 class CheckinsSyncerTest : StringSpec() {
 

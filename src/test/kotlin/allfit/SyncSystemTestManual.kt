@@ -3,7 +3,7 @@ package allfit
 import allfit.api.authenticateOneFit
 import allfit.service.CredentialsLoader
 import allfit.service.SystemClock
-import allfit.sync.Syncer
+import allfit.sync.core.Syncer
 import io.kotest.common.runBlocking
 import org.koin.core.context.startKoin
 

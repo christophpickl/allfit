@@ -1,15 +1,15 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.OnefitUtils
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import java.io.IOException
 import mu.KotlinLogging.logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
-import java.io.IOException
 
 interface WorkoutFetcher {
     suspend fun fetch(url: WorkoutUrl): WorkoutFetch
@@ -72,6 +72,7 @@ class WorkoutFetcherImpl : WorkoutFetcher {
                     fetchRetriable(url, attempt + 1)
                 }
             }
+
             else -> error("Invalid HTTP response ${response.status} for URL: ${url.url}")
         }
     }

@@ -11,6 +11,15 @@ import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.testInfra.DbListener
+import allfit.sync.core.CompositeOnefitSyncer
+import allfit.sync.core.SyncListenerManagerImpl
+import allfit.sync.domain.CategoriesSyncer
+import allfit.sync.domain.CategoriesSyncerImpl
+import allfit.sync.domain.CheckinsSyncer
+import allfit.sync.domain.LocationsSyncer
+import allfit.sync.domain.PartnersSyncer
+import allfit.sync.domain.ReservationsSyncer
+import allfit.sync.domain.WorkoutsSyncer
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase

@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.models.PartnerLocationJson
 import allfit.api.models.PartnersJsonRoot

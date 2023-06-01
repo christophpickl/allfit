@@ -1,6 +1,25 @@
 package allfit.sync
 
 import allfit.AppConfig
+import allfit.sync.core.CompositeOnefitSyncer
+import allfit.sync.core.NoOpSyncer
+import allfit.sync.core.SyncListenerManager
+import allfit.sync.core.SyncListenerManagerImpl
+import allfit.sync.core.Syncer
+import allfit.sync.domain.CategoriesSyncer
+import allfit.sync.domain.CategoriesSyncerImpl
+import allfit.sync.domain.CheckinsSyncer
+import allfit.sync.domain.CheckinsSyncerImpl
+import allfit.sync.domain.LocationsSyncer
+import allfit.sync.domain.LocationsSyncerImpl
+import allfit.sync.domain.PartnersSyncer
+import allfit.sync.domain.PartnersSyncerImpl
+import allfit.sync.domain.ReservationsSyncer
+import allfit.sync.domain.ReservationsSyncerImpl
+import allfit.sync.domain.WorkoutFetcher
+import allfit.sync.domain.WorkoutFetcherImpl
+import allfit.sync.domain.WorkoutsSyncer
+import allfit.sync.domain.WorkoutsSyncerImpl
 import allfit.sync.presync.NoOpPreSyncer
 import allfit.sync.presync.PreSyncListenerManager
 import allfit.sync.presync.PreSyncListenerManagerImpl

@@ -1,12 +1,21 @@
 package allfit.sync
 
-import allfit.api.models.*
+import allfit.api.models.HeaderImageJson
+import allfit.api.models.PartnerJson
+import allfit.api.models.PartnersJsonRoot
+import allfit.api.models.partnerCategoryJson
+import allfit.api.models.partnerJson
+import allfit.api.models.partnerSubCategoryJson
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.PartnerEntity
 import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
+import allfit.sync.core.SyncListenerManager
+import allfit.sync.core.SyncListenerManagerImpl
+import allfit.sync.domain.PartnersSyncer
+import allfit.sync.domain.PartnersSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty

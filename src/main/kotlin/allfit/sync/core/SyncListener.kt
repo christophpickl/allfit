@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.core
 
 interface SyncListener {
     fun onSyncStart(steps: List<String>)

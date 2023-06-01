@@ -3,7 +3,7 @@ package allfit.presentation.view
 import allfit.Environment
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
-import allfit.presentation.partnersview.PartnersView
+import allfit.presentation.partnersview.PartnersWindow
 import javafx.scene.control.Label
 import javafx.scene.layout.Priority
 import javafx.stage.Modality
@@ -26,7 +26,7 @@ import tornadofx.vgrow
 class MainView : View() {
 
     private val searchView: SearchView by inject()
-    private val partnersWindow: PartnersView by inject()
+    private val partnersWindow: PartnersWindow by inject()
     private val partnerDetailView: PartnerDetailView by inject()
     private val workoutDetailView: WorkoutDetailView by inject()
     private val mainViewModel: MainViewModel by inject()

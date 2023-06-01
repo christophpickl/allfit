@@ -1,15 +1,22 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.CheckinSearchParams
 import allfit.api.OnefitClient
 import allfit.api.models.CheckinJson
 import allfit.api.models.PartnerWorkoutCheckinJson
 import allfit.api.models.WorkoutCheckinJson
-import allfit.persistence.domain.*
+import allfit.persistence.domain.CategoriesRepo
+import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.CheckinType
+import allfit.persistence.domain.CheckinsRepository
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.ImageStorage
 import allfit.service.toUtcLocalDateTime
+import java.util.UUID
 import mu.KotlinLogging.logger
-import java.util.*
 
 interface CheckinsSyncer {
     suspend fun sync()

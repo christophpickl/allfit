@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.models.SyncableJson
 import allfit.persistence.HasIntId

@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.OnefitClient
 import allfit.api.models.ReservationJson
@@ -6,8 +6,8 @@ import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.domain.ReservationsRepo
 import allfit.service.Clock
 import allfit.service.toUtcLocalDateTime
+import java.util.UUID
 import mu.KotlinLogging.logger
-import java.util.*
 
 interface ReservationsSyncer {
     suspend fun sync()

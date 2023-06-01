@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.core
 
 import mu.KotlinLogging.logger
 

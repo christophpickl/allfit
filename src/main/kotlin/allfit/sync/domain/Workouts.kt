@@ -1,10 +1,19 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.OnefitClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.models.WorkoutJson
-import allfit.persistence.domain.*
-import allfit.service.*
+import allfit.persistence.domain.CheckinsRepository
+import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.ReservationsRepo
+import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.WorkoutsRepo
+import allfit.service.Clock
+import allfit.service.ImageStorage
+import allfit.service.WorkoutAndImageUrl
+import allfit.service.toUtcLocalDateTime
+import allfit.service.workParallel
+import allfit.sync.core.SyncListenerManager
 import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 
@@ -39,9 +48,12 @@ class WorkoutsSyncerImpl(
         log.debug { "Fetching metadata for ${workoutsToBeSyncedJson.size} workouts." }
         syncListeners.onSyncDetail("Fetching metadata for ${workoutsToBeSyncedJson.size} workouts.")
         val metaFetchById = mutableMapOf<Int, WorkoutFetch>()
-        workoutsToBeSyncedJson.workParallel(parallelFetchers, {
-            syncListeners.onSyncDetail("Fetched ${(it * 100).toInt()}% of workout metadata.")
-        }) { workout ->
+        workoutsToBeSyncedJson.workParallel(
+            numberOfCoroutines = parallelFetchers,
+            percentageBroadcastIntervalInMs = 12_000,
+            percentageProgressCallback = {
+                syncListeners.onSyncDetail("Fetched ${(it * 100).toInt()}% of workout metadata.")
+            }) { workout ->
             metaFetchById[workout.id] = workoutFetcher.fetch(
                 WorkoutUrl(
                     workoutId = workout.id,

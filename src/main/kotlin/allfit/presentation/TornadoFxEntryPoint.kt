@@ -1,8 +1,8 @@
 package allfit.presentation
 
 import allfit.presentation.logic.MainController
-import allfit.presentation.logic.SyncController
 import allfit.presentation.view.MainView
+import allfit.sync.view.SyncController
 import javafx.application.Platform
 import javafx.stage.Stage
 import mu.KotlinLogging.logger

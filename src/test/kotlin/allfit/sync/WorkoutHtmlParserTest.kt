@@ -1,6 +1,8 @@
 package allfit.sync
 
 import allfit.service.readHtmlResponse
+import allfit.sync.domain.WorkoutFetch
+import allfit.sync.domain.WorkoutHtmlParser
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 

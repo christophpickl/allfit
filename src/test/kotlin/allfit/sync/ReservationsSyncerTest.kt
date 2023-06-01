@@ -9,6 +9,8 @@ import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.testInfra.reservationEntity
 import allfit.service.toUtcLocalDateTime
+import allfit.sync.domain.ReservationsSyncer
+import allfit.sync.domain.ReservationsSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -16,7 +18,7 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
-import java.util.*
+import java.util.UUID
 
 class ReservationsSyncerTest : StringSpec() {
 

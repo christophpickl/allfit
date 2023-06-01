@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.models.PartnerJson
 import allfit.api.models.PartnersJsonRoot
@@ -6,6 +6,7 @@ import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersRepo
 import allfit.service.ImageStorage
 import allfit.service.PartnerAndImageUrl
+import allfit.sync.core.SyncListenerManager
 import mu.KotlinLogging.logger
 
 interface PartnersSyncer {
