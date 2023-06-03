@@ -47,7 +47,7 @@ class SyncFxWindow : View() {
     }
 
     init {
-        title = "Synchronizing OneFit data ..."
+        title = "Synchronizing OneFit data"
     }
 
     override val root = vbox {

@@ -17,6 +17,12 @@ class MainViewModel : ViewModel() {
     val selectedPartner = CurrentPartnerViewModel()
     val selectedWorkout = SimpleObjectProperty<FullWorkout>()
     val allGroups = FXCollections.observableArrayList<String>()!!
+
+    companion object {
+        val DEFAULT_WORKOUT_PREDICATE: (FullWorkout) -> Boolean = {
+            !it.partner.isHidden
+        }
+    }
 }
 
 class CurrentPartnerViewModel : ViewModel() {

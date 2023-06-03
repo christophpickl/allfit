@@ -61,6 +61,8 @@ data class PartnerEntity(
 
 interface PartnersRepo : BaseRepo<PartnerEntity> {
     fun update(modifications: PartnerModifications)
+    fun hide(partnerId: Int)
+    fun unhide(partnerId: Int)
 }
 
 class InMemoryPartnersRepo : PartnersRepo {
@@ -72,6 +74,16 @@ class InMemoryPartnersRepo : PartnersRepo {
         val old = partners[modifications.partnerId]!!
         val new = modifications.modify(old)
         partners[new.id] = new
+    }
+
+    override fun hide(partnerId: Int) {
+        val partner = partners[partnerId]!!
+        partners[partnerId] = partner.copy(isHidden = true)
+    }
+
+    override fun unhide(partnerId: Int) {
+        val partner = partners[partnerId]!!
+        partners[partnerId] = partner.copy(isHidden = false)
     }
 
     override fun selectAll() = partners.values.toList()
@@ -160,24 +172,44 @@ object ExposedPartnersRepo : PartnersRepo {
         }
     }
 
-    override fun update(modifications: PartnerModifications) = transaction {
+    override fun update(modifications: PartnerModifications): Unit = transaction {
         log.info { "Update: $modifications" }
-        val list = PartnersTable.select { PartnersTable.id eq modifications.partnerId }.toList()
-        require(list.size == 1) { "Expected 1 but got ${list.size} partners for ID: ${modifications.partnerId}" }
-        val categories = selectPartnerCategoriesFor(modifications.partnerId)
-        val primaryCategoryId = categories.first { it.isPrimary }.categoryId
-        val secondaryCategoryIds = categories.filter { !it.isPrimary }.map { it.categoryId }
-        val old = list.first().toPartnerEntity(
-            primaryCategoryId = primaryCategoryId,
-            secondaryCategoryIds = secondaryCategoryIds,
-        )
+        val old = selectPartnerAndCategoriesById(modifications.partnerId)
         val new = modifications.modify(old)
         PartnersTable.update(where = {
             PartnersTable.id eq new.id
         }) {
             modifications.prepare(new, it)
         }
-        Unit
+    }
+
+    private fun selectPartnerAndCategoriesById(partnerId: Int): PartnerEntity {
+        val list = PartnersTable.select { PartnersTable.id eq partnerId }.toList()
+        require(list.size == 1) { "Expected 1 but got ${list.size} partners for ID: ${partnerId}" }
+        val categories = selectPartnerCategoriesFor(partnerId)
+        val primaryCategoryId = categories.first { it.isPrimary }.categoryId
+        val secondaryCategoryIds = categories.filter { !it.isPrimary }.map { it.categoryId }
+        return list.first().toPartnerEntity(
+            primaryCategoryId = primaryCategoryId,
+            secondaryCategoryIds = secondaryCategoryIds,
+        )
+    }
+
+    override fun hide(partnerId: Int) {
+        updateHiddenField(partnerId, true)
+    }
+
+    override fun unhide(partnerId: Int) {
+        updateHiddenField(partnerId, false)
+    }
+
+    private fun updateHiddenField(partnerId: Int, newHiddenValue: Boolean): Unit = transaction {
+        log.info { "Hide partner with ID: $partnerId = $newHiddenValue" }
+        PartnersTable.update(where = {
+            PartnersTable.id eq partnerId
+        }) {
+            it[isHidden] = newHiddenValue
+        }
     }
 
     override fun deleteAll(ids: List<Int>) {

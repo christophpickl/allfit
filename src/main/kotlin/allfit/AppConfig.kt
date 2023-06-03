@@ -19,7 +19,7 @@ data class AppConfig(
             syncEnabled = false,
             mockDb = false,
             mockDataStore = false,
-            dummyDate = null, //LocalDate.parse("2023-05-26"),
+            dummyDate = LocalDate.parse("2023-05-26"),
             useLogFileAppender = false,
         )
         val prod = AppConfig(

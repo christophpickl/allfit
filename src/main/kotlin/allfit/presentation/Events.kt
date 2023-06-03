@@ -14,3 +14,7 @@ class WorkoutSelectedFXEvent(val workout: FullWorkout) : FXEvent()
 class PartnerWorkoutSelectedFXEvent(val workout: SimpleWorkout) : FXEvent()
 
 class UpdatePartnerFXEvent(val modifications: PartnerModifications) : FXEvent()
+
+class HidePartnerFXEvent(val partnerId: Int) : FXEvent()
+
+class UnhidePartnerFXEvent(val partnerId: Int) : FXEvent()

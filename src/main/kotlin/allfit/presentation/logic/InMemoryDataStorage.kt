@@ -214,6 +214,14 @@ object InMemoryDataStorage : DataStorage {
         modifications.update(storedPartner.simplePartner)
     }
 
+    override fun hidePartner(partnerId: Int) {
+        getPartnerById(partnerId).isHidden = true
+    }
+
+    override fun unhidePartner(partnerId: Int) {
+        getPartnerById(partnerId).isHidden = false
+    }
+
     override fun getWorkoutById(workoutId: Int): FullWorkout =
         allFullWorkouts.firstOrNull { it.id == workoutId } ?: error("Could not find workout by ID: $workoutId")
 

@@ -27,6 +27,8 @@ interface DataStorage {
     fun getWorkoutById(workoutId: Int): FullWorkout
     fun getUpcomingWorkouts(): List<FullWorkout>
     fun updatePartner(modifications: PartnerModifications)
+    fun hidePartner(partnerId: Int)
+    fun unhidePartner(partnerId: Int)
 }
 
 class ExposedDataStorage(
@@ -84,6 +86,8 @@ class ExposedDataStorage(
         val now = clock.now()
         simpleWorkouts.filter {
             it.date.start >= now
+        }.also {
+            log.info { "From ${simpleWorkouts.size}, only ${it.size} are upcoming (now=$now)." }
         }
     }
 
@@ -147,6 +151,18 @@ class ExposedDataStorage(
         ExposedPartnersRepo.update(modifications)
         val storedPartner = getPartnerById(modifications.partnerId)
         modifications.update(storedPartner.simplePartner)
+    }
+
+    override fun hidePartner(partnerId: Int) {
+        ExposedPartnersRepo.hide(partnerId)
+        val storedPartner = getPartnerById(partnerId)
+        storedPartner.isHidden = true
+    }
+
+    override fun unhidePartner(partnerId: Int) {
+        ExposedPartnersRepo.unhide(partnerId)
+        val storedPartner = getPartnerById(partnerId)
+        storedPartner.isHidden = false
     }
 }
 

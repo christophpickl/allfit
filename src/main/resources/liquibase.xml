@@ -173,11 +173,17 @@
         </createTable>
 
     </changeSet>
-    <!--
-        <addColumn tableName="song">
-            <column name="title" type="varchar(8)"/>
-        </addColumn>
 
+    <!--    <changeSet id="2" author="christophpickl" failOnError="true">-->
+    <!--        <comment>enhance partners for xxx</comment>-->
+    <!--        <addColumn tableName="PARTNERS">-->
+    <!--            <column name="asdf" type="boolean" defaultValueBoolean="false">-->
+    <!--                <constraints nullable="false"/>-->
+    <!--            </column>-->
+    <!--        </addColumn>-->
+    <!--    </changeSet>-->
+
+    <!--
         <modifyDataType
             columnName="title"
             newDataType="varchar(2000)"
