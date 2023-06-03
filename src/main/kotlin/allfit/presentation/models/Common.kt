@@ -1,5 +1,6 @@
 package allfit.presentation.models
 
+import allfit.service.Clock
 import allfit.service.formatStartAndEnd
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -11,7 +12,9 @@ data class DateRange(
     val end: ZonedDateTime,
 ) : Comparable<DateRange> {
 
-    val prettyString = formatStartAndEnd()
+    fun toPrettyString(clock: Clock) =
+        formatStartAndEnd(showYear = start.year != clock.now().year)
+
     val durationInMinutes = ChronoUnit.MINUTES.between(start, end)
 
     init {

@@ -9,6 +9,7 @@ import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
+import allfit.service.Clock
 import tornadofx.View
 import tornadofx.addClass
 import tornadofx.bind
@@ -22,6 +23,7 @@ import tornadofx.visibleWhen
 class WorkoutDetailView : View() {
 
     private val mainViewModel: MainViewModel by inject()
+    private val clock: Clock by di()
 
     override val root = vbox {
         hbox {
@@ -47,7 +49,7 @@ class WorkoutDetailView : View() {
                     }
                 }
 
-                labelDetail("When", mainViewModel.selectedWorkout.map { it.date.prettyString })
+                labelDetail("When", mainViewModel.selectedWorkout.map { it.date.toPrettyString(clock) })
                 labelDetail("Where", mainViewModel.selectedWorkout.map { it.address })
 
                 openWebsiteButton(mainViewModel.selectedWorkout.map { it.url })

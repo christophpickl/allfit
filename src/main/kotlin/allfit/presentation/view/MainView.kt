@@ -4,6 +4,7 @@ import allfit.Environment
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.partnersview.PartnersWindow
+import allfit.service.Clock
 import javafx.scene.control.Label
 import javafx.scene.layout.Priority
 import javafx.stage.Modality
@@ -25,12 +26,13 @@ import tornadofx.vgrow
 
 class MainView : View() {
 
+    private val clock: Clock by di()
     private val searchView: SearchView by inject()
     private val partnersWindow: PartnersWindow by inject()
     private val partnerDetailView: PartnerDetailView by inject()
     private val workoutDetailView: WorkoutDetailView by inject()
     private val mainViewModel: MainViewModel by inject()
-    private val workoutsTable = WorkoutsTable()
+    private val workoutsTable = WorkoutsTable(clock)
 
     init {
         mainViewModel.sortedFilteredWorkouts.bindTo(workoutsTable)

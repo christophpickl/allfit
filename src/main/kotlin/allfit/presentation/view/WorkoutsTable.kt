@@ -9,6 +9,7 @@ import allfit.presentation.models.Rating
 import allfit.presentation.renderStars
 import allfit.presentation.tornadofx.applyInitSort
 import allfit.presentation.tornadofx.imageColumn
+import allfit.service.Clock
 import javafx.geometry.Pos
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
@@ -28,7 +29,9 @@ import tornadofx.selectedItem
 import tornadofx.smartResize
 import tornadofx.weightedWidth
 
-class WorkoutsTable() : TableView<FullWorkout>() {
+class WorkoutsTable(
+    clock: Clock
+) : TableView<FullWorkout>() {
 
     private val dateColumn: TableColumn<FullWorkout, DateRange>
 
@@ -44,7 +47,7 @@ class WorkoutsTable() : TableView<FullWorkout>() {
         dateColumn = readonlyColumn("Date", FullWorkout::date).apply {
             fixedWidth(150)
             cellFormat { date ->
-                text = date.prettyString
+                text = date.toPrettyString(clock)
             }
         }
 
@@ -61,7 +64,7 @@ class WorkoutsTable() : TableView<FullWorkout>() {
 
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }.remainingWidth().weightedWidth(0.5)
 
-        column<FullWorkout, Int>("#") { it.value.partner.checkinsProperty() }.fixedWidth(30)
+        column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
 
         column<FullWorkout, Rating>("Rating") { it.value.partner.ratingProperty() }.fixedWidth(80)
             .cellFormat { rating ->

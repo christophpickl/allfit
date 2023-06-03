@@ -6,8 +6,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* disable open website button if prototype selected
-* also render year, if it is not this year!
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * BUG? duplicate workouts shown in table?! (although count is correct...)
 * ad workout details (right hand side): use up full vertical space (make some parts grow; notes)

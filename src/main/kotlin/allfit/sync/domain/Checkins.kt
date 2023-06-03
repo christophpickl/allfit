@@ -79,6 +79,8 @@ class CheckinsSyncerImpl(
     }
 
     private fun syncWorkouts(remoteCheckins: List<CheckinJson>) {
+        // TODO we could here insert also "synthetic workouts" for drop-ins ...
+        // would make the "visited workouts" table also show entries for those
         val remoteWorkoutCheckins = remoteCheckins.filter { it.isTypeWorkout }
         val localWorkoutIds =
             workoutsRepo.selectAllForId(remoteWorkoutCheckins.map { it.workout!!.id })

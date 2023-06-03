@@ -11,6 +11,7 @@ import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
+import allfit.service.Clock
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
@@ -50,6 +51,8 @@ import tornadofx.vbox
 class PartnerDetailView : View() {
 
     private val mainViewModel: MainViewModel by inject()
+    private val clock: Clock by di()
+
     private var favoriteCheckbox: CheckBox by singleAssign()
     private var wishlistCheckbox: CheckBox by singleAssign()
     private var ratingInput: ComboBox<Number> by singleAssign()
@@ -139,13 +142,13 @@ class PartnerDetailView : View() {
         hbox {
             vbox {
                 labelPrompt("Upcoming Workouts")
-                workoutTable(mainViewModel.selectedPartner.upcomingWorkouts, ::fireDelegate) {
+                workoutTable(mainViewModel.selectedPartner.upcomingWorkouts, ::fireDelegate, clock) {
                     setAllHeights(140.0)
                 }
             }
             vbox {
                 labelPrompt("Visited Workouts")
-                workoutTable(mainViewModel.selectedPartner.visitedWorkouts, ::fireDelegate) {
+                workoutTable(mainViewModel.selectedPartner.visitedWorkouts, ::fireDelegate, clock) {
                     setAllHeights(140.0)
                 }
             }
@@ -160,11 +163,15 @@ class PartnerDetailView : View() {
 fun EventTarget.workoutTable(
     items: ObservableList<SimpleWorkout>,
     onSelected: (PartnerWorkoutSelectedFXEvent) -> Unit,
+    clock: Clock,
     withTable: WorkoutTable.() -> Unit,
-) = WorkoutTable(items, onSelected).attachTo(this, withTable)
+) = WorkoutTable(items, onSelected, clock).attachTo(this, withTable)
 
-class WorkoutTable(items: ObservableList<SimpleWorkout>, onSelected: (PartnerWorkoutSelectedFXEvent) -> Unit) :
-    TableView<SimpleWorkout>(items) {
+class WorkoutTable(
+    items: ObservableList<SimpleWorkout>,
+    onSelected: (PartnerWorkoutSelectedFXEvent) -> Unit,
+    clock: Clock,
+) : TableView<SimpleWorkout>(items) {
     init {
         selectionModel.selectionMode = SelectionMode.SINGLE
 
@@ -189,7 +196,7 @@ class WorkoutTable(items: ObservableList<SimpleWorkout>, onSelected: (PartnerWor
         readonlyColumn("Date", SimpleWorkout::date).apply {
             fixedWidth(150)
             cellFormat { date ->
-                text = date.prettyString
+                text = date.toPrettyString(clock)
             }
         }
 

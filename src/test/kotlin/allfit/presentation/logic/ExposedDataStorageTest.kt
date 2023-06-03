@@ -3,16 +3,35 @@
 package allfit.presentation.logic
 
 import allfit.TestDates
+import allfit.persistence.domain.CategoriesRepo
 import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.CheckinsRepository
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCheckinsRepository
 import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.ExposedReservationsRepo
+import allfit.persistence.domain.ExposedWorkoutsRepo
 import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.ReservationsRepo
 import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.WorkoutsRepo
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
 import allfit.persistence.testInfra.withFutureStart
 import allfit.presentation.PartnerModifications
-import allfit.presentation.models.*
-import allfit.service.*
+import allfit.presentation.models.DateRange
+import allfit.presentation.models.FullPartner
+import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.PartnerCustomAttributesRead
+import allfit.presentation.models.SimplePartner
+import allfit.presentation.models.SimpleWorkout
+import allfit.service.DummyImageStorage
+import allfit.service.ImageStorage
+import allfit.service.InMemoryImageStorage
+import allfit.service.PartnerAndImageBytes
+import allfit.service.WorkoutAndImagesBytes
+import allfit.service.fromUtcToAmsterdamZonedDateTime
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -27,13 +46,25 @@ class ExposedDataStorageTest : DescribeSpec() {
     private val future = now.plusDays(1)
     private val clock = TestDates.clock
 
-    private fun dataStorageWithImages(withImageStorage: (InMemoryImageStorage) -> Unit): ExposedDataStorage {
-        val imageStorage = InMemoryImageStorage().also(withImageStorage)
-        return ExposedDataStorage(imageStorage, clock)
-    }
+    private val categoriesRepo: CategoriesRepo = ExposedCategoriesRepo
+    private val reservationsRepo: ReservationsRepo = ExposedReservationsRepo
+    private val checkinsRepository: CheckinsRepository = ExposedCheckinsRepository
+    private val partnersRepo: PartnersRepo = ExposedPartnersRepo
+    private val workoutsRepo: WorkoutsRepo = ExposedWorkoutsRepo
 
-    private fun dataStorageWithStaticImages(): ExposedDataStorage =
-        ExposedDataStorage(DummyImageStorage, clock)
+    private fun dataStorageWithImages(withImageStorage: (InMemoryImageStorage) -> Unit): ExposedDataStorage =
+        dataStorage(InMemoryImageStorage().also(withImageStorage))
+
+    private fun dataStorage(imageStorage: ImageStorage = DummyImageStorage): ExposedDataStorage =
+        ExposedDataStorage(
+            categoriesRepo = categoriesRepo,
+            reservationsRepo = reservationsRepo,
+            checkinsRepository = checkinsRepository,
+            partnersRepo = partnersRepo,
+            workoutsRepo = workoutsRepo,
+            imageStorage = imageStorage,
+            clock = clock
+        )
 
     init {
         extension(DbListener())
@@ -42,7 +73,7 @@ class ExposedDataStorageTest : DescribeSpec() {
             it("Given a category Then return it") {
                 val category = ExposedTestRepo.insertCategory()
 
-                val categories = dataStorageWithStaticImages().getCategories()
+                val categories = dataStorage().getCategories()
 
                 categories shouldContainExactly listOf(category.name)
             }
@@ -54,7 +85,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                     }
                 }
 
-                val categories = dataStorageWithStaticImages().getCategories()
+                val categories = dataStorage().getCategories()
 
                 categories shouldContainExactly names
             }
@@ -95,7 +126,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                     }
                 )
 
-                val workouts = dataStorageWithStaticImages().getUpcomingWorkouts()
+                val workouts = dataStorage().getUpcomingWorkouts()
 
                 workouts.shouldBeSingleton().first().simpleWorkout.isReserved shouldBe true
             }
@@ -105,7 +136,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                     w.withFutureStart(now)
                 })
 
-                val workouts = dataStorageWithStaticImages().getUpcomingWorkouts()
+                val workouts = dataStorage().getUpcomingWorkouts()
 
                 workouts.shouldBeSingleton().first().partner.checkins shouldBe 1
             }
@@ -115,7 +146,7 @@ class ExposedDataStorageTest : DescribeSpec() {
             it("Given no checkins and no workouts Then return it") {
                 val (category, partner) = ExposedTestRepo.insertCategoryAndPartner()
 
-                val fullPartner = dataStorageWithStaticImages().getPartnerById(partner.id)
+                val fullPartner = dataStorage().getPartnerById(partner.id)
 
                 fullPartner shouldBe partner.toFullPartner(
                     image = fullPartner.image,
@@ -131,7 +162,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                     w.copy(partnerId = p.id, start = future, end = future.plusHours(1))
                 })
 
-                val fullPartner = dataStorageWithStaticImages().getPartnerById(givenPartner.id)
+                val fullPartner = dataStorage().getPartnerById(givenPartner.id)
 
                 fullPartner.upcomingWorkouts.shouldBeSingleton().first().id shouldBe givenWorkout.id
             }
@@ -141,7 +172,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                     w.copy(partnerId = p.id, start = past, end = past.plusHours(1))
                 }
 
-                val fullPartner = dataStorageWithStaticImages().getPartnerById(givenPartner.id)
+                val fullPartner = dataStorage().getPartnerById(givenPartner.id)
 
                 fullPartner.checkins shouldBe 1
                 fullPartner.visitedWorkouts.map { it.id }.shouldBeSingleton().first() shouldBe givenWorkout.id
@@ -152,7 +183,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                     w.copy(partnerId = p.id, start = past, end = past.plusHours(1))
                 })
 
-                val fullPartner = dataStorageWithStaticImages().getPartnerById(givenPartner.id)
+                val fullPartner = dataStorage().getPartnerById(givenPartner.id)
 
                 fullPartner.checkins shouldBe 0
                 fullPartner.visitedWorkouts.shouldBeEmpty()
@@ -163,7 +194,7 @@ class ExposedDataStorageTest : DescribeSpec() {
             it("Given category, partner and workout Then return workout") {
                 val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
 
-                val fullWorkout = dataStorageWithStaticImages().getWorkoutById(workout.id)
+                val fullWorkout = dataStorage().getWorkoutById(workout.id)
 
                 fullWorkout shouldBe FullWorkout(
                     simpleWorkout = workout.toSimpleWorkout(
@@ -183,14 +214,14 @@ class ExposedDataStorageTest : DescribeSpec() {
             it("Given partner  Then updated in database") {
                 val (_, modifications) = insertPartnerAndGetModifications()
 
-                dataStorageWithStaticImages().updatePartner(modifications)
+                dataStorage().updatePartner(modifications)
 
                 modifications.assertOn(ExposedPartnersRepo.selectAll().shouldBeSingleton().first())
             }
 
             it("Given partner Then updated in UI representation") {
                 val (partner, modifications) = insertPartnerAndGetModifications()
-                val storage = dataStorageWithStaticImages()
+                val storage = dataStorage()
                 storage.getPartnerById(partner.id) // prefetch so it will be stored
 
                 storage.updatePartner(modifications)
