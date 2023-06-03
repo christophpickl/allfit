@@ -1,13 +1,13 @@
 package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
-import allfit.persistence.domain.ExposedCategoriesRepo
-import allfit.persistence.domain.ExposedCheckinsRepository
-import allfit.persistence.domain.ExposedPartnersRepo
-import allfit.persistence.domain.ExposedReservationsRepo
-import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.CategoriesRepo
+import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.ReservationsRepo
 import allfit.persistence.domain.WorkoutEntity
+import allfit.persistence.domain.WorkoutsRepo
 import allfit.presentation.PartnerModifications
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
@@ -32,6 +32,11 @@ interface DataStorage {
 }
 
 class ExposedDataStorage(
+    private val categoriesRepo: CategoriesRepo,
+    private val reservationsRepo: ReservationsRepo,
+    private val checkinsRepository: CheckinsRepository,
+    private val partnersRepo: PartnersRepo,
+    private val workoutsRepo: WorkoutsRepo,
     private val imageStorage: ImageStorage,
     private val clock: Clock,
 ) : DataStorage {
@@ -39,12 +44,12 @@ class ExposedDataStorage(
     private val log = logger {}
 
     private val simplePartners by lazy {
-        val categoriesById = ExposedCategoriesRepo.selectAll().associateBy { it.id }
-        val partnerEntities = ExposedPartnersRepo.selectAll()
+        val categoriesById = categoriesRepo.selectAll().associateBy { it.id }
+        val partnerEntities = partnersRepo.selectAll()
         val partnerImagesByPartnerId = imageStorage.loadPartnerImages(partnerEntities.map { it.id })
             .associateBy { it.partnerId }
 
-        val checkinsByPartnerId = ExposedCheckinsRepository.selectCountForPartners().associateBy { it.partnerId }
+        val checkinsByPartnerId = checkinsRepository.selectCountForPartners().associateBy { it.partnerId }
 
         partnerEntities.map { partnerEntity ->
             partnerEntity.toSimplePartner(
@@ -60,19 +65,14 @@ class ExposedDataStorage(
             )
         }
     }
-
-    private val simplePartnersById by lazy {
-        simplePartners.associateBy { it.id }
-    }
-
     private val simpleWorkouts by lazy {
-        val reservations = ExposedReservationsRepo.selectAll().map { it.workoutId }.toSet()
-        val workoutEntities = ExposedWorkoutsRepo.selectAll()
-        val workoutImages = imageStorage.loadWorkoutImages(workoutEntities.map { it.id }).associateBy { it.workoutId }
-        workoutEntities.map { workoutEntity ->
+        val workoutsWithReservation = reservationsRepo.selectAll().map { it.workoutId }.toSet()
+        val storedWorkouts = workoutsRepo.selectAll()
+        val workoutImages = imageStorage.loadWorkoutImages(storedWorkouts.map { it.id }).associateBy { it.workoutId }
+        storedWorkouts.map { workoutEntity ->
             try {
                 workoutEntity.toSimpleWorkout(
-                    isReserved = reservations.contains(workoutEntity.id),
+                    isReserved = workoutsWithReservation.contains(workoutEntity.id),
                     image = Image(workoutImages[workoutEntity.id]!!.inputStream())
                 )
             } catch (e: Exception) {
@@ -91,7 +91,11 @@ class ExposedDataStorage(
         }
     }
 
-    private val fullWorkouts by lazy {
+    private val simplePartnersById by lazy {
+        simplePartners.associateBy { it.id }
+    }
+
+    private val upcomingFullWorkouts by lazy {
         upcomingSimpleWorkouts.map { simpleWorkout ->
             FullWorkout(
                 simpleWorkout = simpleWorkout,
@@ -100,14 +104,8 @@ class ExposedDataStorage(
         }
     }
 
-    private val fullWorkoutsById by lazy {
-        fullWorkouts.associateBy { it.id }
-    }
-
-    // "upcomingFullWorkoutss" with double ss to avoid JVM name clash ;-)
-    private val upcomingFullWorkoutss by lazy {
-        val now = clock.now()
-        fullWorkouts.filter { it.date.start > now }
+    private val upcomingFullWorkoutsById by lazy {
+        upcomingFullWorkouts.associateBy { it.id }
     }
 
     private val fullPartners by lazy {
@@ -116,53 +114,52 @@ class ExposedDataStorage(
             FullPartner(
                 simplePartner = simplePartner,
                 visitedWorkouts = simpleWorkouts.filter {
-                    it.partnerId == simplePartner.id && it.date.start <= now && visitedWorkoutIds.contains(
-                        it.id
-                    )
+                    it.partnerId == simplePartner.id &&
+                            it.date.start <= now &&
+                            visitedWorkoutIds.contains(it.id)
                 },
                 upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
             )
         }
     }
+
     private val fullPartnersById by lazy {
         fullPartners.associateBy { it.id }
     }
 
     private val visitedWorkoutIds by lazy {
-        ExposedCheckinsRepository.selectAll().mapNotNull { it.workoutId }
+        checkinsRepository.selectAll().mapNotNull { it.workoutId }
     }
 
-    override fun getCategories(): List<String> =
-        ExposedCategoriesRepo.selectAll().map { it.name }.distinct().sorted()
+    override fun getCategories() =
+        categoriesRepo.selectAll().map { it.name }.distinct().sorted()
 
-    override fun getPartners(): List<FullPartner> =
+    override fun getPartners() =
         fullPartners
 
     override fun getUpcomingWorkouts() =
-        upcomingFullWorkoutss
+        upcomingFullWorkouts
 
     override fun getPartnerById(partnerId: Int): FullPartner =
         fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
 
     override fun getWorkoutById(workoutId: Int): FullWorkout =
-        fullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
+        upcomingFullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
 
     override fun updatePartner(modifications: PartnerModifications) {
-        ExposedPartnersRepo.update(modifications)
+        partnersRepo.update(modifications)
         val storedPartner = getPartnerById(modifications.partnerId)
         modifications.update(storedPartner.simplePartner)
     }
 
     override fun hidePartner(partnerId: Int) {
-        ExposedPartnersRepo.hide(partnerId)
-        val storedPartner = getPartnerById(partnerId)
-        storedPartner.isHidden = true
+        partnersRepo.hide(partnerId)
+        getPartnerById(partnerId).isHidden = true
     }
 
     override fun unhidePartner(partnerId: Int) {
-        ExposedPartnersRepo.unhide(partnerId)
-        val storedPartner = getPartnerById(partnerId)
-        storedPartner.isHidden = false
+        partnersRepo.unhide(partnerId)
+        getPartnerById(partnerId).isHidden = false
     }
 }
 

@@ -9,7 +9,15 @@ import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
-import tornadofx.*
+import tornadofx.View
+import tornadofx.addClass
+import tornadofx.bind
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.label
+import tornadofx.scrollpane
+import tornadofx.vbox
+import tornadofx.visibleWhen
 
 class WorkoutDetailView : View() {
 

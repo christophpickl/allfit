@@ -104,7 +104,7 @@ private class SyncProgressDialog : JDialog() {
     private val iconWaiting = "❔"
 
     init {
-        title = "Presynchronizing OneFit data"
+        title = "Presynchronizing OneFit Data"
         cursor = Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR)
         stepsPanel.layout = BoxLayout(stepsPanel, BoxLayout.Y_AXIS)
         val northPanel = JPanel()

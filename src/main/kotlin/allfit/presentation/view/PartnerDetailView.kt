@@ -1,8 +1,12 @@
 package allfit.presentation.view
 
-import allfit.presentation.*
+import allfit.presentation.PartnerModifications
+import allfit.presentation.PartnerWorkoutSelectedFXEvent
+import allfit.presentation.Styles
+import allfit.presentation.UpdatePartnerFXEvent
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.renderStars
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
@@ -10,10 +14,38 @@ import allfit.presentation.tornadofx.setAllHeights
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
-import javafx.scene.control.*
+import javafx.scene.control.CheckBox
+import javafx.scene.control.ComboBox
+import javafx.scene.control.SelectionMode
+import javafx.scene.control.TableView
+import javafx.scene.control.TextArea
 import javafx.scene.layout.Border
-import tornadofx.*
-import kotlin.error
+import tornadofx.FXEvent
+import tornadofx.View
+import tornadofx.action
+import tornadofx.addClass
+import tornadofx.attachTo
+import tornadofx.bind
+import tornadofx.button
+import tornadofx.cellFormat
+import tornadofx.checkbox
+import tornadofx.column
+import tornadofx.combobox
+import tornadofx.enableWhen
+import tornadofx.fixedWidth
+import tornadofx.hbox
+import tornadofx.imageview
+import tornadofx.label
+import tornadofx.onDoubleClick
+import tornadofx.onSelectionChange
+import tornadofx.readonlyColumn
+import tornadofx.remainingWidth
+import tornadofx.scrollpane
+import tornadofx.selectedItem
+import tornadofx.singleAssign
+import tornadofx.smartResize
+import tornadofx.textarea
+import tornadofx.vbox
 
 class PartnerDetailView : View() {
 
@@ -64,6 +96,7 @@ class PartnerDetailView : View() {
                 cellFormat {
                     text = it.toInt().renderStars()
                 }
+                enableWhen(enabledChecker)
             }
 
             labelPrompt("Favorite")

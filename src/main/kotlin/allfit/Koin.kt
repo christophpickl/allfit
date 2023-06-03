@@ -35,7 +35,11 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
             syncListeners = get(),
         )
     }
-    single { if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(get(), get()) }
+    single {
+        if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(
+            get(), get(), get(), get(), get(), get(), get()
+        )
+    }
     single { UiPreSyncer(get()) }
     single { AllFitStarter(config.preSyncEnabled, get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }

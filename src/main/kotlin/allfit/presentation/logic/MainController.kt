@@ -30,7 +30,6 @@ class MainController : Controller() {
             logger.debug { "Application started." }
             val workouts = dataStorage.getUpcomingWorkouts()
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
-            mainViewModel.allWorkouts.addAll(workouts.toObservable())
             mainViewModel.allGroups.addAll(dataStorage.getCategories())
             partnersViewModel.allRawPartners.addAll(dataStorage.getPartners())
             mainViewModel.sortedFilteredWorkouts.predicate = MainViewModel.DEFAULT_WORKOUT_PREDICATE
