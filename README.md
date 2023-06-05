@@ -6,12 +6,14 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* sync dropin checkins (make them unified super type with workout checkins); show them in past workouts
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * BUG? duplicate workouts shown in table?! (although count is correct...)
 * ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
 * UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
 * only show date filter days for days where there are workouts (maybe also display total number of workouts that day, as in: "Wed 25.3. (513)")
 * fetch usage: https://api.one.fit/v2/en-nl/members/usage; display how many credits in total/left (date range until; how many days left)
+* make black font for dates in table white (as other cells) when selected
 
 ### Medium
 

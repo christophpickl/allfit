@@ -5,10 +5,14 @@ import allfit.service.Clock
 import allfit.service.formatDayDate
 import allfit.service.formatTime
 import allfit.service.toDaysUntil
-import javafx.scene.control.ComboBox
-import tornadofx.*
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import javafx.scene.control.ComboBox
+import tornadofx.action
+import tornadofx.button
+import tornadofx.combobox
+import tornadofx.selectedItem
+import tornadofx.singleAssign
 
 data class DateSearchRequest(
     val date: ZonedDateTime,
@@ -64,6 +68,8 @@ class DateSearchPane(
             val timeHour = clock.now().hour
             if (timeHour in dayStartsAt..dayEndsAt) {
                 selectionModel.select(timeHour - dayStartsAt)
+            } else {
+                selectionModel.selectFirst()
             }
         }
     }

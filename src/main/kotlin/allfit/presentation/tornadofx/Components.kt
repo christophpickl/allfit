@@ -30,7 +30,7 @@ fun Pane.labelPrompt(prompt: String) {
 }
 
 fun EventTarget.openWebsiteButton(url: ObservableValue<String>, op: Button.() -> Unit = {}) {
-    button("Open Website") {
+    button("Website") {
         tooltip {
             this@tooltip.textProperty().bind(url)
         }
