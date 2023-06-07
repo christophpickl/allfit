@@ -34,7 +34,6 @@ class UiPreSyncer(private val preSyncer: PreSyncer) {
         log.info { "Start syncing via UI. " }
         StatefulUiPreSyncer(preSyncer, finishCallback).start()
     }
-
 }
 
 private class StatefulUiPreSyncer(

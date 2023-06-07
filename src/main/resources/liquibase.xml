@@ -174,14 +174,42 @@
 
     </changeSet>
 
-    <!--    <changeSet id="2" author="christophpickl" failOnError="true">-->
-    <!--        <comment>enhance partners for xxx</comment>-->
+    <changeSet id="2" author="christophpickl" failOnError="true">
+        <comment>add USAGE table</comment>
+
+        <createTable tableName="USAGE">
+            <column name="TOTAL" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NO_SHOWS" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FROM" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="UNTIL" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PERIOD" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MAX_PER_PERIOD" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TOTAL_PER_DAY" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MAX_RESERVATIONS" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <!--        <addColumn tableName="PARTNERS">-->
     <!--            <column name="asdf" type="boolean" defaultValueBoolean="false">-->
     <!--                <constraints nullable="false"/>-->
     <!--            </column>-->
     <!--        </addColumn>-->
-    <!--    </changeSet>-->
 
     <!--
         <modifyDataType

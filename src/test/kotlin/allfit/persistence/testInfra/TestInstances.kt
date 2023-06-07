@@ -1,6 +1,13 @@
 package allfit.persistence.testInfra
 
-import allfit.persistence.domain.*
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.CheckinType
+import allfit.persistence.domain.LocationEntity
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.domain.UsageEntity
+import allfit.persistence.domain.WorkoutEntity
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
@@ -14,7 +21,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Random
 
 fun Arb.Companion.categoryEntity() = arbitrary {
     CategoryEntity(
@@ -105,5 +112,18 @@ fun Arb.Companion.checkinEntityDropin() = arbitrary {
         type = CheckinType.DROP_IN,
         partnerId = int(min = 1).next(),
         workoutId = null,
+    )
+}
+
+fun Arb.Companion.usageEntity() = arbitrary {
+    UsageEntity(
+        total = int(min = 0, max = 10).next(),
+        noShows = int(min = 0, max = 10).next(),
+        from = LocalDateTime.now(),
+        until = LocalDateTime.now(),
+        periodCap = int(min = 0, max = 10).next(),
+        maxCheckInsOrReservationsPerPeriod = int(min = 0, max = 10).next(),
+        totalCheckInsOrReservationsPerDay = int(min = 0, max = 10).next(),
+        maxReservations = int(min = 0, max = 10).next(),
     )
 }

@@ -15,7 +15,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.uuid
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.Random
 
 fun Arb.Companion.categoryJson() = arbitrary {
     CategoryJson(
@@ -248,5 +248,32 @@ fun Arb.Companion.partnerWorkoutCheckinJson() = arbitrary {
         name = string(minSize = 1, maxSize = 8).next(),
         slug = string(minSize = 1, maxSize = 8, codepoints = Codepoint.alphanumeric()).next(),
         category = categoryJson().next(),
+    )
+}
+
+fun Arb.Companion.usageJsonRoot() = arbitrary {
+    UsageJsonRoot(
+        total = int(min = 1, max = 10).next(),
+        no_shows = int(min = 1, max = 10).next(),
+        period = usagePeriodJson().next()
+    )
+}
+
+fun Arb.Companion.usagePeriodJson() = arbitrary {
+    UsagePeriodJson(
+        display_from = ZonedDateTime.now(),
+        display_till = ZonedDateTime.now().plusDays(1),
+        product = usageProductJson().next(),
+    )
+}
+
+fun Arb.Companion.usageProductJson() = arbitrary {
+    UsageProductJson(
+        rules = listOf(
+            UsageProductRuleJson(UsageProductRuleJson.Types.TOTAL_PER_DAY, unit = "", amount = 1),
+            UsageProductRuleJson(UsageProductRuleJson.Types.MAX_RESERVATIONS, unit = "", amount = 2),
+            UsageProductRuleJson(UsageProductRuleJson.Types.MAX_PER_PERIOD, unit = "", amount = 3),
+            UsageProductRuleJson(UsageProductRuleJson.Types.PERIOD_CAP, unit = "", amount = 4),
+        )
     )
 }

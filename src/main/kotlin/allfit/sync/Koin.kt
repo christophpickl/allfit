@@ -20,7 +20,7 @@ import allfit.sync.domain.WorkoutFetcher
 import allfit.sync.domain.WorkoutFetcherImpl
 import allfit.sync.domain.WorkoutsSyncer
 import allfit.sync.domain.WorkoutsSyncerImpl
-import allfit.sync.presync.NoOpPreSyncer
+import allfit.sync.presync.ApiPreSyncer
 import allfit.sync.presync.PreSyncListenerManager
 import allfit.sync.presync.PreSyncListenerManagerImpl
 import allfit.sync.presync.PreSyncer
@@ -44,7 +44,7 @@ fun syncModule(config: AppConfig) = module {
     }
     single<PreSyncListenerManager> { PreSyncListenerManagerImpl() }
     single<PreSyncer> {
-        NoOpPreSyncer(get())
+        ApiPreSyncer(get(), get(), get())
     }
     single<WorkoutFetcher> { WorkoutFetcherImpl() }
 }

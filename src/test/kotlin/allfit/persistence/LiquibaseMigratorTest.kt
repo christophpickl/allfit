@@ -1,7 +1,19 @@
 package allfit.persistence
 
-import allfit.persistence.domain.*
-import allfit.persistence.testInfra.*
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCheckinsRepository
+import allfit.persistence.domain.ExposedLocationsRepo
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.ExposedReservationsRepo
+import allfit.persistence.domain.ExposedUsageRepository
+import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.testInfra.categoryEntity
+import allfit.persistence.testInfra.checkinEntityWorkout
+import allfit.persistence.testInfra.locationEntity
+import allfit.persistence.testInfra.partnerEntity
+import allfit.persistence.testInfra.reservationEntity
+import allfit.persistence.testInfra.usageEntity
+import allfit.persistence.testInfra.workoutEntity
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
@@ -42,6 +54,10 @@ class LiquibaseMigratorTest : StringSpec() {
             val checkin = Arb.checkinEntityWorkout().next().copy(workoutId = workout.id, partnerId = partner.id)
             ExposedCheckinsRepository.insertAll(listOf(checkin))
             ExposedCheckinsRepository.selectAll().shouldBeSingleton().first() shouldBe checkin
+
+            val usage = Arb.usageEntity().next()
+            ExposedUsageRepository.upsert(usage)
+            ExposedUsageRepository.selectOne() shouldBe usage
         }
     }
 

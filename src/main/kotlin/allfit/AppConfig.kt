@@ -15,7 +15,7 @@ data class AppConfig(
     companion object {
         val develop = AppConfig(
             mockClient = true,
-            preSyncEnabled = false,
+            preSyncEnabled = true,
             syncEnabled = false,
             mockDb = false,
             mockDataStore = false,
@@ -24,7 +24,7 @@ data class AppConfig(
         )
         val prod = AppConfig(
             mockClient = false,
-            preSyncEnabled = false, // TODO enable once feature is implemented
+            preSyncEnabled = true,
             syncEnabled = true,
             mockDb = false,
             mockDataStore = false,

@@ -1,0 +1,536 @@
+{
+  "data": {
+    "reservations": 0,
+    "check_ins": 14,
+    "surplus_count": 0,
+    "included_count": 15,
+    "digital": 0,
+    "no_shows": 1,
+    "total": 15,
+    "onsite_total": 15,
+    "period": {
+      "from": "2023-05-08T00:00:00+02:00",
+      "till": "2023-06-07T00:00:00+02:00",
+      "display_from": "2023-05-08T00:00:00+02:00",
+      "display_till": "2023-06-06T00:00:00+02:00",
+      "product": {
+        "name": "Original",
+        "city": "Amsterdam",
+        "category": "business_tier",
+        "cycle_length": 1,
+        "period_unit": "days",
+        "period_amount": 30,
+        "translate_key": "b2b_high_tier_product",
+        "price": 4500,
+        "price_formatted": "\\u20ac 45,00",
+        "is_default": false,
+        "slug": "business_original_tier_16",
+        "uuid": "QU1TfHxidXNpbmVzc19vcmlnaW5hbF90aWVyXzE2",
+        "onefit_city": "AMS",
+        "rollover_product": null,
+        "rules": [
+          {
+            "type": "GeneralPeriodCap",
+            "unit": "regular",
+            "amount": 16
+          },
+          {
+            "type": "MaxCheckInsOrReservationsPerPeriod",
+            "unit": "regular",
+            "amount": 4
+          },
+          {
+            "type": "TotalCheckInsOrReservationsPerDay",
+            "unit": null,
+            "amount": 2
+          },
+          {
+            "type": "MaxCheckInsOrReservationsPerPeriod",
+            "unit": "regular",
+            "amount": 4
+          },
+          {
+            "type": "OneCheckInOrReservation",
+            "unit": null,
+            "amount": 1
+          },
+          {
+            "type": "MaxReservations",
+            "unit": null,
+            "amount": 6
+          }
+        ],
+        "product_features": {
+          "surplus_allowed": true,
+          "late_cancellation": true,
+          "surplus_discount": false,
+          "monthly_pause": false
+        },
+        "mandatory_fields": [],
+        "settings": {
+          "is_trial": 0,
+          "is_digital": 0,
+          "allows_discount": 1,
+          "is_highlighted": 0
+        }
+      }
+    },
+    "partner_usage": [
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 551,
+          "name": "Hot Flow Yoga Jordaan",
+          "slug": "hot-flow-yoga-jordaan-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/551\\/2e3ed679-39f1-4726-83b7-c7395fdc167b.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1200,
+            "formatted_price": "\\u20ac 12,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 16391,
+          "name": "Relax Lounge",
+          "slug": "relax-lounge-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16391\\/7873343c-a040-4363-8ea7-39274268cae4.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 950,
+            "formatted_price": "\\u20ac 9,50"
+          }
+        }
+      },
+      {
+        "check_ins": 3,
+        "reservations": 0,
+        "total": 3,
+        "onsite_total": 3,
+        "surplus_count": 0,
+        "included_count": 3,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 15423,
+          "name": "The Cosmos - West",
+          "slug": "the-cosmos-west-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/15423\\/4ed85e8b-e768-4d2f-9d9b-779f43d0fa09.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1300,
+            "formatted_price": "\\u20ac 13,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 17140,
+          "name": "Yogaschool Noord",
+          "slug": "yogaschool-noord-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17140\\/3fb5b4ef-0a75-42c8-9a81-bdde0a77f3d5.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1050,
+            "formatted_price": "\\u20ac 10,50"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 16608,
+          "name": "Zhembrovskyy de Pijp",
+          "slug": "zhembrovskyy-de-pijp-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 200,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16608\\/132db161-8a30-46c6-8d17-1b4c3826a3f1.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1150,
+            "formatted_price": "\\u20ac 11,50"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 556,
+          "name": "De Nieuwe Yogaschool",
+          "slug": "de-nieuwe-yogaschool-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/556\\/8e47cff1-b575-4551-8a40-43bbec366509.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1300,
+            "formatted_price": "\\u20ac 13,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 3630,
+          "name": "TrainMore Oosterdok",
+          "slug": "trainmore-oosterdok-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 200,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/3630\\/2c4846cc-f0b3-4ea2-8165-4f21a245b9a2.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1000,
+            "formatted_price": "\\u20ac 10,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 16893,
+          "name": "Movement Amsterdam",
+          "slug": "movement-amsterdam-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/16893\\/1fab24c4-91ab-4b7e-8912-5052a0faa822.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1000,
+            "formatted_price": "\\u20ac 10,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 13338,
+          "name": "Svaha Yoga",
+          "slug": "svaha-yoga-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 200,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/13338\\/da816357-a18c-4681-b5dd-1fcae4e203dc.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1000,
+            "formatted_price": "\\u20ac 10,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 14094,
+          "name": "Movements Overtoom",
+          "slug": "movements-overtoom-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/14094\\/631136f8-10bd-4a33-9c74-9d3eee829d77.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1300,
+            "formatted_price": "\\u20ac 13,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 17063,
+          "name": "Movements City",
+          "slug": "movements-city-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17063\\/b793ac3c-5495-40d0-97e7-4424dd896b3c.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1300,
+            "formatted_price": "\\u20ac 13,00"
+          }
+        }
+      },
+      {
+        "check_ins": 1,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 0,
+        "digital": 0,
+        "partner": {
+          "id": 17132,
+          "name": "Sportplaza Mercator Zwembad",
+          "slug": "sportplaza-mercator-zwembad-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17132\\/23482897-2dcf-4848-bc7c-1c5b6417c554.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1000,
+            "formatted_price": "\\u20ac 10,00"
+          }
+        }
+      },
+      {
+        "check_ins": 0,
+        "reservations": 0,
+        "total": 1,
+        "onsite_total": 1,
+        "surplus_count": 0,
+        "included_count": 1,
+        "no_shows": 1,
+        "digital": 0,
+        "partner": {
+          "id": 17173,
+          "name": "Double Shift",
+          "slug": "double-shift-amsterdam",
+          "waitlist_enabled": true,
+          "check_in_radius": 75,
+          "header_image": {
+            "desktop": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1680",
+            "xxxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1440",
+            "xxhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1080",
+            "tablet": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=1024",
+            "mobile": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=768",
+            "xhdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=720",
+            "hdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=540",
+            "mdpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=480",
+            "ldpi": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=320",
+            "thumbnail": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg?w=150",
+            "orig": "https:\\/\\/edge.one.fit\\/image\\/partner\\/image\\/17173\\/2a602be6-d7f1-4922-b669-5df0bb547191.jpg"
+          },
+          "surplus": {
+            "surplus_allowed": true,
+            "price": 1100,
+            "formatted_price": "\\u20ac 11,00"
+          }
+        }
+      }
+    ]
+  }
+}

@@ -5,6 +5,7 @@ import allfit.api.models.CheckinsJsonRoot
 import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
+import allfit.api.models.UsageJsonRoot
 import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.readApiResponse
 
@@ -26,4 +27,7 @@ object ClassPathOnefitClient : OnefitClient {
 
     override suspend fun getCheckins(params: CheckinSearchParams) =
         readApiResponse<CheckinsJsonRoot>("checkins.json")
+
+    override suspend fun getUsage() =
+        readApiResponse<UsageJsonRoot>("usage.json")
 }

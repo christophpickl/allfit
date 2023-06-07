@@ -6,6 +6,7 @@ import allfit.persistence.domain.LocationsTable
 import allfit.persistence.domain.PartnersCategoriesTable
 import allfit.persistence.domain.PartnersTable
 import allfit.persistence.domain.ReservationsTable
+import allfit.persistence.domain.UsageTable
 import allfit.persistence.domain.WorkoutsTable
 
 val allTables = arrayOf(
@@ -16,6 +17,7 @@ val allTables = arrayOf(
     ReservationsTable,
     LocationsTable,
     CheckinsTable,
+    UsageTable,
 )
 
 interface HasIntId {

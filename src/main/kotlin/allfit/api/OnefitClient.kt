@@ -5,6 +5,7 @@ import allfit.api.models.CheckinsJsonRoot
 import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
+import allfit.api.models.UsageJsonRoot
 import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.formatIsoOffset
 import java.time.ZonedDateTime
@@ -17,6 +18,7 @@ interface OnefitClient {
     suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot
     suspend fun getReservations(): ReservationsJsonRoot
     suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot
+    suspend fun getUsage(): UsageJsonRoot
 
 }
 

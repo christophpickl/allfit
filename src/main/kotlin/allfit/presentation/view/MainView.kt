@@ -12,6 +12,7 @@ import tornadofx.View
 import tornadofx.action
 import tornadofx.borderpane
 import tornadofx.center
+import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.item
 import tornadofx.menu
@@ -28,6 +29,7 @@ class MainView : View() {
 
     private val clock: Clock by di()
     private val searchView: SearchView by inject()
+    private val usageView: UsageView by inject()
     private val partnersWindow: PartnersWindow by inject()
     private val partnerDetailView: PartnerDetailView by inject()
     private val workoutDetailView: WorkoutDetailView by inject()
@@ -64,7 +66,11 @@ class MainView : View() {
         borderpane {
             top {
                 vgrow = Priority.NEVER
-                add(searchView)
+                hgrow = Priority.ALWAYS
+                hbox {
+                    add(searchView)
+                    add(usageView)
+                }
             }
             center {
                 vgrow = Priority.ALWAYS

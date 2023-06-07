@@ -1,18 +1,36 @@
 package allfit.api
 
-import allfit.api.models.*
+import allfit.api.models.AuthJson
+import allfit.api.models.AuthResponseJson
+import allfit.api.models.CategoriesJsonRoot
+import allfit.api.models.CheckinsJsonRoot
+import allfit.api.models.MetaJson
+import allfit.api.models.PagedJson
+import allfit.api.models.PartnersJsonRoot
+import allfit.api.models.ReservationsJsonRoot
+import allfit.api.models.SingleWorkoutJsonRoot
+import allfit.api.models.UsageJsonRoot
+import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.Clock
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.serialization.kotlinx.json.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
 
@@ -97,6 +115,9 @@ class OnefitHttpClient(
         getPaged(params, ::getCheckinsPage) { data, meta ->
             CheckinsJsonRoot(data, meta)
         }
+
+    override suspend fun getUsage(): UsageJsonRoot =
+        get("members/usage")
 
     private suspend fun getCheckinsPage(params: CheckinSearchParams): CheckinsJsonRoot =
         get("members/check-ins") {

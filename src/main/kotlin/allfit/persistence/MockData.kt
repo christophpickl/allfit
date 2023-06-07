@@ -1,10 +1,24 @@
 package allfit.persistence
 
-import allfit.persistence.domain.*
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.CheckinType
+import allfit.persistence.domain.InMemoryCategoriesRepo
+import allfit.persistence.domain.InMemoryCheckinsRepository
+import allfit.persistence.domain.InMemoryLocationsRepo
+import allfit.persistence.domain.InMemoryPartnersRepo
+import allfit.persistence.domain.InMemoryReservationsRepo
+import allfit.persistence.domain.InMemoryUsageRepository
+import allfit.persistence.domain.InMemoryWorkoutsRepo
+import allfit.persistence.domain.LocationEntity
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.domain.UsageEntity
+import allfit.persistence.domain.WorkoutEntity
 import allfit.service.SystemClock
 import allfit.service.toUtcLocalDateTime
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 private val now = SystemClock.now().toUtcLocalDateTime()
 
@@ -95,4 +109,19 @@ fun InMemoryLocationsRepo.insertMockData() = apply {
 
 fun InMemoryCheckinsRepository.insertMockData() = apply {
     insertAll(allCheckins)
+}
+
+fun InMemoryUsageRepository.insertMockData() = apply {
+    upsert(
+        UsageEntity(
+            total = 3,
+            noShows = 1,
+            from = LocalDateTime.now().withDayOfMonth(1),
+            until = LocalDateTime.now().withDayOfMonth(25),
+            periodCap = 16,
+            maxCheckInsOrReservationsPerPeriod = 4,
+            totalCheckInsOrReservationsPerDay = 2,
+            maxReservations = 6,
+        )
+    )
 }

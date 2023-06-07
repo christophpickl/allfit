@@ -6,12 +6,13 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* remember window size/position after next startup
+* disable closing app while still syncing. display info dialog.
+* old logs, rotated with date, get placed next to APP location, not in .allfit directory!
 * sync dropin checkins (make them unified super type with workout checkins); show them in past workouts
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
-* BUG? duplicate workouts shown in table?! (although count is correct...)
 * ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
 * UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
-* only show date filter days for days where there are workouts (maybe also display total number of workouts that day, as in: "Wed 25.3. (513)")
 * fetch usage: https://api.one.fit/v2/en-nl/members/usage; display how many credits in total/left (date range until; how many days left)
 * make black font for dates in table white (as other cells) when selected
 
@@ -22,9 +23,8 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * render distance in km to my place (calculate via google during sync)
 * adjust column sizes in table
 * UI any clickable element with blue rounded background color
-* improve sync dialog:
-  * how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
-  * show report at the end: X foo inserted, Y bar deleted
+* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
+* improve sync dialog: show report at the end: X foo inserted, Y bar deleted
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 
 ### Low

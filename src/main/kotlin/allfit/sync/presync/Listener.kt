@@ -2,6 +2,10 @@ package allfit.sync.presync
 
 interface PreSyncListener {
     fun onSyncStart(steps: List<String>)
+
+    /**
+     * @param currentStep 0-base indexed
+     */
     fun onSyncStepDone(currentStep: Int)
     fun onSyncDetail(message: String)
     fun onSyncEnd()

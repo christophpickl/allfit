@@ -18,6 +18,7 @@ class Styles : Stylesheet() {
         val header1 by cssclass()
         val detailPrompt by cssclass()
         val htmlview by cssclass()
+        val small by cssclass()
 
         val blue = c("#477ADB")
     }
@@ -29,6 +30,9 @@ class Styles : Stylesheet() {
         }
         label {
             fontSize = 14.px
+        }
+        small {
+            fontSize = 10.px
         }
         header1 {
             fontSize = 28.px

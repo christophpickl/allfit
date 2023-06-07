@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.control.Button
 import javafx.scene.layout.Pane
+import javafx.scene.paint.Color
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
@@ -16,16 +17,31 @@ import tornadofx.hbox
 import tornadofx.label
 import tornadofx.tooltip
 
-fun Pane.labelDetail(prompt: String, value: ObservableValue<String>) {
+fun Pane.labelDetail(
+    prompt: String, value: ObservableValue<String>,
+    smallSize: Boolean = false,
+    textColor: Color? = null
+) {
     hbox {
-        labelPrompt(prompt)
-        label().bind(value)
+        labelPrompt(prompt, smallSize)
+        label().also { label ->
+            label.bind(value)
+            if (smallSize) {
+                label.addClass(Styles.small)
+            }
+            textColor?.let {
+                label.textFill = it
+            }
+        }
     }
 }
 
-fun Pane.labelPrompt(prompt: String) {
+fun Pane.labelPrompt(prompt: String, smallSize: Boolean = false) {
     label("$prompt: ") {
         addClass(Styles.detailPrompt)
+        if (smallSize) {
+            addClass(Styles.small)
+        }
     }
 }
 
