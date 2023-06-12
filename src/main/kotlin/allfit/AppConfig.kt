@@ -1,6 +1,6 @@
 package allfit
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class AppConfig(
     val mockClient: Boolean,
@@ -9,7 +9,7 @@ data class AppConfig(
     val mockDb: Boolean,
     val mockDataStore: Boolean,
     val useLogFileAppender: Boolean,
-    val dummyDate: LocalDate? = null,
+    val dummyDate: LocalDateTime? = null,
 ) {
 
     companion object {
@@ -19,7 +19,7 @@ data class AppConfig(
             syncEnabled = false,
             mockDb = false,
             mockDataStore = true,
-            dummyDate = LocalDate.parse("2023-05-26"),
+            dummyDate = LocalDateTime.parse("2023-05-26T14:23:21"),
             useLogFileAppender = false,
         )
         val prod = AppConfig(

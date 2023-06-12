@@ -16,11 +16,28 @@ import tornadofx.singleAssign
 
 data class DateSearchRequest(
     val date: ZonedDateTime,
-    val time: ZonedDateTime,
+    val time: ZonedDateTime?,
 ) : SubSearchRequest {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         workout.simpleWorkout.date.start.dayOfYear == date.dayOfYear &&
-                workout.simpleWorkout.date.start.hour >= time.hour
+                (if (time == null) true else {
+                    workout.simpleWorkout.date.start.hour >= time.hour
+                })
+    }
+}
+
+private sealed interface TimeOrAll {
+
+    fun format(): String
+    val time: ZonedDateTime?
+
+    object All : TimeOrAll {
+        override fun format() = "ALL"
+        override val time: ZonedDateTime? = null
+    }
+
+    class Time(override val time: ZonedDateTime) : TimeOrAll {
+        override fun format() = time.formatTime()
     }
 }
 
@@ -34,7 +51,7 @@ class DateSearchPane(
     private val dayEndsAt = 22
 
     private var dateInput: ComboBox<ZonedDateTime> by singleAssign()
-    private var timeInput: ComboBox<ZonedDateTime> by singleAssign()
+    private var timeInput: ComboBox<TimeOrAll> by singleAssign()
 
     override var searchFieldPane = searchField {
         title = "Date"
@@ -60,32 +77,31 @@ class DateSearchPane(
         }
         timeInput = combobox(values = buildTimes()) {
             cellFormat {
-                text = it.formatTime()
+                text = it.format()
             }
             setOnAction {
                 checkSearch()
             }
-            val timeHour = clock.now().hour
-            if (timeHour in dayStartsAt..dayEndsAt) {
-                selectionModel.select(timeHour - dayStartsAt)
-            } else {
-                selectionModel.selectFirst()
-            }
+            selectionModel.selectFirst()
         }
     }
 
-    private fun buildDays() = clock.todayBeginOfDay().toDaysUntil(searchIntoFutureInDays)
+    private fun buildDays() =
+        clock.todayBeginOfDay().toDaysUntil(searchIntoFutureInDays)
 
-    private fun buildTimes(): List<ZonedDateTime> {
+    private fun buildTimes(): List<TimeOrAll> {
         val today = clock.now().truncatedTo(ChronoUnit.DAYS)
-        return (dayStartsAt..dayEndsAt).map {
-            today.withHour(it)
+        return buildList {
+            this += TimeOrAll.All
+            this += (dayStartsAt..dayEndsAt).map {
+                TimeOrAll.Time(today.withHour(it))
+            }
         }
     }
 
     override fun buildSearchRequest() =
         DateSearchRequest(
             date = dateInput.selectedItem!!,
-            time = timeInput.selectedItem!!,
+            time = timeInput.selectedItem!!.time,
         )
 }

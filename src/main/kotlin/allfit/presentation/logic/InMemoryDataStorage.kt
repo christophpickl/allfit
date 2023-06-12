@@ -8,12 +8,12 @@ import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
+import allfit.service.Clock
 import allfit.service.InMemoryImageStorage
-import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import javafx.scene.image.Image
 
-object InMemoryDataStorage : DataStorage {
+class InMemoryDataStorage(clock: Clock) : DataStorage {
 
     private fun readImage(fileName: String) =
         Image(
@@ -22,15 +22,14 @@ object InMemoryDataStorage : DataStorage {
             PresentationConstants.tableImageWidth, 0.0, true, true
         )
 
-    private val now = ZonedDateTime.now()
-    private val defaultTime = ZonedDateTime.now().truncatedTo(ChronoUnit.HOURS).plusHours(2)
+    private val defaultTime = clock.now().truncatedTo(ChronoUnit.HOURS).plusHours(2)
     private val defaultDateRange = DateRange(defaultTime, defaultTime.plusHours(1))
     private val pastDateRange = DateRange(defaultTime.minusDays(1), defaultTime.minusDays(1).plusHours(1))
 
-    private const val partnerEmsId = 1
-    private const val partnerYogaId = 2
-    private const val partnerGymId = 3
-    private const val partnerFoobarId = 4
+    private val partnerEmsId = 1
+    private val partnerYogaId = 2
+    private val partnerGymId = 3
+    private val partnerFoobarId = 4
     private val workoutEms = SimpleWorkout(
         id = 1,
         partnerId = partnerEmsId,
@@ -50,7 +49,7 @@ object InMemoryDataStorage : DataStorage {
         about = "About yoga.",
         specifics = "Specifics.",
         address = "",
-        date = DateRange(now.plusDays(1), now.plusDays(1).plusHours(1)),
+        date = DateRange(defaultTime.plusDays(1), defaultTime.plusDays(1).plusHours(1)),
         image = readImage("workouts/yoga_yin.jpg"),
         url = "https://nu.nl",
         isReserved = false,

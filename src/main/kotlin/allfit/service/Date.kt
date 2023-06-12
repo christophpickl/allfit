@@ -18,10 +18,8 @@ object SystemClock : Clock {
     override fun now(): ZonedDateTime = ZonedDateTime.now(zoneAmsterdam)
 }
 
-class DummyDayClock(private val fixedDate: LocalDate) : Clock {
-    override fun now(): ZonedDateTime =
-        ZonedDateTime.now(zoneAmsterdam).withYear(fixedDate.year).withMonth(fixedDate.monthValue)
-            .withDayOfMonth(fixedDate.dayOfMonth).withHour(0).withMinute(0).withSecond(0)
+class DummyDayClock(private val fixedDateTime: LocalDateTime) : Clock {
+    override fun now(): ZonedDateTime = fixedDateTime.fromUtcToAmsterdamZonedDateTime()
 }
 
 private val zoneAmsterdam: ZoneId = ZoneId.of("Europe/Amsterdam")
@@ -49,9 +47,10 @@ fun LocalDateTime.fromUtcToAmsterdamZonedDateTime(): ZonedDateTime =
 
 fun LocalDate.toZonedDate(): ZonedDateTime = atStartOfDay(zoneAmsterdam)
 
-fun ZonedDateTime.toDaysUntil(numberOfDays: Int): List<ZonedDateTime> = (0 until numberOfDays).map {
-    this.plusDays(it.toLong())
-}
+fun ZonedDateTime.toDaysUntil(numberOfDays: Int): List<ZonedDateTime> =
+    (0 until numberOfDays).map {
+        this.plusDays(it.toLong())
+    }
 
 fun DateRange.formatStartAndEnd(showYear: Boolean) =
     start.format(if (showYear) dayDateYearAndTimeFormatter else dayDateAndTimeFormatter) + "-" + end.format(

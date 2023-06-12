@@ -7,16 +7,14 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 ### High Prio
 
 * sync DROPIN checkins (make them unified super type with workout checkins); show them in past workouts
-* ad search datetime: by default have no time selected
-* remember window size/position after next startup
-* disable closing app while still syncing. display info dialog.
-* make black font for dates in table white (as other cells) when selected
 
 ### Medium
 
-* make address clickable link to google maps (for now)
+* remember window size/position after next startup
+* disable closing app while still syncing. display info dialog.
+* make black font for dates in table white (as other cells) when selected
+* make address selectable text (PLUS: clickable link to google maps, for now)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
-* UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
 * search-filter for rating
 * adjust column sizes in table
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)

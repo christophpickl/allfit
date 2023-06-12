@@ -36,7 +36,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
         )
     }
     single {
-        if (config.mockDataStore) InMemoryDataStorage else ExposedDataStorage(
+        if (config.mockDataStore) InMemoryDataStorage(get()) else ExposedDataStorage(
             get(), get(), get(), get(), get(), get(), get()
         )
     }
