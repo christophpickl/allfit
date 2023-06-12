@@ -6,33 +6,37 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* sync DROPIN checkins (make them unified super type with workout checkins); show them in past workouts
+* ad search datetime: by default have no time selected
 * remember window size/position after next startup
 * disable closing app while still syncing. display info dialog.
 * old logs, rotated with date, get placed next to APP location, not in .allfit directory!
-* sync dropin checkins (make them unified super type with workout checkins); show them in past workouts
-* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
-* ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
-* UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
-* fetch usage: https://api.one.fit/v2/en-nl/members/usage; display how many credits in total/left (date range until; how many days left)
 * make black font for dates in table white (as other cells) when selected
 
 ### Medium
 
+* make address clickable link to google maps (for now)
+* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
+* UI BUG: h-space flickers! fix widths! (when images/notes have/have no scrollbars)
 * search-filter for rating
-* tornadofx UI tests
-* render distance in km to my place (calculate via google during sync)
 * adjust column sizes in table
-* UI any clickable element with blue rounded background color
-* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
-* improve sync dialog: show report at the end: X foo inserted, Y bar deleted
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 
 ### Low
 
+* tornadofx UI tests
+* ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
+* UI any clickable element with blue rounded background color
+* render distance in km to my place (calculate via google during sync)
 * make application start-able also when there is no internet connection
 * PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days to all existing data)
 * partners window, filter capability
 * make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k workouts, every 2 secs)
+
+### Nope
+
+* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
+* improve sync dialog: show report at the end: X foo inserted, Y bar deleted
 
 ### Future
 

@@ -18,7 +18,7 @@ data class AppConfig(
             preSyncEnabled = true,
             syncEnabled = false,
             mockDb = false,
-            mockDataStore = false,
+            mockDataStore = true,
             dummyDate = LocalDate.parse("2023-05-26"),
             useLogFileAppender = false,
         )

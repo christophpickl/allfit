@@ -148,8 +148,11 @@ object InMemoryDataStorage : DataStorage {
     private val partnerGym = FullPartner(
         SimplePartner(
             id = partnerGymId,
-            name = "The Gym",
-            categories = listOf("Gym"),
+            name = "The Gym & Co",
+            categories = listOf(
+                "Gym", "Yoga", "Abs", "Pilates", "Boxing", "Martial Arts", "Karate", "Massage",
+                "Nuri Nuri", "Whatever", "Nothing", "Everything", "Some", "Other", "Many", "Categories"
+            ),
             checkins = 1,
             rating = 3,
             isFavorited = false,

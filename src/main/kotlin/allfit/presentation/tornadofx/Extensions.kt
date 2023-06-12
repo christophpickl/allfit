@@ -14,3 +14,9 @@ fun Region.setAllHeights(heights: Double) {
     minHeight = heights
     prefHeight = heights
 }
+
+fun Region.setAllWidths(widths: Double) {
+    maxWidth = widths
+    minWidth = widths
+    prefWidth = widths
+}

@@ -20,12 +20,16 @@ import tornadofx.tooltip
 fun Pane.labelDetail(
     prompt: String, value: ObservableValue<String>,
     smallSize: Boolean = false,
-    textColor: Color? = null
+    textColor: Color? = null,
+    textMaxWidth: Double? = null,
 ) {
     hbox {
         labelPrompt(prompt, smallSize)
         label().also { label ->
             label.bind(value)
+            textMaxWidth?.let {
+                label.maxWidth = it
+            }
             if (smallSize) {
                 label.addClass(Styles.small)
             }

@@ -11,6 +11,7 @@ import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
+import allfit.presentation.tornadofx.setAllWidths
 import allfit.service.Clock
 import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
@@ -21,6 +22,7 @@ import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableView
 import javafx.scene.control.TextArea
 import javafx.scene.layout.Border
+import javafx.scene.layout.Priority
 import tornadofx.FXEvent
 import tornadofx.View
 import tornadofx.action
@@ -35,6 +37,7 @@ import tornadofx.combobox
 import tornadofx.enableWhen
 import tornadofx.fixedWidth
 import tornadofx.hbox
+import tornadofx.hgrow
 import tornadofx.imageview
 import tornadofx.label
 import tornadofx.onDoubleClick
@@ -67,17 +70,20 @@ class PartnerDetailView : View() {
         hbox {
             scrollpane(fitToHeight = true) {
                 setAllHeights(ViewConstants.bigImageHeight)
+                setAllWidths(ViewConstants.bigImageHeight)
                 imageview(mainViewModel.selectedPartner.image)
             }
 
             vbox {
-                label("Partner") {
+//                background = Background.fill(Color.RED)
+                hgrow = Priority.ALWAYS
+                label {
                     bind(mainViewModel.selectedPartner.name)
                     addClass(Styles.header1)
                 }
 
-                labelDetail("Categories", mainViewModel.selectedPartner.categoriesRendered)
-                labelDetail("Facilities", mainViewModel.selectedPartner.facilitiesRendered)
+                labelDetail("Categories", mainViewModel.selectedPartner.categoriesRendered, textMaxWidth = 300.0)
+                labelDetail("Facilities", mainViewModel.selectedPartner.facilitiesRendered, textMaxWidth = 300.0)
 
                 labelPrompt("Description")
                 textarea {
