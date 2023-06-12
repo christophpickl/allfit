@@ -10,7 +10,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * ad search datetime: by default have no time selected
 * remember window size/position after next startup
 * disable closing app while still syncing. display info dialog.
-* old logs, rotated with date, get placed next to APP location, not in .allfit directory!
 * make black font for dates in table white (as other cells) when selected
 
 ### Medium

@@ -12,8 +12,8 @@ import ch.qos.logback.core.filter.Filter
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.spi.FilterReply
-import org.slf4j.LoggerFactory
 import java.io.File
+import org.slf4j.LoggerFactory
 
 fun reconfigureLog(useFileAppender: Boolean) {
     val context = LoggerFactory.getILoggerFactory() as LoggerContext
@@ -36,7 +36,8 @@ fun reconfigureLog(useFileAppender: Boolean) {
 }
 
 private fun Logger.addFileAppender(context: LoggerContext) {
-    val targetLogFile = File(FileResolver.resolve(DirectoryEntry.ApplicationLogs), "allfit.log")
+    val logsDir = FileResolver.resolve(DirectoryEntry.ApplicationLogs)
+    val targetLogFile = File(logsDir, "allfit.log")
     println("[AllFit] Writing logs to: ${targetLogFile.absolutePath}")
     addAppender(RollingFileAppender<ILoggingEvent>().also { appender ->
         appender.context = context
@@ -48,8 +49,8 @@ private fun Logger.addFileAppender(context: LoggerContext) {
         appender.rollingPolicy = TimeBasedRollingPolicy<ILoggingEvent>().also { policy ->
             policy.context = context
             policy.setParent(appender)
-            policy.fileNamePattern = "allfit-%d{yyyy-MM-dd}.log"
-            policy.maxHistory = 10
+            policy.fileNamePattern = "${logsDir.absolutePath}/allfit-%d{yyyy-MM-dd}.log"
+            policy.maxHistory = 3
             policy.start()
         }
         appender.start()
