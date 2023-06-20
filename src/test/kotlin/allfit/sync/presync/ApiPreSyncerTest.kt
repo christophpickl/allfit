@@ -38,20 +38,20 @@ class ApiPreSyncerTest : DescribeSpec() {
                 preSyncer.sync()
 
                 usageRepo.storedUsage shouldBe UsageEntity(
-                    total = usageJson.total,
-                    noShows = usageJson.no_shows,
-                    from = usageJson.period.display_from.toUtcLocalDateTime(),
-                    until = usageJson.period.display_till.toUtcLocalDateTime(),
-                    periodCap = usageJson.period.product.findRuleAmountByType(
+                    total = usageJson.data.total,
+                    noShows = usageJson.data.no_shows,
+                    from = usageJson.data.period.display_from.toUtcLocalDateTime(),
+                    until = usageJson.data.period.display_till.toUtcLocalDateTime(),
+                    periodCap = usageJson.data.period.product.findRuleAmountByType(
                         UsageProductRuleJson.Types.PERIOD_CAP
                     ),
-                    maxCheckInsOrReservationsPerPeriod = usageJson.period.product.findRuleAmountByType(
+                    maxCheckInsOrReservationsPerPeriod = usageJson.data.period.product.findRuleAmountByType(
                         UsageProductRuleJson.Types.MAX_PER_PERIOD
                     ),
-                    totalCheckInsOrReservationsPerDay = usageJson.period.product.findRuleAmountByType(
+                    totalCheckInsOrReservationsPerDay = usageJson.data.period.product.findRuleAmountByType(
                         UsageProductRuleJson.Types.TOTAL_PER_DAY
                     ),
-                    maxReservations = usageJson.period.product.findRuleAmountByType(
+                    maxReservations = usageJson.data.period.product.findRuleAmountByType(
                         UsageProductRuleJson.Types.MAX_RESERVATIONS
                     ),
                 )

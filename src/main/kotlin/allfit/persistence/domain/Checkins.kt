@@ -1,11 +1,17 @@
 package allfit.persistence.domain
 
-import mu.KotlinLogging.logger
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
+import mu.KotlinLogging.logger
+import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.alias
+import org.jetbrains.exposed.sql.count
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.javatime.datetime
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
 
 interface CheckinsRepository {
     fun selectAll(): List<CheckinEntity>

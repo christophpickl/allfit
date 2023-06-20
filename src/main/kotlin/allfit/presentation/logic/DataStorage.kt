@@ -2,6 +2,7 @@ package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
 import allfit.persistence.domain.CategoriesRepo
+import allfit.persistence.domain.CheckinType
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersRepo
@@ -9,6 +10,7 @@ import allfit.persistence.domain.ReservationsRepo
 import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.presentation.PartnerModifications
+import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
@@ -113,11 +115,14 @@ class ExposedDataStorage(
         simplePartners.map { simplePartner ->
             FullPartner(
                 simplePartner = simplePartner,
-                visitedWorkouts = simpleWorkouts.filter {
+                pastCheckins = simpleWorkouts.filter {
                     it.partnerId == simplePartner.id &&
                             it.date.start <= now &&
                             visitedWorkoutIds.contains(it.id)
-                },
+                }.map {
+                    Checkin.WorkoutCheckin(it)
+                } + dropinCheckins.filter { it.partnerId == simplePartner.id }
+                    .map { Checkin.DropinCheckin(it.createdAt.fromUtcToAmsterdamZonedDateTime()) },
                 upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
             )
         }
@@ -127,8 +132,16 @@ class ExposedDataStorage(
         fullPartners.associateBy { it.id }
     }
 
+    private val checkins by lazy {
+        checkinsRepository.selectAll()
+    }
+
     private val visitedWorkoutIds by lazy {
-        checkinsRepository.selectAll().mapNotNull { it.workoutId }
+        checkins.mapNotNull { it.workoutId }
+    }
+
+    private val dropinCheckins by lazy {
+        checkins.filter { it.type == CheckinType.DROP_IN }
     }
 
     override fun getCategories() =

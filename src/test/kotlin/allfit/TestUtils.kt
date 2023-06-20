@@ -9,7 +9,7 @@ import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.string
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 val uuid1: UUID = UUID.fromString("00000000-0000-0000-0000-000000000001")
 val uuid2: UUID = UUID.fromString("00000000-0000-0000-0000-000000000002")
@@ -25,5 +25,5 @@ fun Arb.Companion.intAsString() = arbitrary {
 
 object TestDates {
     val now: LocalDateTime = LocalDateTime.parse("2023-05-22T13:53:21")
-    val clock: Clock = DummyDayClock(now.toLocalDate())
+    val clock: Clock = DummyDayClock(now)
 }

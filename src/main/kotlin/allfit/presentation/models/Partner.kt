@@ -139,7 +139,7 @@ class SimplePartner(
 
 data class FullPartner(
     val simplePartner: SimplePartner,
-    val visitedWorkouts: List<SimpleWorkout>,
+    val pastCheckins: List<Checkin>,
     val upcomingWorkouts: List<SimpleWorkout>,
 ) : Partner by simplePartner {
     companion object {
@@ -148,7 +148,7 @@ data class FullPartner(
                 id = 0,
                 name = "Partner",
                 url = "",
-                categories = listOf(),
+                categories = emptyList(),
                 note = "Note",
                 description = "Description",
                 facilities = "Facilities",
@@ -159,8 +159,8 @@ data class FullPartner(
                 isHidden = false,
                 image = Images.prototype,
             ),
-            visitedWorkouts = listOf(),
-            upcomingWorkouts = listOf()
+            pastCheckins = emptyList(),
+            upcomingWorkouts = emptyList()
         )
     }
 }

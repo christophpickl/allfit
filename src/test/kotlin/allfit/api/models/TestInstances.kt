@@ -253,9 +253,11 @@ fun Arb.Companion.partnerWorkoutCheckinJson() = arbitrary {
 
 fun Arb.Companion.usageJsonRoot() = arbitrary {
     UsageJsonRoot(
-        total = int(min = 1, max = 10).next(),
-        no_shows = int(min = 1, max = 10).next(),
-        period = usagePeriodJson().next()
+        data = UsageJson(
+            total = int(min = 1, max = 10).next(),
+            no_shows = int(min = 1, max = 10).next(),
+            period = usagePeriodJson().next(),
+        )
     )
 }
 

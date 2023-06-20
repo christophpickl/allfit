@@ -6,7 +6,6 @@ import allfit.service.fromUtcToAmsterdamZonedDateTime
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class DateRangeTest : StringSpec() {
@@ -36,5 +35,5 @@ class DateRangeTest : StringSpec() {
     }
 
     private fun clockWithYear(year: Int) =
-        DummyDayClock(LocalDate.now().withYear(year))
+        DummyDayClock(LocalDateTime.now().withYear(year))
 }

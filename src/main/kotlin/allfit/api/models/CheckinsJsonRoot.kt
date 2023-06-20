@@ -3,9 +3,9 @@
 
 package allfit.api.models
 
+import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import java.time.ZonedDateTime
 
 @Serializable
 data class CheckinsJsonRoot(
@@ -44,7 +44,6 @@ data class CheckinJson(
         }
     }
 
-    val isTypeWorkout = type == TYPE_WORKOUT
     val typeSafePartner = when (type) {
         TYPE_WORKOUT -> workout!!.partner
         TYPE_DROPIN -> partner!!

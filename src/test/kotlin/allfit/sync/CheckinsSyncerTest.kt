@@ -57,14 +57,14 @@ class CheckinsSyncerTest : StringSpec() {
     }
 
     init {
-        "Given nothing but workout-checkin When sync Then insert workout" {
+        "Given workout-checkin When sync Then insert workout" {
             client.mockCheckins(checkinJsonWorkout)
 
             syncer.sync()
 
             workoutsRepo.singleShould().id shouldBe checkinJsonWorkout.workout!!.id
         }
-        "Given nothing but workout-checkin When sync Then insert workout and partner image" {
+        "Given workout-checkin When sync Then insert images" {
             client.mockCheckins(checkinJsonWorkout)
 
             syncer.sync()
@@ -79,35 +79,21 @@ class CheckinsSyncerTest : StringSpec() {
                 checkinJsonWorkout.workout!!.id.toString()
             )
         }
-        "Given nothing but workout-checkin When sync Then insert partner" {
+        "Given workout-checkin When sync Then insert partner" {
             client.mockCheckins(checkinJsonWorkout)
 
             syncer.sync()
 
             partnersRepo.singleShould().id shouldBe checkinJsonWorkout.workout!!.partner.id
         }
-        "Given nothing but dropin-checkin When sync Then insert partner" {
-            client.mockCheckins(checkinJsonDropin)
-
-            syncer.sync()
-
-            partnersRepo.singleShould().id shouldBe checkinJsonDropin.partner!!.id
-        }
-        "Given nothing but workout-checkin When sync Then insert category" {
+        "Given workout-checkin When sync Then insert category" {
             client.mockCheckins(checkinJsonWorkout)
 
             syncer.sync()
 
             categoriesRepo.singleShould().id shouldBe checkinJsonWorkout.workout!!.partner.category.id
         }
-        "Given nothing but dropin-checkin When sync Then insert category" {
-            client.mockCheckins(checkinJsonDropin)
-
-            syncer.sync()
-
-            categoriesRepo.singleShould().id shouldBe checkinJsonDropin.partner!!.category.id
-        }
-        "Given nothing but workout-checkin When sync Then insert checkin" {
+        "Given workout-checkin When sync Then insert checkin" {
             client.mockCheckins(checkinJsonWorkout)
 
             syncer.sync()
@@ -120,7 +106,31 @@ class CheckinsSyncerTest : StringSpec() {
                 workoutId = checkinJsonWorkout.workout!!.id,
             )
         }
-        "Given nothing but dropin-checkin When sync Then insert checkin" {
+        "Given workout-checkout exists When sync Then skip it" {
+            val yetExisting = Arb.checkinEntityWorkout().next().copy(id = UUID.fromString(checkinJson.uuid))
+            checkinsRepo.insertAll(listOf(yetExisting))
+            client.mockCheckins(checkinJson)
+
+            syncer.sync()
+
+            checkinsRepo singletonShouldBe yetExisting
+        }
+
+        "Given dropin-checkin When sync Then insert partner" {
+            client.mockCheckins(checkinJsonDropin)
+
+            syncer.sync()
+
+            partnersRepo.singleShould().id shouldBe checkinJsonDropin.partner!!.id
+        }
+        "Given dropin-checkin When sync Then insert category" {
+            client.mockCheckins(checkinJsonDropin)
+
+            syncer.sync()
+
+            categoriesRepo.singleShould().id shouldBe checkinJsonDropin.partner!!.category.id
+        }
+        "Given dropin-checkin When sync Then insert checkin" {
             client.mockCheckins(checkinJsonDropin)
 
             syncer.sync()
@@ -151,15 +161,6 @@ class CheckinsSyncerTest : StringSpec() {
             partnersRepo singletonShouldBe partner
             workoutsRepo singletonShouldBe workout
             checkinsRepo.singleShould().id.toString() shouldBe checkinJsonWorkout.uuid
-        }
-        "Given workout exists When sync Then skip it" {
-            val yetExisting = Arb.checkinEntityWorkout().next().copy(id = UUID.fromString(checkinJson.uuid))
-            checkinsRepo.insertAll(listOf(yetExisting))
-            client.mockCheckins(checkinJson)
-
-            syncer.sync()
-
-            checkinsRepo singletonShouldBe yetExisting
         }
     }
 

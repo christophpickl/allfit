@@ -20,6 +20,7 @@ import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
 import allfit.persistence.testInfra.withFutureStart
 import allfit.presentation.PartnerModifications
+import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
@@ -175,7 +176,18 @@ class ExposedDataStorageTest : DescribeSpec() {
                 val fullPartner = dataStorage().getPartnerById(givenPartner.id)
 
                 fullPartner.checkins shouldBe 1
-                fullPartner.visitedWorkouts.map { it.id }.shouldBeSingleton().first() shouldBe givenWorkout.id
+                fullPartner.pastCheckins.filterIsInstance<Checkin.WorkoutCheckin>().map { it.workout.id }
+                    .shouldBeSingleton().first() shouldBe givenWorkout.id
+            }
+
+            it("Given past workout for partner with dropin Then return that past checkin") {
+                val (_, givenPartner, _) = ExposedTestRepo.insertCategoryPartnerAndDropinCheckin()
+
+                val fullPartner = dataStorage().getPartnerById(givenPartner.id)
+
+                fullPartner.checkins shouldBe 1
+                fullPartner.pastCheckins.filterIsInstance<Checkin.DropinCheckin>().map { it.date }
+                    .shouldBeSingleton()
             }
 
             it("Given past workout for partner without checkin Then return empty visited workouts") {
@@ -186,7 +198,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                 val fullPartner = dataStorage().getPartnerById(givenPartner.id)
 
                 fullPartner.checkins shouldBe 0
-                fullPartner.visitedWorkouts.shouldBeEmpty()
+                fullPartner.pastCheckins.shouldBeEmpty()
             }
         }
 
@@ -211,7 +223,7 @@ class ExposedDataStorageTest : DescribeSpec() {
         }
 
         describe("When updatePartner") {
-            it("Given partner  Then updated in database") {
+            it("Given partner Then updated in database") {
                 val (_, modifications) = insertPartnerAndGetModifications()
 
                 dataStorage().updatePartner(modifications)
@@ -303,7 +315,7 @@ private fun PartnerEntity.toFullPartner(
     visitedWorkouts: List<SimpleWorkout>,
     upcomingWorkouts: List<SimpleWorkout>,
 ) = FullPartner(
-    visitedWorkouts = visitedWorkouts,
+    pastCheckins = visitedWorkouts.map { Checkin.WorkoutCheckin(it) },
     upcomingWorkouts = upcomingWorkouts,
     simplePartner = toSimplePartner(image, checkins, categories)
 )

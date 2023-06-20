@@ -7,9 +7,12 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 ### High Prio
 
 * sync DROPIN checkins (make them unified super type with workout checkins); show them in past workouts
+* in partners window: workouts in this period (as they are max 4)
 
 ### Medium
 
+* new window: all past workouts; all reserved workouts (maybe in one window together?!)
+* in partners window: render PartnerDetailsView (to see all offered workouts and edit the partner)
 * remember window size/position after next startup
 * disable closing app while still syncing. display info dialog.
 * make black font for dates in table white (as other cells) when selected

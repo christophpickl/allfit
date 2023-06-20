@@ -56,3 +56,6 @@ fun DateRange.formatStartAndEnd(showYear: Boolean) =
     start.format(if (showYear) dayDateYearAndTimeFormatter else dayDateAndTimeFormatter) + "-" + end.format(
         timeOnlyFormatter
     )
+
+fun ZonedDateTime.toPrettyString(clock: Clock): String =
+    format(if (year != clock.now().year) dayDateYearAndTimeFormatter else dayDateAndTimeFormatter)

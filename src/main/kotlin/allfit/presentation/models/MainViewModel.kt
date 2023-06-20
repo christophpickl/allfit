@@ -45,7 +45,7 @@ class CurrentPartnerViewModel : ViewModel() {
     val description = SimpleStringProperty()
     val isFavorited = SimpleBooleanProperty()
     val isWishlisted = SimpleBooleanProperty()
-    val visitedWorkouts = mutableListOf<SimpleWorkout>().toObservable()
+    val pastCheckins = mutableListOf<Checkin>().toObservable()
     val upcomingWorkouts = mutableListOf<SimpleWorkout>().toObservable()
 
     fun initPartner(partner: FullPartner) {
@@ -60,7 +60,7 @@ class CurrentPartnerViewModel : ViewModel() {
         description.set(partner.description)
         isFavorited.set(partner.isFavorited)
         isWishlisted.set(partner.isWishlisted)
-        visitedWorkouts.setAll(partner.visitedWorkouts)
+        pastCheckins.setAll(partner.pastCheckins)
         upcomingWorkouts.setAll(partner.upcomingWorkouts)
     }
 }

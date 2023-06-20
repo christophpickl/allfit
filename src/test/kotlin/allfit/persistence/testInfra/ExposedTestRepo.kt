@@ -1,6 +1,16 @@
 package allfit.persistence.testInfra
 
-import allfit.persistence.domain.*
+import allfit.persistence.domain.CategoriesTable
+import allfit.persistence.domain.CategoryEntity
+import allfit.persistence.domain.CheckinEntity
+import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.ExposedCheckinsRepository
+import allfit.persistence.domain.ExposedPartnersRepo
+import allfit.persistence.domain.ExposedReservationsRepo
+import allfit.persistence.domain.ExposedWorkoutsRepo
+import allfit.persistence.domain.PartnerEntity
+import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.domain.WorkoutEntity
 import allfit.service.Quadrupel
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
@@ -97,9 +107,10 @@ object ExposedTestRepo {
     fun insertCategoryPartnerAndDropinCheckin(
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
+        withCheckin: (CheckinEntity) -> CheckinEntity = { it },
     ): Triple<CategoryEntity, PartnerEntity, CheckinEntity> {
         val (category, partner) = insertCategoryAndPartner(withCategory, withPartner)
-        val checkin = Arb.checkinEntityDropin().next().copy(partnerId = partner.id)
+        val checkin = Arb.checkinEntityDropin().next().copy(partnerId = partner.id).let(withCheckin)
         ExposedCheckinsRepository.insertAll(listOf(checkin))
         return Triple(category, partner, checkin)
     }

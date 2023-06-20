@@ -3,6 +3,7 @@ package allfit.presentation.logic
 import allfit.api.OnefitUtils
 import allfit.presentation.PartnerModifications
 import allfit.presentation.PresentationConstants
+import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
@@ -22,14 +23,15 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             PresentationConstants.tableImageWidth, 0.0, true, true
         )
 
-    private val defaultTime = clock.now().truncatedTo(ChronoUnit.HOURS).plusHours(2)
-    private val defaultDateRange = DateRange(defaultTime, defaultTime.plusHours(1))
-    private val pastDateRange = DateRange(defaultTime.minusDays(1), defaultTime.minusDays(1).plusHours(1))
+    private val defaultDateTime = clock.now().truncatedTo(ChronoUnit.HOURS).plusHours(2)
+    private val defaultDateRange = DateRange(defaultDateTime, defaultDateTime.plusHours(1))
+    private val pastDateRange = DateRange(defaultDateTime.minusDays(1), defaultDateTime.minusDays(1).plusHours(1))
 
     private val partnerEmsId = 1
     private val partnerYogaId = 2
     private val partnerGymId = 3
     private val partnerFoobarId = 4
+
     private val workoutEms = SimpleWorkout(
         id = 1,
         partnerId = partnerEmsId,
@@ -49,7 +51,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         about = "About yoga.",
         specifics = "Specifics.",
         address = "",
-        date = DateRange(defaultTime.plusDays(1), defaultTime.plusDays(1).plusHours(1)),
+        date = DateRange(defaultDateTime.plusDays(1), defaultDateTime.plusDays(1).plusHours(1)),
         image = readImage("workouts/yoga_yin.jpg"),
         url = "https://nu.nl",
         isReserved = false,
@@ -61,7 +63,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         about = "",
         specifics = "",
         address = "",
-        date = DateRange(defaultTime.plusHours(3), defaultTime.plusHours(4).plusMinutes(30)),
+        date = DateRange(defaultDateTime.plusHours(3), defaultDateTime.plusHours(4).plusMinutes(30)),
         image = readImage("workouts/yoga_hot.jpg"),
         url = "https://nu.nl",
         isReserved = false,
@@ -122,7 +124,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Super intense nice <b>workout</b> with HTML.",
             facilities = "",
         ),
-        visitedWorkouts = listOf(),
+        pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutEms),
     )
     private val partnerYoga = FullPartner(
@@ -141,7 +143,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Esoteric stuff.",
             facilities = "Mats",
         ),
-        visitedWorkouts = listOf(),
+        pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot)
     )
     private val partnerGym = FullPartner(
@@ -152,7 +154,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
                 "Gym", "Yoga", "Abs", "Pilates", "Boxing", "Martial Arts", "Karate", "Massage",
                 "Nuri Nuri", "Whatever", "Nothing", "Everything", "Some", "Other", "Many", "Categories"
             ),
-            checkins = 1,
+            checkins = 2,
             rating = 3,
             isFavorited = false,
             isWishlisted = false,
@@ -163,7 +165,10 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Train your body.",
             facilities = "Shower,Locker",
         ),
-        visitedWorkouts = listOf(visitedWorkoutGym),
+        listOf(
+            Checkin.DropinCheckin(defaultDateTime.minusDays(7)),
+            Checkin.WorkoutCheckin(visitedWorkoutGym)
+        ),
         upcomingWorkouts = listOf(workoutGym)
     )
     private val partnerFoobar = FullPartner(
@@ -182,7 +187,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Haha.",
             facilities = "",
         ),
-        visitedWorkouts = listOf(),
+        pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutJump)
     )
     private val allFullPartners = listOf(partnerEms, partnerYoga, partnerGym, partnerFoobar)
@@ -199,7 +204,8 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         FullWorkout(
             simpleWorkout = simpleWorkout,
             partner = allFullPartners.first { partner ->
-                partner.visitedWorkouts.map { it.id }.contains(simpleWorkout.id)
+                partner.pastCheckins.filterIsInstance<Checkin.WorkoutCheckin>().map { it.workout.id }
+                    .contains(simpleWorkout.id)
             }.simplePartner,
         )
     }

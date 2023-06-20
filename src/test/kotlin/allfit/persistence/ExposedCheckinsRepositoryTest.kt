@@ -3,7 +3,12 @@ package allfit.persistence
 import allfit.persistence.domain.ExposedCheckinsRepository
 import allfit.persistence.domain.ExposedWorkoutsRepo
 import allfit.persistence.domain.PartnerAndCheckins
-import allfit.persistence.testInfra.*
+import allfit.persistence.testInfra.DbListener
+import allfit.persistence.testInfra.ExposedTestRepo
+import allfit.persistence.testInfra.checkinEntity
+import allfit.persistence.testInfra.checkinEntityDropin
+import allfit.persistence.testInfra.checkinEntityWorkout
+import allfit.persistence.testInfra.workoutEntity
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -14,19 +19,16 @@ import io.kotest.property.arbitrary.next
 class ExposedCheckinsRepositoryTest : StringSpec() {
 
     private val repo = ExposedCheckinsRepository
+    private val checkin = Arb.checkinEntity().next()
+    private val checkinWorkout = Arb.checkinEntityWorkout().next()
+    private val checkinDropin = Arb.checkinEntityDropin().next()
 
     init {
         extension(DbListener())
 
-        "When insert workout-checkin without foreign references Then fail" {
+        "When insert checkin without foreign references Then fail" {
             shouldThrow<Exception> {
-                repo.insertAll(listOf(Arb.checkinEntityWorkout().next()))
-            }
-        }
-
-        "When insert dropin-checkin without foreign references Then fail" {
-            shouldThrow<Exception> {
-                repo.insertAll(listOf(Arb.checkinEntityDropin().next()))
+                repo.insertAll(listOf(checkin))
             }
         }
 
@@ -65,10 +67,7 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
             val workout2 = Arb.workoutEntity().next().copy(partnerId = partner.id)
             ExposedWorkoutsRepo.insertAll(listOf(workout2))
             ExposedCheckinsRepository.insertAll(
-                listOf(
-                    Arb.checkinEntityWorkout().next()
-                        .copy(partnerId = partner.id, workoutId = workout2.id)
-                )
+                listOf(checkinWorkout.copy(partnerId = partner.id, workoutId = workout2.id))
             )
 
             val checkins = repo.selectCountForPartners()
