@@ -15,10 +15,10 @@ data class AppConfig(
     companion object {
         val develop = AppConfig(
             mockClient = true,
-            preSyncEnabled = true,
+            preSyncEnabled = false,
             syncEnabled = false,
             mockDb = false,
-            mockDataStore = false,
+            mockDataStore = true,
 //            dummyDate = null,
             dummyDate = LocalDateTime.parse("2023-05-26T14:23:21"),
             useLogFileAppender = false,

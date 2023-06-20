@@ -69,6 +69,7 @@ class MainView : View() {
                 hgrow = Priority.ALWAYS
                 hbox {
                     add(searchView)
+                    hgrow = Priority.NEVER
                     add(usageView)
                 }
             }

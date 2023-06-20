@@ -6,8 +6,8 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* sync DROPIN checkins (make them unified super type with workout checkins); show them in past workouts
-* in partners window: workouts in this period (as they are max 4)
+* selection to filter future/past/both workouts (before that, also sync drop-ins)
+* filter for partners table: only checkouts > 0
 
 ### Medium
 

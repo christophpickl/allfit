@@ -28,6 +28,23 @@ class InMemoryUsageRepository : UsageRepository {
         storedUsage!!
 }
 
+class MockDateAwareUsageRepository(
+    private val delegate: UsageRepository,
+    private val mockDate: LocalDateTime?
+) : UsageRepository {
+
+    override fun upsert(usage: UsageEntity) {
+        delegate.upsert(usage)
+    }
+
+    override fun selectOne(): UsageEntity =
+        delegate.selectOne().let {
+            if (mockDate == null) it
+            else it.copy(from = mockDate.withDayOfMonth(1), until = mockDate.withDayOfMonth(27))
+        }
+
+}
+
 object ExposedUsageRepository : UsageRepository {
 
     private val log = logger {}

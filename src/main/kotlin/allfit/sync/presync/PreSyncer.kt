@@ -6,6 +6,7 @@ import allfit.api.models.UsageProductJson
 import allfit.api.models.UsageProductRuleJson
 import allfit.persistence.domain.UsageEntity
 import allfit.persistence.domain.UsageRepository
+import allfit.service.endOfDay
 import allfit.service.toUtcLocalDateTime
 import kotlinx.coroutines.runBlocking
 
@@ -50,7 +51,7 @@ private fun UsageJson.toUsageEntity() = UsageEntity(
     total = total,
     noShows = no_shows,
     from = period.display_from.toUtcLocalDateTime(),
-    until = period.display_till.toUtcLocalDateTime(),
+    until = period.display_till.toUtcLocalDateTime().endOfDay(),
     periodCap = period.product.findByType(UsageProductRuleJson.Types.PERIOD_CAP),
     maxCheckInsOrReservationsPerPeriod = period.product.findByType(UsageProductRuleJson.Types.MAX_PER_PERIOD),
     totalCheckInsOrReservationsPerDay = period.product.findByType(UsageProductRuleJson.Types.TOTAL_PER_DAY),

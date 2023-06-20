@@ -2,6 +2,7 @@ package allfit.presentation.partnersview
 
 import allfit.presentation.Styles
 import allfit.presentation.models.PartnersViewModel
+import allfit.presentation.models.UsageModel
 import javafx.scene.layout.Priority
 import tornadofx.App
 import tornadofx.View
@@ -24,7 +25,8 @@ class PartnersWindow : View() {
     }
 
     private val partnersViewModel: PartnersViewModel by inject()
-    private val partnersTable = PartnersTable()
+    private val usageModel: UsageModel by inject()
+    private val partnersTable = PartnersTable(usageModel.usage.get())
 
     init {
         title = "Partners"

@@ -15,6 +15,8 @@ import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.InMemoryUsageRepository
 import allfit.persistence.domain.InMemoryWorkoutsRepo
+import allfit.persistence.domain.MockDateAwareUsageRepository
+import allfit.persistence.domain.UsageRepository
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import mu.KotlinLogging.logger
@@ -49,8 +51,11 @@ fun persistenceModule(config: AppConfig) = module {
     single {
         if (config.mockDb) InMemoryCheckinsRepository().insertMockData() else ExposedCheckinsRepository
     }
-    single {
-        if (config.mockDb) InMemoryUsageRepository().insertMockData() else ExposedUsageRepository
+    single<UsageRepository> {
+        MockDateAwareUsageRepository(
+            if (config.mockDb) InMemoryUsageRepository().insertMockData() else ExposedUsageRepository,
+            config.dummyDate
+        )
     }
 }
 
