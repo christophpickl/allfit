@@ -33,8 +33,11 @@ class MainController : Controller() {
     private val clock: Clock by di()
 
     init {
-        mainViewModel.selectedPartner.initPartner(FullPartner.prototype)
+        val usage = usageRepo.selectOne().toUsage()
+        mainViewModel.selectedPartner.initPartner(FullPartner.prototype, usage)
         mainViewModel.selectedWorkout.set(FullWorkout.prototype)
+        usageModel.today.set(clock.now())
+        usageModel.usage.set(usage)
 
         safeSubscribe<ApplicationStartedFxEvent>() {
             logger.debug { "Application started." }
@@ -44,9 +47,6 @@ class MainController : Controller() {
             partnersViewModel.allRawPartners.addAll(dataStorage.getPartners())
             mainViewModel.sortedFilteredWorkouts.predicate = MainViewModel.DEFAULT_WORKOUT_PREDICATE
 
-            val usage = usageRepo.selectOne().toUsage()
-            usageModel.today.set(clock.now())
-            usageModel.usage.set(usage)
         }
         safeSubscribe<SearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }
@@ -56,7 +56,7 @@ class MainController : Controller() {
             val workout = it.workout
             logger.debug { "Change workout: $workout" }
             mainViewModel.selectedWorkout.set(workout)
-            mainViewModel.selectedPartner.initPartner(dataStorage.getPartnerById(workout.partner.id))
+            mainViewModel.selectedPartner.initPartner(dataStorage.getPartnerById(workout.partner.id), usage)
         }
         safeSubscribe<PartnerWorkoutSelectedFXEvent>() {
             val workout = it.workout

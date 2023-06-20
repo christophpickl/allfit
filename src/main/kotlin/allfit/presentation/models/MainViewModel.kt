@@ -12,6 +12,7 @@ import tornadofx.ViewModel
 import tornadofx.toObservable
 
 class MainViewModel : ViewModel() {
+
     val allWorkouts = FXCollections.observableArrayList<FullWorkout>()!!
     val sortedFilteredWorkouts = SortedFilteredList<FullWorkout>(allWorkouts)
     val selectedPartner = CurrentPartnerViewModel()
@@ -33,6 +34,7 @@ class CurrentPartnerViewModel : ViewModel() {
     val note = SimpleStringProperty()
     val url = SimpleStringProperty()
     val facilities = SimpleStringProperty()
+    val availability = SimpleStringProperty()
     val facilitiesRendered: ObservableValue<String> = facilities.map { facilities ->
         facilities.split(",").joinToString(", ").let {
             it.ifEmpty { "None" }
@@ -48,7 +50,7 @@ class CurrentPartnerViewModel : ViewModel() {
     val pastCheckins = mutableListOf<Checkin>().toObservable()
     val upcomingWorkouts = mutableListOf<SimpleWorkout>().toObservable()
 
-    fun initPartner(partner: FullPartner) {
+    fun initPartner(partner: FullPartner, usage: Usage) {
         id.set(partner.id)
         name.set(partner.name)
         note.set(partner.note)
@@ -62,5 +64,6 @@ class CurrentPartnerViewModel : ViewModel() {
         isWishlisted.set(partner.isWishlisted)
         pastCheckins.setAll(partner.pastCheckins)
         upcomingWorkouts.setAll(partner.upcomingWorkouts)
+        availability.set(partner.availability(usage).toPrettyString())
     }
 }
