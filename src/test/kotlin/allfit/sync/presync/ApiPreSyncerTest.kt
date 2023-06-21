@@ -6,6 +6,7 @@ import allfit.api.models.UsageProductRuleJson
 import allfit.api.models.usageJsonRoot
 import allfit.persistence.domain.InMemoryUsageRepository
 import allfit.persistence.domain.UsageEntity
+import allfit.service.endOfDay
 import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
@@ -41,7 +42,7 @@ class ApiPreSyncerTest : DescribeSpec() {
                     total = usageJson.data.total,
                     noShows = usageJson.data.no_shows,
                     from = usageJson.data.period.display_from.toUtcLocalDateTime(),
-                    until = usageJson.data.period.display_till.toUtcLocalDateTime(),
+                    until = usageJson.data.period.display_till.toUtcLocalDateTime().endOfDay(),
                     periodCap = usageJson.data.period.product.findRuleAmountByType(
                         UsageProductRuleJson.Types.PERIOD_CAP
                     ),
