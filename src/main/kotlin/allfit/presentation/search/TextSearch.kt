@@ -1,24 +1,28 @@
 package allfit.presentation.search
 
-import allfit.presentation.models.FullWorkout
 import javafx.scene.control.TextField
 import mu.KotlinLogging.logger
 import tornadofx.singleAssign
 import tornadofx.textfield
 
-data class TextSearchRequest(
+interface HasTextSearchable {
+    val searchableTerms: List<String>
+}
+
+data class TextSearchRequest<T : HasTextSearchable>(
     /** already all lower-cased */
-    val terms: List<String>,
-) : SubSearchRequest<FullWorkout> {
-    override val predicate: (FullWorkout) -> Boolean = { workout ->
-        terms.all { term ->
-            workout.name.lowercase().contains(term) ||
-                    workout.partner.name.lowercase().contains(term)
+    val searchTerms: List<String>,
+) : SubSearchRequest<T> {
+    override val predicate: (T) -> Boolean = { entity ->
+        searchTerms.all { searchTerm ->
+            entity.searchableTerms.any { entityTerm ->
+                entityTerm.lowercase().contains(searchTerm)
+            }
         }
     }
 }
 
-class TextSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
+class TextSearchPane<T : HasTextSearchable>(checkSearch: () -> Unit) : SearchPane<T>() {
 
     private val logger = logger {}
     private var termsInput: TextField by singleAssign()
@@ -38,7 +42,7 @@ class TextSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
             if (terms.isEmpty()) {
                 null
             } else {
-                TextSearchRequest(
+                TextSearchRequest<T>(
                     terms
                         .trim()
                         .split(" ")

@@ -7,6 +7,7 @@ import allfit.presentation.models.FullPartner
 import allfit.presentation.models.Usage
 import allfit.presentation.tornadofx.applyInitSort
 import allfit.presentation.tornadofx.imageColumn
+import allfit.presentation.tornadofx.ratingColumn
 import allfit.service.Clock
 import allfit.service.toPrettyString
 import javafx.beans.property.SimpleObjectProperty
@@ -24,6 +25,7 @@ import tornadofx.selectedItem
 import tornadofx.smartResize
 import tornadofx.weightedWidth
 
+
 class PartnersTable(
     usage: Usage,
     clock: Clock,
@@ -39,13 +41,17 @@ class PartnersTable(
 
         nameColumn = column<FullPartner, String>("Name") { it.value.nameProperty() }.remainingWidth().weightedWidth(0.5)
 
+        ratingColumn {
+            it.value.ratingProperty()
+        }
+
         column<FullPartner, Int>("Chk") { it.value.checkinsProperty() }.fixedWidth(40)
         column<FullPartner, Int>("Wrk") { SimpleObjectProperty(it.value.upcomingWorkouts.size) }.fixedWidth(40)
         column<FullPartner, Int>("Avail") {
             SimpleObjectProperty(it.value.availability(usage))
         }.fixedWidth(40)
 
-        column("Last") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
+        column("Last Checkin") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
 
         imageColumn(maxWidth = 30.0) {
             it.value.hiddenImageProperty()

@@ -1,5 +1,8 @@
 package allfit.presentation.models
 
+import allfit.presentation.search.HasCheckins
+import allfit.presentation.search.HasRating
+import allfit.presentation.search.HasTextSearchable
 import allfit.service.Images
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
@@ -102,7 +105,10 @@ class SimpleWorkout(
 data class FullWorkout(
     val simpleWorkout: SimpleWorkout,
     val partner: SimplePartner,
-) : Workout by simpleWorkout {
+) : Workout by simpleWorkout, HasCheckins by partner, HasTextSearchable, HasRating by partner {
+
+    override val searchableTerms = listOf(name, partner.name)
+
     companion object {
         val prototype = FullWorkout(
             simpleWorkout = SimpleWorkout(

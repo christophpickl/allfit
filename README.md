@@ -15,7 +15,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * make address selectable text (PLUS: clickable link to google maps, for now)
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
-* search-filter for rating
 * adjust column sizes in table
 
 ### Low

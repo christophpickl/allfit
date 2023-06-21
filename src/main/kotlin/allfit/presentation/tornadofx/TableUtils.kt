@@ -1,5 +1,7 @@
 package allfit.presentation.tornadofx
 
+import allfit.presentation.models.Rating
+import allfit.presentation.renderStars
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -8,6 +10,7 @@ import tornadofx.cellFormat
 import tornadofx.column
 import tornadofx.fixedWidth
 import tornadofx.imageview
+import tornadofx.label
 
 fun <S> TableView<S>.imageColumn(
     maxWidth: Double,
@@ -21,6 +24,16 @@ fun <S> TableView<S>.imageColumn(
                 fitWidth = maxWidth
                 isPreserveRatio = true
             }
+        }
+}
+
+fun <S> TableView<S>.ratingColumn(
+    valueProvider: (TableColumn.CellDataFeatures<S, Rating>) -> ObservableValue<Rating>
+) {
+    column("Rating", valueProvider)
+        .fixedWidth(80)
+        .cellFormat { rating ->
+            graphic = label(rating.renderStars())
         }
 }
 

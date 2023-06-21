@@ -6,10 +6,9 @@ import allfit.presentation.logic.StaticImage
 import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.Rating
-import allfit.presentation.renderStars
 import allfit.presentation.tornadofx.applyInitSort
 import allfit.presentation.tornadofx.imageColumn
+import allfit.presentation.tornadofx.ratingColumn
 import allfit.service.Clock
 import javafx.geometry.Pos
 import javafx.scene.control.SelectionMode
@@ -23,7 +22,6 @@ import tornadofx.contextmenu
 import tornadofx.fixedWidth
 import tornadofx.imageview
 import tornadofx.item
-import tornadofx.label
 import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
 import tornadofx.selectedItem
@@ -67,10 +65,9 @@ class WorkoutsTable(
 
         column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
 
-        column<FullWorkout, Rating>("Rating") { it.value.partner.ratingProperty() }.fixedWidth(80)
-            .cellFormat { rating ->
-                graphic = label(rating.renderStars())
-            }
+        ratingColumn {
+            it.value.partner.ratingProperty()
+        }
 
         column<FullWorkout, Boolean>("Favorite") { it.value.partner.isFavoritedProperty() }.fixedWidth(60)
             .cellFormat { isFavorite ->

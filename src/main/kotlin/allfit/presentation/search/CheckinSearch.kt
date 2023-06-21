@@ -1,6 +1,5 @@
 package allfit.presentation.search
 
-import allfit.presentation.models.FullWorkout
 import javafx.scene.control.ComboBox
 import tornadofx.combobox
 import tornadofx.selectedItem
@@ -10,16 +9,17 @@ interface HasCheckins {
     val checkins: Int
 }
 
-data class PartnerCheckinSearchRequest(
+data class CheckinSearchRequest<T : HasCheckins>(
     val operand: Int,
     val operator: NumericOperator,
-) : SubSearchRequest<FullWorkout> {
-    override val predicate: (FullWorkout) -> Boolean = { workout ->
-        operator.comparator(workout.partner.checkins, operand)
+) : SubSearchRequest<T> {
+    override val predicate: (T) -> Boolean = {
+        operator.comparator(it.checkins, operand)
+//        operator.comparator(workout.partner.checkins, operand)
     }
 }
 
-class PartnerCheckinSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
+class CheckinSearchPane<T : HasCheckins>(checkSearch: () -> Unit) : SearchPane<T>() {
 
     private val checkinOptions = listOf(0, 1, 5, 10, 20)
     private var checkinsOperator: ComboBox<String> by singleAssign()
@@ -38,7 +38,7 @@ class PartnerCheckinSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout
         }
     }
 
-    override fun buildSearchRequest() = PartnerCheckinSearchRequest(
+    override fun buildSearchRequest() = CheckinSearchRequest<T>(
         operand = checkinsOperand.selectedItem!!,
         operator = NumericOperator.bySymbol(checkinsOperator.selectedItem!!),
     )

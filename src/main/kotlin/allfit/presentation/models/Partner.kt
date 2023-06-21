@@ -2,6 +2,9 @@ package allfit.presentation.models
 
 import allfit.presentation.logic.StaticImage
 import allfit.presentation.logic.StaticImageStorage
+import allfit.presentation.search.HasCheckins
+import allfit.presentation.search.HasRating
+import allfit.presentation.search.HasTextSearchable
 import allfit.service.Images
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
@@ -24,7 +27,7 @@ interface PartnerCustomAttributesWrite : PartnerCustomAttributesRead {
     override var isWishlisted: Boolean
 }
 
-interface Partner : PartnerCustomAttributesWrite {
+interface Partner : PartnerCustomAttributesWrite, HasRating, HasCheckins {
     val id: Int
     fun idProperty(): ObjectProperty<Int>
 
@@ -49,7 +52,7 @@ interface Partner : PartnerCustomAttributesWrite {
     override var rating: Rating
     fun ratingProperty(): ObjectProperty<Rating>
 
-    val checkins: Int
+    override val checkins: Int
     fun checkinsProperty(): ObjectProperty<Int>
 
     val image: Image
@@ -155,7 +158,9 @@ data class FullPartner(
     val simplePartner: SimplePartner,
     val pastCheckins: List<Checkin>,
     val upcomingWorkouts: List<SimpleWorkout>,
-) : Partner by simplePartner {
+) : Partner by simplePartner, HasCheckins, HasTextSearchable, HasRating {
+
+    override val searchableTerms = listOf(name)
 
     fun availability(usage: Usage): Int =
         usage.availabilityFor(pastCheckins, upcomingWorkouts)
