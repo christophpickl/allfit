@@ -2,7 +2,6 @@ package allfit.presentation.models
 
 import allfit.service.Images
 import allfit.service.ensureMaxLength
-import allfit.service.within
 import javafx.beans.property.ObjectProperty
 import javafx.scene.image.Image
 import tornadofx.getProperty
@@ -138,28 +137,6 @@ class SimplePartner(
     override fun hashCode() = id.hashCode()
 }
 
-data class WorkoutAvailability(
-    val available: Int,
-    val max: Int,
-) {
-    fun toPrettyString() = "$available/$max"
-}
-
-fun Usage.availabilityFor(
-    pastCheckins: List<Checkin>,
-    upcomingWorkouts: List<SimpleWorkout>,
-): WorkoutAvailability {
-    val usedThisPeriod = pastCheckins.count { checkin ->
-        when (checkin) {
-            is Checkin.WorkoutCheckin -> checkin.workout.date.start.within(this.period)
-            is Checkin.DropinCheckin -> checkin.date.within(this.period)
-        }
-    } + upcomingWorkouts.count { it.isReserved && it.date.start.within(this.period) }
-    return WorkoutAvailability(
-        available = this.maxCheckInsOrReservationsPerPeriod - usedThisPeriod,
-        max = this.maxCheckInsOrReservationsPerPeriod
-    )
-}
 
 data class FullPartner(
     val simplePartner: SimplePartner,
@@ -167,7 +144,8 @@ data class FullPartner(
     val upcomingWorkouts: List<SimpleWorkout>,
 ) : Partner by simplePartner {
 
-    fun availability(usage: Usage) = usage.availabilityFor(pastCheckins, upcomingWorkouts)
+    fun availability(usage: Usage): Int =
+        usage.availabilityFor(pastCheckins, upcomingWorkouts)
 
     companion object {
         val prototype = FullPartner(

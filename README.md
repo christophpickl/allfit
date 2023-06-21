@@ -6,24 +6,24 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* selection to filter future/past/both workouts (before that, also sync drop-ins)
+* selection to filter future/past/both workouts
 * filter for partners table: only checkouts > 0
+* partners table: add column "last visited"
+* in partners window: render PartnerDetailsView (to see all offered workouts and edit the partner)
 
 ### Medium
 
-* new window: all past workouts; all reserved workouts (maybe in one window together?!)
-* in partners window: render PartnerDetailsView (to see all offered workouts and edit the partner)
 * remember window size/position after next startup
-* disable closing app while still syncing. display info dialog.
 * make black font for dates in table white (as other cells) when selected
 * make address selectable text (PLUS: clickable link to google maps, for now)
+* get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * search-filter for rating
 * adjust column sizes in table
-* get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 
 ### Low
 
+* disable closing app while still syncing. display info dialog.
 * tornadofx UI tests
 * ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
 * UI any clickable element with blue rounded background color

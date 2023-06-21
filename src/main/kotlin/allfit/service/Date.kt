@@ -64,6 +64,3 @@ fun LocalDateTime.endOfDay(): LocalDateTime =
     withHour(23)
         .withMinute(59)
         .withSecond(59)
-
-fun ZonedDateTime.within(range: DateRange): Boolean =
-    range.start <= this && this <= range.end

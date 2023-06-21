@@ -34,7 +34,7 @@ class CurrentPartnerViewModel : ViewModel() {
     val note = SimpleStringProperty()
     val url = SimpleStringProperty()
     val facilities = SimpleStringProperty()
-    val availability = SimpleStringProperty()
+    val availability = SimpleIntegerProperty()
     val facilitiesRendered: ObservableValue<String> = facilities.map { facilities ->
         facilities.split(",").joinToString(", ").let {
             it.ifEmpty { "None" }
@@ -64,6 +64,6 @@ class CurrentPartnerViewModel : ViewModel() {
         isWishlisted.set(partner.isWishlisted)
         pastCheckins.setAll(partner.pastCheckins)
         upcomingWorkouts.setAll(partner.upcomingWorkouts)
-        availability.set(partner.availability(usage).toPrettyString())
+        availability.set(partner.availability(usage))
     }
 }

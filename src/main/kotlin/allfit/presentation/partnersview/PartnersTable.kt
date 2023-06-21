@@ -19,7 +19,6 @@ import tornadofx.item
 import tornadofx.remainingWidth
 import tornadofx.selectedItem
 import tornadofx.smartResize
-import tornadofx.toProperty
 import tornadofx.weightedWidth
 
 class PartnersTable(
@@ -38,8 +37,8 @@ class PartnersTable(
 
         column<FullPartner, Int>("Chk") { it.value.checkinsProperty() }.fixedWidth(40)
         column<FullPartner, Int>("Wrk") { SimpleObjectProperty(it.value.upcomingWorkouts.size) }.fixedWidth(40)
-        column<FullPartner, String>("Avail") {
-            it.value.availability(usage).toPrettyString().toProperty()
+        column<FullPartner, Int>("Avail") {
+            SimpleObjectProperty(it.value.availability(usage))
         }.fixedWidth(40)
 
         column<FullPartner, Boolean>("hidden") { it.value.isHiddenProperty() }.fixedWidth(60)

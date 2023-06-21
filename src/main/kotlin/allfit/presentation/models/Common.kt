@@ -21,6 +21,9 @@ data class DateRange(
         require(start.isEqual(end) || start.isBefore(end)) { "START $start must be before-equal END $end." }
     }
 
+    operator fun contains(value: ZonedDateTime): Boolean =
+        value in start..end
+
     override fun compareTo(other: DateRange): Int {
         val startDiff = start.compareTo(other.start)
         if (startDiff != 0) return startDiff

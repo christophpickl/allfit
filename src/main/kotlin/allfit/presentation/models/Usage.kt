@@ -10,11 +10,24 @@ data class Usage(
     val from: ZonedDateTime,
     val until: ZonedDateTime, // inclusive that day
     val periodCap: Int, // 16
-    val maxCheckInsOrReservationsPerPeriod: Int, // 4
+    val maxCheckInsOrReservationsPerPeriod: Int, // 4 (per partner)
     val totalCheckInsOrReservationsPerDay: Int, // 2
-    val maxReservations: Int, // 6
+    val maxReservations: Int, // 6 (for whole period)
 ) {
     val period = DateRange(from, until)
+
+    fun availabilityFor(
+        pastCheckins: List<Checkin>,
+        upcomingWorkouts: List<SimpleWorkout>,
+    ): Int {
+        val usedThisPeriod = pastCheckins.count { checkin ->
+            when (checkin) {
+                is Checkin.WorkoutCheckin -> checkin.workout.date.start in period
+                is Checkin.DropinCheckin -> checkin.date in period
+            }
+        } + upcomingWorkouts.count { it.isReserved && it.date.start in period }
+        return maxCheckInsOrReservationsPerPeriod - usedThisPeriod
+    }
 }
 
 class UsageModel : ViewModel() {

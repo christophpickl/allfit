@@ -69,7 +69,11 @@ class PartnerDetailView : View() {
 
                 labelDetail("Categories", mainViewModel.selectedPartner.categoriesRendered, textMaxWidth = 300.0)
                 labelDetail("Facilities", mainViewModel.selectedPartner.facilitiesRendered, textMaxWidth = 300.0)
-                labelDetail("Available", mainViewModel.selectedPartner.availability, textMaxWidth = 100.0)
+                labelDetail(
+                    "Available",
+                    mainViewModel.selectedPartner.availability.map { it.toString() },
+                    textMaxWidth = 100.0
+                )
 
                 labelPrompt("Description")
                 textarea {
