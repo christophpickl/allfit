@@ -1,6 +1,5 @@
 package allfit.presentation.tornadofx
 
-import allfit.presentation.PresentationConstants
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -10,11 +9,16 @@ import tornadofx.column
 import tornadofx.fixedWidth
 import tornadofx.imageview
 
-fun <S> TableView<S>.imageColumn(valueProvider: (TableColumn.CellDataFeatures<S, Image>) -> ObservableValue<Image>) {
-    column("", valueProvider).fixedWidth(PresentationConstants.tableImageWidth + 10)
+fun <S> TableView<S>.imageColumn(
+    maxWidth: Double,
+    padding: Int = 10,
+    title: String = "",
+    valueProvider: (TableColumn.CellDataFeatures<S, Image>) -> ObservableValue<Image>
+) {
+    column(title, valueProvider).fixedWidth(maxWidth + padding)
         .cellFormat {
             graphic = imageview(it) {
-                fitWidth = PresentationConstants.tableImageWidth
+                fitWidth = maxWidth
                 isPreserveRatio = true
             }
         }

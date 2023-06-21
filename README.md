@@ -10,6 +10,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * filter for partners table: only checkouts > 0
 * partners table: add column "last visited"
 * in partners window: render PartnerDetailsView (to see all offered workouts and edit the partner)
+* support CMD+W in partners-window to close it
 
 ### Medium
 

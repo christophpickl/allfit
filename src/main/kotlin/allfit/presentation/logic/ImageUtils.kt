@@ -17,6 +17,7 @@ enum class StaticImage(val filename: String) {
     WishlistFull("wishlist_full.png"),
     WishlistOutline("wishlist_outline.png"),
     Reserved("reserved.png"),
+    Hidden("hidden.png"),
 }
 
 object ImageReader {

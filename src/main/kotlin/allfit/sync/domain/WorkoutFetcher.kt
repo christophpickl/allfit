@@ -6,6 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import java.io.IOException
+import java.nio.channels.UnresolvedAddressException
 import mu.KotlinLogging.logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -56,10 +57,13 @@ class WorkoutFetcherImpl : WorkoutFetcher {
         val response: HttpResponse
         try {
             response = client.get(url.url)
-        } catch (e: IOException) {
-            // maybe a io.ktor.network.tls.TLSException?!
-            log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
-            return fetchRetriable(url, attempt + 1)
+        } catch (e: Exception) {
+            if (e is IOException || e is UnresolvedAddressException) {
+                log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
+                return fetchRetriable(url, attempt + 1)
+            } else {
+                throw e
+            }
         }
         return when (response.status.value) {
             200 -> WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())

@@ -1,11 +1,16 @@
 package allfit.presentation.partnersview
 
 import allfit.presentation.HidePartnerFXEvent
+import allfit.presentation.PresentationConstants
 import allfit.presentation.UnhidePartnerFXEvent
+import allfit.presentation.logic.StaticImage
+import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.Usage
 import allfit.presentation.tornadofx.applyInitSort
 import allfit.presentation.tornadofx.imageColumn
+import allfit.service.Clock
+import allfit.service.toPrettyString
 import javafx.beans.property.SimpleObjectProperty
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
@@ -23,15 +28,17 @@ import tornadofx.weightedWidth
 
 class PartnersTable(
     usage: Usage,
+    clock: Clock,
 ) : TableView<FullPartner>() {
 
     private val nameColumn: TableColumn<FullPartner, String>
+    private val hiddenImage = StaticImageStorage.get(StaticImage.Hidden)
 
     init {
         smartResize()
         selectionModel.selectionMode = SelectionMode.SINGLE
 
-        imageColumn { it.value.imageProperty() }
+        imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.imageProperty() }
 
         nameColumn = column<FullPartner, String>("Name") { it.value.nameProperty() }.remainingWidth().weightedWidth(0.5)
 
@@ -41,7 +48,11 @@ class PartnersTable(
             SimpleObjectProperty(it.value.availability(usage))
         }.fixedWidth(40)
 
-        column<FullPartner, Boolean>("hidden") { it.value.isHiddenProperty() }.fixedWidth(60)
+        column("Last") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
+
+        imageColumn(maxWidth = 30.0) {
+            SimpleObjectProperty(if (it.value.isHidden) hiddenImage else null)
+        }
 
         contextmenu {
             item("Toggle hidden status").action {

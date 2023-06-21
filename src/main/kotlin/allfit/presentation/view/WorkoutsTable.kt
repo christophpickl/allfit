@@ -1,6 +1,7 @@
 package allfit.presentation.view
 
 import allfit.presentation.HidePartnerFXEvent
+import allfit.presentation.PresentationConstants
 import allfit.presentation.logic.StaticImage
 import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.DateRange
@@ -40,7 +41,7 @@ class WorkoutsTable(
 
         selectionModel.selectionMode = SelectionMode.SINGLE
 
-        imageColumn { it.value.imageProperty() }
+        imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.imageProperty() }
 
         column<FullWorkout, String>("Workout") { it.value.nameProperty() }.remainingWidth().weightedWidth(0.5)
 
@@ -60,7 +61,7 @@ class WorkoutsTable(
                 }
             }
 
-        imageColumn { it.value.partner.imageProperty() }
+        imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.partner.imageProperty() }
 
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }.remainingWidth().weightedWidth(0.5)
 

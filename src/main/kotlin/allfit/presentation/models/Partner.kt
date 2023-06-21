@@ -2,6 +2,7 @@ package allfit.presentation.models
 
 import allfit.service.Images
 import allfit.service.ensureMaxLength
+import java.time.ZonedDateTime
 import javafx.beans.property.ObjectProperty
 import javafx.scene.image.Image
 import tornadofx.getProperty
@@ -146,6 +147,9 @@ data class FullPartner(
 
     fun availability(usage: Usage): Int =
         usage.availabilityFor(pastCheckins, upcomingWorkouts)
+
+    val lastCheckin: ZonedDateTime? =
+        pastCheckins.maxByOrNull { it.date }?.date
 
     companion object {
         val prototype = FullPartner(
