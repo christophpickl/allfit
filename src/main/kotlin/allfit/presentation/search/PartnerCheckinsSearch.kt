@@ -6,6 +6,10 @@ import tornadofx.combobox
 import tornadofx.selectedItem
 import tornadofx.singleAssign
 
+interface HasCheckins {
+    val checkins: Int
+}
+
 data class PartnerCheckinSearchRequest(
     val operand: Int,
     val operator: NumericOperator,

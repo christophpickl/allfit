@@ -12,10 +12,8 @@ import tornadofx.View
 import tornadofx.action
 import tornadofx.borderpane
 import tornadofx.center
-import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.item
-import tornadofx.label
 import tornadofx.launch
 import tornadofx.menu
 import tornadofx.menubar
@@ -31,13 +29,6 @@ class PartnersWindowApp : App(
     primaryView = PartnersWindow::class,
     stylesheet = Styles::class,
 )
-
-class PartnersSearchView : View() {
-
-    override val root = hbox {
-
-    }
-}
 
 class PartnersWindow : View() {
     companion object {
@@ -88,7 +79,7 @@ class PartnersWindow : View() {
                 top {
                     hgrow = Priority.NEVER
                     vgrow = Priority.NEVER
-                    add(label("Filter"))
+                    add(searchView)
                 }
                 center {
                     hgrow = Priority.ALWAYS

@@ -7,7 +7,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 ### High Prio
 
 * filter workouts: future/past/both (radio buttons)
-* filter for partners table: only checkouts > 0
 
 ### Medium
 

@@ -1,5 +1,6 @@
 package allfit.presentation
 
+import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.search.SearchRequest
@@ -20,3 +21,5 @@ class HidePartnerFXEvent(val partnerId: Int) : FXEvent()
 class UnhidePartnerFXEvent(val partnerId: Int) : FXEvent()
 
 class PartnerSelectedFXEvent(val partnerId: Int) : FXEvent()
+
+class PartnerSearchFXEvent(val searchRequest: SearchRequest<FullPartner>) : FXEvent()

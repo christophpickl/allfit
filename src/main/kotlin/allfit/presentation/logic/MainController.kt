@@ -43,7 +43,6 @@ class MainController : Controller() {
             mainViewModel.allGroups.addAll(dataStorage.getCategories())
             partnersViewModel.allPartners.addAll(dataStorage.getPartners())
             mainViewModel.sortedFilteredWorkouts.predicate = MainViewModel.DEFAULT_WORKOUT_PREDICATE
-
         }
         safeSubscribe<WorkoutSearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }
