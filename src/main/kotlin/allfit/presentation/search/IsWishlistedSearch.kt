@@ -8,13 +8,13 @@ import tornadofx.singleAssign
 
 data class IsWishlistedSearchRequest(
     val operand: Boolean,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         workout.partner.isWishlisted == operand
     }
 }
 
-class IsWishlistedSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class IsWishlistedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
     private var wishlistedOperand: CheckBox by singleAssign()
 

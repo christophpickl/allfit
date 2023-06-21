@@ -7,7 +7,7 @@ import tornadofx.FXEvent
 
 object ApplicationStartedFxEvent : FXEvent()
 
-class SearchFXEvent(val searchRequest: SearchRequest) : FXEvent()
+class WorkoutSearchFXEvent(val searchRequest: SearchRequest<FullWorkout>) : FXEvent()
 
 class WorkoutSelectedFXEvent(val workout: FullWorkout) : FXEvent()
 

@@ -9,13 +9,13 @@ import tornadofx.singleAssign
 
 data class GroupSearchRequest(
     val searchGroup: String,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         workout.partner.categories.contains(searchGroup)
     }
 }
 
-class GroupSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class GroupSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
     private val mainViewModel: MainViewModel by inject()
     private var selectedGroup: ComboBox<String> by singleAssign()

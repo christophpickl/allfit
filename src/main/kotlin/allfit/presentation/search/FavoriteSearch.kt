@@ -8,13 +8,13 @@ import tornadofx.singleAssign
 
 data class FavoriteSearchRequest(
     val operand: Boolean,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         workout.partner.isFavorited == operand
     }
 }
 
-class FavoriteSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class FavoriteSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
     private var favoriteOperand: CheckBox by singleAssign()
 

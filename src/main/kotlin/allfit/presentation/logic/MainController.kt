@@ -3,7 +3,7 @@ package allfit.presentation.logic
 import allfit.persistence.domain.UsageRepository
 import allfit.presentation.ApplicationStartedFxEvent
 import allfit.presentation.PartnerWorkoutSelectedFXEvent
-import allfit.presentation.SearchFXEvent
+import allfit.presentation.WorkoutSearchFXEvent
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
@@ -45,7 +45,7 @@ class MainController : Controller() {
             mainViewModel.sortedFilteredWorkouts.predicate = MainViewModel.DEFAULT_WORKOUT_PREDICATE
 
         }
-        safeSubscribe<SearchFXEvent>() {
+        safeSubscribe<WorkoutSearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }
             mainViewModel.sortedFilteredWorkouts.predicate = it.searchRequest.predicate
         }

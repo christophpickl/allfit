@@ -9,7 +9,7 @@ import tornadofx.textfield
 data class TextSearchRequest(
     /** already all lower-cased */
     val terms: List<String>,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         terms.all { term ->
             workout.name.lowercase().contains(term) ||
@@ -18,7 +18,7 @@ data class TextSearchRequest(
     }
 }
 
-class TextSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class TextSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
     private val logger = logger {}
     private var termsInput: TextField by singleAssign()

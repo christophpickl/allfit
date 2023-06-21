@@ -3,16 +3,24 @@ package allfit.presentation.search
 import javafx.event.EventTarget
 import javafx.scene.control.CheckBox
 import javafx.scene.layout.HBox
-import tornadofx.*
+import tornadofx.View
+import tornadofx.action
+import tornadofx.bind
+import tornadofx.checkbox
+import tornadofx.getProperty
+import tornadofx.label
+import tornadofx.opcr
+import tornadofx.property
+import tornadofx.singleAssign
 
-abstract class SearchPane : View() {
+abstract class SearchPane<T> : View() {
 
     abstract var searchFieldPane: SearchFieldPane
     override val root get() = searchFieldPane
 
-    protected abstract fun buildSearchRequest(): SubSearchRequest?
+    protected abstract fun buildSearchRequest(): SubSearchRequest<T>?
 
-    fun maybeBuildSearchRequest(): SubSearchRequest? =
+    fun maybeBuildSearchRequest(): SubSearchRequest<T>? =
         if (searchFieldPane.isEnabled) buildSearchRequest() else null
 }
 

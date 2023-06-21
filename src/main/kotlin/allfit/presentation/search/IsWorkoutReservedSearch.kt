@@ -8,13 +8,13 @@ import tornadofx.singleAssign
 
 data class IsWorkoutReservedSearchRequest(
     val operand: Boolean,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         workout.isReserved == operand
     }
 }
 
-class IsWorkoutReservedSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class IsWorkoutReservedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
     var reservedCheckBox: CheckBox by singleAssign()
 

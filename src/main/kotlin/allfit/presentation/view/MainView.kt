@@ -28,7 +28,7 @@ import tornadofx.vgrow
 class MainView : View() {
 
     private val clock: Clock by di()
-    private val searchView: SearchView by inject()
+    private val searchView: WorkoutsSearchView by inject()
     private val usageView: UsageView by inject()
     private val partnersWindow: PartnersWindow by inject()
     private val mainViewModel: MainViewModel by inject()
@@ -60,6 +60,7 @@ class MainView : View() {
             menu("View") {
                 item("Partners", "Shortcut+P").action {
                     val stage = partnersWindow.openModal(modality = Modality.NONE, resizable = true)!!
+                    stage.requestFocus()
                     stage.toFront()
                 }
             }

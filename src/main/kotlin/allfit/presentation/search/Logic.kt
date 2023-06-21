@@ -1,28 +1,23 @@
 package allfit.presentation.search
 
-import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.MainViewModel
-
-interface SubSearchRequest {
-    val predicate: (FullWorkout) -> Boolean
+interface SubSearchRequest<T> {
+    val predicate: (T) -> Boolean
 }
 
-object DefaultSubSearchRequest : SubSearchRequest {
-    override val predicate: (FullWorkout) -> Boolean = {
-        MainViewModel.DEFAULT_WORKOUT_PREDICATE(it)
-    }
-}
-
-data class SearchRequest(
-    val subSearchRequests: Set<SubSearchRequest>
+data class SearchRequest<T>(
+    val subSearchRequests: Set<SubSearchRequest<T>>,
+    val alwaysIncludeSearchRequest: SubSearchRequest<T>,
 ) {
     companion object {
-        val empty = SearchRequest(emptySet())
+        fun <T> empty() = SearchRequest<T>(emptySet(), alwaysTrue())
+        fun <T> alwaysTrue() = object : SubSearchRequest<T> {
+            override val predicate: (T) -> Boolean = { true }
+        }
     }
 
-    val predicate: (FullWorkout) -> Boolean = { workout ->
-        (subSearchRequests + DefaultSubSearchRequest).all {
-            it.predicate(workout)
+    val predicate: (T) -> Boolean = { entity ->
+        (subSearchRequests + alwaysIncludeSearchRequest).all {
+            it.predicate(entity)
         }
     }
 }

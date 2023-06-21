@@ -17,9 +17,9 @@ import tornadofx.singleAssign
 data class DateSearchRequest(
     val date: ZonedDateTime,
     val time: ZonedDateTime?,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
-        workout.simpleWorkout.date.start.dayOfYear == date.dayOfYear &&
+        workout.date.start.dayOfYear == date.dayOfYear &&
                 (if (time == null) true else {
                     workout.simpleWorkout.date.start.hour >= time.hour
                 })
@@ -44,7 +44,7 @@ private sealed interface TimeOrAll {
 class DateSearchPane(
     private val clock: Clock,
     checkSearch: () -> Unit,
-) : SearchPane() {
+) : SearchPane<FullWorkout>() {
 
     private val searchIntoFutureInDays = 14
     private val dayStartsAt = 6
@@ -56,7 +56,7 @@ class DateSearchPane(
     override var searchFieldPane = searchField {
         title = "Date"
         enabledAction = OnEnabledAction { checkSearch() }
-        button("-") {
+        button("<") {
             action {
                 dateInput.selectionModel.selectPrevious()
             }
@@ -70,7 +70,7 @@ class DateSearchPane(
             }
             selectionModel.selectFirst()
         }
-        button("+") {
+        button(">") {
             action {
                 dateInput.selectionModel.selectNext()
             }

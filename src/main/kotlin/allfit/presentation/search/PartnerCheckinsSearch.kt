@@ -9,13 +9,13 @@ import tornadofx.singleAssign
 data class PartnerCheckinSearchRequest(
     val operand: Int,
     val operator: NumericOperator,
-) : SubSearchRequest {
+) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
         operator.comparator(workout.partner.checkins, operand)
     }
 }
 
-class PartnerCheckinSearchPane(checkSearch: () -> Unit) : SearchPane() {
+class PartnerCheckinSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
     private val checkinOptions = listOf(0, 1, 5, 10, 20)
     private var checkinsOperator: ComboBox<String> by singleAssign()
