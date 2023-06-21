@@ -20,6 +20,7 @@ import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
 import allfit.service.ImageStorage
+import allfit.service.beginOfDay
 import allfit.service.fromUtcToAmsterdamZonedDateTime
 import javafx.scene.image.Image
 import mu.KotlinLogging.logger
@@ -29,7 +30,9 @@ interface DataStorage {
     fun getPartners(): List<FullPartner>
     fun getPartnerById(partnerId: Int): FullPartner
     fun getWorkoutById(workoutId: Int): FullWorkout
-    fun getUpcomingWorkouts(): List<FullWorkout>
+
+    /* past visited ones, or upcoming ones */
+    fun getWorkouts(): List<FullWorkout>
     fun updatePartner(modifications: PartnerModifications)
     fun hidePartner(partnerId: Int)
     fun unhidePartner(partnerId: Int)
@@ -71,13 +74,15 @@ class ExposedDataStorage(
     }
     private val simpleWorkouts by lazy {
         val workoutsWithReservation = reservationsRepo.selectAll().map { it.workoutId }.toSet()
+        val workoutsWithCheckins = checkins.mapNotNull { it.workoutId }.toSet()
         val storedWorkouts = workoutsRepo.selectAll()
         val workoutImages = imageStorage.loadWorkoutImages(storedWorkouts.map { it.id }).associateBy { it.workoutId }
         storedWorkouts.map { workoutEntity ->
             try {
                 workoutEntity.toSimpleWorkout(
+                    image = Image(workoutImages[workoutEntity.id]!!.inputStream()),
                     isReserved = workoutsWithReservation.contains(workoutEntity.id),
-                    image = Image(workoutImages[workoutEntity.id]!!.inputStream())
+                    wasVisited = workoutsWithCheckins.contains(workoutEntity.id),
                 )
             } catch (e: Exception) {
                 log.error("Corrupt workout with ID: ${workoutEntity.id}")
@@ -86,30 +91,24 @@ class ExposedDataStorage(
         }
     }
 
-    private val upcomingSimpleWorkouts by lazy {
-        val now = clock.now()
-        simpleWorkouts.filter {
-            it.date.start >= now
-        }.also {
-            log.info { "From ${simpleWorkouts.size}, only ${it.size} are upcoming (now=$now)." }
-        }
-    }
-
     private val simplePartnersById by lazy {
         simplePartners.associateBy { it.id }
     }
 
-    private val upcomingFullWorkouts by lazy {
-        upcomingSimpleWorkouts.map { simpleWorkout ->
-            FullWorkout(
-                simpleWorkout = simpleWorkout,
-                partner = simplePartnersById[simpleWorkout.partnerId]!!
-            )
-        }
+    private val fullWorkoutsVisitedOrUpcoming by lazy {
+        val now = clock.now().beginOfDay()
+        simpleWorkouts
+            .filter { it.wasVisited || it.date.start >= now }
+            .map { simpleWorkout ->
+                FullWorkout(
+                    simpleWorkout = simpleWorkout,
+                    partner = simplePartnersById[simpleWorkout.partnerId]!!
+                )
+            }
     }
 
-    private val upcomingFullWorkoutsById by lazy {
-        upcomingFullWorkouts.associateBy { it.id }
+    private val fullWorkoutsById by lazy {
+        fullWorkoutsVisitedOrUpcoming.associateBy { it.id }
     }
 
     private val fullPartners by lazy {
@@ -152,14 +151,14 @@ class ExposedDataStorage(
     override fun getPartners() =
         fullPartners
 
-    override fun getUpcomingWorkouts() =
-        upcomingFullWorkouts
+    override fun getWorkouts() =
+        fullWorkoutsVisitedOrUpcoming
 
     override fun getPartnerById(partnerId: Int): FullPartner =
         fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
 
     override fun getWorkoutById(workoutId: Int): FullWorkout =
-        upcomingFullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
+        fullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
 
     override fun updatePartner(modifications: PartnerModifications) {
         partnersRepo.update(modifications)
@@ -204,7 +203,11 @@ private fun PartnerEntity.toSimplePartner(
     hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
 )
 
-private fun WorkoutEntity.toSimpleWorkout(isReserved: Boolean, image: Image) = SimpleWorkout(
+private fun WorkoutEntity.toSimpleWorkout(
+    image: Image,
+    wasVisited: Boolean,
+    isReserved: Boolean,
+) = SimpleWorkout(
     id = id,
     partnerId = partnerId,
     name = name,
@@ -215,4 +218,5 @@ private fun WorkoutEntity.toSimpleWorkout(isReserved: Boolean, image: Image) = S
     image = image,
     url = OnefitUtils.workoutUrl(id, slug),
     isReserved = isReserved,
+    wasVisited = wasVisited,
 )

@@ -6,7 +6,9 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* filter workouts: future/past/both (radio buttons)
+* use icons in search for: favorited, wishlisted, reserved
+* for each dropin-checkin, create a "synthetical" workout entity in DB (?!)
+* refactor: make supertype visit, subtypes workout and dropin
 
 ### Medium
 

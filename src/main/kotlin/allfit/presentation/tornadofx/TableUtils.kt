@@ -3,6 +3,8 @@ package allfit.presentation.tornadofx
 import allfit.presentation.models.Rating
 import allfit.presentation.renderStars
 import javafx.beans.value.ObservableValue
+import javafx.geometry.Pos
+import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.image.Image
@@ -16,13 +18,29 @@ fun <S> TableView<S>.imageColumn(
     maxWidth: Double,
     padding: Int = 10,
     title: String = "",
-    valueProvider: (TableColumn.CellDataFeatures<S, Image>) -> ObservableValue<Image>
+    withTableCell: TableCell<S, Image>.() -> Unit = {},
+    valueProvider: (TableColumn.CellDataFeatures<S, Image>) -> ObservableValue<Image>,
 ) {
     column(title, valueProvider).fixedWidth(maxWidth + padding)
         .cellFormat {
+            withTableCell()
             graphic = imageview(it) {
                 fitWidth = maxWidth
                 isPreserveRatio = true
+            }
+        }
+}
+
+fun <S> TableView<S>.imageColumn(
+    title: String,
+    image: Image,
+    valueProvider: (TableColumn.CellDataFeatures<S, Boolean>) -> ObservableValue<Boolean>
+) {
+    column(title, valueProvider).fixedWidth(60)
+        .cellFormat { isTrue ->
+            if (isTrue) {
+                alignment = Pos.CENTER
+                graphic = imageview(image)
             }
         }
 }

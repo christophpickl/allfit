@@ -15,7 +15,6 @@ data class CheckinSearchRequest<T : HasCheckins>(
 ) : SubSearchRequest<T> {
     override val predicate: (T) -> Boolean = {
         operator.comparator(it.checkins, operand)
-//        operator.comparator(workout.partner.checkins, operand)
     }
 }
 

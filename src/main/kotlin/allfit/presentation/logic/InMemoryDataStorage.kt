@@ -45,6 +45,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         image = readImage("workouts/ems.jpg"),
         url = OnefitUtils.workoutUrl(11101386, "ems-health-studio-ems-training-ems-training"),
         isReserved = true,
+        wasVisited = false,
     )
     private val workoutYogaYin = SimpleWorkout(
         id = 2,
@@ -57,6 +58,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         image = readImage("workouts/yoga_yin.jpg"),
         url = "https://nu.nl",
         isReserved = false,
+        wasVisited = false,
     )
     private val workoutYogaHot = SimpleWorkout(
         id = 3,
@@ -69,6 +71,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         image = readImage("workouts/yoga_hot.jpg"),
         url = "https://nu.nl",
         isReserved = false,
+        wasVisited = false,
     )
     private val workoutGym = SimpleWorkout(
         id = 4,
@@ -81,6 +84,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         image = readImage("workouts/gym.jpg"),
         url = "https://nu.nl",
         isReserved = false,
+        wasVisited = false,
     )
     private val workoutJump = SimpleWorkout(
         id = 5,
@@ -93,6 +97,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         image = readImage("workouts/trampoline.jpg"),
         url = "https://nu.nl",
         isReserved = false,
+        wasVisited = false,
     )
     private val visitedWorkoutGym = SimpleWorkout(
         id = 6,
@@ -105,6 +110,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         image = readImage("workouts/gym.jpg"),
         url = "https://nu.nl",
         isReserved = false,
+        wasVisited = true,
     )
 
     private val upcomingSimpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutGym, workoutJump)
@@ -206,6 +212,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             }.simplePartner,
         )
     }
+
     private val allVisitedFullWorkouts = pastSimpleWorkouts.map { simpleWorkout ->
         FullWorkout(
             simpleWorkout = simpleWorkout,
@@ -217,7 +224,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
     }
     private val allFullWorkouts = allUpcomingFullWorkouts + allVisitedFullWorkouts
 
-    override fun getUpcomingWorkouts() = allUpcomingFullWorkouts
+    override fun getWorkouts() = allUpcomingFullWorkouts + allVisitedFullWorkouts
 
     override fun getPartnerById(partnerId: Int) =
         allFullPartners.firstOrNull { it.id == partnerId }

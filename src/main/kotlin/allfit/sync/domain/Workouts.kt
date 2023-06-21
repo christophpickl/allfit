@@ -113,7 +113,6 @@ class WorkoutsSyncerImpl(
         workoutsRepo.deleteAll(workoutIdsToDelete)
         imageStorage.deleteWorkoutImages(workoutIdsToDelete)
     }
-
 }
 
 interface WorkoutHtmlMetaData {

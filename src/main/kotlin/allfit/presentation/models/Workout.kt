@@ -39,6 +39,9 @@ interface Workout {
     val isReserved: Boolean
     fun isReservedProperty(): ObjectProperty<Boolean>
 
+    val wasVisited: Boolean
+    fun wasVisitedProperty(): ObjectProperty<Boolean>
+
     val partnerId: Int
 }
 
@@ -53,6 +56,7 @@ class SimpleWorkout(
     image: Image,
     url: String,
     isReserved: Boolean,
+    wasVisited: Boolean,
 ) : Workout {
     override var id: Int by property(id)
     override fun idProperty() = getProperty(SimpleWorkout::id)
@@ -72,6 +76,8 @@ class SimpleWorkout(
     override fun imageProperty() = getProperty(SimpleWorkout::image)
     override var isReserved: Boolean by property(isReserved)
     override fun isReservedProperty() = getProperty(SimpleWorkout::isReserved)
+    override var wasVisited: Boolean by property(wasVisited)
+    override fun wasVisitedProperty() = getProperty(SimpleWorkout::wasVisited)
 
     init {
         require(id >= 0) { "Invalid ID: $id" }
@@ -121,7 +127,8 @@ data class FullWorkout(
                 date = DateRange(start = ZonedDateTime.now(), end = ZonedDateTime.now()),
                 image = Images.prototype,
                 url = "",
-                isReserved = false
+                isReserved = false,
+                wasVisited = false,
             ),
             partner = FullPartner.prototype.simplePartner
         )

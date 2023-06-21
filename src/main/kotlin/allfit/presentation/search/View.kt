@@ -26,17 +26,21 @@ abstract class SearchPane<T> : View() {
 
 class OnEnabledAction(val listener: () -> Unit)
 
-class SearchFieldPane : HBox() {
-    private var enabledCheckbox: CheckBox by singleAssign()
-    val isEnabled get() = enabledCheckbox.isSelected
+class SearchFieldPane(private val alwaysEnabled: Boolean) : HBox() {
+
     var title: String by property("")
     private fun titleProperty() = getProperty(SearchFieldPane::title)
+
+    private var enabledCheckbox: CheckBox by singleAssign()
+    val isEnabled get() = if (alwaysEnabled) true else enabledCheckbox.isSelected
     var enabledAction: OnEnabledAction by property(OnEnabledAction({}))
 
     init {
-        enabledCheckbox = checkbox {
-            action {
-                enabledAction.listener()
+        if (!alwaysEnabled) {
+            enabledCheckbox = checkbox {
+                action {
+                    enabledAction.listener()
+                }
             }
         }
         label {
@@ -45,7 +49,7 @@ class SearchFieldPane : HBox() {
     }
 }
 
-fun EventTarget.searchField(op: SearchFieldPane.() -> Unit = {}): SearchFieldPane {
-    val searchField = SearchFieldPane()
+fun EventTarget.searchField(alwaysEnabled: Boolean = false, op: SearchFieldPane.() -> Unit = {}): SearchFieldPane {
+    val searchField = SearchFieldPane(alwaysEnabled)
     return opcr(this, searchField, op)
 }

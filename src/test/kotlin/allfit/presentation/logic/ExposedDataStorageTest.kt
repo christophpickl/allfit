@@ -18,7 +18,6 @@ import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
-import allfit.persistence.testInfra.withFutureStart
 import allfit.presentation.PartnerModifications
 import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
@@ -71,7 +70,7 @@ class ExposedDataStorageTest : DescribeSpec() {
     init {
         extension(DbListener())
 
-        describe("When getCategories") {
+        describe("When get categories") {
             it("Given a category Then return it") {
                 val category = ExposedTestRepo.insertCategory()
 
@@ -93,20 +92,16 @@ class ExposedDataStorageTest : DescribeSpec() {
             }
         }
 
-        describe("When getUpcomingWorkouts") {
-            it("Given future workout and requirements  Then return it") {
-                val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout { _, _, w ->
-                    w.withFutureStart(now)
-                }
-                val workoutImage = workout.toWorkoutAndImagesBytes()
-                val partnerImage = partner.toPartnerAndImageBytes()
+        describe("When get workouts") {
+            it("Given workout and requirements Then return it") {
+                val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
 
-                val upcomingFullWorkouts = dataStorageWithImages { imageStorage ->
-                    imageStorage.addWorkoutImagesToBeLoaded(workoutImage)
-                    imageStorage.addPartnerImagesToBeLoaded(partnerImage)
-                }.getUpcomingWorkouts()
+                val workouts = dataStorageWithImages { imageStorage ->
+                    imageStorage.addWorkoutImagesToBeLoaded(workout.toWorkoutAndImagesBytes())
+                    imageStorage.addPartnerImagesToBeLoaded(partner.toPartnerAndImageBytes())
+                }.getWorkouts()
 
-                val futureFullWorkout = upcomingFullWorkouts.shouldBeSingleton().first()
+                val futureFullWorkout = workouts.shouldBeSingleton().first()
                 futureFullWorkout shouldBe buildFullWorkout(
                     workout = workout,
                     partner = partner,
@@ -119,23 +114,25 @@ class ExposedDataStorageTest : DescribeSpec() {
             }
 
             it("Given reserved workout Then flag as reserved") {
-                ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation(withWorkout = { _, _, w ->
-                    w.withFutureStart(now)
-                }, withReservation = {
-                    it.withFutureStart(now)
-                })
+                ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation()
 
-                val workouts = dataStorage().getUpcomingWorkouts()
+                val workouts = dataStorage().getWorkouts()
 
                 workouts.shouldBeSingleton().first().simpleWorkout.isReserved shouldBe true
             }
 
-            it("Given workout with partner with checkin Then partner has checkin count set") {
-                ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin(withWorkout = { _, _, w ->
-                    w.withFutureStart(now)
-                })
+            it("Given workout with checkin Then mark as visited") {
+                ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin()
 
-                val workouts = dataStorage().getUpcomingWorkouts()
+                val workouts = dataStorage().getWorkouts()
+
+                workouts.shouldBeSingleton().first().wasVisited shouldBe true
+            }
+
+            it("Given workout with checkin Then partner has checkin count set") {
+                ExposedTestRepo.insertCategoryPartnerWorkoutAndWorkoutCheckin()
+
+                val workouts = dataStorage().getWorkouts()
 
                 workouts.shouldBeSingleton().first().partner.checkins shouldBe 1
             }
@@ -268,7 +265,9 @@ private fun insertPartnerAndGetModifications(): Pair<PartnerEntity, PartnerModif
 }
 
 private fun WorkoutEntity.toSimpleWorkout(
-    isReserved: Boolean, image: Image
+    isReserved: Boolean,
+    wasVisited: Boolean = false,
+    image: Image,
 ) = SimpleWorkout(
     id = id,
     partnerId = partnerId,
@@ -280,6 +279,7 @@ private fun WorkoutEntity.toSimpleWorkout(
     image = image,
     url = "https://one.fit/en-nl/workouts/$id/$slug",
     isReserved = isReserved,
+    wasVisited = wasVisited,
 )
 
 private fun PartnerEntity.toSimplePartner(
@@ -331,6 +331,7 @@ private fun buildFullWorkout(
     partnerImage: Image,
     isWorkoutReserved: Boolean,
     partnerCheckins: Int,
+    wasVisited: Boolean = false,
 ) = FullWorkout(
     simpleWorkout = SimpleWorkout(
         id = workout.id,
@@ -345,6 +346,7 @@ private fun buildFullWorkout(
         image = workoutImage,
         url = "https://one.fit/en-nl/workouts/${workout.id}/${workout.slug}",
         isReserved = isWorkoutReserved,
+        wasVisited = wasVisited,
     ), partner = SimplePartner(
         id = partner.id,
         name = partner.name,

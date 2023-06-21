@@ -11,6 +11,7 @@ import allfit.presentation.tornadofx.ratingColumn
 import allfit.service.Clock
 import allfit.service.toPrettyString
 import javafx.beans.property.SimpleObjectProperty
+import javafx.geometry.Pos
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -53,7 +54,9 @@ class PartnersTable(
 
         column("Last Checkin") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
 
-        imageColumn(maxWidth = 30.0) {
+        imageColumn(maxWidth = 30.0, withTableCell = {
+            alignment = Pos.CENTER
+        }) {
             it.value.hiddenImageProperty()
         }
 

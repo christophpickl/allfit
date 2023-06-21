@@ -33,6 +33,8 @@ class WorkoutsTable(
 ) : TableView<FullWorkout>() {
 
     private val dateColumn: TableColumn<FullWorkout, DateRange>
+    private val reservedImage = StaticImageStorage.get(StaticImage.Reserved)
+    private val visitedImage = StaticImageStorage.get(StaticImage.Visited)
 
     init {
         smartResize()
@@ -50,14 +52,8 @@ class WorkoutsTable(
             }
         }
 
-        column<FullWorkout, Boolean>("Reserved") { it.value.isReservedProperty() }.fixedWidth(60)
-            .cellFormat { isReserved ->
-                if (isReserved) {
-                    graphic = imageview(StaticImageStorage.get(StaticImage.Reserved)) {
-                        alignment = Pos.CENTER
-                    }
-                }
-            }
+        imageColumn("Reserved", reservedImage) { it.value.isReservedProperty() }
+        imageColumn("Visited", visitedImage) { it.value.wasVisitedProperty() }
 
         imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.partner.imageProperty() }
 
@@ -65,9 +61,7 @@ class WorkoutsTable(
 
         column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
 
-        ratingColumn {
-            it.value.partner.ratingProperty()
-        }
+        ratingColumn { it.value.partner.ratingProperty() }
 
         column<FullWorkout, Boolean>("Favorite") { it.value.partner.isFavoritedProperty() }.fixedWidth(60)
             .cellFormat { isFavorite ->

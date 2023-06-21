@@ -14,23 +14,27 @@ import allfit.presentation.search.SearchRequest
 import allfit.presentation.search.SearchView
 import allfit.presentation.search.SubSearchRequest
 import allfit.presentation.search.TextSearchPane
+import allfit.presentation.search.WorkoutTimeSearchPane
 import allfit.service.Clock
 import tornadofx.FXEvent
 import tornadofx.hbox
 import tornadofx.vbox
 
-private object DefaultSubSearchRequest : SubSearchRequest<FullWorkout> {
+private object DefaultWorkoutSubSearchRequest : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = {
         MainViewModel.DEFAULT_WORKOUT_PREDICATE(it)
     }
+
+    override fun toString() = this::class.simpleName!!
 }
 
-class WorkoutsSearchView : SearchView<FullWorkout>(DefaultSubSearchRequest) {
+class WorkoutsSearchView : SearchView<FullWorkout>(DefaultWorkoutSubSearchRequest) {
 
     private val clock: Clock by di()
 
     override val root = hbox {
         vbox {
+            addIt(WorkoutTimeSearchPane(clock, ::checkSearch))
             addIt(TextSearchPane(::checkSearch))
             addIt(DateSearchPane(clock, ::checkSearch))
             addIt(GroupSearchPane(::checkSearch))
