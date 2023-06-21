@@ -1,6 +1,8 @@
 package allfit.presentation
 
 import allfit.presentation.logic.MainController
+import allfit.presentation.logic.PartnerUpdateController
+import allfit.presentation.partnersview.PartnersViewController
 import allfit.presentation.view.MainView
 import allfit.sync.view.SyncController
 import javafx.application.Platform
@@ -33,6 +35,8 @@ class TornadoFxEntryPoint : App(
 
     private fun registerEagerSingletons() {
         find(MainController::class)
+        find(PartnerUpdateController::class)
+        find(PartnersViewController::class)
         find(SyncController::class)
     }
 }

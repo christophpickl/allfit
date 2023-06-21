@@ -14,6 +14,8 @@ import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.HIDDEN_IMAGE
+import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
@@ -167,12 +169,16 @@ class ExposedDataStorage(
 
     override fun hidePartner(partnerId: Int) {
         partnersRepo.hide(partnerId)
-        getPartnerById(partnerId).isHidden = true
+        val partner = getPartnerById(partnerId)
+        partner.isHidden = true
+        partner.hiddenImage = HIDDEN_IMAGE
     }
 
     override fun unhidePartner(partnerId: Int) {
         partnersRepo.unhide(partnerId)
-        getPartnerById(partnerId).isHidden = false
+        val partner = getPartnerById(partnerId)
+        partner.isHidden = false
+        partner.hiddenImage = NOT_HIDDEN_IMAGE
     }
 }
 
@@ -195,6 +201,7 @@ private fun PartnerEntity.toSimplePartner(
     isFavorited = isFavorited,
     isWishlisted = isWishlisted,
     isHidden = isHidden,
+    hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
 )
 
 private fun WorkoutEntity.toSimpleWorkout(isReserved: Boolean, image: Image) = SimpleWorkout(

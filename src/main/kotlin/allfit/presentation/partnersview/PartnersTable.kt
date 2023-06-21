@@ -3,8 +3,6 @@ package allfit.presentation.partnersview
 import allfit.presentation.HidePartnerFXEvent
 import allfit.presentation.PresentationConstants
 import allfit.presentation.UnhidePartnerFXEvent
-import allfit.presentation.logic.StaticImage
-import allfit.presentation.logic.StaticImageStorage
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.Usage
 import allfit.presentation.tornadofx.applyInitSort
@@ -32,7 +30,6 @@ class PartnersTable(
 ) : TableView<FullPartner>() {
 
     private val nameColumn: TableColumn<FullPartner, String>
-    private val hiddenImage = StaticImageStorage.get(StaticImage.Hidden)
 
     init {
         smartResize()
@@ -51,7 +48,7 @@ class PartnersTable(
         column("Last") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
 
         imageColumn(maxWidth = 30.0) {
-            SimpleObjectProperty(if (it.value.isHidden) hiddenImage else null)
+            it.value.hiddenImageProperty()
         }
 
         contextmenu {

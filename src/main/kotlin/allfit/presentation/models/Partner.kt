@@ -1,5 +1,7 @@
 package allfit.presentation.models
 
+import allfit.presentation.logic.StaticImage
+import allfit.presentation.logic.StaticImageStorage
 import allfit.service.Images
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
@@ -61,6 +63,9 @@ interface Partner : PartnerCustomAttributesWrite {
 
     var isHidden: Boolean
     fun isHiddenProperty(): ObjectProperty<Boolean>
+
+    var hiddenImage: Image
+    fun hiddenImageProperty(): ObjectProperty<Image>
 }
 
 class SimplePartner(
@@ -77,7 +82,9 @@ class SimplePartner(
     isWishlisted: Boolean,
     isHidden: Boolean,
     image: Image,
+    hiddenImage: Image,
 ) : Partner {
+
     override var id: Int by property(id)
     override fun idProperty() = getProperty(SimplePartner::id)
     override var name: String by property(name)
@@ -92,8 +99,13 @@ class SimplePartner(
     override fun isFavoritedProperty() = getProperty(SimplePartner::isFavorited)
     override var isWishlisted: Boolean by property(isWishlisted)
     override fun isWishlistedProperty() = getProperty(SimplePartner::isWishlisted)
+
     override var isHidden: Boolean by property(isHidden)
     override fun isHiddenProperty() = getProperty(SimplePartner::isHidden)
+
+    override var hiddenImage: Image by property(hiddenImage)
+    override fun hiddenImageProperty() = getProperty(SimplePartner::hiddenImage)
+
     override var image: Image by property(image)
     override fun imageProperty() = getProperty(SimpleWorkout::image)
     override var note: String by property(note)
@@ -166,6 +178,7 @@ data class FullPartner(
                 isFavorited = false,
                 isWishlisted = false,
                 isHidden = false,
+                hiddenImage = NOT_HIDDEN_IMAGE,
                 image = Images.prototype,
             ),
             pastCheckins = emptyList(),
@@ -173,3 +186,6 @@ data class FullPartner(
         )
     }
 }
+
+val HIDDEN_IMAGE = StaticImageStorage.get(StaticImage.Hidden)
+val NOT_HIDDEN_IMAGE = StaticImageStorage.get(StaticImage.Empty)

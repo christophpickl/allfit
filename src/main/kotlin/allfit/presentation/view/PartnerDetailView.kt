@@ -3,7 +3,7 @@ package allfit.presentation.view
 import allfit.presentation.PartnerModifications
 import allfit.presentation.Styles
 import allfit.presentation.UpdatePartnerFXEvent
-import allfit.presentation.models.MainViewModel
+import allfit.presentation.models.CurrentPartnerViewModel
 import allfit.presentation.renderStars
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
@@ -36,9 +36,12 @@ import tornadofx.singleAssign
 import tornadofx.textarea
 import tornadofx.vbox
 
-class PartnerDetailView : View() {
+interface PartnerDetailModel {
+    val selectedPartner: CurrentPartnerViewModel
+}
 
-    private val mainViewModel: MainViewModel by inject()
+class PartnerDetailView(model: PartnerDetailModel) : View() {
+
     private val clock: Clock by di()
 
     private var favoriteCheckbox: CheckBox by singleAssign()
@@ -47,7 +50,7 @@ class PartnerDetailView : View() {
     private var noteText: TextArea by singleAssign()
 
     private val enabledChecker: () -> ObservableValue<Boolean> = {
-        mainViewModel.selectedPartner.id.greaterThan(0)
+        model.selectedPartner.id.greaterThan(0)
     }
 
     override val root = vbox {
@@ -56,22 +59,22 @@ class PartnerDetailView : View() {
             scrollpane(fitToHeight = true) {
                 setAllHeights(ViewConstants.bigImageHeight)
                 setAllWidths(ViewConstants.bigImageHeight)
-                imageview(mainViewModel.selectedPartner.image)
+                imageview(model.selectedPartner.image)
             }
 
             vbox {
 //                background = Background.fill(Color.RED)
                 hgrow = Priority.ALWAYS
                 label {
-                    bind(mainViewModel.selectedPartner.name)
+                    bind(model.selectedPartner.name)
                     addClass(Styles.header1)
                 }
 
-                labelDetail("Categories", mainViewModel.selectedPartner.categoriesRendered, textMaxWidth = 300.0)
-                labelDetail("Facilities", mainViewModel.selectedPartner.facilitiesRendered, textMaxWidth = 300.0)
+                labelDetail("Categories", model.selectedPartner.categoriesRendered, textMaxWidth = 300.0)
+                labelDetail("Facilities", model.selectedPartner.facilitiesRendered, textMaxWidth = 300.0)
                 labelDetail(
                     "Available",
-                    mainViewModel.selectedPartner.availability.map { it.toString() },
+                    model.selectedPartner.availability.map { it.toString() },
                     textMaxWidth = 100.0
                 )
 
@@ -80,18 +83,18 @@ class PartnerDetailView : View() {
                     isEditable = false
                     border = Border.EMPTY
                     isWrapText = true
-                    bind(mainViewModel.selectedPartner.description)
+                    bind(model.selectedPartner.description)
                     setAllHeights(50.0)
                 }
 
-                openWebsiteButton(mainViewModel.selectedPartner.url)
+                openWebsiteButton(model.selectedPartner.url)
             }
         }
 
         hbox {
             labelPrompt("Rating")
             ratingInput = combobox(values = listOf<Number>(0, 1, 2, 3, 4, 5)) {
-                bind(mainViewModel.selectedPartner.rating)
+                bind(model.selectedPartner.rating)
                 cellFormat {
                     text = it.toInt().renderStars()
                 }
@@ -100,20 +103,20 @@ class PartnerDetailView : View() {
 
             labelPrompt("Favorite")
             favoriteCheckbox = checkbox {
-                bind(mainViewModel.selectedPartner.isFavorited)
+                bind(model.selectedPartner.isFavorited)
                 enableWhen(enabledChecker)
             }
 
             labelPrompt("Wishlist")
             wishlistCheckbox = checkbox {
-                bind(mainViewModel.selectedPartner.isWishlisted)
+                bind(model.selectedPartner.isWishlisted)
                 enableWhen(enabledChecker)
             }
         }
 
         labelPrompt("Note")
         noteText = textarea {
-            bind(mainViewModel.selectedPartner.note)
+            bind(model.selectedPartner.note)
             enableWhen(enabledChecker)
             setAllHeights(50.0)
         }
@@ -124,7 +127,7 @@ class PartnerDetailView : View() {
                 fire(
                     UpdatePartnerFXEvent(
                         PartnerModifications(
-                            partnerId = mainViewModel.selectedPartner.id.get(),
+                            partnerId = model.selectedPartner.id.get(),
                             note = noteText.text,
                             rating = ratingInput.selectedItem?.toInt() ?: error("No rating selected!"),
                             isFavorited = favoriteCheckbox.isSelected,
@@ -138,13 +141,13 @@ class PartnerDetailView : View() {
         hbox {
             vbox {
                 labelPrompt("Upcoming Workouts")
-                workoutTable(mainViewModel.selectedPartner.upcomingWorkouts, ::fireDelegate, clock) {
+                workoutTable(model.selectedPartner.upcomingWorkouts, ::fireDelegate, clock) {
                     setAllHeights(140.0)
                 }
             }
             vbox {
                 labelPrompt("Past Checkins")
-                checkinTable(mainViewModel.selectedPartner.pastCheckins, clock) {
+                checkinTable(model.selectedPartner.pastCheckins, clock) {
                     setAllHeights(140.0)
                 }
             }

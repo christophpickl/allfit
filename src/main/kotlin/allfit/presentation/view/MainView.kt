@@ -31,9 +31,9 @@ class MainView : View() {
     private val searchView: SearchView by inject()
     private val usageView: UsageView by inject()
     private val partnersWindow: PartnersWindow by inject()
-    private val partnerDetailView: PartnerDetailView by inject()
-    private val workoutDetailView: WorkoutDetailView by inject()
     private val mainViewModel: MainViewModel by inject()
+    private val partnerDetailView = PartnerDetailView(mainViewModel)
+    private val workoutDetailView: WorkoutDetailView by inject()
     private val workoutsTable = WorkoutsTable(clock)
 
     init {

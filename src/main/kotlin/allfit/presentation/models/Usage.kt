@@ -1,5 +1,7 @@
 package allfit.presentation.models
 
+import allfit.persistence.domain.UsageEntity
+import allfit.service.fromUtcToAmsterdamZonedDateTime
 import java.time.ZonedDateTime
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
@@ -34,3 +36,14 @@ class UsageModel : ViewModel() {
     val usage = SimpleObjectProperty<Usage>()
     val today = SimpleObjectProperty<ZonedDateTime>()
 }
+
+fun UsageEntity.toUsage() = Usage(
+    total = total,
+    noShows = noShows,
+    from = from.fromUtcToAmsterdamZonedDateTime(),
+    until = until.fromUtcToAmsterdamZonedDateTime(),
+    periodCap = periodCap,
+    maxCheckInsOrReservationsPerPeriod = maxCheckInsOrReservationsPerPeriod,
+    totalCheckInsOrReservationsPerDay = totalCheckInsOrReservationsPerDay,
+    maxReservations = maxReservations,
+)

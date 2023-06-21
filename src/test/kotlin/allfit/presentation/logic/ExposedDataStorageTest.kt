@@ -24,6 +24,8 @@ import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.HIDDEN_IMAGE
+import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.PartnerCustomAttributesRead
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
@@ -56,16 +58,15 @@ class ExposedDataStorageTest : DescribeSpec() {
     private fun dataStorageWithImages(withImageStorage: (InMemoryImageStorage) -> Unit): ExposedDataStorage =
         dataStorage(InMemoryImageStorage().also(withImageStorage))
 
-    private fun dataStorage(imageStorage: ImageStorage = DummyImageStorage): ExposedDataStorage =
-        ExposedDataStorage(
-            categoriesRepo = categoriesRepo,
-            reservationsRepo = reservationsRepo,
-            checkinsRepository = checkinsRepository,
-            partnersRepo = partnersRepo,
-            workoutsRepo = workoutsRepo,
-            imageStorage = imageStorage,
-            clock = clock
-        )
+    private fun dataStorage(imageStorage: ImageStorage = DummyImageStorage): ExposedDataStorage = ExposedDataStorage(
+        categoriesRepo = categoriesRepo,
+        reservationsRepo = reservationsRepo,
+        checkinsRepository = checkinsRepository,
+        partnersRepo = partnersRepo,
+        workoutsRepo = workoutsRepo,
+        imageStorage = imageStorage,
+        clock = clock
+    )
 
     init {
         extension(DbListener())
@@ -118,14 +119,11 @@ class ExposedDataStorageTest : DescribeSpec() {
             }
 
             it("Given reserved workout Then flag as reserved") {
-                ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation(
-                    withWorkout = { _, _, w ->
-                        w.withFutureStart(now)
-                    },
-                    withReservation = {
-                        it.withFutureStart(now)
-                    }
-                )
+                ExposedTestRepo.insertCategoryPartnerWorkoutAndReservation(withWorkout = { _, _, w ->
+                    w.withFutureStart(now)
+                }, withReservation = {
+                    it.withFutureStart(now)
+                })
 
                 val workouts = dataStorage().getUpcomingWorkouts()
 
@@ -186,8 +184,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                 val fullPartner = dataStorage().getPartnerById(givenPartner.id)
 
                 fullPartner.checkins shouldBe 1
-                fullPartner.pastCheckins.filterIsInstance<Checkin.DropinCheckin>().map { it.date }
-                    .shouldBeSingleton()
+                fullPartner.pastCheckins.filterIsInstance<Checkin.DropinCheckin>().map { it.date }.shouldBeSingleton()
             }
 
             it("Given past workout for partner without checkin Then return empty visited workouts") {
@@ -214,9 +211,7 @@ class ExposedDataStorageTest : DescribeSpec() {
                         image = fullWorkout.image,
                     ),
                     partner = partner.toSimplePartner(
-                        image = fullWorkout.partner.image,
-                        checkins = 0,
-                        categories = listOf(category.name)
+                        image = fullWorkout.partner.image, checkins = 0, categories = listOf(category.name)
                     ),
                 )
             }
@@ -273,8 +268,7 @@ private fun insertPartnerAndGetModifications(): Pair<PartnerEntity, PartnerModif
 }
 
 private fun WorkoutEntity.toSimpleWorkout(
-    isReserved: Boolean,
-    image: Image
+    isReserved: Boolean, image: Image
 ) = SimpleWorkout(
     id = id,
     partnerId = partnerId,
@@ -305,6 +299,7 @@ private fun PartnerEntity.toSimplePartner(
     isFavorited = isFavorited,
     isWishlisted = isWishlisted,
     isHidden = isHidden,
+    hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
     image = image,
 )
 
@@ -321,13 +316,11 @@ private fun PartnerEntity.toFullPartner(
 )
 
 private fun WorkoutEntity.toWorkoutAndImagesBytes() = WorkoutAndImagesBytes(
-    workoutId = id,
-    imageBytes = byteArrayOf()
+    workoutId = id, imageBytes = byteArrayOf()
 )
 
 private fun PartnerEntity.toPartnerAndImageBytes() = PartnerAndImageBytes(
-    partnerId = id,
-    imageBytes = byteArrayOf()
+    partnerId = id, imageBytes = byteArrayOf()
 )
 
 private fun buildFullWorkout(
@@ -347,8 +340,7 @@ private fun buildFullWorkout(
         specifics = workout.specifics,
         address = workout.address,
         date = DateRange(
-            start = workout.start.fromUtcToAmsterdamZonedDateTime(),
-            end = workout.end.fromUtcToAmsterdamZonedDateTime()
+            start = workout.start.fromUtcToAmsterdamZonedDateTime(), end = workout.end.fromUtcToAmsterdamZonedDateTime()
         ),
         image = workoutImage,
         url = "https://one.fit/en-nl/workouts/${workout.id}/${workout.slug}",
@@ -366,6 +358,7 @@ private fun buildFullWorkout(
         isFavorited = partner.isFavorited,
         isWishlisted = partner.isWishlisted,
         isHidden = partner.isHidden,
+        hiddenImage = if (partner.isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
         image = partnerImage,
     )
 )

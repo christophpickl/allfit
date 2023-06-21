@@ -1,5 +1,6 @@
 package allfit.presentation.models
 
+import allfit.presentation.view.PartnerDetailModel
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -11,11 +12,11 @@ import tornadofx.SortedFilteredList
 import tornadofx.ViewModel
 import tornadofx.toObservable
 
-class MainViewModel : ViewModel() {
+class MainViewModel : ViewModel(), PartnerDetailModel {
 
     val allWorkouts = FXCollections.observableArrayList<FullWorkout>()!!
     val sortedFilteredWorkouts = SortedFilteredList<FullWorkout>(allWorkouts)
-    val selectedPartner = CurrentPartnerViewModel()
+    override val selectedPartner = CurrentPartnerViewModel()
     val selectedWorkout = SimpleObjectProperty<FullWorkout>()
     val allGroups = FXCollections.observableArrayList<String>()!!
 

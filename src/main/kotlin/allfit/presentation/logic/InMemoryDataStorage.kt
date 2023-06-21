@@ -7,6 +7,8 @@ import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
+import allfit.presentation.models.HIDDEN_IMAGE
+import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
@@ -118,6 +120,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             isFavorited = false,
             isWishlisted = false,
             isHidden = false,
+            hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/ems.jpg"),
             url = OnefitUtils.partnerUrl(16456, "ems-health-studio-ems-training-amsterdam"),
             note = "This URL actually works.",
@@ -137,6 +140,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             isFavorited = true,
             isWishlisted = false,
             isHidden = false,
+            hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/yoga.jpg"),
             url = "https://nu.nl",
             note = "my custom note",
@@ -159,6 +163,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             isFavorited = false,
             isWishlisted = false,
             isHidden = false,
+            hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/gym.jpg"),
             url = "https://nu.nl",
             note = "",
@@ -181,6 +186,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             isFavorited = false,
             isWishlisted = true,
             isHidden = false,
+            hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/foobar.jpg"),
             url = "https://nu.nl",
             note = "This is weird.",
@@ -223,11 +229,15 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
     }
 
     override fun hidePartner(partnerId: Int) {
-        getPartnerById(partnerId).isHidden = true
+        val partner = getPartnerById(partnerId)
+        partner.isHidden = true
+        partner.hiddenImage = HIDDEN_IMAGE
     }
 
     override fun unhidePartner(partnerId: Int) {
-        getPartnerById(partnerId).isHidden = false
+        val partner = getPartnerById(partnerId)
+        partner.isHidden = false
+        partner.hiddenImage = NOT_HIDDEN_IMAGE
     }
 
     override fun getWorkoutById(workoutId: Int): FullWorkout =

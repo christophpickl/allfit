@@ -3,6 +3,7 @@ package allfit.presentation.partnersview
 import allfit.presentation.Styles
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.UsageModel
+import allfit.presentation.view.PartnerDetailView
 import allfit.service.Clock
 import javafx.scene.layout.Priority
 import tornadofx.App
@@ -30,9 +31,11 @@ class PartnersWindow : View() {
     private val clock: Clock by di()
     private val partnersTable = PartnersTable(usageModel.usage.get(), clock)
 
+    private val partnerDetailView = PartnerDetailView(partnersViewModel)
+
     init {
         title = "Partners"
-        partnersViewModel.allPartners.bindTo(partnersTable)
+        partnersViewModel.sortedFilteredPartners.bindTo(partnersTable)
         partnersTable.applySort()
     }
 
@@ -45,6 +48,9 @@ class PartnersWindow : View() {
             vgrow = Priority.ALWAYS
             add(partnersTable)
         }
+//        right {
+//            add(partnerDetail)
+//        }
     }
 }
 
