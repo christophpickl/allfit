@@ -59,7 +59,8 @@ class MainView : View() {
         menubar {
             menu("View") {
                 item("Partners", "Shortcut+P").action {
-                    partnersWindow.openModal(modality = Modality.NONE, resizable = true)
+                    val stage = partnersWindow.openModal(modality = Modality.NONE, resizable = true)!!
+                    stage.toFront()
                 }
             }
         }

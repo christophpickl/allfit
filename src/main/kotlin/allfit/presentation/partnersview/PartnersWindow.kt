@@ -9,13 +9,18 @@ import allfit.service.Clock
 import javafx.scene.layout.Priority
 import tornadofx.App
 import tornadofx.View
+import tornadofx.action
 import tornadofx.borderpane
 import tornadofx.center
+import tornadofx.item
 import tornadofx.launch
+import tornadofx.menu
+import tornadofx.menubar
 import tornadofx.onDoubleClick
 import tornadofx.onSelectionChange
 import tornadofx.right
 import tornadofx.selectedItem
+import tornadofx.vbox
 import tornadofx.vgrow
 
 class PartnersWindowApp : App(
@@ -57,18 +62,28 @@ class PartnersWindow : View() {
         }
     }
 
-    override val root = borderpane {
+    override val root =
+        vbox {
+            menubar {
+                menu("View") {
+                    item("Close", "Shortcut+W").action {
+                        this@PartnersWindow.close()
+                    }
+                }
+            }
+            borderpane {
 //        top {
 //            vgrow = Priority.NEVER
 //            add(label("Filter"))
 //        }
-        center {
-            vgrow = Priority.ALWAYS
-            add(partnersTable)
+                center {
+                    vgrow = Priority.ALWAYS
+                    add(partnersTable)
+                }
+                right {
+                    add(partnerDetailView)
+                }
+            }
         }
-        right {
-            add(partnerDetailView)
-        }
-    }
 }
 

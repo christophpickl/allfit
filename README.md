@@ -6,9 +6,8 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* selection to filter future/past/both workouts
+* filter workouts: future/past/both (radio buttons)
 * filter for partners table: only checkouts > 0
-* support CMD+W in partners-window to close it
 
 ### Medium
 
