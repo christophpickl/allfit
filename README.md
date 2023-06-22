@@ -6,7 +6,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* make black font for dates in table white (as other cells) when selected
 * make address selectable text (PLUS: clickable link to google maps, for now)
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)

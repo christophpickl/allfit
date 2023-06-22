@@ -7,13 +7,13 @@ import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableView
+import mu.KotlinLogging.logger
 import tornadofx.attachTo
 import tornadofx.cellFormat
 import tornadofx.column
 import tornadofx.fixedWidth
 import tornadofx.onDoubleClick
 import tornadofx.onSelectionChange
-import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
 import tornadofx.selectedItem
 import tornadofx.smartResize
@@ -30,15 +30,20 @@ class WorkoutTable(
     onSelected: (PartnerWorkoutSelectedFXEvent) -> Unit,
     clock: Clock,
 ) : TableView<SimpleWorkout>(items) {
+
+    private val logger = logger {}
+
     init {
         selectionModel.selectionMode = SelectionMode.SINGLE
 
         onSelectionChange {
+            logger.debug { "selection changed to: $selectedItem" }
             selectedItem?.let {
                 onSelected(PartnerWorkoutSelectedFXEvent(it))
             }
         }
         onDoubleClick {
+            logger.debug { "double click for: $selectedItem" }
             selectedItem?.let {
                 onSelected(PartnerWorkoutSelectedFXEvent(it))
             }
@@ -51,7 +56,7 @@ class WorkoutTable(
             remainingWidth()
         }
 
-        readonlyColumn("Date", SimpleWorkout::date).apply {
+        column("Date", SimpleWorkout::date).apply {
             fixedWidth(150)
             cellFormat { date ->
                 text = date.toPrettyString(clock)

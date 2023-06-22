@@ -55,13 +55,15 @@ class MainController : Controller() {
         }
         safeSubscribe<WorkoutSelectedFXEvent>() {
             val workout = it.workout
-            logger.debug { "Change workout: $workout" }
+            logger.debug { "Change workout selected: $workout" }
             mainViewModel.selectedWorkout.set(workout)
-            mainViewModel.selectedPartner.initPartner(dataStorage.getPartnerById(workout.partner.id), usage)
+            if (mainViewModel.selectedPartner.id.get() != workout.partner.id) {
+                mainViewModel.selectedPartner.initPartner(dataStorage.getPartnerById(workout.partner.id), usage)
+            }
         }
         safeSubscribe<PartnerWorkoutSelectedFXEvent>() {
             val workout = it.workout
-            logger.debug { "Change workout: $workout" }
+            logger.debug { "Change partner workout selected: $workout" }
             mainViewModel.selectedWorkout.set(dataStorage.getWorkoutById(workout.id))
             // no partner update
         }

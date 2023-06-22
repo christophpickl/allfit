@@ -12,7 +12,6 @@ import allfit.presentation.tornadofx.setAllHeights
 import allfit.service.Clock
 import tornadofx.View
 import tornadofx.addClass
-import tornadofx.bind
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.label
@@ -36,10 +35,7 @@ class WorkoutDetailView : View() {
 
             vbox {
                 hbox {
-                    label("") {
-                        bind(mainViewModel.selectedWorkout.map {
-                            it.name
-                        })
+                    label(mainViewModel.selectedWorkout.map { it.name }) {
                         addClass(Styles.header1)
                     }
                     imageview(StaticIconStorage.get(StaticIcon.Reserved)) {

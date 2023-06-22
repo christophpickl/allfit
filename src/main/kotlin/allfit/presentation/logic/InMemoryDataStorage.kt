@@ -112,8 +112,22 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         isReserved = false,
         wasVisited = true,
     )
+    private val workoutYogaCold = SimpleWorkout(
+        id = 7,
+        partnerId = partnerYogaId,
+        name = "Cold Yoga",
+        about = "",
+        specifics = "",
+        address = "",
+        date = DateRange(defaultDateTime.plusDays(3), defaultDateTime.plusDays(3).plusMinutes(45)),
+        image = readImage("workouts/yoga_hot.jpg"),
+        url = "https://nu.nl",
+        isReserved = false,
+        wasVisited = false,
+    )
 
-    private val upcomingSimpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutGym, workoutJump)
+    private val upcomingSimpleWorkouts =
+        listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutYogaCold, workoutGym, workoutJump)
     private val pastSimpleWorkouts = listOf(visitedWorkoutGym)
 
     private val partnerEms = FullPartner(
@@ -154,7 +168,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             facilities = "Mats",
         ),
         pastCheckins = emptyList(),
-        upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot)
+        upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot, workoutYogaCold)
     )
     private val partnerGym = FullPartner(
         SimplePartner(

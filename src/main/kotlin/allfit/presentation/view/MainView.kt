@@ -5,9 +5,11 @@ import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.partnersview.PartnersWindow
 import allfit.service.Clock
+import java.awt.Toolkit
 import javafx.scene.control.Label
 import javafx.scene.layout.Priority
 import javafx.stage.Modality
+import mu.KotlinLogging.logger
 import tornadofx.View
 import tornadofx.action
 import tornadofx.borderpane
@@ -27,6 +29,7 @@ import tornadofx.vgrow
 
 class MainView : View() {
 
+    private val logger = logger {}
     private val clock: Clock by di()
     private val searchView: WorkoutsSearchView by inject()
     private val usageView: UsageView by inject()
@@ -43,11 +46,13 @@ class MainView : View() {
 
         with(workoutsTable) {
             onSelectionChange {
+                logger.debug { "selection changed to: $selectedItem" }
                 selectedItem?.let {
                     fire(WorkoutSelectedFXEvent(it))
                 }
             }
             onDoubleClick {
+                logger.debug { "double click for: $selectedItem" }
                 selectedItem?.let {
                     fire(WorkoutSelectedFXEvent(it))
                 }
@@ -62,6 +67,13 @@ class MainView : View() {
                     val stage = partnersWindow.openModal(modality = Modality.NONE, resizable = true)!!
                     stage.requestFocus()
                     stage.toFront()
+                }
+                item("Maximize Window", "Shortcut+M").action {
+                    val screenSize = Toolkit.getDefaultToolkit().screenSize
+                    primaryStage.x = 0.0
+                    primaryStage.y = 0.0
+                    primaryStage.width = screenSize.width.toDouble()
+                    primaryStage.height = screenSize.height.toDouble()
                 }
             }
         }

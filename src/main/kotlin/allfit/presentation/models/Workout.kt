@@ -85,7 +85,7 @@ class SimpleWorkout(
     }
 
     override fun toString() =
-        "SimpleWorkout[id=$id, partnerId=$partnerId, name=$name, isReserved=$isReserved, date=$date, url=$url, " +
+        "SimpleWorkout[name=$name, id=$id, partnerId=$partnerId, isReserved=$isReserved, date=$date, url=$url, " +
                 "address=$address, about=${about.ensureMaxLength(10)}, " +
                 "specifics=${specifics.ensureMaxLength(10)}, image]"
 
