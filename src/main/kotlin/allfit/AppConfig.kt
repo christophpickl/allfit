@@ -3,6 +3,7 @@ package allfit
 import java.time.LocalDateTime
 
 data class AppConfig(
+    val isDevMode: Boolean,
     val mockClient: Boolean,
     val preSyncEnabled: Boolean,
     val syncEnabled: Boolean,
@@ -14,6 +15,7 @@ data class AppConfig(
 
     companion object {
         val develop = AppConfig(
+            isDevMode = true,
             mockClient = true,
             preSyncEnabled = false,
             syncEnabled = false,
@@ -24,6 +26,7 @@ data class AppConfig(
             useLogFileAppender = false,
         )
         val prod = AppConfig(
+            isDevMode = false,
             mockClient = false,
             preSyncEnabled = true,
             syncEnabled = true,

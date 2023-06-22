@@ -1,10 +1,10 @@
 package allfit.presentation.search
 
+import allfit.presentation.components.ImageToggleEffect
+import allfit.presentation.components.imagedToggleButton
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.models.FullWorkout
-import allfit.presentation.view.ImageToggleEffect
-import allfit.presentation.view.imagedToggleButton
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
 

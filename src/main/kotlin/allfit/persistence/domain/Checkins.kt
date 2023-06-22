@@ -44,7 +44,7 @@ data class CheckinEntity(
     val type: CheckinType,
     val createdAt: LocalDateTime,
     val partnerId: Int,
-    val workoutId: Int?,
+    val workoutId: Int?, // only set if type == WORKOUT
 )
 
 class InMemoryCheckinsRepository : CheckinsRepository {

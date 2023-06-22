@@ -1,4 +1,4 @@
-package allfit.presentation
+package allfit.presentation.components
 
 import javafx.scene.layout.Priority
 import mu.KotlinLogging.logger

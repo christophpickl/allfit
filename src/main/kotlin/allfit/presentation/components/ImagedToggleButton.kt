@@ -1,5 +1,7 @@
-package allfit.presentation.view
+package allfit.presentation.components
 
+import allfit.presentation.view.effectIncreaseBrightness
+import allfit.presentation.view.effectRemoveColors
 import javafx.beans.binding.Bindings
 import javafx.event.EventTarget
 import javafx.scene.control.ToggleButton

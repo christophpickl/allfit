@@ -6,28 +6,23 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* for each dropin-checkin, create a "synthetical" workout entity in DB (?!)
-* refactor: make supertype visit, subtypes workout and dropin
-
-### Medium
-
-* remember window size/position after next startup
 * make black font for dates in table white (as other cells) when selected
 * make address selectable text (PLUS: clickable link to google maps, for now)
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
+
+### Medium
+
 * adjust column sizes in table
+* disable closing app while still syncing. display info dialog.
+* ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
 
 ### Low
 
-* disable closing app while still syncing. display info dialog.
 * tornadofx UI tests
-* ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
-* UI any clickable element with blue rounded background color
 * render distance in km to my place (calculate via google during sync)
 * make application start-able also when there is no internet connection
 * PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days to all existing data)
-* partners window, filter capability
 * make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k workouts, every 2 secs)
 
 ### Nope
@@ -37,6 +32,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### Styling
 
+* UI any clickable element with blue rounded background color
 * https://docs.oracle.com/javase/8/javafx/user-interface-tutorial/custom.htm
 
 ### Future

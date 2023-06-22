@@ -13,6 +13,8 @@ import allfit.service.DummyDayClock
 import allfit.service.FileResolver
 import allfit.service.FileSystemImageStorage
 import allfit.service.ImageStorage
+import allfit.service.JavaPrefs
+import allfit.service.Prefs
 import allfit.service.SystemClock
 import allfit.sync.syncModule
 import mu.KotlinLogging
@@ -43,6 +45,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single { UiPreSyncer(get()) }
     single { AllFitStarter(config.preSyncEnabled, get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
+    single<Prefs> { JavaPrefs("allfit" + (if (config.isDevMode) "-dev" else "")) }
 
     includes(persistenceModule(config))
     includes(syncModule(config))

@@ -1,6 +1,6 @@
 package allfit.presentation.tornadofx
 
-import allfit.presentation.ErrorDialog
+import allfit.presentation.components.ErrorDialog
 import tornadofx.Component
 import tornadofx.FXEvent
 
