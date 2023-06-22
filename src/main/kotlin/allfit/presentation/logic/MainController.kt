@@ -11,8 +11,8 @@ import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.UsageModel
 import allfit.presentation.models.toUsage
-import allfit.presentation.search.WorkoutTime
-import allfit.presentation.search.WorkoutTimeSearchRequest
+import allfit.presentation.search.VisitedSearchRequest
+import allfit.presentation.search.VisitedState
 import allfit.presentation.tornadofx.safeSubscribe
 import allfit.service.Clock
 import mu.KotlinLogging.logger
@@ -44,8 +44,7 @@ class MainController : Controller() {
             mainViewModel.allWorkouts.addAll(workouts.toObservable())
             mainViewModel.allGroups.addAll(dataStorage.getCategories())
             partnersViewModel.allPartners.addAll(dataStorage.getPartners())
-            val initialWorkoutTimeSearch =
-                WorkoutTimeSearchRequest(now = clock.now(), time = WorkoutTime.UPCOMING).predicate
+            val initialWorkoutTimeSearch = VisitedSearchRequest(VisitedState.UPCOMING).predicate
             mainViewModel.sortedFilteredWorkouts.predicate = {
                 MainViewModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
             }

@@ -12,6 +12,8 @@ import allfit.api.models.SingleWorkoutJsonRoot
 import allfit.api.models.UsageJsonRoot
 import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.Clock
+import allfit.service.FileEntry
+import allfit.service.FileResolver
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
@@ -30,6 +32,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import mu.KotlinLogging.logger
@@ -48,6 +51,13 @@ suspend fun authenticateOneFit(
                 email = credentials.email,
                 password = credentials.password,
             )
+        )
+    }
+    if (response.status == HttpStatusCode.Unauthorized) {
+        val loginFile = FileResolver.resolve(FileEntry.Login)
+        error(
+            "Authenticating as '${credentials.email}' failed!\n\nPlease verify your credentials by logging in to OneFit directly,\n" +
+                    "and check the entered password in the login file here:\n${loginFile.absolutePath}"
         )
     }
     response.requireOk()

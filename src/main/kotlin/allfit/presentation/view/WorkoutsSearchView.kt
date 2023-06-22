@@ -14,7 +14,7 @@ import allfit.presentation.search.SearchRequest
 import allfit.presentation.search.SearchView
 import allfit.presentation.search.SubSearchRequest
 import allfit.presentation.search.TextSearchPane
-import allfit.presentation.search.WorkoutTimeSearchPane
+import allfit.presentation.search.VisitedSearchPane
 import allfit.service.Clock
 import tornadofx.FXEvent
 import tornadofx.hbox
@@ -34,7 +34,7 @@ class WorkoutsSearchView : SearchView<FullWorkout>(DefaultWorkoutSubSearchReques
 
     override val root = hbox {
         vbox {
-            addIt(WorkoutTimeSearchPane(clock, ::checkSearch))
+            addIt(VisitedSearchPane(::checkSearch))
             addIt(TextSearchPane(::checkSearch))
             addIt(DateSearchPane(clock, ::checkSearch))
             addIt(GroupSearchPane(::checkSearch))

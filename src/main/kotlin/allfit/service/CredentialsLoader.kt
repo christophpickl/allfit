@@ -10,12 +10,15 @@ object CredentialsLoader {
     private val log = logger {}
 
     fun load(): Credentials {
-        val file = FileResolver.resolve(FileEntry.Login)
-        log.debug { "Loading credentials from: ${file.absolutePath}" }
-        if (!file.exists()) {
-            error("Expected login file existing at: ${file.absolutePath}")
+        val loginFile = FileResolver.resolve(FileEntry.Login)
+        log.debug { "Loading credentials from: ${loginFile.absolutePath}" }
+        if (!loginFile.exists()) {
+            error(
+                "Expected login file existing at:\n${loginFile.absolutePath}\n\n" +
+                        "I created a template for you for now, please fill in your username and password."
+            )
         }
-        return kotlinxSerializer.decodeFromString<LoginJson>(file.readText()).toCredentials()
+        return kotlinxSerializer.decodeFromString<LoginJson>(loginFile.readText()).toCredentials()
     }
 }
 
