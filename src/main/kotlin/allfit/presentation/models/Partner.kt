@@ -1,7 +1,7 @@
 package allfit.presentation.models
 
-import allfit.presentation.logic.StaticImage
-import allfit.presentation.logic.StaticImageStorage
+import allfit.presentation.logic.StaticIcon
+import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.search.HasCheckins
 import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
@@ -192,5 +192,5 @@ data class FullPartner(
     }
 }
 
-val HIDDEN_IMAGE = StaticImageStorage.get(StaticImage.Hidden)
-val NOT_HIDDEN_IMAGE = StaticImageStorage.get(StaticImage.Empty)
+val HIDDEN_IMAGE = StaticIconStorage.get(StaticIcon.Hidden)
+val NOT_HIDDEN_IMAGE = StaticIconStorage.get(StaticIcon.Empty)

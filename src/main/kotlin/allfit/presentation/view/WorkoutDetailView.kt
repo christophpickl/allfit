@@ -2,8 +2,8 @@ package allfit.presentation.view
 
 import allfit.presentation.Styles
 import allfit.presentation.htmlview
-import allfit.presentation.logic.StaticImage
-import allfit.presentation.logic.StaticImageStorage
+import allfit.presentation.logic.StaticIcon
+import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
@@ -42,7 +42,7 @@ class WorkoutDetailView : View() {
                         })
                         addClass(Styles.header1)
                     }
-                    imageview(StaticImageStorage.get(StaticImage.Reserved)) {
+                    imageview(StaticIconStorage.get(StaticIcon.Reserved)) {
                         visibleWhen {
                             mainViewModel.selectedWorkout.map { it.isReserved }
                         }

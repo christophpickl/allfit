@@ -2,21 +2,29 @@ package allfit.presentation.logic
 
 import javafx.scene.image.Image
 
-object StaticImageStorage {
+object StaticIconStorage {
 
-    private val images = StaticImage.values().map {
-        it to ImageReader.readFromClasspath("/images/${it.filename}", 30.0)
+    private const val width = 30.0
+
+    private val images = StaticIcon.values().map {
+        it to load(it)
     }.toMap()
 
-    fun get(image: StaticImage) = images[image] ?: error("Invalid image: $image")
+    private fun load(image: StaticIcon) =
+        ImageReader.readFromClasspath("/images/icon/${image.filename}", width)
+
+    fun get(image: StaticIcon) = images[image] ?: error("Invalid image: $image")
+
+    fun forceReload(image: StaticIcon) = load(image)
 }
 
-enum class StaticImage(val filename: String) {
+enum class StaticIcon(val filename: String) {
     FavoriteFull("favorite_full.png"),
     FavoriteOutline("favorite_outline.png"),
     WishlistFull("wishlist_full.png"),
     WishlistOutline("wishlist_outline.png"),
     Reserved("reserved.png"),
+    ReservedNot("reserved_not.png"),
     Visited("visited.png"),
     Hidden("hidden.png"),
     Empty("empty.png"), // 1x1 transparent pixel image

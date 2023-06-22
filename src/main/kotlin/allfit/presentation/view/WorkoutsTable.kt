@@ -2,8 +2,8 @@ package allfit.presentation.view
 
 import allfit.presentation.HidePartnerFXEvent
 import allfit.presentation.PresentationConstants
-import allfit.presentation.logic.StaticImage
-import allfit.presentation.logic.StaticImageStorage
+import allfit.presentation.logic.StaticIcon
+import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.tornadofx.applyInitSort
@@ -33,8 +33,8 @@ class WorkoutsTable(
 ) : TableView<FullWorkout>() {
 
     private val dateColumn: TableColumn<FullWorkout, DateRange>
-    private val reservedImage = StaticImageStorage.get(StaticImage.Reserved)
-    private val visitedImage = StaticImageStorage.get(StaticImage.Visited)
+    private val reservedImage = StaticIconStorage.get(StaticIcon.Reserved)
+    private val visitedImage = StaticIconStorage.get(StaticIcon.Visited)
 
     init {
         smartResize()
@@ -66,7 +66,7 @@ class WorkoutsTable(
         column<FullWorkout, Boolean>("Favorite") { it.value.partner.isFavoritedProperty() }.fixedWidth(60)
             .cellFormat { isFavorite ->
                 graphic =
-                    imageview(StaticImageStorage.get(if (isFavorite) StaticImage.FavoriteFull else StaticImage.FavoriteOutline)) {
+                    imageview(StaticIconStorage.get(if (isFavorite) StaticIcon.FavoriteFull else StaticIcon.FavoriteOutline)) {
                         alignment = Pos.CENTER
                     }
             }
@@ -74,7 +74,7 @@ class WorkoutsTable(
         column<FullWorkout, Boolean>("Wishlist") { it.value.partner.isWishlistedProperty() }.fixedWidth(60)
             .cellFormat { isWishlisted ->
                 graphic =
-                    imageview(StaticImageStorage.get(if (isWishlisted) StaticImage.WishlistFull else StaticImage.WishlistOutline)) {
+                    imageview(StaticIconStorage.get(if (isWishlisted) StaticIcon.WishlistFull else StaticIcon.WishlistOutline)) {
                         alignment = Pos.CENTER
                     }
             }

@@ -6,7 +6,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* use icons in search for: favorited, wishlisted, reserved
 * for each dropin-checkin, create a "synthetical" workout entity in DB (?!)
 * refactor: make supertype visit, subtypes workout and dropin
 
@@ -35,6 +34,10 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 * improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
 * improve sync dialog: show report at the end: X foo inserted, Y bar deleted
+
+### Styling
+
+* https://docs.oracle.com/javase/8/javafx/user-interface-tutorial/custom.htm
 
 ### Future
 
