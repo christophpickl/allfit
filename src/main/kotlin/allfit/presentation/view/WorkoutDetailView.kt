@@ -5,6 +5,7 @@ import allfit.presentation.components.bigImage
 import allfit.presentation.htmlview
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
+import allfit.presentation.logic.googleMapsSearchUrl
 import allfit.presentation.models.MainViewModel
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
@@ -48,7 +49,8 @@ class WorkoutDetailView : View() {
                 }
 
                 labelDetail("When", mainViewModel.selectedWorkout.map { it.date.toPrettyString(clock) })
-                labelDetail("Where", mainViewModel.selectedWorkout.map { it.address })
+                val addressBind = mainViewModel.selectedWorkout.map { it.address }
+                labelDetail("Where", addressBind, link = googleMapsSearchUrl(addressBind))
 
                 openWebsiteButton(mainViewModel.selectedWorkout.map { it.url })
             }
