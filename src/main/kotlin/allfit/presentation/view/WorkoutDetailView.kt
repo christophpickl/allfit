@@ -1,6 +1,7 @@
 package allfit.presentation.view
 
 import allfit.presentation.Styles
+import allfit.presentation.components.bigImage
 import allfit.presentation.htmlview
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
@@ -15,7 +16,7 @@ import tornadofx.addClass
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.label
-import tornadofx.scrollpane
+import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.visibleWhen
 
@@ -26,17 +27,18 @@ class WorkoutDetailView : View() {
 
     override val root = vbox {
         hbox {
-            scrollpane(fitToHeight = true) {
-                setAllHeights(ViewConstants.bigImageHeight)
-                imageview(mainViewModel.selectedWorkout.map {
-                    it.image
-                })
-            }
+            bigImage(mainViewModel.selectedWorkout.map { it.image })
 
             vbox {
                 hbox {
                     label(mainViewModel.selectedWorkout.map { it.name }) {
                         addClass(Styles.header1)
+                        maxWidth = 550.0
+                        tooltip {
+                            mainViewModel.selectedWorkout.map { it.name }.addListener { _, _, newName ->
+                                text = newName
+                            }
+                        }
                     }
                     imageview(StaticIconStorage.get(StaticIcon.Reserved)) {
                         visibleWhen {

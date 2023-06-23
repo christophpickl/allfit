@@ -50,7 +50,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
     private val workoutYogaYin = SimpleWorkout(
         id = 2,
         partnerId = partnerYogaId,
-        name = "Yin Yoga",
+        name = "Yin Yoga was sometimes yin yoga but sometimes it is more cold than hot you know",
         about = "About yoga.",
         specifics = "Specifics.",
         address = "",

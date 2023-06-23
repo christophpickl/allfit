@@ -3,13 +3,13 @@ package allfit.presentation.view
 import allfit.presentation.PartnerModifications
 import allfit.presentation.Styles
 import allfit.presentation.UpdatePartnerFXEvent
+import allfit.presentation.components.bigImage
 import allfit.presentation.models.CurrentPartnerViewModel
 import allfit.presentation.renderStars
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
-import allfit.presentation.tornadofx.setAllWidths
 import allfit.service.Clock
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.CheckBox
@@ -28,9 +28,7 @@ import tornadofx.combobox
 import tornadofx.enableWhen
 import tornadofx.hbox
 import tornadofx.hgrow
-import tornadofx.imageview
 import tornadofx.label
-import tornadofx.scrollpane
 import tornadofx.selectedItem
 import tornadofx.singleAssign
 import tornadofx.textarea
@@ -54,13 +52,8 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
     }
 
     override val root = vbox {
-
         hbox {
-            scrollpane(fitToHeight = true) {
-                setAllHeights(ViewConstants.bigImageHeight)
-                setAllWidths(ViewConstants.bigImageHeight)
-                imageview(model.selectedPartner.image)
-            }
+            bigImage(model.selectedPartner.image)
 
             vbox {
 //                background = Background.fill(Color.RED)
@@ -70,8 +63,8 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
                     addClass(Styles.header1)
                 }
 
-                labelDetail("Categories", model.selectedPartner.categoriesRendered, textMaxWidth = 300.0)
-                labelDetail("Facilities", model.selectedPartner.facilitiesRendered, textMaxWidth = 300.0)
+                labelDetail("Categories", model.selectedPartner.categoriesRendered, textMaxWidth = 450.0)
+                labelDetail("Facilities", model.selectedPartner.facilitiesRendered, textMaxWidth = 450.0)
                 labelDetail(
                     "Available",
                     model.selectedPartner.availability.map { it.toString() },
