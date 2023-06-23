@@ -30,7 +30,7 @@ class CheckinTable(
         column<Checkin, String>("Name") {
             when (val checkin = it.value) {
                 is Checkin.WorkoutCheckin -> checkin.workout.nameProperty()
-                is Checkin.DropinCheckin -> "Drop-in".toProperty()
+                is Checkin.DropinCheckin -> "Drop-In".toProperty()
             }
         }.apply {
             minWidth = 250.0

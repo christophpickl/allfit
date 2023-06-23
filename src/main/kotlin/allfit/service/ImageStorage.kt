@@ -12,18 +12,19 @@ import kotlin.collections.set
 import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 
-private val notFoundDefaultImageBytes: ByteArray =
+private fun readClasspathImageBytes(fileName: String): ByteArray =
     ImageStorage::class.java.classLoader
-        .getResourceAsStream("images/not_found_default_image.jpg")?.readAllBytes()
-        ?: error("Classpath image 'not_found_default_image.jpg' not found!")
-private val prototypeImageBytes: ByteArray =
-    ImageStorage::class.java.classLoader
-        .getResourceAsStream("images/prototype.jpg")?.readAllBytes()
-        ?: error("Classpath image 'prototype_image.jpg' not found!")
+        .getResourceAsStream("images/$fileName")?.readAllBytes()
+        ?: error("Classpath image 'images/$fileName' not found!")
+
+private val notFoundDefaultImageBytes = readClasspathImageBytes("not_found_default_image.jpg")
+private val prototypeImageBytes = readClasspathImageBytes("prototype.jpg")
+private val dropinImageBytes = readClasspathImageBytes("dropin.jpg")
 
 object Images {
     val prototype = Image(prototypeImageBytes.inputStream())
     val notFound = Image(notFoundDefaultImageBytes.inputStream())
+    val dropin = Image(dropinImageBytes.inputStream())
 }
 
 interface ImageStorage {

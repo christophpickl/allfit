@@ -2,6 +2,7 @@ package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
 import allfit.persistence.domain.CategoriesRepo
+import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.CheckinType
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnerEntity
@@ -20,6 +21,7 @@ import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
 import allfit.service.ImageStorage
+import allfit.service.Images
 import allfit.service.beginOfDay
 import allfit.service.fromUtcToAmsterdamZonedDateTime
 import javafx.scene.image.Image
@@ -79,7 +81,7 @@ class ExposedDataStorage(
         val workoutImages = imageStorage.loadWorkoutImages(storedWorkouts.map { it.id }).associateBy { it.workoutId }
         storedWorkouts.map { workoutEntity ->
             try {
-                workoutEntity.toSimpleWorkout(
+                workoutEntity.fromDropinToSimpleWorkout(
                     image = Image(workoutImages[workoutEntity.id]!!.inputStream()),
                     isReserved = workoutsWithReservation.contains(workoutEntity.id),
                     wasVisited = workoutsWithCheckins.contains(workoutEntity.id),
@@ -95,7 +97,7 @@ class ExposedDataStorage(
         simplePartners.associateBy { it.id }
     }
 
-    private val fullWorkoutsVisitedOrUpcoming by lazy {
+    private val fullWorkoutsVisitedOrUpcomingOrDropins by lazy {
         val now = clock.now().beginOfDay()
         simpleWorkouts
             .filter { it.wasVisited || it.date.start >= now }
@@ -104,11 +106,18 @@ class ExposedDataStorage(
                     simpleWorkout = simpleWorkout,
                     partner = simplePartnersById[simpleWorkout.partnerId]!!
                 )
-            }
+            } +
+                dropinCheckins.map { checkin ->
+                    val partner = simplePartnersById[checkin.partnerId]!!
+                    FullWorkout(
+                        simpleWorkout = checkin.fromDropinToSimpleWorkout(partner.url),
+                        partner = partner
+                    )
+                }
     }
 
     private val fullWorkoutsById by lazy {
-        fullWorkoutsVisitedOrUpcoming.associateBy { it.id }
+        fullWorkoutsVisitedOrUpcomingOrDropins.associateBy { it.id }
     }
 
     private val fullPartners by lazy {
@@ -152,7 +161,7 @@ class ExposedDataStorage(
         fullPartners
 
     override fun getWorkouts() =
-        fullWorkoutsVisitedOrUpcoming
+        fullWorkoutsVisitedOrUpcomingOrDropins
 
     override fun getPartnerById(partnerId: Int): FullPartner =
         fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
@@ -181,6 +190,25 @@ class ExposedDataStorage(
     }
 }
 
+private var syntheticWorkoutIdCounter = 90_000_000
+private fun CheckinEntity.fromDropinToSimpleWorkout(partnerUrl: String): SimpleWorkout {
+    require(type == CheckinType.DROP_IN)
+    val start = createdAt.fromUtcToAmsterdamZonedDateTime()
+    return SimpleWorkout(
+        id = syntheticWorkoutIdCounter++,
+        partnerId = partnerId,
+        name = "Drop-In",
+        about = "",
+        specifics = "",
+        address = "",
+        date = DateRange(start = start, end = start.plusHours(1)),
+        image = Images.dropin,
+        url = partnerUrl,
+        isReserved = false,
+        wasVisited = true,
+    )
+}
+
 private fun PartnerEntity.toSimplePartner(
     image: Image,
     categories: List<String>,
@@ -203,7 +231,7 @@ private fun PartnerEntity.toSimplePartner(
     hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
 )
 
-private fun WorkoutEntity.toSimpleWorkout(
+private fun WorkoutEntity.fromDropinToSimpleWorkout(
     image: Image,
     wasVisited: Boolean,
     isReserved: Boolean,

@@ -136,9 +136,35 @@ class ExposedDataStorageTest : DescribeSpec() {
 
                 workouts.shouldBeSingleton().first().partner.checkins shouldBe 1
             }
+
+            it("Given dropin-checkin Then synthetic workout is returned") {
+                ExposedTestRepo.insertCategoryPartnerAndDropinCheckin()
+
+                val workouts = dataStorage().getWorkouts()
+
+                workouts.shouldBeSingleton().first().name shouldBe "Drop-In"
+            }
         }
 
-        describe("When getPartnerById") {
+        describe("When get workout by ID") {
+            it("Given category, partner and workout Then return workout") {
+                val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
+
+                val fullWorkout = dataStorage().getWorkoutById(workout.id)
+
+                fullWorkout shouldBe FullWorkout(
+                    simpleWorkout = workout.toSimpleWorkout(
+                        isReserved = false,
+                        image = fullWorkout.image,
+                    ),
+                    partner = partner.toSimplePartner(
+                        image = fullWorkout.partner.image, checkins = 0, categories = listOf(category.name)
+                    ),
+                )
+            }
+        }
+
+        describe("When get partner by ID") {
             it("Given no checkins and no workouts Then return it") {
                 val (category, partner) = ExposedTestRepo.insertCategoryAndPartner()
 
@@ -196,25 +222,7 @@ class ExposedDataStorageTest : DescribeSpec() {
             }
         }
 
-        describe("When getWorkoutById") {
-            it("Given category, partner and workout Then return workout") {
-                val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
-
-                val fullWorkout = dataStorage().getWorkoutById(workout.id)
-
-                fullWorkout shouldBe FullWorkout(
-                    simpleWorkout = workout.toSimpleWorkout(
-                        isReserved = false,
-                        image = fullWorkout.image,
-                    ),
-                    partner = partner.toSimplePartner(
-                        image = fullWorkout.partner.image, checkins = 0, categories = listOf(category.name)
-                    ),
-                )
-            }
-        }
-
-        describe("When updatePartner") {
+        describe("When update partner") {
             it("Given partner Then updated in database") {
                 val (_, modifications) = insertPartnerAndGetModifications()
 
