@@ -27,6 +27,7 @@ class WorkoutDetailView : View() {
     private val clock: Clock by di()
 
     override val root = vbox {
+//        background = Background.fill(Color.BLUE)
         hbox {
             bigImage(mainViewModel.selectedWorkout.map { it.image })
 

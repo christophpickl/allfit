@@ -24,6 +24,7 @@ import allfit.service.ImageStorage
 import allfit.service.Images
 import allfit.service.beginOfDay
 import allfit.service.fromUtcToAmsterdamZonedDateTime
+import java.time.ZonedDateTime
 import javafx.scene.image.Image
 import mu.KotlinLogging.logger
 
@@ -125,18 +126,21 @@ class ExposedDataStorage(
         simplePartners.map { simplePartner ->
             FullPartner(
                 simplePartner = simplePartner,
-                pastCheckins = simpleWorkouts.filter {
-                    it.partnerId == simplePartner.id &&
-                            it.date.start <= now &&
-                            visitedWorkoutIds.contains(it.id)
-                }.map {
-                    Checkin.WorkoutCheckin(it)
-                } + dropinCheckins.filter { it.partnerId == simplePartner.id }
-                    .map { Checkin.DropinCheckin(it.createdAt.fromUtcToAmsterdamZonedDateTime()) },
-                upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now },
+                pastCheckins = (
+                        simpleWorkouts.filter { it.isPastCheckinFor(simplePartner.id, now) }
+                            .map { Checkin.WorkoutCheckin(it) } +
+                                dropinCheckins.filter { it.partnerId == simplePartner.id }
+                                    .map { Checkin.DropinCheckin(it.createdAt.fromUtcToAmsterdamZonedDateTime()) }
+                        )
+                    .sortedBy { it.date },
+                upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now }
+                    .sortedBy { it.date },
             )
         }
     }
+
+    private fun SimpleWorkout.isPastCheckinFor(partnerId: Int, now: ZonedDateTime): Boolean =
+        this.partnerId == partnerId && date.start <= now && visitedWorkoutIds.contains(id)
 
     private val fullPartnersById by lazy {
         fullPartners.associateBy { it.id }

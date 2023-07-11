@@ -96,6 +96,8 @@ class MainView : View() {
                     }
                     right {
                         hgrow = Priority.NEVER
+                        vgrow = Priority.ALWAYS
+//                        background = Background.fill(Color.RED)
                         vbox {
                             add(workoutDetailView)
                             add(Label()) // layout hack ;)

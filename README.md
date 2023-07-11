@@ -6,7 +6,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* sort upcoming workouts by date!
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 

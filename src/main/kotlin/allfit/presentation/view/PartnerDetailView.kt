@@ -33,6 +33,7 @@ import tornadofx.selectedItem
 import tornadofx.singleAssign
 import tornadofx.textarea
 import tornadofx.vbox
+import tornadofx.vgrow
 
 interface PartnerDetailModel {
     val selectedPartner: CurrentPartnerViewModel
@@ -56,7 +57,7 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
             bigImage(model.selectedPartner.image)
 
             vbox {
-//                background = Background.fill(Color.RED)
+//                background = Background.fill(Color.YELLOW)
                 hgrow = Priority.ALWAYS
                 label {
                     bind(model.selectedPartner.name)
@@ -77,7 +78,7 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
                     border = Border.EMPTY
                     isWrapText = true
                     bind(model.selectedPartner.description)
-                    setAllHeights(50.0)
+                    setAllHeights(60.0)
                 }
 
                 openWebsiteButton(model.selectedPartner.url)
@@ -111,7 +112,7 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
         noteText = textarea {
             bind(model.selectedPartner.note)
             enableWhen(enabledChecker)
-            setAllHeights(50.0)
+            setAllHeights(70.0)
         }
 
         button("Update Partner") {
@@ -132,16 +133,17 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
         }
 
         hbox {
+            vgrow = Priority.ALWAYS
             vbox {
                 labelPrompt("Upcoming Workouts")
                 workoutTable(model.selectedPartner.upcomingWorkouts, ::fireDelegate, clock) {
-                    setAllHeights(140.0)
+//                    setAllHeights(140.0)
                 }
             }
             vbox {
                 labelPrompt("Past Checkins")
                 checkinTable(model.selectedPartner.pastCheckins, clock) {
-                    setAllHeights(140.0)
+//                    setAllHeights(140.0)
                 }
             }
         }
