@@ -136,7 +136,7 @@ class FileSystemImageStorage(
             val bytes: ByteArray? = imageUrl?.let { url ->
                 val fullUrl = "${url}?w=$width"
                 log.debug { "Downloading partner (ID=${partnerId}) image from: $fullUrl" }
-                retryGetBytes(fullUrl, 1)
+                client.retryGetBytes(fullUrl, maxRetryDownloadAttempts)
             } ?: null.also {
                 log.debug { "No partner image defined with ID: $partnerId" }
             }
@@ -145,17 +145,6 @@ class FileSystemImageStorage(
         }
     }
 
-    private suspend fun retryGetBytes(url: String, attempt: Int): ByteArray? =
-        try {
-            client.getBytes(url)
-        } catch (e: Exception) {
-            log.warn(e) { "Failed to download image attempt $attempt/$maxRetryDownloadAttempts from: $url" }
-            if (attempt == maxRetryDownloadAttempts) {
-                throw e
-            } else {
-                retryGetBytes(url, attempt + 1)
-            }
-        }
 
     override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
         partnerIds.forEach { id ->
@@ -181,7 +170,7 @@ class FileSystemImageStorage(
         workouts.workParallel(parallelWorkersCount, {
             syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of workout images done.")
         }) { workout ->
-            val bytes = client.getBytes("${workout.imageUrl}?w=$width")
+            val bytes = client.retryGetBytes("${workout.imageUrl}?w=$width", maxRetryDownloadAttempts)
             workoutTarget(workout.workoutId).saveAndLogOrDefault(bytes)
             delay(delayBetweenEachDownloadInMs)
         }
@@ -237,6 +226,18 @@ private fun List<String>.requireAllEndsWithExtension(extension: String) {
 
 private val log = logger {}
 
+private suspend fun HttpClient.retryGetBytes(url: String, maxAttempts: Int, currentAttempt: Int = 1): ByteArray? =
+    try {
+        log.debug { "Get bytes from [$url] (attempt $currentAttempt/$maxAttempts)" }
+        getBytes(url)
+    } catch (e: Exception) {
+        log.warn(e) { "Failed to download image attempt $currentAttempt/$maxAttempts from: $url" }
+        if (currentAttempt == maxAttempts) {
+            throw e
+        } else {
+            retryGetBytes(url, currentAttempt + 1)
+        }
+    }
 
 private suspend fun HttpClient.getBytes(url: String): ByteArray? {
     val response = get(url)

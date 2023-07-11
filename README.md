@@ -6,17 +6,19 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* sort upcoming workouts by date!
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
 ### Medium
 
+* use ktor client retry plugin: https://ktor.io/docs/client-retry.html
 * adjust column sizes in table
-* disable closing app while still syncing. display info dialog.
 * ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
 
 ### Low
 
+* disable closing app while still syncing. display info dialog.
 * tornadofx UI tests
 * render distance in km to my place (calculate via google during sync)
 * make application start-able also when there is no internet connection

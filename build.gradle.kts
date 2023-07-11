@@ -15,7 +15,7 @@ plugins {
 
 dependencies {
     implementation("no.tornado:tornadofx:1.7.20")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines:0.19.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines:0.19.2") // TODO i guess this ain't working?!
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
