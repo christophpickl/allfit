@@ -67,26 +67,24 @@ class WorkoutsSyncerImpl(
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
         val from = clock.todayBeginOfDay()
-        val rawWorkouts = client.getWorkouts(WorkoutSearchParams.simple(from = from, plusDays = 14)).data
-        val distinctWorkouts = rawWorkouts.distinctBy { it.id }
-        if (rawWorkouts.size != distinctWorkouts.size) {
-            log.warn { "Dropped ${rawWorkouts.size - distinctWorkouts.size} workouts because of duplicate IDs." }
+        val rawClientWorkouts = client.getWorkouts(WorkoutSearchParams.simple(from = from, plusDays = 14)).data
+        val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }
+        if (rawClientWorkouts.size != distinctClientWorkouts.size) {
+            log.warn { "Dropped ${rawClientWorkouts.size - distinctClientWorkouts.size} workouts because of duplicate IDs." }
         }
-        val workoutIdsToBeInserted = distinctWorkouts.map { it.id }.toMutableList()
-        val entities = workoutsRepo.selectAllStartingFrom(from.toUtcLocalDateTime())
-        entities.forEach {
-            workoutIdsToBeInserted.remove(it.id)
-        }
-        val maybeInsertWorkouts = distinctWorkouts.filter { workoutIdsToBeInserted.contains(it.id) }
+        val nonExistingClientWorkoutIds = distinctClientWorkouts.map { it.id }.toMutableList()
+        val existingWorkoutIds = workoutsRepo.selectAllIds()
+        nonExistingClientWorkoutIds.removeAll(existingWorkoutIds)
+        val nonExistingClientWorkouts = distinctClientWorkouts.filter { nonExistingClientWorkoutIds.contains(it.id) }
 
         // remove all workouts without an existing partner (partner seems disabled, yet workout is being returned)
-        val partnerIds = partnersRepo.selectAll().map { it.id }
-        return maybeInsertWorkouts.filter {
-            val existing = partnerIds.contains(it.partner.id)
-            if (!existing) {
-                log.warn { "Dropping workout because partner is not known (set inactive by OneFit?!): $it" }
+        val partnerIds = partnersRepo.selectAllIds()
+        return nonExistingClientWorkouts.filter { workout ->
+            val partnerForWorkoutExistsLocally = partnerIds.contains(workout.partner.id)
+            if (!partnerForWorkoutExistsLocally) {
+                log.warn { "Dropping workout because partner is not known (set inactive by OneFit?!): $workout" }
             }
-            existing
+            partnerForWorkoutExistsLocally
         }
     }
 

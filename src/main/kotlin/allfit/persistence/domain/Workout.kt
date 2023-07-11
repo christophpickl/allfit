@@ -44,6 +44,7 @@ interface WorkoutsRepo {
     fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity>
     fun insertAll(workouts: List<WorkoutEntity>)
     fun deleteAll(workoutIds: List<Int>)
+    fun selectAllIds(): List<Int>
 }
 
 class InMemoryWorkoutsRepo : WorkoutsRepo {
@@ -77,6 +78,9 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
         }
     }
 
+    override fun selectAllIds(): List<Int> =
+        workouts.keys.toList()
+
     override fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity> =
         workouts.values.filter { searchIds.contains(it.id) }
 
@@ -90,6 +94,10 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
         WorkoutsTable.selectAll().map { it.toWorkoutEntity() }.also {
             log.debug { "Selecting all returns ${it.size} workouts." }
         }
+    }
+
+    override fun selectAllIds(): List<Int> = transaction {
+        WorkoutsTable.slice(WorkoutsTable.id).selectAll().map { it[WorkoutsTable.id].value }
     }
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) = transaction {

@@ -60,6 +60,7 @@ data class PartnerEntity(
 ) : BaseEntity, PartnerCustomAttributesRead
 
 interface PartnersRepo : BaseRepo<PartnerEntity> {
+    fun selectAllIds(): List<Int>
     fun update(modifications: PartnerModifications)
     fun hide(partnerId: Int)
     fun unhide(partnerId: Int)
@@ -69,6 +70,9 @@ class InMemoryPartnersRepo : PartnersRepo {
 
     private val log = logger {}
     val partners = mutableMapOf<Int, PartnerEntity>()
+
+    override fun selectAllIds(): List<Int> =
+        partners.keys.toList()
 
     override fun update(modifications: PartnerModifications) {
         val old = partners[modifications.partnerId]!!
@@ -125,6 +129,10 @@ object ExposedPartnersRepo : PartnersRepo {
         }.also {
             log.debug { "Selecting all returns ${it.size} partners." }
         }
+    }
+
+    override fun selectAllIds(): List<Int> = transaction {
+        PartnersTable.slice(PartnersTable.id).selectAll().map { it[PartnersTable.id].value }
     }
 
     fun selectAllPartnerCategories(): List<PartnerCategoryEntity> = transaction {
