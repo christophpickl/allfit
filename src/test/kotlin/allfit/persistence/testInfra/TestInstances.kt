@@ -74,6 +74,7 @@ fun Arb.Companion.workoutEntity() = arbitrary {
         end = LocalDateTime.now().plusHours(1),
         about = string().next(),
         specifics = string().next(),
+        teacher = string(maxSize = 10).orNull().next(),
         address = string().next(),
         partnerId = int(min = 1).next(),
     )

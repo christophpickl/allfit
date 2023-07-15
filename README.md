@@ -6,14 +6,17 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* instead of extra partners-window, make it kind of a tab: "workout view / partner view"
 * get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
 ### Medium
 
+* package as MacOS native DMG (give it another shot)
 * use ktor client retry plugin: https://ktor.io/docs/client-retry.html
 * adjust column sizes in table
 * ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
+* define text search targets (partner/workout, title/description/notes, teacher, ...)
 
 ### Low
 

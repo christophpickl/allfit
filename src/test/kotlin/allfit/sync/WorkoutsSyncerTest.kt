@@ -91,6 +91,7 @@ class WorkoutsSyncerTest : StringSpec() {
                 end = workout.till.toUtcLocalDateTime(),
                 about = workoutFetch.about,
                 specifics = workoutFetch.specifics,
+                teacher = workoutFetch.teacher,
                 address = workoutFetch.address,
             )
         }

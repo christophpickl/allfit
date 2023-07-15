@@ -120,6 +120,7 @@ private fun WorkoutCheckinJson.toWorkoutEntity() = WorkoutEntity(
     end = till.toUtcLocalDateTime(),
     about = "N/A",
     specifics = "N/A",
+    teacher = null,
     address = "N/A",
 )
 

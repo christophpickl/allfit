@@ -27,6 +27,9 @@ interface Workout {
     val specifics: String
     fun specificsProperty(): ObjectProperty<String>
 
+    val teacher: String
+    fun teacherProperty(): ObjectProperty<String>
+
     val date: DateRange
     fun dateProperty(): ObjectProperty<DateRange>
 
@@ -51,6 +54,7 @@ class SimpleWorkout(
     name: String,
     about: String,
     specifics: String,
+    teacher: String,
     address: String,
     date: DateRange,
     image: Image,
@@ -66,6 +70,8 @@ class SimpleWorkout(
     override fun aboutProperty() = getProperty(SimpleWorkout::about)
     override var specifics: String by property(specifics)
     override fun specificsProperty() = getProperty(SimpleWorkout::specifics)
+    override var teacher: String by property(teacher)
+    override fun teacherProperty() = getProperty(SimpleWorkout::teacher)
     override var address: String by property(address)
     override fun addressProperty() = getProperty(SimpleWorkout::address)
     override var url: String by property(url)
@@ -86,7 +92,7 @@ class SimpleWorkout(
 
     override fun toString() =
         "SimpleWorkout[name=$name, id=$id, partnerId=$partnerId, isReserved=$isReserved, date=$date, url=$url, " +
-                "address=$address, about=${about.ensureMaxLength(10)}, " +
+                "address=$address, teacher=$teacher, about=${about.ensureMaxLength(10)}, " +
                 "specifics=${specifics.ensureMaxLength(10)}, image]"
 
     override fun equals(other: Any?): Boolean {
@@ -98,6 +104,7 @@ class SimpleWorkout(
                 name == other.name &&
                 about == other.about &&
                 specifics == other.specifics &&
+                teacher == other.teacher &&
                 isReserved == other.isReserved &&
                 url == other.url &&
                 address == other.address &&
@@ -113,7 +120,7 @@ data class FullWorkout(
     val partner: SimplePartner,
 ) : Workout by simpleWorkout, HasCheckins by partner, HasTextSearchable, HasRating by partner {
 
-    override val searchableTerms = listOf(name, partner.name)
+    override val searchableTerms = listOf(name, partner.name, teacher)
 
     companion object {
         val prototype = FullWorkout(
@@ -123,6 +130,7 @@ data class FullWorkout(
                 name = "Workout",
                 about = "About",
                 specifics = "Specifics",
+                teacher = "",
                 address = "Address",
                 date = DateRange(start = ZonedDateTime.now(), end = ZonedDateTime.now()),
                 image = Images.prototype,

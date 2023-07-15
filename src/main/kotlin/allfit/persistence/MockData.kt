@@ -41,19 +41,40 @@ private val partner2 = PartnerEntity(
 private val allPartners = listOf(partner1, partner2)
 
 private val workout1 = WorkoutEntity(
-    id = 1, partnerId = partner1.id,
-    name = "Workout 1", slug = "workout1", about = "about", specifics = "specifics", address = "home street",
-    start = now, end = now.plusHours(1),
+    id = 1,
+    partnerId = partner1.id,
+    name = "Workout 1",
+    slug = "workout1",
+    about = "about",
+    specifics = "specifics",
+    teacher = null,
+    address = "home street",
+    start = now,
+    end = now.plusHours(1),
 )
 val workout2 = WorkoutEntity(
-    id = 2, partnerId = partner1.id,
-    name = "Workout 2", slug = "workout2", about = "about", specifics = "specifics", address = "home street",
-    start = now, end = now.plusHours(2),
+    id = 2,
+    partnerId = partner1.id,
+    name = "Workout 2",
+    slug = "workout2",
+    about = "about",
+    specifics = "specifics",
+    teacher = null,
+    address = "home street",
+    start = now,
+    end = now.plusHours(2),
 )
 val workout3 = WorkoutEntity(
-    id = 3, partnerId = partner2.id,
-    name = "Workout 3", slug = "workout3", about = "about", specifics = "specifics", address = "home street",
-    start = now, end = now.plusHours(3),
+    id = 3,
+    partnerId = partner2.id,
+    name = "Workout 3",
+    slug = "workout3",
+    about = "about",
+    specifics = "specifics",
+    teacher = null,
+    address = "home street",
+    start = now,
+    end = now.plusHours(3),
 )
 private val allWorkouts = listOf(workout1, workout2, workout3)
 

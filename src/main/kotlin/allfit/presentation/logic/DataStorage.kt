@@ -75,6 +75,7 @@ class ExposedDataStorage(
             )
         }
     }
+
     private val simpleWorkouts by lazy {
         val workoutsWithReservation = reservationsRepo.selectAll().map { it.workoutId }.toSet()
         val workoutsWithCheckins = checkins.mapNotNull { it.workoutId }.toSet()
@@ -82,7 +83,7 @@ class ExposedDataStorage(
         val workoutImages = imageStorage.loadWorkoutImages(storedWorkouts.map { it.id }).associateBy { it.workoutId }
         storedWorkouts.map { workoutEntity ->
             try {
-                workoutEntity.fromDropinToSimpleWorkout(
+                workoutEntity.toSimpleWorkout(
                     image = Image(workoutImages[workoutEntity.id]!!.inputStream()),
                     isReserved = workoutsWithReservation.contains(workoutEntity.id),
                     wasVisited = workoutsWithCheckins.contains(workoutEntity.id),
@@ -195,6 +196,7 @@ class ExposedDataStorage(
 }
 
 private var syntheticWorkoutIdCounter = 90_000_000
+
 private fun CheckinEntity.fromDropinToSimpleWorkout(partnerUrl: String): SimpleWorkout {
     require(type == CheckinType.DROP_IN)
     val start = createdAt.fromUtcToAmsterdamZonedDateTime()
@@ -205,6 +207,7 @@ private fun CheckinEntity.fromDropinToSimpleWorkout(partnerUrl: String): SimpleW
         about = "",
         specifics = "",
         address = "",
+        teacher = "",
         date = DateRange(start = start, end = start.plusHours(1)),
         image = Images.dropin,
         url = partnerUrl,
@@ -235,7 +238,7 @@ private fun PartnerEntity.toSimplePartner(
     hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
 )
 
-private fun WorkoutEntity.fromDropinToSimpleWorkout(
+private fun WorkoutEntity.toSimpleWorkout(
     image: Image,
     wasVisited: Boolean,
     isReserved: Boolean,
@@ -245,6 +248,7 @@ private fun WorkoutEntity.fromDropinToSimpleWorkout(
     name = name,
     about = about,
     specifics = specifics,
+    teacher = teacher ?: "",
     address = address,
     date = DateRange(start = start.fromUtcToAmsterdamZonedDateTime(), end = end.fromUtcToAmsterdamZonedDateTime()),
     image = image,

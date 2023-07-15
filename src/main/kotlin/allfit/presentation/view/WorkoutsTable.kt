@@ -51,6 +51,7 @@ class WorkoutsTable(
                 text = date.toPrettyString(clock)
             }
         }
+        column<FullWorkout, String>("Teacher") { it.value.teacherProperty() }.fixedWidth(100)
 
         imageColumn("Reserved", reservedImage) { it.value.isReservedProperty() }
         imageColumn("Visited", visitedImage) { it.value.wasVisitedProperty() }

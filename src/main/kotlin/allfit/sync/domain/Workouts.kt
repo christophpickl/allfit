@@ -117,6 +117,7 @@ interface WorkoutHtmlMetaData {
     val about: String
     val specifics: String
     val address: String
+    val teacher: String?
 }
 
 private fun WorkoutJson.toWorkoutEntity(htmlMetaData: WorkoutHtmlMetaData) = WorkoutEntity(
@@ -129,4 +130,5 @@ private fun WorkoutJson.toWorkoutEntity(htmlMetaData: WorkoutHtmlMetaData) = Wor
     about = htmlMetaData.about,
     specifics = htmlMetaData.specifics,
     address = htmlMetaData.address,
+    teacher = htmlMetaData.teacher,
 )

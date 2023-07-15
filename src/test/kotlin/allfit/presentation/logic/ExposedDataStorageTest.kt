@@ -282,6 +282,7 @@ private fun WorkoutEntity.toSimpleWorkout(
     name = name,
     about = about,
     specifics = specifics,
+    teacher = teacher ?: "",
     address = address,
     date = DateRange(start = start.fromUtcToAmsterdamZonedDateTime(), end = end.fromUtcToAmsterdamZonedDateTime()),
     image = image,
@@ -347,6 +348,7 @@ private fun buildFullWorkout(
         name = workout.name,
         about = workout.about,
         specifics = workout.specifics,
+        teacher = workout.teacher ?: "",
         address = workout.address,
         date = DateRange(
             start = workout.start.fromUtcToAmsterdamZonedDateTime(), end = workout.end.fromUtcToAmsterdamZonedDateTime()

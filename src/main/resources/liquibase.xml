@@ -205,11 +205,14 @@
         </createTable>
     </changeSet>
 
-    <!--        <addColumn tableName="PARTNERS">-->
-    <!--            <column name="asdf" type="boolean" defaultValueBoolean="false">-->
-    <!--                <constraints nullable="false"/>-->
-    <!--            </column>-->
-    <!--        </addColumn>-->
+    <changeSet id="3" author="christophpickl" failOnError="true">
+        <comment>add WORKOUTS.TEACHER</comment>
+        <addColumn tableName="WORKOUTS">
+            <column name="TEACHER" type="varchar(256)" defaultValue="NULL">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
     <!--
         <modifyDataType

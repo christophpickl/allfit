@@ -17,7 +17,7 @@ interface WorkoutFetcher {
 }
 
 class DummyWorkoutFetcher : WorkoutFetcher {
-    var fetched = WorkoutFetch(42, "about", "specifics", "address", emptyList())
+    var fetched = WorkoutFetch(42, "about", "specifics", "address", null, emptyList())
     override suspend fun fetch(url: WorkoutUrl) = fetched.copy(workoutId = url.workoutId)
 }
 
@@ -33,11 +33,12 @@ data class WorkoutFetch(
     override val about: String,
     override val specifics: String,
     override val address: String,
+    override val teacher: String?,
     val imageUrls: List<String>, // add "?w=123" to define width
 ) : WorkoutHtmlMetaData {
     companion object {
         fun empty(workoutId: Int) = WorkoutFetch(
-            workoutId = workoutId, about = "", specifics = "", address = "", imageUrls = emptyList()
+            workoutId = workoutId, about = "", specifics = "", address = "", imageUrls = emptyList(), teacher = null
         )
     }
 }
@@ -91,31 +92,34 @@ object WorkoutHtmlParser {
             specifics = parseSpecifics(body),
             address = parseAddress(body),
             imageUrls = parseImageUrls(body),
+            teacher = parseTeacher(body),
         )
     }
 
     private fun parseAbout(body: Element): String {
         val about = body.getElementsByClass("about")
         if (about.size == 0) return ""
-        return about.requireOneChild()
-            .select(".readMore--aboutLesson > div:nth-child(1) > p:nth-child(1)")[0].html()
+        return about.requireOneChild().select(".readMore--aboutLesson > div:nth-child(1) > p:nth-child(1)")[0].html()
     }
 
     private fun parseSpecifics(body: Element): String {
         val specifics = body.getElementsByClass("specifics")
         if (specifics.size == 0) return ""
-        return specifics.requireOneChild()
-            .select(".readMore--specifics > div:nth-child(1) > p:nth-child(1)")[0].html()
+        return specifics.requireOneChild().select(".readMore--specifics > div:nth-child(1) > p:nth-child(1)")[0].html()
     }
 
-    private fun parseAddress(body: Element) =
-        body.select("div.address").text()
+    private fun parseAddress(body: Element) = body.select("div.address").text()
 
-    private fun parseImageUrls(body: Element) =
-        body.select("div.inventoryDetailHero__gallery__nav__element").map {
-            val img = it.getElementsByTag("img").requireOneChild()[0]
-            img.attr("src").substringBefore("?")
-        }
+    private fun parseImageUrls(body: Element) = body.select("div.inventoryDetailHero__gallery__nav__element").map {
+        val img = it.getElementsByTag("img").requireOneChild()[0]
+        img.attr("src").substringBefore("?")
+    }
+
+    private fun parseTeacher(body: Element): String? {
+        val names = body.getElementsByClass("teacher__name")
+        if (names.size == 0) return null
+        return names.requireOneChild().text()
+    }
 }
 
 private fun Elements.requireOneChild() = apply {

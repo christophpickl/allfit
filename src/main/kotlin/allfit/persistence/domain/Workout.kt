@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
@@ -22,6 +23,7 @@ object WorkoutsTable : IntIdTable("PUBLIC.WORKOUTS", "ID") {
     val about = text("ABOUT")
     val specifics = text("SPECIFICS")
     val address = varchar("ADDRESS", 256)
+    val teacher = varchar("TEACHER", 256).nullable()
     // we don't store the location of a workout; it must be one of the partner's anyway
 }
 
@@ -35,6 +37,7 @@ data class WorkoutEntity(
     val about: String, // parsed from HTML
     val specifics: String, // parsed from HTML
     val address: String, // parsed from HTML
+    val teacher: String?, // parsed from HTML
 )
 
 interface WorkoutsRepo {
@@ -125,16 +128,8 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
         transaction {
             log.debug { "Inserting ${workouts.size} workouts." }
             workouts.forEach { workout ->
-                WorkoutsTable.insert {
-                    it[WorkoutsTable.id] = workout.id
-                    it[name] = workout.name
-                    it[slug] = workout.slug
-                    it[start] = workout.start
-                    it[end] = workout.end
-                    it[about] = workout.about
-                    it[specifics] = workout.specifics
-                    it[address] = workout.address
-                    it[partnerId] = EntityID(workout.partnerId, PartnersTable)
+                WorkoutsTable.insert { stmt ->
+                    stmt.mapColumns(workout)
                 }
             }
         }
@@ -150,6 +145,19 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
     }
 }
 
+private fun InsertStatement<Number>.mapColumns(workout: WorkoutEntity) {
+    this[WorkoutsTable.id] = workout.id
+    this[WorkoutsTable.name] = workout.name
+    this[WorkoutsTable.slug] = workout.slug
+    this[WorkoutsTable.start] = workout.start
+    this[WorkoutsTable.end] = workout.end
+    this[WorkoutsTable.about] = workout.about
+    this[WorkoutsTable.specifics] = workout.specifics
+    this[WorkoutsTable.address] = workout.address
+    this[WorkoutsTable.teacher] = workout.teacher
+    this[WorkoutsTable.partnerId] = EntityID(workout.partnerId, PartnersTable)
+}
+
 private fun ResultRow.toWorkoutEntity() = WorkoutEntity(
     id = this[WorkoutsTable.id].value,
     name = this[WorkoutsTable.name],
@@ -159,5 +167,6 @@ private fun ResultRow.toWorkoutEntity() = WorkoutEntity(
     about = this[WorkoutsTable.about],
     specifics = this[WorkoutsTable.specifics],
     address = this[WorkoutsTable.address],
+    teacher = this[WorkoutsTable.teacher],
     partnerId = this[WorkoutsTable.partnerId].value,
 )
