@@ -18,7 +18,7 @@ class SyncController : Controller(), SyncListener {
 
     init {
         subscribe<ApplicationStartedFxEvent>() {
-            logger.info { "Start sync via view..." }
+            logger.info { "Start sync after application started..." }
             syncWindow.openWindow(modality = Modality.NONE)
             syncer.registerListener(this@SyncController)
             runAsync {

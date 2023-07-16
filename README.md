@@ -6,26 +6,23 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* when close window, shut down JVM
 * instead of extra partners-window, make it kind of a tab: "workout view / partner view"
-* get sure, sync also updates checkins/reservations; besides updating spots left (necessary for registration)
-* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
 ### Medium
 
-* package as MacOS native DMG (give it another shot)
-* use ktor client retry plugin: https://ktor.io/docs/client-retry.html
-* adjust column sizes in table
-* ad workout details (right hand side): use up full vertical space (make some parts grow; notes)
+* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 
 ### Low
 
-* disable closing app while still syncing. display info dialog.
 * tornadofx UI tests
 * render distance in km to my place (calculate via google during sync)
 * make application start-able also when there is no internet connection
 * PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days to all existing data)
 * make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k workouts, every 2 secs)
+* use ktor client retry plugin: https://ktor.io/docs/client-retry.html
+* disable closing app while still syncing. display info dialog.
 
 ### Nope
 

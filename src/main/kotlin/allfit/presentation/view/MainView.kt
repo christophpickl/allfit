@@ -42,7 +42,7 @@ class MainView : View() {
     init {
         mainViewModel.sortedFilteredWorkouts.bindTo(workoutsTable)
         workoutsTable.applySort()
-        title = "AllFit " + (if (Environment.current == Environment.Development) " - DEV" else "")
+        title = "AllFit " + (if (Environment.current == Environment.Development) " - Developer Mode" else "")
 
         with(workoutsTable) {
             onSelectionChange {
