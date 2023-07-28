@@ -9,6 +9,7 @@ import allfit.presentation.view.MainView
 import allfit.sync.view.SyncController
 import javafx.application.Platform
 import javafx.stage.Stage
+import kotlin.system.exitProcess
 import mu.KotlinLogging.logger
 import tornadofx.App
 import tornadofx.find
@@ -17,10 +18,19 @@ class TornadoFxEntryPoint : App(
     primaryView = MainView::class,
     stylesheet = Styles::class,
 ) {
+
     private val log = logger {}
+    private val eagerSingletons = listOf(
+        MainController::class,
+        PartnerUpdateController::class,
+        PartnersViewController::class,
+        SyncController::class,
+    )
 
     init {
-        registerEagerSingletons()
+        eagerSingletons.forEach { singleton ->
+            find(singleton)
+        }
     }
 
     override fun start(stage: Stage) {
@@ -36,10 +46,9 @@ class TornadoFxEntryPoint : App(
         }
     }
 
-    private fun registerEagerSingletons() {
-        find(MainController::class)
-        find(PartnerUpdateController::class)
-        find(PartnersViewController::class)
-        find(SyncController::class)
+    override fun stop() {
+        log.info { "stop()" }
+        super.stop()
+        exitProcess(0)
     }
 }

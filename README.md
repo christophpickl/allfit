@@ -6,8 +6,9 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* when close window, shut down JVM
+* do NOT delete workout images, if they were visited
 * instead of extra partners-window, make it kind of a tab: "workout view / partner view"
+* global notes (just a window with a big textarea, stored in DB) ... new tab
 
 ### Medium
 
