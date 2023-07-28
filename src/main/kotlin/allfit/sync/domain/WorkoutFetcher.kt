@@ -69,7 +69,7 @@ class WorkoutFetcherImpl : WorkoutFetcher {
         return when (response.status.value) {
             200 -> WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())
             404 -> WorkoutFetch.empty(url.workoutId)
-            500, 502 -> {
+            500, 502, 520 -> {
                 if (attempt == maxRetries) {
                     error("Invalid response after last attempt for URL: ${url.url}")
                 } else {
