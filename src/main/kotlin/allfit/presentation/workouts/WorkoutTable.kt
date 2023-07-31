@@ -1,6 +1,5 @@
-package allfit.presentation.view
+package allfit.presentation.workouts
 
-import allfit.presentation.PartnerWorkoutSelectedFXEvent
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
 import javafx.collections.ObservableList
@@ -20,14 +19,14 @@ import tornadofx.smartResize
 
 fun EventTarget.workoutTable(
     items: ObservableList<SimpleWorkout>,
-    onSelected: (PartnerWorkoutSelectedFXEvent) -> Unit,
+    onSelected: (SimpleWorkout) -> Unit,
     clock: Clock,
     withTable: WorkoutTable.() -> Unit,
 ) = WorkoutTable(items, onSelected, clock).attachTo(this, withTable)
 
 class WorkoutTable(
     items: ObservableList<SimpleWorkout>,
-    onSelected: (PartnerWorkoutSelectedFXEvent) -> Unit,
+    onSelected: (SimpleWorkout) -> Unit,
     clock: Clock,
 ) : TableView<SimpleWorkout>(items) {
 
@@ -39,13 +38,13 @@ class WorkoutTable(
         onSelectionChange {
             logger.debug { "selection changed to: $selectedItem" }
             selectedItem?.let {
-                onSelected(PartnerWorkoutSelectedFXEvent(it))
+                onSelected(it)
             }
         }
         onDoubleClick {
             logger.debug { "double click for: $selectedItem" }
             selectedItem?.let {
-                onSelected(PartnerWorkoutSelectedFXEvent(it))
+                onSelected(it)
             }
         }
 

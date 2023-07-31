@@ -3,16 +3,16 @@ package allfit.presentation.logic
 import allfit.presentation.HidePartnerFXEvent
 import allfit.presentation.UnhidePartnerFXEvent
 import allfit.presentation.UpdatePartnerFXEvent
-import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.tornadofx.safeSubscribe
+import allfit.presentation.workouts.WorkoutsMainModel
 import mu.KotlinLogging.logger
 import tornadofx.Controller
 
 class PartnerUpdateController : Controller() {
 
     private val logger = logger {}
-    private val mainModel: MainViewModel by inject()
+    private val mainModel: WorkoutsMainModel by inject()
     private val partnersModel: PartnersViewModel by inject()
     private val dataStorage: DataStorage by di()
 

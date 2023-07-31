@@ -1,8 +1,7 @@
-package allfit.presentation.view
+package allfit.presentation.workouts
 
 import allfit.presentation.WorkoutSearchFXEvent
 import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.MainViewModel
 import allfit.presentation.search.CheckinSearchPane
 import allfit.presentation.search.DateSearchPane
 import allfit.presentation.search.FavoritedSearchPane
@@ -22,7 +21,7 @@ import tornadofx.vbox
 
 private object DefaultWorkoutSubSearchRequest : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = {
-        MainViewModel.DEFAULT_WORKOUT_PREDICATE(it)
+        WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it)
     }
 
     override fun toString() = this::class.simpleName!!

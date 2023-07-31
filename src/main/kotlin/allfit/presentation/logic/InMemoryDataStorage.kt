@@ -160,7 +160,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
     private val partnerYoga = FullPartner(
         SimplePartner(
             id = partnerYogaId,
-            name = "Yoga School",
+            name = "Yoga School of the north with lots of other offers because they can't do anything else",
             categories = listOf("Yoga", "Breathwork"),
             checkins = 0,
             rating = 5,
@@ -268,7 +268,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         partner.hiddenImage = NOT_HIDDEN_IMAGE
     }
 
-    override fun getWorkoutById(workoutId: Int): FullWorkout =
+    override fun getFullWorkoutById(workoutId: Int): FullWorkout =
         allFullWorkouts.firstOrNull { it.id == workoutId } ?: error("Could not find workout by ID: $workoutId")
 
     override fun getCategories(): List<String> =

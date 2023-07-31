@@ -1,4 +1,4 @@
-package allfit.presentation.partnersview
+package allfit.presentation.partners
 
 import allfit.presentation.PartnerSearchFXEvent
 import allfit.presentation.models.FullPartner

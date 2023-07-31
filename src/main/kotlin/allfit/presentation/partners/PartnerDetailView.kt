@@ -1,15 +1,20 @@
-package allfit.presentation.view
+package allfit.presentation.partners
 
 import allfit.presentation.PartnerModifications
+import allfit.presentation.PartnerWorkoutSelectedFXEvent
 import allfit.presentation.Styles
 import allfit.presentation.UpdatePartnerFXEvent
+import allfit.presentation.WorkoutSelectedThrough
 import allfit.presentation.components.bigImage
-import allfit.presentation.models.CurrentPartnerViewModel
+import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.renderStars
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
 import allfit.presentation.tornadofx.setAllHeights
+import allfit.presentation.view.checkinTable
+import allfit.presentation.workouts.CurrentPartnerViewModel
+import allfit.presentation.workouts.workoutTable
 import allfit.service.Clock
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.CheckBox
@@ -17,7 +22,6 @@ import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
 import javafx.scene.layout.Border
 import javafx.scene.layout.Priority
-import tornadofx.FXEvent
 import tornadofx.View
 import tornadofx.action
 import tornadofx.addClass
@@ -27,11 +31,11 @@ import tornadofx.checkbox
 import tornadofx.combobox
 import tornadofx.enableWhen
 import tornadofx.hbox
-import tornadofx.hgrow
 import tornadofx.label
 import tornadofx.selectedItem
 import tornadofx.singleAssign
 import tornadofx.textarea
+import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.vgrow
 
@@ -39,7 +43,10 @@ interface PartnerDetailModel {
     val selectedPartner: CurrentPartnerViewModel
 }
 
-class PartnerDetailView(model: PartnerDetailModel) : View() {
+class PartnerDetailView(
+    model: PartnerDetailModel,
+    private val selectedThrough: WorkoutSelectedThrough,
+) : View() {
 
     private val clock: Clock by di()
 
@@ -57,11 +64,14 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
             bigImage(model.selectedPartner.image)
 
             vbox {
-//                background = Background.fill(Color.YELLOW)
-                hgrow = Priority.ALWAYS
-                label {
-                    bind(model.selectedPartner.name)
+                label(model.selectedPartner.name) {
                     addClass(Styles.header1)
+                    maxWidth = 550.0
+                    tooltip {
+                        model.selectedPartner.name.addListener { _, _, newName ->
+                            text = newName
+                        }
+                    }
                 }
 
                 labelDetail("Categories", model.selectedPartner.categoriesRendered, textMaxWidth = 450.0)
@@ -149,7 +159,7 @@ class PartnerDetailView(model: PartnerDetailModel) : View() {
         }
     }
 
-    private fun fireDelegate(event: FXEvent) {
-        fire(event)
+    private fun fireDelegate(workout: SimpleWorkout) {
+        fire(PartnerWorkoutSelectedFXEvent(workout, selectedThrough))
     }
 }

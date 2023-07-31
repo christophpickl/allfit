@@ -150,7 +150,7 @@ class ExposedDataStorageTest : DescribeSpec() {
             it("Given category, partner and workout Then return workout") {
                 val (category, partner, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
 
-                val fullWorkout = dataStorage().getWorkoutById(workout.id)
+                val fullWorkout = dataStorage().getFullWorkoutById(workout.id)
 
                 fullWorkout shouldBe FullWorkout(
                     simpleWorkout = workout.toSimpleWorkout(

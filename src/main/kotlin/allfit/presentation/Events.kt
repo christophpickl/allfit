@@ -7,12 +7,20 @@ import allfit.presentation.search.SearchRequest
 import tornadofx.FXEvent
 
 object ApplicationStartedFxEvent : FXEvent()
+object ApplicationStoppingFxEvent : FXEvent()
 
 class WorkoutSearchFXEvent(val searchRequest: SearchRequest<FullWorkout>) : FXEvent()
 
 class WorkoutSelectedFXEvent(val workout: FullWorkout) : FXEvent()
 
-class PartnerWorkoutSelectedFXEvent(val workout: SimpleWorkout) : FXEvent()
+class PartnerWorkoutSelectedFXEvent(
+    val workout: SimpleWorkout,
+    val selectedThrough: WorkoutSelectedThrough,
+) : FXEvent()
+
+enum class WorkoutSelectedThrough {
+    Workouts, Partners;
+}
 
 class UpdatePartnerFXEvent(val modifications: PartnerModifications) : FXEvent()
 

@@ -1,4 +1,4 @@
-package allfit.presentation.view
+package allfit.presentation.workouts
 
 import allfit.presentation.HidePartnerFXEvent
 import allfit.presentation.PresentationConstants

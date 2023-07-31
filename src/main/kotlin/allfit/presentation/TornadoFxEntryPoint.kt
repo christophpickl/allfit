@@ -4,7 +4,7 @@ import allfit.presentation.components.ErrorDialog
 import allfit.presentation.logic.MainController
 import allfit.presentation.logic.PartnerUpdateController
 import allfit.presentation.logic.PrefsController
-import allfit.presentation.partnersview.PartnersViewController
+import allfit.presentation.partners.PartnersController
 import allfit.presentation.view.MainView
 import allfit.sync.view.SyncController
 import javafx.application.Platform
@@ -23,8 +23,9 @@ class TornadoFxEntryPoint : App(
     private val eagerSingletons = listOf(
         MainController::class,
         PartnerUpdateController::class,
-        PartnersViewController::class,
+        PartnersController::class,
         SyncController::class,
+        NotesController::class,
     )
 
     init {
@@ -48,6 +49,7 @@ class TornadoFxEntryPoint : App(
 
     override fun stop() {
         log.info { "stop()" }
+        fire(ApplicationStoppingFxEvent)
         super.stop()
         exitProcess(0)
     }

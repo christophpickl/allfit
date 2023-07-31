@@ -3,17 +3,20 @@ package allfit.presentation.logic
 import allfit.persistence.domain.UsageRepository
 import allfit.presentation.ApplicationStartedFxEvent
 import allfit.presentation.PartnerWorkoutSelectedFXEvent
+import allfit.presentation.SelectTabFXEvent
 import allfit.presentation.WorkoutSearchFXEvent
 import allfit.presentation.WorkoutSelectedFXEvent
+import allfit.presentation.WorkoutSelectedThrough
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.MainViewModel
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.UsageModel
 import allfit.presentation.models.toUsage
 import allfit.presentation.search.VisitedSearchRequest
 import allfit.presentation.search.VisitedState
 import allfit.presentation.tornadofx.safeSubscribe
+import allfit.presentation.view.MainView
+import allfit.presentation.workouts.WorkoutsMainModel
 import allfit.service.Clock
 import mu.KotlinLogging.logger
 import tornadofx.Controller
@@ -23,9 +26,10 @@ class MainController : Controller() {
 
     private val logger = logger {}
 
-    private val mainViewModel: MainViewModel by inject()
-    private val partnersViewModel: PartnersViewModel by inject()
+    private val workoutsModel: WorkoutsMainModel by inject()
+    private val partnersModel: PartnersViewModel by inject()
     private val usageModel: UsageModel by inject()
+    private val mainView: MainView by inject()
 
     private val dataStorage: DataStorage by di()
     private val usageRepo: UsageRepository by di()
@@ -33,39 +37,45 @@ class MainController : Controller() {
 
     init {
         val usage = usageRepo.selectOne().toUsage()
-        mainViewModel.selectedPartner.initPartner(FullPartner.prototype, usage)
-        mainViewModel.selectedWorkout.set(FullWorkout.prototype)
+        workoutsModel.selectedPartner.initPartner(FullPartner.prototype, usage)
+        workoutsModel.selectedWorkout.set(FullWorkout.prototype)
         usageModel.today.set(clock.now())
         usageModel.usage.set(usage)
 
         safeSubscribe<ApplicationStartedFxEvent>() {
             logger.debug { "Application started." }
             val workouts = dataStorage.getWorkouts()
-            mainViewModel.allWorkouts.addAll(workouts.toObservable())
-            mainViewModel.allGroups.addAll(dataStorage.getCategories())
-            partnersViewModel.allPartners.addAll(dataStorage.getPartners())
+            workoutsModel.allWorkouts.addAll(workouts.toObservable())
+            workoutsModel.allGroups.addAll(dataStorage.getCategories())
             val initialWorkoutTimeSearch = VisitedSearchRequest(VisitedState.UPCOMING).predicate
-            mainViewModel.sortedFilteredWorkouts.predicate = {
-                MainViewModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
+            workoutsModel.sortedFilteredWorkouts.predicate = {
+                WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
             }
         }
         safeSubscribe<WorkoutSearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }
-            mainViewModel.sortedFilteredWorkouts.predicate = it.searchRequest.predicate
+            workoutsModel.sortedFilteredWorkouts.predicate = it.searchRequest.predicate
         }
         safeSubscribe<WorkoutSelectedFXEvent>() {
             val workout = it.workout
             logger.debug { "Change workout selected: $workout" }
-            mainViewModel.selectedWorkout.set(workout)
-            if (mainViewModel.selectedPartner.id.get() != workout.partner.id) {
-                mainViewModel.selectedPartner.initPartner(dataStorage.getPartnerById(workout.partner.id), usage)
+            workoutsModel.selectedWorkout.set(workout)
+            if (workoutsModel.selectedPartner.id.get() != workout.partner.id) {
+                workoutsModel.selectedPartner.initPartner(dataStorage.getPartnerById(workout.partner.id), usage)
             }
         }
-        safeSubscribe<PartnerWorkoutSelectedFXEvent>() {
-            val workout = it.workout
-            logger.debug { "Change partner workout selected: $workout" }
-            mainViewModel.selectedWorkout.set(dataStorage.getWorkoutById(workout.id))
-            // no partner update
+        safeSubscribe<PartnerWorkoutSelectedFXEvent>() { event ->
+            val workout = event.workout
+            logger.debug { "Change partner workout selected: $workout (${event.selectedThrough})" }
+            val fullWorkout = dataStorage.getFullWorkoutById(workout.id)
+            when (event.selectedThrough) {
+                WorkoutSelectedThrough.Workouts -> workoutsModel.selectedWorkout.set(fullWorkout)
+                WorkoutSelectedThrough.Partners -> partnersModel.selectedWorkout.set(fullWorkout)
+            }
         }
+        safeSubscribe<SelectTabFXEvent>() { event ->
+            mainView.tabPane.selectionModel.select(mainView.tabPane.tabs[event.tab.number])
+        }
+        // no partner update
     }
 }

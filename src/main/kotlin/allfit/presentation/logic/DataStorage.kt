@@ -32,7 +32,7 @@ interface DataStorage {
     fun getCategories(): List<String>
     fun getPartners(): List<FullPartner>
     fun getPartnerById(partnerId: Int): FullPartner
-    fun getWorkoutById(workoutId: Int): FullWorkout
+    fun getFullWorkoutById(workoutId: Int): FullWorkout
 
     /* past visited ones, or upcoming ones */
     fun getWorkouts(): List<FullWorkout>
@@ -171,7 +171,7 @@ class ExposedDataStorage(
     override fun getPartnerById(partnerId: Int): FullPartner =
         fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
 
-    override fun getWorkoutById(workoutId: Int): FullWorkout =
+    override fun getFullWorkoutById(workoutId: Int): FullWorkout =
         fullWorkoutsById[workoutId] ?: error("Could not find workout by ID: $workoutId")
 
     override fun updatePartner(modifications: PartnerModifications) {

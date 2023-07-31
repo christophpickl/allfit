@@ -6,15 +6,14 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* global notes (just a window with a big textarea, stored in DB) ... new tab
-* instead of extra partners-window, make it kind of a tab: "workout view / partner view"
 * new column for workouts (also for partners): when last time visited this partner
 * when search for workout, also be able to define end-time
+* define text search targets (partner/workout, title/description/notes, teacher, ...)
+* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
 ### Medium
 
-* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
-* define text search targets (partner/workout, title/description/notes, teacher, ...)
+* ... none ...
 
 ### Low
 
