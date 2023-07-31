@@ -141,7 +141,7 @@ class WorkoutsSyncerTest : StringSpec() {
 
             reservationsRepo.reservations.shouldBeEmpty()
         }
-        "Given visited workout without association When sync Then delete it and remove image" {
+        "Given workout without checkin When sync Then delete it and remove image" {
             val visitedWorkout = workoutEntity.copy(start = pastDateTime)
             workoutsRepo.insertAll(listOf(visitedWorkout))
 
@@ -150,7 +150,7 @@ class WorkoutsSyncerTest : StringSpec() {
             workoutsRepo.workouts.shouldBeEmpty()
             imageStorage.deletedWorkoutImages.shouldBeSingleton().first() shouldBe visitedWorkout.id
         }
-        "Given visited workout with association When sync Then keep it" {
+        "Given visited workout with checkin When sync Then keep it and image" {
             val visitedWorkout = workoutEntity.copy(start = pastDateTime)
             checkinsRepository.insertAll(listOf(Arb.checkinEntityWorkout().next().copy(workoutId = visitedWorkout.id)))
             workoutsRepo.insertAll(listOf(visitedWorkout))
@@ -158,6 +158,7 @@ class WorkoutsSyncerTest : StringSpec() {
             syncer.sync()
 
             workoutsRepo singletonShouldBe visitedWorkout
+            imageStorage.deletedWorkoutImages.shouldBeEmpty()
         }
     }
 

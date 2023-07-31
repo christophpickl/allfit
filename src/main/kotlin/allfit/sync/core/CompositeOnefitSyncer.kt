@@ -42,14 +42,14 @@ class CompositeOnefitSyncer(
         SyncStep("Syncing locations") {
             locationsSyncer.sync(partners)
         },
+        SyncStep("Syncing checkins") {
+            checkinsSyncer.sync()
+        },
         SyncStep("Syncing workouts") {
             workoutsSyncer.sync()
         },
         SyncStep("Syncing reservations") {
             reservationsSyncer.sync()
-        },
-        SyncStep("Syncing checkins") {
-            checkinsSyncer.sync()
         },
         SyncStep("Cleanup logs") {
             jsonLogFileManager.deleteOldLogs()
