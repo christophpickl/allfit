@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.models.PartnerLocationJson
 import allfit.api.models.partnerJson
@@ -7,8 +7,6 @@ import allfit.api.models.partnerLocationJson
 import allfit.api.models.partnersJsonRoot
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.LocationEntity
-import allfit.sync.domain.LocationsSyncer
-import allfit.sync.domain.LocationsSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton

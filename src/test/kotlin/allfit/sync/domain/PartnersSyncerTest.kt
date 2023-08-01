@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.models.HeaderImageJson
 import allfit.api.models.PartnerJson
@@ -14,8 +14,6 @@ import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
 import allfit.sync.core.SyncListenerManager
 import allfit.sync.core.SyncListenerManagerImpl
-import allfit.sync.domain.PartnersSyncer
-import allfit.sync.domain.PartnersSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty

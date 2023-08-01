@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.CheckinJson
@@ -23,8 +23,6 @@ import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
 import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
-import allfit.sync.domain.CheckinsSyncer
-import allfit.sync.domain.CheckinsSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton

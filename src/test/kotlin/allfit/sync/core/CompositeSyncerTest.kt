@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.core
 
 import allfit.api.JsonLogFileManager
 import allfit.api.NoOpJsonLogFileManager
@@ -11,8 +11,6 @@ import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.persistence.domain.ExposedCategoriesRepo
 import allfit.persistence.testInfra.DbListener
-import allfit.sync.core.CompositeOnefitSyncer
-import allfit.sync.core.SyncListenerManagerImpl
 import allfit.sync.domain.CategoriesSyncer
 import allfit.sync.domain.CategoriesSyncerImpl
 import allfit.sync.domain.CheckinsSyncer

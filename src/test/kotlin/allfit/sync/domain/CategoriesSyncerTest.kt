@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.CategoriesJsonRoot
@@ -10,8 +10,6 @@ import allfit.api.models.partnerSubCategoryJson
 import allfit.api.models.partnersJsonRoot
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.InMemoryCategoriesRepo
-import allfit.sync.domain.CategoriesSyncer
-import allfit.sync.domain.CategoriesSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton

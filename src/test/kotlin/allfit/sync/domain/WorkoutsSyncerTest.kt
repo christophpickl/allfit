@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.TestDates
 import allfit.api.InMemoryOnefitClient
@@ -21,9 +21,7 @@ import allfit.service.InMemoryImageStorage
 import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
 import allfit.sync.core.SyncListenerManagerImpl
-import allfit.sync.domain.DummyWorkoutFetcher
-import allfit.sync.domain.WorkoutsSyncer
-import allfit.sync.domain.WorkoutsSyncerImpl
+import allfit.sync.workoutFetch
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty

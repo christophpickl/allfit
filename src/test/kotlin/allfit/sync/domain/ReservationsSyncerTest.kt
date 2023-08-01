@@ -1,4 +1,4 @@
-package allfit.sync
+package allfit.sync.domain
 
 import allfit.TestDates
 import allfit.api.InMemoryOnefitClient
@@ -9,8 +9,6 @@ import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.testInfra.reservationEntity
 import allfit.service.toUtcLocalDateTime
-import allfit.sync.domain.ReservationsSyncer
-import allfit.sync.domain.ReservationsSyncerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
