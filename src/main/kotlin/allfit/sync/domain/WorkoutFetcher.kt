@@ -43,6 +43,13 @@ data class WorkoutFetch(
     }
 }
 
+interface WorkoutHtmlMetaData {
+    val about: String
+    val specifics: String
+    val address: String
+    val teacher: String?
+}
+
 class WorkoutFetcherImpl : WorkoutFetcher {
 
     private val log = logger {}

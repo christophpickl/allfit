@@ -2,9 +2,9 @@
 
 package allfit.api.models
 
+import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
-import java.time.ZonedDateTime
 
 @Serializable
 data class ReservationsJsonRoot(
@@ -21,8 +21,11 @@ data class ReservationJson(
 @Serializable
 data class WorkoutReservationJson(
     val id: Int,
-    val partner: WorkoutReservationPartnerJson,
+    val name: String,
+    val slug: String,
     val from: ZonedDateTime,
+    val till: ZonedDateTime,
+    val partner: WorkoutReservationPartnerJson,
 )
 
 @Serializable

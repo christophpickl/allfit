@@ -33,7 +33,7 @@ interface ImageStorage {
     fun saveDefaultImageForPartner(partnerIds: List<Int>)
     fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes>
 
-    suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>)
+    suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>)
     fun saveDefaultImageForWorkout(workoutIds: List<Int>)
     fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes>
     fun deleteWorkoutImages(workoutIds: List<Int>)
@@ -55,7 +55,7 @@ object DummyImageStorage : ImageStorage {
     override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
     }
 
-    override suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
+    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
     }
 
     override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
@@ -93,7 +93,7 @@ class InMemoryImageStorage : ImageStorage {
             partnerImagesToBeLoaded[it]
         }
 
-    override suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
+    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
         savedWorkoutImages += workouts
     }
 
@@ -163,7 +163,7 @@ class FileSystemImageStorage(
         }
     }
 
-    override suspend fun saveWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
+    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
         log.debug { "Saving ${workouts.size} workout images." }
         workouts.map { it.imageUrl }.requireAllEndsWithExtension(extension)
 

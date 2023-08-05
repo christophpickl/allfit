@@ -11,7 +11,9 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class DbListener : BeforeEachListener, AfterEachListener {
+
     private lateinit var db: Database
+
     override suspend fun beforeEach(testCase: TestCase) {
         db = Database.connect("jdbc:h2:mem:test${System.currentTimeMillis()};DB_CLOSE_DELAY=-1")
         transaction {

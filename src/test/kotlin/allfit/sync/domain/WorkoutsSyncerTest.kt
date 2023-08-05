@@ -11,24 +11,21 @@ import allfit.persistence.domain.InMemoryCheckinsRepository
 import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryReservationsRepo
 import allfit.persistence.domain.InMemoryWorkoutsRepo
-import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.testInfra.checkinEntityWorkout
 import allfit.persistence.testInfra.partnerEntity
 import allfit.persistence.testInfra.reservationEntity
 import allfit.persistence.testInfra.singletonShouldBe
 import allfit.persistence.testInfra.workoutEntity
 import allfit.service.InMemoryImageStorage
-import allfit.service.WorkoutAndImageUrl
+import allfit.service.InMemoryWorkoutInserter
+import allfit.service.InsertWorkout
 import allfit.service.toUtcLocalDateTime
 import allfit.sync.core.SyncListenerManagerImpl
-import allfit.sync.workoutFetch
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.maps.shouldBeEmpty
-import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.next
@@ -49,6 +46,7 @@ class WorkoutsSyncerTest : StringSpec() {
     private lateinit var imageStorage: InMemoryImageStorage
     private lateinit var checkinsRepository: CheckinsRepository
     private lateinit var reservationsRepo: InMemoryReservationsRepo
+    private lateinit var workoutInserter: InMemoryWorkoutInserter
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
@@ -58,16 +56,17 @@ class WorkoutsSyncerTest : StringSpec() {
         imageStorage = InMemoryImageStorage()
         checkinsRepository = InMemoryCheckinsRepository()
         reservationsRepo = InMemoryReservationsRepo()
+        workoutInserter = InMemoryWorkoutInserter()
         syncer = WorkoutsSyncerImpl(
             client,
             workoutsRepo,
-            workoutFetcher,
             partnersRepo,
             imageStorage,
             checkinsRepository,
             reservationsRepo,
-            SyncListenerManagerImpl(),
             clock,
+            workoutInserter,
+            SyncListenerManagerImpl(),
         )
     }
 
@@ -79,30 +78,18 @@ class WorkoutsSyncerTest : StringSpec() {
 
             syncer.sync()
 
-            workoutsRepo.selectAllStartingFrom(workout.from.toUtcLocalDateTime()).shouldBeSingleton()
-                .first() shouldBe WorkoutEntity(
-                id = workout.id,
-                partnerId = workout.partner.id,
-                name = workout.name,
-                slug = workout.slug,
-                start = workout.from.toUtcLocalDateTime(),
-                end = workout.till.toUtcLocalDateTime(),
-                about = workoutFetch.about,
-                specifics = workoutFetch.specifics,
-                teacher = workoutFetch.teacher,
-                address = workoutFetch.address,
-            )
+            workoutInserter.workoutsInserted.shouldBeSingleton().first().also { insertWorkouts ->
+                insertWorkouts.shouldBeSingleton().first() shouldBe InsertWorkout(
+                    id = workout.id,
+                    partnerId = workout.partner.id,
+                    name = workout.name,
+                    slug = workout.slug,
+                    from = workout.from,
+                    till = workout.till,
+                )
+            }
         }
-        "Given fetched image Then save it" {
-            val workout = insertPartnerForWorkout()
-            client.mockWorkoutsResponse(workout)
-            val workoutFetchWithImage = workoutFetch.copy(imageUrls = listOf("url"))
-            workoutFetcher.fetched = workoutFetchWithImage
 
-            syncer.sync()
-
-            imageStorage.savedWorkoutImages shouldContainExactly listOf(WorkoutAndImageUrl(workout.id, "url"))
-        }
         "Given no partner Then ignore workout" {
             client.mockWorkoutsResponse(workoutJson)
 
@@ -111,6 +98,7 @@ class WorkoutsSyncerTest : StringSpec() {
             workoutsRepo.workouts.shouldBeEmpty()
             imageStorage.savedPartnerImages.shouldBeEmpty()
         }
+
         "Given duplicate workouts Then filter them out" {
             partnersRepo.insertAll(listOf(partnerEntity))
             val partnerJson = Arb.workoutPartnerJson().next().copy(id = partnerEntity.id)
@@ -120,8 +108,13 @@ class WorkoutsSyncerTest : StringSpec() {
 
             syncer.sync()
 
-            workoutsRepo.workouts shouldHaveSize 1
+            workoutInserter.workoutsInserted.shouldBeSingleton().first().also { insertedWorkouts ->
+                insertedWorkouts.shouldBeSingleton().first().also { insertedWorkout ->
+                    insertedWorkout.id shouldBe workoutJson1.id
+                }
+            }
         }
+
         "Given workout already in DB Then do nothing" {
             workoutsRepo.insertAll(listOf(workoutEntity))
             val workoutJson = Arb.workoutJson().next().copy(id = workoutEntity.id)
@@ -132,6 +125,7 @@ class WorkoutsSyncerTest : StringSpec() {
             workoutsRepo.selectAllStartingFrom(workoutJson.from.toUtcLocalDateTime()).shouldBeSingleton()
                 .first() shouldBe workoutEntity
         }
+
         "Given past reservation When sync Then delete it" {
             reservationsRepo.insertAll(listOf(Arb.reservationEntity().next().copy(workoutStart = pastDateTime)))
 
@@ -139,6 +133,7 @@ class WorkoutsSyncerTest : StringSpec() {
 
             reservationsRepo.reservations.shouldBeEmpty()
         }
+
         "Given workout without checkin When sync Then delete it and remove image" {
             val visitedWorkout = workoutEntity.copy(start = pastDateTime)
             workoutsRepo.insertAll(listOf(visitedWorkout))
@@ -148,6 +143,7 @@ class WorkoutsSyncerTest : StringSpec() {
             workoutsRepo.workouts.shouldBeEmpty()
             imageStorage.deletedWorkoutImages.shouldBeSingleton().first() shouldBe visitedWorkout.id
         }
+
         "Given visited workout with checkin When sync Then keep it and image" {
             val visitedWorkout = workoutEntity.copy(start = pastDateTime)
             checkinsRepository.insertAll(listOf(Arb.checkinEntityWorkout().next().copy(workoutId = visitedWorkout.id)))

@@ -193,6 +193,9 @@ fun Arb.Companion.workoutReservationJson() = arbitrary {
         id = int(min = 1).next(),
         partner = workoutReservationPartnerJson().next(),
         from = ZonedDateTime.now(),
+        till = ZonedDateTime.now(),
+        name = string().next(),
+        slug = string().next(),
     )
 }
 

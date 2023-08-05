@@ -1,6 +1,5 @@
-package allfit.sync
+package allfit.sync.domain
 
-import allfit.sync.domain.WorkoutFetch
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.int

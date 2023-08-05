@@ -6,7 +6,6 @@ import allfit.persistence.domain.PartnerAndCheckins
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
 import allfit.persistence.testInfra.checkinEntity
-import allfit.persistence.testInfra.checkinEntityDropin
 import allfit.persistence.testInfra.checkinEntityWorkout
 import allfit.persistence.testInfra.workoutEntity
 import io.kotest.assertions.throwables.shouldThrow
@@ -21,7 +20,6 @@ class ExposedCheckinsRepositoryTest : StringSpec() {
     private val repo = ExposedCheckinsRepository
     private val checkin = Arb.checkinEntity().next()
     private val checkinWorkout = Arb.checkinEntityWorkout().next()
-    private val checkinDropin = Arb.checkinEntityDropin().next()
 
     init {
         extension(DbListener())

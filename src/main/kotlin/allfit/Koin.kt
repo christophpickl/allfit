@@ -16,6 +16,8 @@ import allfit.service.ImageStorage
 import allfit.service.JavaPrefs
 import allfit.service.Prefs
 import allfit.service.SystemClock
+import allfit.service.WorkoutInserter
+import allfit.service.WorkoutInserterImpl
 import allfit.sync.syncModule
 import mu.KotlinLogging
 import org.koin.dsl.module
@@ -46,6 +48,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single { AllFitStarter(config.preSyncEnabled, get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
     single<Prefs> { JavaPrefs("allfit" + (if (config.isDevMode) "-dev" else "")) }
+    single<WorkoutInserter> { WorkoutInserterImpl(get(), get(), get()) }
 
     includes(persistenceModule(config))
     includes(syncModule(config))

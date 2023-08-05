@@ -44,7 +44,7 @@ interface WorkoutsRepo {
     fun selectAll(): List<WorkoutEntity>
     fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<WorkoutEntity>
     fun selectAllBefore(untilExclusive: LocalDateTime): List<WorkoutEntity>
-    fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity>
+    fun selectAllForIds(searchIds: List<Int>): List<WorkoutEntity>
     fun insertAll(workouts: List<WorkoutEntity>)
     fun deleteAll(workoutIds: List<Int>)
     fun selectAllIds(): List<Int>
@@ -84,7 +84,7 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
     override fun selectAllIds(): List<Int> =
         workouts.keys.toList()
 
-    override fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity> =
+    override fun selectAllForIds(searchIds: List<Int>): List<WorkoutEntity> =
         workouts.values.filter { searchIds.contains(it.id) }
 
 }
@@ -117,7 +117,7 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
         }.map { it.toWorkoutEntity() }
     }
 
-    override fun selectAllForId(searchIds: List<Int>): List<WorkoutEntity> = transaction {
+    override fun selectAllForIds(searchIds: List<Int>): List<WorkoutEntity> = transaction {
         log.debug { "Selecting workouts with ID: $searchIds" }
         WorkoutsTable.select {
             WorkoutsTable.id inList searchIds

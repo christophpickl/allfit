@@ -6,6 +6,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* change logger dependency
 * new column for workouts (also for partners): when last time visited this partner
 * when search for workout, also be able to define end-time
 * define text search targets (partner/workout, title/description/notes, teacher, ...)

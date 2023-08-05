@@ -6,15 +6,14 @@ import allfit.api.models.WorkoutJson
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnersRepo
 import allfit.persistence.domain.ReservationsRepo
-import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.Clock
 import allfit.service.ImageStorage
-import allfit.service.WorkoutAndImageUrl
+import allfit.service.InsertWorkout
+import allfit.service.WorkoutInserter
 import allfit.service.toUtcLocalDateTime
-import allfit.service.workParallel
+import allfit.service.toWorkoutInsertListener
 import allfit.sync.core.SyncListenerManager
-import kotlinx.coroutines.delay
 import mu.KotlinLogging.logger
 
 interface WorkoutsSyncer {
@@ -24,45 +23,25 @@ interface WorkoutsSyncer {
 class WorkoutsSyncerImpl(
     private val client: OnefitClient,
     private val workoutsRepo: WorkoutsRepo,
-    private val workoutFetcher: WorkoutFetcher,
     private val partnersRepo: PartnersRepo,
     private val imageStorage: ImageStorage,
     private val checkinsRepository: CheckinsRepository,
     private val reservationsRepo: ReservationsRepo,
-    private val syncListeners: SyncListenerManager,
     private val clock: Clock,
+    private val workoutInserter: WorkoutInserter,
+    private val syncListeners: SyncListenerManager,
 ) : WorkoutsSyncer {
 
     private val log = logger {}
-    private val parallelFetchers = 6
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
         val workoutsToBeSyncedJson = getWorkoutsToBeSynced()
-        val metaFetchById = fetchMetaData(workoutsToBeSyncedJson)
-        insertWorkouts(workoutsToBeSyncedJson, metaFetchById)
+        workoutInserter.insert(
+            workoutsToBeSyncedJson.map { it.toInsertWorkout() },
+            syncListeners.toWorkoutInsertListener()
+        )
         deleteOutdated()
-    }
-
-    private suspend fun fetchMetaData(workoutsToBeSyncedJson: List<WorkoutJson>): Map<Int, WorkoutFetch> {
-        log.debug { "Fetching metadata for ${workoutsToBeSyncedJson.size} workouts." }
-        syncListeners.onSyncDetail("Fetching metadata for ${workoutsToBeSyncedJson.size} workouts.")
-        val metaFetchById = mutableMapOf<Int, WorkoutFetch>()
-        workoutsToBeSyncedJson.workParallel(
-            numberOfCoroutines = parallelFetchers,
-            percentageBroadcastIntervalInMs = 12_000,
-            percentageProgressCallback = {
-                syncListeners.onSyncDetail("Fetched ${(it * 100).toInt()}% of workout metadata.")
-            }) { workout ->
-            metaFetchById[workout.id] = workoutFetcher.fetch(
-                WorkoutUrl(
-                    workoutId = workout.id,
-                    workoutSlug = workout.slug
-                )
-            )
-            delay(30) // artificial delay to soothen possible cloudflare's DoS anger :)
-        }
-        return metaFetchById
     }
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
@@ -88,19 +67,6 @@ class WorkoutsSyncerImpl(
         }
     }
 
-    private suspend fun insertWorkouts(
-        workoutsToBeSyncedJson: List<WorkoutJson>,
-        metaFetchById: Map<Int, WorkoutFetch>
-    ) {
-        syncListeners.onSyncDetail("Inserting ${workoutsToBeSyncedJson.size} workouts into DB.")
-        workoutsRepo.insertAll(workoutsToBeSyncedJson.map { it.toWorkoutEntity(metaFetchById[it.id]!!) })
-        val workoutsFetchImages = metaFetchById.values
-            .filter { it.imageUrls.isNotEmpty() }
-            .map { WorkoutAndImageUrl(it.workoutId, it.imageUrls.first()) }
-        syncListeners.onSyncDetail("Fetching ${workoutsFetchImages.size} workout images.")
-        imageStorage.saveWorkoutImages(workoutsFetchImages)
-    }
-
     private fun deleteOutdated() {
         val startDeletion = clock.todayBeginOfDay().toUtcLocalDateTime()
         reservationsRepo.deleteAllBefore(startDeletion)
@@ -113,22 +79,11 @@ class WorkoutsSyncerImpl(
     }
 }
 
-interface WorkoutHtmlMetaData {
-    val about: String
-    val specifics: String
-    val address: String
-    val teacher: String?
-}
-
-private fun WorkoutJson.toWorkoutEntity(htmlMetaData: WorkoutHtmlMetaData) = WorkoutEntity(
+private fun WorkoutJson.toInsertWorkout(): InsertWorkout = InsertWorkout(
     id = id,
-    name = name,
-    slug = slug,
-    start = from.toUtcLocalDateTime(),
-    end = till.toUtcLocalDateTime(),
     partnerId = partner.id,
-    about = htmlMetaData.about,
-    specifics = htmlMetaData.specifics,
-    address = htmlMetaData.address,
-    teacher = htmlMetaData.teacher,
+    slug = slug,
+    name = name,
+    from = from,
+    till = till,
 )

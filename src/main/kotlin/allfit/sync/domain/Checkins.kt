@@ -81,7 +81,7 @@ class CheckinsSyncerImpl(
     private fun syncWorkouts(remoteCheckins: List<CheckinJson>) {
         val remoteWorkoutCheckins = remoteCheckins.filter { it.type == CheckinJson.TYPE_WORKOUT }
         val localWorkoutIds =
-            workoutsRepo.selectAllForId(remoteWorkoutCheckins.map { it.workout!!.id })
+            workoutsRepo.selectAllForIds(remoteWorkoutCheckins.map { it.workout!!.id })
                 .map { it.id }
         val toBeInserted = remoteWorkoutCheckins.filter {
             !localWorkoutIds.contains(it.workout!!.id)
