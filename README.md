@@ -15,7 +15,9 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### Medium
 
-* ... none ...
+* display location on map
+* sync available spots
+* reservation button
 
 ### Low
 
@@ -39,10 +41,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### Future
 
-* display location on map
 * display more (all) pictures
-* sync available spots
-* reservation button
 * model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation
 
 ### Going Public

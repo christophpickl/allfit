@@ -5,37 +5,44 @@ repositories {
 }
 
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "1.9.0"
     application
-    id("org.openjfx.javafxplugin") version "0.0.13"
-    kotlin("plugin.serialization") version "1.8.10"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
-    id("com.github.ben-manes.versions") version "0.46.0"
+    id("org.openjfx.javafxplugin") version "0.0.14"
+    kotlin("plugin.serialization") version "1.9.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("com.github.ben-manes.versions") version "0.47.0"
 }
 
 dependencies {
     implementation("no.tornado:tornadofx:1.7.20")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines:0.19.2") // TODO i guess this ain't working?!
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
-    implementation("io.insert-koin:koin-core:3.3.3")
-    implementation("io.insert-koin:koin-logger-slf4j:3.3.1")
+    implementation("io.insert-koin:koin-core:3.4.3")
+    implementation("io.insert-koin:koin-logger-slf4j:3.4.3")
 
-    implementation("org.jetbrains.exposed:exposed-core:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.41.1")
-    implementation("org.jetbrains.exposed:exposed-java-time:0.41.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.42.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.42.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.42.0")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.42.0")
+//    implementation("com.h2database:h2:2.2.220")
+    /*
+    java -jar /Applications/H2MigrationTool-1.3.6-all.jar \
+        --db-file /Users/christoph.pickl/.allfit-dev/database/h2.mv.db \
+        --version-from 2.1.214 --version-to 2.2.220 \
+        --user "" --password ""
+     */
     implementation("com.h2database:h2:2.1.214")
-    implementation("org.liquibase:liquibase-core:4.20.0")
-    implementation("com.mattbertolini:liquibase-slf4j:4.1.0")
+    implementation("org.liquibase:liquibase-core:4.23.0")
+    implementation("com.mattbertolini:liquibase-slf4j:5.0.0")
 
-    implementation("io.github.oshai:kotlin-logging:4.0.1")
-    implementation("ch.qos.logback:logback-classic:1.4.6")
+    implementation("io.github.oshai:kotlin-logging:5.1.0")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
 
-    implementation("org.jsoup:jsoup:1.15.4")
+    implementation("org.jsoup:jsoup:1.16.1")
 
-    fun ktor(artifact: String) = "io.ktor:ktor-$artifact:2.2.4"
+    fun ktor(artifact: String) = "io.ktor:ktor-$artifact:2.3.3"
     listOf(
         "client-core",
         "client-cio",
@@ -46,10 +53,10 @@ dependencies {
         implementation(ktor(it))
     }
 
-    testImplementation("io.kotest:kotest-runner-junit5:5.5.5")
-    testImplementation("io.kotest:kotest-assertions-core:5.5.5")
-    testImplementation("io.kotest:kotest-property:5.5.5")
-    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
+    testImplementation("io.kotest:kotest-assertions-core:5.6.2")
+    testImplementation("io.kotest:kotest-property:5.6.2")
+    testImplementation("io.mockk:mockk:1.13.5")
 }
 
 application {
@@ -67,7 +74,7 @@ tasks.withType<KotlinCompile> {
 }
 
 javafx {
-    version = "19.0.2.1"
+    version = "19.0.2.1" // 20.0.2
     modules = listOf("javafx.controls", "javafx.fxml", "javafx.web")
 }
 
