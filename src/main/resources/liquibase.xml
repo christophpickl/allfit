@@ -214,6 +214,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="4" author="christophpickl" failOnError="true">
+        <comment>add SINGLES table</comment>
+        <createTable tableName="SINGLES">
+            <column name="NOTES" type="LONGVARCHAR">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <!--
         <modifyDataType
             columnName="title"

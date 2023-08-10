@@ -1,7 +1,7 @@
 package allfit.presentation
 
+import allfit.persistence.domain.SinglesRepo
 import allfit.presentation.tornadofx.safeSubscribe
-import allfit.service.Prefs
 import javafx.beans.property.SimpleStringProperty
 import tornadofx.Controller
 import tornadofx.View
@@ -11,14 +11,14 @@ import tornadofx.textarea
 class NotesController : Controller() {
 
     private val model by inject<NotesModel>()
-    private val prefs by di<Prefs>()
+    private val singlesRepo by di<SinglesRepo>()
 
     init {
         safeSubscribe<ApplicationStartedFxEvent>() {
-            model.notes.set(prefs.loadNotes())
+            model.notes.set(singlesRepo.selectNotes())
         }
         safeSubscribe<ApplicationStoppingFxEvent>() {
-            prefs.storeNotes(model.notes.get())
+            singlesRepo.updateNotes(model.notes.get())
         }
     }
 }

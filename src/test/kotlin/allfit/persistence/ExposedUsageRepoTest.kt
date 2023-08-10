@@ -1,6 +1,6 @@
 package allfit.persistence
 
-import allfit.persistence.domain.ExposedUsageRepository
+import allfit.persistence.domain.ExposedUsageRepo
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.usageEntity
 import io.kotest.core.spec.style.DescribeSpec
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertThrows
 
 class ExposedUsageRepoTest : DescribeSpec() {
 
-    private val repo = ExposedUsageRepository
+    private val repo = ExposedUsageRepo
     private val usage = Arb.usageEntity().next()
     private val usage1 = usage.copy(total = 1)
     private val usage2 = usage.copy(total = 2)

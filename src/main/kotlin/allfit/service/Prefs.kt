@@ -6,8 +6,6 @@ import mu.KotlinLogging.logger
 interface Prefs {
     fun load(): PrefsData
     fun store(data: PrefsData)
-    fun loadNotes(): String
-    fun storeNotes(notes: String)
 }
 
 class JavaPrefs(pathName: String) : Prefs {
@@ -28,13 +26,6 @@ class JavaPrefs(pathName: String) : Prefs {
         prefs.putDouble("windowY", data.windowY)
         prefs.putDouble("windowWidth", data.windowWidth)
         prefs.putDouble("windowHeight", data.windowHeight)
-    }
-
-    override fun loadNotes(): String =
-        prefs.get("notes", "")
-
-    override fun storeNotes(notes: String) {
-        prefs.put("notes", notes)
     }
 }
 

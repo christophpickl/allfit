@@ -1,15 +1,13 @@
 package allfit.persistence.domain
 
+import allfit.persistence.selectSingleton
+import allfit.persistence.upsert
 import java.time.LocalDateTime
 import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.statements.UpdateBuilder
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 
 interface UsageRepository {
     fun upsert(usage: UsageEntity)
@@ -45,7 +43,7 @@ class MockDateAwareUsageRepository(
 
 }
 
-object ExposedUsageRepository : UsageRepository {
+object ExposedUsageRepo : UsageRepository {
 
     private val log = logger {}
 
@@ -66,23 +64,10 @@ object ExposedUsageRepository : UsageRepository {
 
     override fun selectOne(): UsageEntity = transaction {
         log.debug { "selectOne()" }
-        val list = UsageTable.selectAll().toList()
-        when (list.size) {
-            0 -> error("No usage existing yet!")
-            1 -> list.first().toUsageEntity()
-            else -> error("Expected to be exactly one usage in table but were: ${list.size}")
-        }
+        UsageTable.selectSingleton().toUsageEntity()
     }
 }
 
-private fun UsageTable.upsert(body: UsageTable.(UpdateBuilder<Int>) -> Unit) {
-    val count = UsageTable.selectAll().count()
-    if (count == 0L) {
-        UsageTable.insert(body = body)
-    } else {
-        UsageTable.update(body = body)
-    }
-}
 
 private fun ResultRow.toUsageEntity() = UsageEntity(
     total = this[UsageTable.total],

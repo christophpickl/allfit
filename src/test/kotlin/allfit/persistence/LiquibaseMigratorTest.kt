@@ -5,7 +5,8 @@ import allfit.persistence.domain.ExposedCheckinsRepository
 import allfit.persistence.domain.ExposedLocationsRepo
 import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedReservationsRepo
-import allfit.persistence.domain.ExposedUsageRepository
+import allfit.persistence.domain.ExposedSinglesRepo
+import allfit.persistence.domain.ExposedUsageRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
 import allfit.persistence.testInfra.categoryEntity
 import allfit.persistence.testInfra.checkinEntityWorkout
@@ -56,8 +57,11 @@ class LiquibaseMigratorTest : StringSpec() {
             ExposedCheckinsRepository.selectAll().shouldBeSingleton().first() shouldBe checkin
 
             val usage = Arb.usageEntity().next()
-            ExposedUsageRepository.upsert(usage)
-            ExposedUsageRepository.selectOne() shouldBe usage
+            ExposedUsageRepo.upsert(usage)
+            ExposedUsageRepo.selectOne() shouldBe usage
+
+            ExposedSinglesRepo.updateNotes("foo")
+            ExposedSinglesRepo.selectNotes() shouldBe "foo"
         }
     }
 

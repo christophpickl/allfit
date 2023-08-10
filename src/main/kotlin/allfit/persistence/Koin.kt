@@ -6,13 +6,15 @@ import allfit.persistence.domain.ExposedCheckinsRepository
 import allfit.persistence.domain.ExposedLocationsRepo
 import allfit.persistence.domain.ExposedPartnersRepo
 import allfit.persistence.domain.ExposedReservationsRepo
-import allfit.persistence.domain.ExposedUsageRepository
+import allfit.persistence.domain.ExposedSinglesRepo
+import allfit.persistence.domain.ExposedUsageRepo
 import allfit.persistence.domain.ExposedWorkoutsRepo
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryCheckinsRepository
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryReservationsRepo
+import allfit.persistence.domain.InMemorySinglesRepo
 import allfit.persistence.domain.InMemoryUsageRepository
 import allfit.persistence.domain.InMemoryWorkoutsRepo
 import allfit.persistence.domain.MockDateAwareUsageRepository
@@ -51,9 +53,12 @@ fun persistenceModule(config: AppConfig) = module {
     single {
         if (config.mockDb) InMemoryCheckinsRepository().insertMockData() else ExposedCheckinsRepository
     }
+    single {
+        if (config.mockDb) InMemorySinglesRepo() else ExposedSinglesRepo
+    }
     single<UsageRepository> {
         MockDateAwareUsageRepository(
-            if (config.mockDb) InMemoryUsageRepository().insertMockData() else ExposedUsageRepository,
+            if (config.mockDb) InMemoryUsageRepository().insertMockData() else ExposedUsageRepo,
             config.dummyDate
         )
     }
