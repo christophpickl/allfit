@@ -10,8 +10,8 @@ import allfit.sync.domain.LocationsSyncer
 import allfit.sync.domain.PartnersSyncer
 import allfit.sync.domain.ReservationsSyncer
 import allfit.sync.domain.WorkoutsSyncer
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.transactions.transaction
 
 class CompositeOnefitSyncer(

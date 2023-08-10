@@ -17,6 +17,7 @@ import allfit.service.FileResolver
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -35,7 +36,6 @@ import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging.logger
 
 private val log = logger {}
 private val authClient = buildClient(null)

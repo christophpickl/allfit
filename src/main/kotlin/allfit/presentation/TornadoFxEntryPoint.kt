@@ -7,10 +7,10 @@ import allfit.presentation.logic.PrefsController
 import allfit.presentation.partners.PartnersController
 import allfit.presentation.view.MainView
 import allfit.sync.view.SyncController
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.application.Platform
 import javafx.stage.Stage
 import kotlin.system.exitProcess
-import mu.KotlinLogging.logger
 import tornadofx.App
 import tornadofx.find
 

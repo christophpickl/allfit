@@ -1,5 +1,6 @@
 package allfit.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
@@ -11,7 +12,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import mu.KotlinLogging.logger
 
 private val log = logger {}
 

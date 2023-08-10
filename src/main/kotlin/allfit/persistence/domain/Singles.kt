@@ -2,7 +2,7 @@ package allfit.persistence.domain
 
 import allfit.persistence.selectSingleton
 import allfit.persistence.upsert
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction

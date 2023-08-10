@@ -21,7 +21,7 @@ import allfit.persistence.domain.MockDateAwareUsageRepository
 import allfit.persistence.domain.UsageRepository
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.koin.dsl.module

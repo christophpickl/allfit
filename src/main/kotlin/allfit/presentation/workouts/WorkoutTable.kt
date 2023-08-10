@@ -2,11 +2,11 @@ package allfit.presentation.workouts
 
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableView
-import mu.KotlinLogging.logger
 import tornadofx.attachTo
 import tornadofx.cellFormat
 import tornadofx.column

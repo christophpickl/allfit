@@ -2,8 +2,8 @@ package allfit.persistence.domain
 
 import allfit.persistence.selectSingleton
 import allfit.persistence.upsert
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.time.LocalDateTime
-import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime

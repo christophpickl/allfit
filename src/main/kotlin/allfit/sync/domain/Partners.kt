@@ -7,7 +7,7 @@ import allfit.persistence.domain.PartnersRepo
 import allfit.service.ImageStorage
 import allfit.service.PartnerAndImageUrl
 import allfit.sync.core.SyncListenerManager
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 interface PartnersSyncer {
     suspend fun sync(partners: PartnersJsonRoot)

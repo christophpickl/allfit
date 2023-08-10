@@ -1,7 +1,7 @@
 package allfit.service
 
 import allfit.Environment
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.io.File
 
 private val log = logger {}

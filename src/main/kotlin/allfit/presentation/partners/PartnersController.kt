@@ -9,7 +9,7 @@ import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.toUsage
 import allfit.presentation.tornadofx.safeSubscribe
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import tornadofx.Controller
 
 class PartnersController : Controller() {

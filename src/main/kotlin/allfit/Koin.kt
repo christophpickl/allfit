@@ -19,10 +19,10 @@ import allfit.service.SystemClock
 import allfit.service.WorkoutInserter
 import allfit.service.WorkoutInserterImpl
 import allfit.sync.syncModule
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.dsl.module
 
-private val log = KotlinLogging.logger {}
+private val log = logger {}
 
 fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single { onefitClient }

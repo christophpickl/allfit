@@ -19,7 +19,7 @@ import allfit.presentation.tornadofx.safeSubscribe
 import allfit.presentation.view.MainView
 import allfit.presentation.workouts.WorkoutsMainModel
 import allfit.service.Clock
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import tornadofx.Controller
 import tornadofx.toObservable
 

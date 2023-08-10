@@ -15,8 +15,8 @@ import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.ImageStorage
 import allfit.service.toUtcLocalDateTime
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.util.UUID
-import mu.KotlinLogging.logger
 
 interface CheckinsSyncer {
     suspend fun sync()

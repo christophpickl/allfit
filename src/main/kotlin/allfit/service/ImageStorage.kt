@@ -2,6 +2,7 @@ package allfit.service
 
 import allfit.presentation.PresentationConstants
 import allfit.sync.core.SyncListenerManager
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -10,7 +11,6 @@ import java.io.File
 import javafx.scene.image.Image
 import kotlin.collections.set
 import kotlinx.coroutines.delay
-import mu.KotlinLogging.logger
 
 private fun readClasspathImageBytes(fileName: String): ByteArray =
     ImageStorage::class.java.classLoader

@@ -1,9 +1,9 @@
 package allfit.service
 
 import allfit.api.Credentials
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import mu.KotlinLogging.logger
 
 object CredentialsLoader {
 

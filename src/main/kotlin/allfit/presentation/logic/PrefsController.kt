@@ -2,8 +2,8 @@ package allfit.presentation.logic
 
 import allfit.service.Prefs
 import allfit.service.PrefsData
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.stage.Stage
-import mu.KotlinLogging.logger
 import tornadofx.Controller
 
 class PrefsController : Controller() {

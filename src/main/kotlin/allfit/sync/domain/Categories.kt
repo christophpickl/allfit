@@ -6,7 +6,7 @@ import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.PartnersJsonRoot
 import allfit.persistence.domain.CategoriesRepo
 import allfit.persistence.domain.CategoryEntity
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 interface CategoriesSyncer {
     suspend fun sync(partners: PartnersJsonRoot)

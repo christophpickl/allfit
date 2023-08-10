@@ -4,7 +4,7 @@ import allfit.persistence.BaseEntity
 import allfit.persistence.BaseRepo
 import allfit.presentation.PartnerModifications
 import allfit.presentation.models.PartnerCustomAttributesRead
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow

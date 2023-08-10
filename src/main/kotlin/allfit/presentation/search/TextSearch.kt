@@ -1,7 +1,7 @@
 package allfit.presentation.search
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.scene.control.TextField
-import mu.KotlinLogging.logger
 import tornadofx.singleAssign
 import tornadofx.textfield
 

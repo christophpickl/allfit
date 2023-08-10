@@ -1,8 +1,8 @@
 package allfit.persistence.domain
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.time.LocalDateTime
 import java.util.UUID
-import mu.KotlinLogging.logger
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.less

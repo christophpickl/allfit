@@ -6,7 +6,7 @@ import allfit.presentation.UpdatePartnerFXEvent
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.tornadofx.safeSubscribe
 import allfit.presentation.workouts.WorkoutsMainModel
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import tornadofx.Controller
 
 class PartnerUpdateController : Controller() {

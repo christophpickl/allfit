@@ -1,7 +1,7 @@
 package allfit.presentation.components
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.scene.layout.Priority
-import mu.KotlinLogging.logger
 import tornadofx.View
 import tornadofx.textarea
 import tornadofx.vbox

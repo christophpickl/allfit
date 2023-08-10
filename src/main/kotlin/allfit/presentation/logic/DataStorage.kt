@@ -24,9 +24,9 @@ import allfit.service.ImageStorage
 import allfit.service.Images
 import allfit.service.beginOfDay
 import allfit.service.fromUtcToAmsterdamZonedDateTime
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.time.ZonedDateTime
 import javafx.scene.image.Image
-import mu.KotlinLogging.logger
 
 interface DataStorage {
     fun getCategories(): List<String>

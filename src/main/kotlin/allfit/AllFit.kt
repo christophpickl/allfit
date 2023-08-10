@@ -7,11 +7,11 @@ import allfit.presentation.TornadoFxEntryPoint
 import allfit.presentation.UiPreSyncer
 import allfit.service.CredentialsLoader
 import allfit.service.SystemClock
+import io.github.oshai.kotlinlogging.KLogger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javax.swing.JOptionPane
 import kotlin.reflect.KClass
 import kotlinx.coroutines.runBlocking
-import mu.KLogger
-import mu.KotlinLogging.logger
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.startKoin

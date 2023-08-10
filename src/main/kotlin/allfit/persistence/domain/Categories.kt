@@ -2,7 +2,7 @@ package allfit.persistence.domain
 
 import allfit.persistence.BaseEntity
 import allfit.persistence.BaseRepo
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert

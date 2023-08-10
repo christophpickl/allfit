@@ -4,7 +4,7 @@ import allfit.api.models.PartnerLocationJson
 import allfit.api.models.PartnersJsonRoot
 import allfit.persistence.domain.LocationEntity
 import allfit.persistence.domain.LocationsRepo
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 interface LocationsSyncer {
     fun sync(partners: PartnersJsonRoot)

@@ -1,8 +1,8 @@
 package allfit.presentation.logic
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.awt.Desktop
 import java.net.URI
-import mu.KotlinLogging.logger
 
 private val log = logger {}
 

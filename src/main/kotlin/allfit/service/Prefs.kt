@@ -1,7 +1,7 @@
 package allfit.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.util.prefs.Preferences
-import mu.KotlinLogging.logger
 
 interface Prefs {
     fun load(): PrefsData

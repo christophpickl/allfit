@@ -1,6 +1,6 @@
 package allfit.sync.core
 
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 interface Syncer {
     fun registerListener(listener: SyncListener)

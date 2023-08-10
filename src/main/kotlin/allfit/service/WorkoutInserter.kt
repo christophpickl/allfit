@@ -7,9 +7,9 @@ import allfit.sync.domain.WorkoutFetch
 import allfit.sync.domain.WorkoutFetcher
 import allfit.sync.domain.WorkoutHtmlMetaData
 import allfit.sync.domain.WorkoutUrl
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.time.ZonedDateTime
 import kotlinx.coroutines.delay
-import mu.KotlinLogging.logger
 
 data class InsertWorkout(
     val id: Int,

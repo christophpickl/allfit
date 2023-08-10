@@ -4,6 +4,7 @@ import allfit.sync.presync.NoOpPreSyncer
 import allfit.sync.presync.PreSyncListener
 import allfit.sync.presync.PreSyncListenerManagerImpl
 import allfit.sync.presync.PreSyncer
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.awt.BorderLayout
 import java.awt.Cursor
 import java.awt.Dimension
@@ -15,7 +16,6 @@ import javax.swing.JProgressBar
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingUtilities
-import mu.KotlinLogging.logger
 
 class UiPreSyncer(private val preSyncer: PreSyncer) {
 

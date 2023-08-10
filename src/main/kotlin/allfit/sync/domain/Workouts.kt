@@ -14,7 +14,7 @@ import allfit.service.WorkoutInserter
 import allfit.service.toUtcLocalDateTime
 import allfit.service.toWorkoutInsertListener
 import allfit.sync.core.SyncListenerManager
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 interface WorkoutsSyncer {
     suspend fun sync()

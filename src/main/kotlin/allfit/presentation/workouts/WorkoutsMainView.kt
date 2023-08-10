@@ -6,9 +6,9 @@ import allfit.presentation.WorkoutSelectedThrough
 import allfit.presentation.partners.PartnerDetailView
 import allfit.presentation.view.UsageView
 import allfit.service.Clock
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.scene.control.Label
 import javafx.scene.layout.Priority
-import mu.KotlinLogging
 import tornadofx.View
 import tornadofx.borderpane
 import tornadofx.center
@@ -25,7 +25,7 @@ import tornadofx.vgrow
 class WorkoutsMainView : View() {
 
     private val clock: Clock by di()
-    private val logger = KotlinLogging.logger {}
+    private val logger = logger {}
     private val mainViewModel: WorkoutsMainModel by inject()
 
     private val searchView: WorkoutsSearchView by inject()

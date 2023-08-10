@@ -1,13 +1,13 @@
 package allfit.sync.domain
 
 import allfit.api.OnefitUtils
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import java.io.IOException
 import java.nio.channels.UnresolvedAddressException
-import mu.KotlinLogging.logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements

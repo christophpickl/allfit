@@ -3,7 +3,7 @@ package allfit.api
 import allfit.service.DirectoryEntry
 import allfit.service.FileResolver
 import allfit.service.formatFileSafe
-import mu.KotlinLogging.logger
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.io.File
 import java.time.LocalDateTime
 import java.time.ZonedDateTime

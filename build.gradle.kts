@@ -30,8 +30,7 @@ dependencies {
     implementation("org.liquibase:liquibase-core:4.20.0")
     implementation("com.mattbertolini:liquibase-slf4j:4.1.0")
 
-    // implementation("io.github.oshai:kotlin-logging:4.0.1")
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
+    implementation("io.github.oshai:kotlin-logging:4.0.1")
     implementation("ch.qos.logback:logback-classic:1.4.6")
 
     implementation("org.jsoup:jsoup:1.15.4")

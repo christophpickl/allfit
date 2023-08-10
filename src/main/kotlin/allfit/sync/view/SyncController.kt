@@ -3,10 +3,10 @@ package allfit.sync.view
 import allfit.presentation.ApplicationStartedFxEvent
 import allfit.sync.core.SyncListener
 import allfit.sync.core.Syncer
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.stage.Modality
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import mu.KotlinLogging.logger
 import tornadofx.Controller
 import tornadofx.runLater
 
