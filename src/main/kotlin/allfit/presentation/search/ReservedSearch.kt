@@ -30,13 +30,13 @@ class ReservedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
             imageTrue = reservedImage,
             imageFalse = reservedImage2,
         ) {
+            isSelected = true
             selectedProperty().addListener { _ ->
                 checkSearch()
             }
         }
     }
 
-    override fun buildSearchRequest() =
-        ReservedSearchRequest(operand = reservedCheckBox.isSelected)
+    override fun buildSearchRequest() = ReservedSearchRequest(operand = reservedCheckBox.isSelected)
 
 }

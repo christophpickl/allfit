@@ -28,6 +28,7 @@ class FavoritedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
             imageTrue = StaticIconStorage.get(StaticIcon.FavoriteFull),
             imageFalse = StaticIconStorage.get(StaticIcon.FavoriteOutline),
         ) {
+            isSelected = true
             selectedProperty().addListener { _ ->
                 checkSearch()
             }

@@ -7,7 +7,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 ### High Prio
 
 * ! syncing only a few days, not full 14 days into future
-* ! by default, filter reserved is set on "yes reserved"
 * partner filter: favorited, wishlisted
 * change logger dependency
 * new column for workouts (also for partners): when last time visited this partner

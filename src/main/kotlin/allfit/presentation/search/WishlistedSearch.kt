@@ -28,12 +28,12 @@ class WishlistedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() 
             imageTrue = StaticIconStorage.get(StaticIcon.WishlistFull),
             imageFalse = StaticIconStorage.get(StaticIcon.WishlistOutline),
         ) {
+            isSelected = true
             selectedProperty().addListener { _ ->
                 checkSearch()
             }
         }
     }
 
-    override fun buildSearchRequest() =
-        WishlistedSearchRequest(operand = wishlistedOperand.isSelected)
+    override fun buildSearchRequest() = WishlistedSearchRequest(operand = wishlistedOperand.isSelected)
 }
