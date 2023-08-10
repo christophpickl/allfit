@@ -1,5 +1,6 @@
 package allfit.presentation.logic
 
+import allfit.persistence.domain.ReservationsRepo
 import allfit.persistence.domain.UsageRepository
 import allfit.presentation.ApplicationStartedFxEvent
 import allfit.presentation.PartnerWorkoutSelectedFXEvent
@@ -33,6 +34,7 @@ class MainController : Controller() {
 
     private val dataStorage: DataStorage by di()
     private val usageRepo: UsageRepository by di()
+    private val reservationsRepo: ReservationsRepo by di()
     private val clock: Clock by di()
 
     init {
@@ -41,6 +43,7 @@ class MainController : Controller() {
         workoutsModel.selectedWorkout.set(FullWorkout.prototype)
         usageModel.today.set(clock.now())
         usageModel.usage.set(usage)
+        usageModel.reservations.set(reservationsRepo.selectAll().count())
 
         safeSubscribe<ApplicationStartedFxEvent>() {
             logger.debug { "Application started." }

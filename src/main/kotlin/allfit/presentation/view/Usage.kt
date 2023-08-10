@@ -1,10 +1,12 @@
 package allfit.presentation.view
 
+import allfit.persistence.domain.ExposedReservationsRepo
 import allfit.presentation.Styles
 import allfit.presentation.components.ProgressIndicator
 import allfit.presentation.models.Usage
 import allfit.presentation.models.UsageModel
 import allfit.presentation.tornadofx.labelDetail
+import allfit.presentation.tornadofx.labelDetailMultibind
 import allfit.service.formatDate
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
@@ -51,24 +53,20 @@ class UsageView : View() {
         private val colorPeriod = Color.CHOCOLATE
     }
 
-    private val usageModel: UsageModel by inject()
+    private val model: UsageModel by inject()
 
     override val root = vbox {
-        labelDetail("Usage", usageModel.usage.map { "${it.total} / ${it.periodCap}" }, textColor = colorCheckins)
+        labelDetail("Usage", model.usage.map { "${it.total} / ${it.periodCap}" }, textColor = colorCheckins)
         labelDetail(
             "Period",
-            usageModel.usage.map { "${it.from.formatDate()} t/m ${it.until.formatDate()}" },
+            model.usage.map { "${it.from.formatDate()} t/m ${it.until.formatDate()}" },
             textColor = colorPeriod
         )
 
-        val checkinsIndicator = ProgressIndicator(
-            colorCheckins,
-            usageModel.usage.map { it.total.toDouble() / it.periodCap },
-        )
+        val checkinsIndicator = ProgressIndicator(colorCheckins, model.usage.map { it.total.toDouble() / it.periodCap })
         val periodIndicator = ProgressIndicator(
             colorPeriod,
-            usageModel.usage.map { it.daysUsed(usageModel.today.get()).toDouble() / it.daysTotal() },
-        )
+            model.usage.map { it.daysUsed(model.today.get()).toDouble() / it.daysTotal() })
         widthProperty().addListener { _, _, newValue ->
             checkinsIndicator.setMaxLineWidth(newValue.toDouble())
             periodIndicator.setMaxLineWidth(newValue.toDouble())
@@ -76,14 +74,19 @@ class UsageView : View() {
         add(checkinsIndicator)
         add(periodIndicator)
 
-        labelDetail("No shows", usageModel.usage.map { it.noShows.toString() }, smallSize = true)
-        labelDetail("Max reservations", usageModel.usage.map { it.maxReservations.toString() }, smallSize = true)
+        ExposedReservationsRepo.selectAll()
+
+        labelDetailMultibind("Reservations", model.usage.map { it.maxReservations }, model.reservations) {
+            "${model.reservations.get()} / ${model.usage.get().maxReservations}"
+        }
+        labelDetail("No shows", model.usage.map { it.noShows.toString() })
+
         labelDetail(
-            "Max per day", usageModel.usage.map { it.totalCheckInsOrReservationsPerDay.toString() }, smallSize = true
+            "Max per day", model.usage.map { it.totalCheckInsOrReservationsPerDay.toString() }, smallSize = true
         )
         labelDetail(
-            "Max partner",
-            usageModel.usage.map { it.maxCheckInsOrReservationsPerPeriod.toString() },
+            "Max per partner",
+            model.usage.map { it.maxCheckInsOrReservationsPerPeriod.toString() },
             smallSize = true
         )
     }

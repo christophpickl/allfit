@@ -33,6 +33,7 @@ class WorkoutsSyncerImpl(
 ) : WorkoutsSyncer {
 
     private val log = logger {}
+    private val syncDaysIntoFuture = 14
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
@@ -46,7 +47,7 @@ class WorkoutsSyncerImpl(
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
         val from = clock.todayBeginOfDay()
-        val rawClientWorkouts = client.getWorkouts(WorkoutSearchParams.simple(from = from, plusDays = 14)).data
+        val rawClientWorkouts = client.getWorkouts(WorkoutSearchParams(from = from, plusDays = syncDaysIntoFuture)).data
         val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }
         if (rawClientWorkouts.size != distinctClientWorkouts.size) {
             log.warn { "Dropped ${rawClientWorkouts.size - distinctClientWorkouts.size} workouts because of duplicate IDs." }
@@ -68,10 +69,9 @@ class WorkoutsSyncerImpl(
     }
 
     private fun deleteOutdated() {
-        val startDeletion = clock.todayBeginOfDay().toUtcLocalDateTime()
-        reservationsRepo.deleteAllBefore(startDeletion)
+        reservationsRepo.deleteAllBefore(clock.now().toUtcLocalDateTime())
         val workoutIdsWithCheckin = checkinsRepository.selectAll().map { it.workoutId }
-        val workoutIdsToDelete = workoutsRepo.selectAllBefore(startDeletion)
+        val workoutIdsToDelete = workoutsRepo.selectAllBefore(clock.todayBeginOfDay().toUtcLocalDateTime())
             .filter { !workoutIdsWithCheckin.contains(it.id) }.map { it.id }
         log.debug { "Deleting ${workoutIdsToDelete.size} outdated workouts." }
         workoutsRepo.deleteAll(workoutIdsToDelete)

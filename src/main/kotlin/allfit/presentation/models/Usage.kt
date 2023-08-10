@@ -35,6 +35,7 @@ data class Usage(
 class UsageModel : ViewModel() {
     val usage = SimpleObjectProperty<Usage>()
     val today = SimpleObjectProperty<ZonedDateTime>()
+    val reservations = SimpleObjectProperty(0)
 }
 
 fun UsageEntity.toUsage() = Usage(

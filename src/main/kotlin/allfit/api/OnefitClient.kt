@@ -61,32 +61,28 @@ data class CheckinSearchParams(
 
 data class WorkoutSearchParams(
     val city: String,
-    override val limit: Int,
-    override val page: Int,
     val start: ZonedDateTime,
     val end: ZonedDateTime,
-    val isDigital: Boolean
+    val isDigital: Boolean,
+    override val limit: Int,
+    override val page: Int,
 ) : PagedParams<WorkoutSearchParams> {
 
     val startFormatted = start.formatIsoOffset()
     val endFormatted = end.formatIsoOffset()
 
-    override fun nextPage() = copy(page = page + 1)
+    constructor(
+        from: ZonedDateTime,
+        plusDays: Int,
+        limit: Int = 5_000, // must not be 15k (or similar) otherwise throws 500! we follow pagination anyway ;)
+    ) : this(
+        city = "AMS",
+        limit = limit,
+        page = 1,
+        start = from,
+        end = from.plusDays(plusDays.toLong()),
+        isDigital = false,
+    )
 
-    companion object {
-        fun simple(
-            from: ZonedDateTime,
-            plusDays: Int,
-            limit: Int = 5_000, // must not be 15k (or similar) otherwise throws 500! we follow pagination anyway ;)
-        ): WorkoutSearchParams {
-            return WorkoutSearchParams(
-                city = "AMS",
-                limit = limit,
-                page = 1,
-                start = from,
-                end = from.plusDays(plusDays.toLong()),
-                isDigital = false,
-            )
-        }
-    }
+    override fun nextPage() = copy(page = page + 1)
 }

@@ -80,7 +80,6 @@ object ExposedReservationsRepo : ReservationsRepo {
     }
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<ReservationEntity> = transaction {
-
         ReservationsTable.select {
             ReservationsTable.workoutStart greaterEq fromInclusive
         }.map { it.toReservationsEntity() }.also {
