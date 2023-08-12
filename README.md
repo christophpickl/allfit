@@ -7,7 +7,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 ### High Prio
 
 * ! syncing only a few days, not full 14 days into future
-* partner filter: favorited, wishlisted
 * new column for workouts (also for partners): when last time visited this partner
 * when search for workout, also be able to define end-time
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
@@ -18,6 +17,7 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * display location on map
 * sync available spots
 * reservation button
+* disable quitting during syncing (?)
 
 ### Low
 

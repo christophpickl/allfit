@@ -3,6 +3,8 @@ package allfit.presentation.models
 import allfit.presentation.search.HasCheckins
 import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
+import allfit.presentation.search.IsFavoritable
+import allfit.presentation.search.IsWishlistable
 import allfit.service.Images
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
@@ -118,7 +120,13 @@ class SimpleWorkout(
 data class FullWorkout(
     val simpleWorkout: SimpleWorkout,
     val partner: SimplePartner,
-) : Workout by simpleWorkout, HasCheckins by partner, HasTextSearchable, HasRating by partner {
+) :
+    Workout by simpleWorkout,
+    HasCheckins by partner,
+    HasTextSearchable,
+    HasRating by partner,
+    IsFavoritable by partner,
+    IsWishlistable by partner {
 
     override val searchableTerms = listOf(name, partner.name, teacher)
 

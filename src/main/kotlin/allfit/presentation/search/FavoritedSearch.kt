@@ -4,19 +4,22 @@ import allfit.presentation.components.ImageToggleEffect
 import allfit.presentation.components.imagedToggleButton
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
-import allfit.presentation.models.FullWorkout
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
 
-data class FavoritedSearchRequest(
+interface IsFavoritable {
+    val isFavorited: Boolean
+}
+
+data class FavoritedSearchRequest<T : IsFavoritable>(
     val operand: Boolean,
-) : SubSearchRequest<FullWorkout> {
-    override val predicate: (FullWorkout) -> Boolean = { workout ->
-        workout.partner.isFavorited == operand
+) : SubSearchRequest<T> {
+    override val predicate: (T) -> Boolean = {
+        it.isFavorited == operand
     }
 }
 
-class FavoritedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
+class FavoritedSearchPane<T : IsFavoritable>(checkSearch: () -> Unit) : SearchPane<T>() {
 
     private var favoritedOperand: ToggleButton by singleAssign()
 
@@ -36,5 +39,5 @@ class FavoritedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
     }
 
 
-    override fun buildSearchRequest() = FavoritedSearchRequest(operand = favoritedOperand.isSelected)
+    override fun buildSearchRequest() = FavoritedSearchRequest<T>(operand = favoritedOperand.isSelected)
 }

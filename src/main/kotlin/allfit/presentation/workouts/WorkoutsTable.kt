@@ -7,10 +7,11 @@ import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.tornadofx.applyInitSort
+import allfit.presentation.tornadofx.favoriteColumn
 import allfit.presentation.tornadofx.imageColumn
 import allfit.presentation.tornadofx.ratingColumn
+import allfit.presentation.tornadofx.wishlistColumn
 import allfit.service.Clock
-import javafx.geometry.Pos
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -20,7 +21,6 @@ import tornadofx.cellFormat
 import tornadofx.column
 import tornadofx.contextmenu
 import tornadofx.fixedWidth
-import tornadofx.imageview
 import tornadofx.item
 import tornadofx.readonlyColumn
 import tornadofx.remainingWidth
@@ -42,9 +42,7 @@ class WorkoutsTable(
         selectionModel.selectionMode = SelectionMode.SINGLE
 
         imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.imageProperty() }
-
         column<FullWorkout, String>("Workout") { it.value.nameProperty() }.remainingWidth().weightedWidth(0.5)
-
         dateColumn = readonlyColumn("Date", FullWorkout::date).apply {
             fixedWidth(150)
             cellFormat { date ->
@@ -52,33 +50,14 @@ class WorkoutsTable(
             }
         }
         column<FullWorkout, String>("Teacher") { it.value.teacherProperty() }.fixedWidth(100)
-
         imageColumn("Reserved", reservedImage) { it.value.isReservedProperty() }
         imageColumn("Visited", visitedImage) { it.value.wasVisitedProperty() }
-
         imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.partner.imageProperty() }
-
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }.remainingWidth().weightedWidth(0.5)
-
         column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
-
         ratingColumn { it.value.partner.ratingProperty() }
-
-        column<FullWorkout, Boolean>("Favorite") { it.value.partner.isFavoritedProperty() }.fixedWidth(60)
-            .cellFormat { isFavorite ->
-                graphic =
-                    imageview(StaticIconStorage.get(if (isFavorite) StaticIcon.FavoriteFull else StaticIcon.FavoriteOutline)) {
-                        alignment = Pos.CENTER
-                    }
-            }
-
-        column<FullWorkout, Boolean>("Wishlist") { it.value.partner.isWishlistedProperty() }.fixedWidth(60)
-            .cellFormat { isWishlisted ->
-                graphic =
-                    imageview(StaticIconStorage.get(if (isWishlisted) StaticIcon.WishlistFull else StaticIcon.WishlistOutline)) {
-                        alignment = Pos.CENTER
-                    }
-            }
+        favoriteColumn { it.value.partner.isFavoritedProperty() }
+        wishlistColumn { it.value.partner.isWishlistedProperty() }
 
         contextmenu {
             item("Hide Partner").action {

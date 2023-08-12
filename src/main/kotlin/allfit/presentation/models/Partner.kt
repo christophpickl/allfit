@@ -5,6 +5,8 @@ import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.search.HasCheckins
 import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
+import allfit.presentation.search.IsFavoritable
+import allfit.presentation.search.IsWishlistable
 import allfit.service.Images
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
@@ -13,11 +15,11 @@ import javafx.scene.image.Image
 import tornadofx.getProperty
 import tornadofx.property
 
-interface PartnerCustomAttributesRead {
+interface PartnerCustomAttributesRead : IsFavoritable, IsWishlistable {
     val rating: Rating
     val note: String
-    val isFavorited: Boolean
-    val isWishlisted: Boolean
+    override val isFavorited: Boolean
+    override val isWishlisted: Boolean
 }
 
 interface PartnerCustomAttributesWrite : PartnerCustomAttributesRead {

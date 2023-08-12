@@ -6,8 +6,10 @@ import allfit.presentation.UnhidePartnerFXEvent
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.Usage
 import allfit.presentation.tornadofx.applyInitSort
+import allfit.presentation.tornadofx.favoriteColumn
 import allfit.presentation.tornadofx.imageColumn
 import allfit.presentation.tornadofx.ratingColumn
+import allfit.presentation.tornadofx.wishlistColumn
 import allfit.service.Clock
 import allfit.service.toPrettyString
 import javafx.beans.property.SimpleObjectProperty
@@ -53,6 +55,8 @@ class PartnersTable(
         }.fixedWidth(40)
 
         column("Last Checkin") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
+        favoriteColumn { it.value.isFavoritedProperty() }
+        wishlistColumn { it.value.isWishlistedProperty() }
 
         imageColumn(maxWidth = 30.0, withTableCell = {
             alignment = Pos.CENTER

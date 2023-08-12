@@ -4,19 +4,22 @@ import allfit.presentation.components.ImageToggleEffect
 import allfit.presentation.components.imagedToggleButton
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
-import allfit.presentation.models.FullWorkout
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
 
-data class WishlistedSearchRequest(
+interface IsWishlistable {
+    val isWishlisted: Boolean
+}
+
+data class WishlistedSearchRequest<T : IsWishlistable>(
     val operand: Boolean,
-) : SubSearchRequest<FullWorkout> {
-    override val predicate: (FullWorkout) -> Boolean = { workout ->
-        workout.partner.isWishlisted == operand
+) : SubSearchRequest<T> {
+    override val predicate: (T) -> Boolean = {
+        it.isWishlisted == operand
     }
 }
 
-class WishlistedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
+class WishlistedSearchPane<T : IsWishlistable>(checkSearch: () -> Unit) : SearchPane<T>() {
 
     private var wishlistedOperand: ToggleButton by singleAssign()
 
@@ -35,5 +38,5 @@ class WishlistedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() 
         }
     }
 
-    override fun buildSearchRequest() = WishlistedSearchRequest(operand = wishlistedOperand.isSelected)
+    override fun buildSearchRequest() = WishlistedSearchRequest<T>(operand = wishlistedOperand.isSelected)
 }
