@@ -3,17 +3,20 @@ package allfit.api
 import allfit.api.models.AuthJson
 import allfit.api.models.AuthResponseJson
 import allfit.api.models.CategoriesJsonRoot
+import allfit.api.models.CheckinJson
 import allfit.api.models.CheckinsJsonRoot
 import allfit.api.models.MetaJson
-import allfit.api.models.PagedJson
 import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
 import allfit.api.models.UsageJsonRoot
+import allfit.api.models.WorkoutJson
 import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.Clock
 import allfit.service.FileEntry
 import allfit.service.FileResolver
+import allfit.service.beginOfDay
+import allfit.service.endOfDay
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
@@ -41,8 +44,7 @@ private val log = logger {}
 private val authClient = buildClient(null)
 
 suspend fun authenticateOneFit(
-    credentials: Credentials,
-    clock: Clock
+    credentials: Credentials, clock: Clock
 ): OnefitClient {
     val response = authClient.post("") {
         header("Content-Type", "application/json")
@@ -56,8 +58,7 @@ suspend fun authenticateOneFit(
     if (response.status == HttpStatusCode.Unauthorized) {
         val loginFile = FileResolver.resolve(FileEntry.Login)
         error(
-            "Authenticating as '${credentials.email}' failed!\n\nPlease verify your credentials by logging in to OneFit directly,\n" +
-                    "and check the entered password in the login file here:\n${loginFile.absolutePath}"
+            "Authenticating as '${credentials.email}' failed!\n\nPlease verify your credentials by logging in to OneFit directly,\n" + "and check the entered password in the login file here:\n${loginFile.absolutePath}"
         )
     }
     response.requireOk()
@@ -96,8 +97,7 @@ class OnefitHttpClient(
     private val log = logger {}
     private val client = buildClient(authToken)
 
-    override suspend fun getCategories(): CategoriesJsonRoot =
-        get("partners/categories")
+    override suspend fun getCategories(): CategoriesJsonRoot = get("partners/categories")
 
     override suspend fun getPartners(params: PartnerSearchParams): PartnersJsonRoot =
         // slightly different result from partners/city/AMS, but this one is better ;)
@@ -110,33 +110,65 @@ class OnefitHttpClient(
             // query
         }
 
-    override suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJsonRoot =
-        getPaged(params, ::getWorkoutsPage) { data, meta ->
-            WorkoutsJsonRoot(data, meta)
+    override suspend fun getWorkouts(params: WorkoutSearchParams): List<WorkoutJson> {
+        log.debug { "Fetching paged response with params: $params" }
+
+        val data = mutableListOf<WorkoutJson>()
+
+        var lastMeta: MetaJson
+        (0..<params.totalDays).forEach { dayCount ->
+            val dayCountL = dayCount.toLong()
+            log.debug { "Fetching workouts for day ${dayCount + 1} / ${params.totalDays}" }
+            var currentParams =
+                params.copy(start = params.start.plusDays(dayCountL), end = params.start.plusDays(dayCountL))
+            if (dayCount != 0) {
+                currentParams = currentParams.copy(start = currentParams.start.beginOfDay())
+            }
+            if (dayCount != (params.totalDays - 1)) {
+                currentParams = currentParams.copy(end = currentParams.end.endOfDay())
+            }
+
+//            println("params: $currentParams")
+            do {
+                val result = getWorkoutsPage(currentParams)
+                data += result.data
+                currentParams = currentParams.nextPage()
+                lastMeta = result.meta
+                log.debug { "Received meta info for page: ${lastMeta.pagination}" }
+            } while (currentParams.page <= lastMeta.pagination.total_pages)
         }
 
-    override suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot =
-        get("workouts/$id")
+        return data
+    }
 
-    override suspend fun getReservations(): ReservationsJsonRoot =
-        get("members/schedule/reservations")
+    override suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot = get("workouts/$id")
 
-    override suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot =
-        getPaged(params, ::getCheckinsPage) { data, meta ->
-            CheckinsJsonRoot(data, meta)
-        }
+    override suspend fun getReservations(): ReservationsJsonRoot = get("members/schedule/reservations")
 
-    override suspend fun getUsage(): UsageJsonRoot =
-        get("members/usage")
+    override suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot {
+        log.debug { "Fetching paged response with params: $params" }
+        val data = mutableListOf<CheckinJson>()
+        var currentParams = params
+        var lastMeta: MetaJson
+        do {
+            val result = getCheckinsPage(currentParams)
+            data += result.data
+            currentParams = currentParams.nextPage()
+            lastMeta = result.meta
+            log.debug { "Received meta info for page: ${lastMeta.pagination}" }
+        } while (currentParams.page <= lastMeta.pagination.total_pages)
+        return CheckinsJsonRoot(data, lastMeta)
+    }
 
-    private suspend fun getCheckinsPage(params: CheckinSearchParams): CheckinsJsonRoot =
-        get("members/check-ins") {
-            parameter("limit", params.limit)
-            parameter("page", params.page)
-        }
+    override suspend fun getUsage(): UsageJsonRoot = get("members/usage")
+
+    private suspend fun getCheckinsPage(params: CheckinSearchParams): CheckinsJsonRoot = get("members/check-ins") {
+        parameter("limit", params.limit)
+        parameter("page", params.page)
+    }
 
     private suspend fun getWorkoutsPage(params: WorkoutSearchParams): WorkoutsJsonRoot =
-        get("workouts/search") {
+        get<WorkoutsJsonRoot>("workouts/search") {
             parameter("city", params.city)
             parameter("limit", params.limit)
             parameter("page", params.page)
@@ -146,8 +178,7 @@ class OnefitHttpClient(
         }
 
     private suspend inline fun <reified T> get(
-        path: String,
-        requestModifier: HttpRequestBuilder.() -> Unit = {}
+        path: String, requestModifier: HttpRequestBuilder.() -> Unit = {}
     ): T {
         val response = client.get(path) {
             requestModifier()
@@ -160,32 +191,8 @@ class OnefitHttpClient(
 
     private suspend fun HttpResponse.logJsonResponse(path: String) {
         jsonLogFileManager.save(
-            JsonLogFileName(path, status.value, clock.now()),
-            kotlinxSerializer.toPrettyString(bodyAsText())
+            JsonLogFileName(path, status.value, clock.now()), kotlinxSerializer.toPrettyString(bodyAsText())
         )
     }
 
-    private suspend fun <
-            JSON : PagedJson<ENTITY>,
-            ENTITY,
-            PARAMS : PagedParams<PARAMS>
-            > getPaged(
-        initParams: PARAMS,
-        request: suspend (PARAMS) -> JSON,
-        builder: (List<ENTITY>, MetaJson) -> JSON
-    ): JSON {
-        val data = mutableListOf<ENTITY>()
-
-        var currentParams = initParams
-        var lastMeta: MetaJson
-        do {
-            val result = request(currentParams)
-            data += result.data
-            currentParams = currentParams.nextPage()
-            lastMeta = result.meta
-            log.debug { "Received page ${lastMeta.pagination.current_page}/${lastMeta.pagination.total_pages}" }
-        } while (currentParams.page <= lastMeta.pagination.total_pages)
-
-        return builder(data, lastMeta)
-    }
 }

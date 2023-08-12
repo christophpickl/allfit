@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 package allfit.api.models
 
 import kotlinx.serialization.Serializable

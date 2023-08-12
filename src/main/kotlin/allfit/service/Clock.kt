@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 interface Clock {
     fun now(): ZonedDateTime
 
-    fun todayBeginOfDay(): ZonedDateTime = now().withHour(0).withMinute(0).withSecond(0)
+    fun todayBeginOfDay(): ZonedDateTime = now().beginOfDay()
 }
 
 object SystemClock : Clock {

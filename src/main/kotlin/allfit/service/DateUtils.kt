@@ -45,14 +45,20 @@ fun DateRange.formatStartAndEnd(showYear: Boolean) =
 fun ZonedDateTime.toPrettyString(clock: Clock): String =
     format(if (year != clock.now().year) dayDateYearAndTimeFormatter else dayDateAndTimeFormatter)
 
-fun LocalDateTime.endOfDay(): LocalDateTime =
+fun ZonedDateTime.beginOfDay(): ZonedDateTime =
+    withHour(0)
+        .withMinute(0)
+        .withSecond(0)
+        .withNano(0)
+
+fun ZonedDateTime.endOfDay(): ZonedDateTime =
     withHour(23)
         .withMinute(59)
         .withSecond(59)
         .withNano(0)
 
-fun ZonedDateTime.beginOfDay(): ZonedDateTime =
-    withHour(0)
-        .withMinute(0)
-        .withSecond(0)
+fun LocalDateTime.endOfDay(): LocalDateTime =
+    withHour(23)
+        .withMinute(59)
+        .withSecond(59)
         .withNano(0)

@@ -6,7 +6,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
-* ! syncing only a few days, not full 14 days into future
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 

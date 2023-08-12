@@ -47,7 +47,7 @@ class WorkoutsSyncerImpl(
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
         val from = clock.todayBeginOfDay()
-        val rawClientWorkouts = client.getWorkouts(WorkoutSearchParams(from = from, plusDays = syncDaysIntoFuture)).data
+        val rawClientWorkouts = client.getWorkouts(WorkoutSearchParams(from = from, plusDays = syncDaysIntoFuture))
         val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }
         if (rawClientWorkouts.size != distinctClientWorkouts.size) {
             log.warn { "Dropped ${rawClientWorkouts.size - distinctClientWorkouts.size} workouts because of duplicate IDs." }

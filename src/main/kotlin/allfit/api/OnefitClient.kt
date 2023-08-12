@@ -6,15 +6,17 @@ import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
 import allfit.api.models.UsageJsonRoot
-import allfit.api.models.WorkoutsJsonRoot
+import allfit.api.models.WorkoutJson
+import allfit.service.endOfDay
 import allfit.service.formatIsoOffset
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 interface OnefitClient {
 
     suspend fun getCategories(): CategoriesJsonRoot
     suspend fun getPartners(params: PartnerSearchParams): PartnersJsonRoot
-    suspend fun getWorkouts(params: WorkoutSearchParams): WorkoutsJsonRoot
+    suspend fun getWorkouts(params: WorkoutSearchParams): List<WorkoutJson>
     suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot
     suspend fun getReservations(): ReservationsJsonRoot
     suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot
@@ -70,6 +72,7 @@ data class WorkoutSearchParams(
 
     val startFormatted = start.formatIsoOffset()
     val endFormatted = end.formatIsoOffset()
+    val totalDays = ChronoUnit.DAYS.between(start, end).toInt()
 
     constructor(
         from: ZonedDateTime,
@@ -80,7 +83,7 @@ data class WorkoutSearchParams(
         limit = limit,
         page = 1,
         start = from,
-        end = from.plusDays(plusDays.toLong()),
+        end = from.plusDays(plusDays.toLong()).endOfDay(),
         isDigital = false,
     )
 

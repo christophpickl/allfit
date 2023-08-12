@@ -1,6 +1,7 @@
 package allfit
 
 import allfit.api.OnefitHttpClient
+import allfit.api.WorkoutSearchParams
 import allfit.api.authenticateOneFit
 import allfit.service.CredentialsLoader
 import allfit.service.SystemClock
@@ -24,15 +25,15 @@ class ApiExplorerApp(private val client: OnefitHttpClient) {
 
     private suspend fun playground() {
 //        println(client.getCheckins(CheckinSearchParams.simple()))
-        println(client.getWorkoutById(11033240))
+//        println(client.getWorkoutById(11033240))
 //        println(client.getPartners(PartnerSearchParams.simple()))
-//        val workouts = client.getWorkouts(
-//            WorkoutSearchParams.simple(
-//                from = SystemClock.todayBeginOfDay(),
-//                plusDays = 1
-//            )
-//        )
-//        println("found ${workouts.data.size} workouts")
+        val workouts = client.getWorkouts(
+            WorkoutSearchParams(
+                from = SystemClock.todayBeginOfDay(),//.plusDays(7),
+                plusDays = 14
+            )
+        )
+        println("found ${workouts.size} workouts")
 //        println(workouts)
     }
 }

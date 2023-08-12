@@ -17,7 +17,7 @@ object ClassPathOnefitClient : OnefitClient {
         readApiResponse<PartnersJsonRoot>("partners_search.json")
 
     override suspend fun getWorkouts(params: WorkoutSearchParams) =
-        readApiResponse<WorkoutsJsonRoot>("workouts_search.json")
+        readApiResponse<WorkoutsJsonRoot>("workouts_search.json").data
 
     override suspend fun getWorkoutById(id: Int) =
         readApiResponse<SingleWorkoutJsonRoot>("workout_single.json")
