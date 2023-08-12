@@ -8,22 +8,36 @@ import allfit.service.toDaysUntil
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import javafx.scene.control.ComboBox
+import javafx.scene.layout.Pane
 import tornadofx.action
 import tornadofx.button
 import tornadofx.combobox
+import tornadofx.hbox
+import tornadofx.label
 import tornadofx.selectedItem
 import tornadofx.singleAssign
+import tornadofx.vbox
 
 data class DateSearchRequest(
     val date: ZonedDateTime,
-    val time: ZonedDateTime?,
+    val timeStart: ZonedDateTime?,
+    val timeEnd: ZonedDateTime?,
 ) : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = { workout ->
+        val workoutTime = workout.simpleWorkout.date.start.hour
         workout.date.start.dayOfYear == date.dayOfYear &&
-                (if (time == null) true else {
-                    workout.simpleWorkout.date.start.hour >= time.hour
-                })
+                timeStart.maybeCompareTime(isSmaller = false, workoutTime) &&
+                timeEnd.maybeCompareTime(isSmaller = true, workoutTime)
     }
+
+    private fun ZonedDateTime?.maybeCompareTime(isSmaller: Boolean, hour: Int): Boolean =
+        if (this == null) true else {
+            if (isSmaller) {
+                hour <= this.hour
+            } else {
+                hour >= this.hour
+            }
+        }
 }
 
 private sealed interface TimeOrAll {
@@ -51,31 +65,51 @@ class DateSearchPane(
     private val dayEndsAt = 22
 
     private var dateInput: ComboBox<ZonedDateTime> by singleAssign()
-    private var timeInput: ComboBox<TimeOrAll> by singleAssign()
+    private var timeStartInput: ComboBox<TimeOrAll> by singleAssign()
+    private var timeEndInput: ComboBox<TimeOrAll> by singleAssign()
 
     override var searchFieldPane = searchField {
         title = "Date"
         enabledAction = OnEnabledAction { checkSearch() }
-        button("<") {
-            action {
+
+        vbox {
+            hbox {
+                navigationButton(isBack = true)
+                dateInput = dateCombobox(checkSearch)
+                navigationButton(isBack = false)
+            }
+            hbox {
+                val times = buildTimes()
+                label("From:")
+                timeStartInput = timeCombobox(times, checkSearch)
+                label("Until:")
+                timeEndInput = timeCombobox(times, checkSearch)
+            }
+        }
+    }
+
+    private fun Pane.navigationButton(isBack: Boolean) = button(if (isBack) "<" else ">") {
+        action {
+            if (isBack) {
                 dateInput.selectionModel.selectPrevious()
-            }
-        }
-        dateInput = combobox(values = buildDays()) {
-            cellFormat {
-                text = it.formatDayDate()
-            }
-            setOnAction {
-                checkSearch()
-            }
-            selectionModel.selectFirst()
-        }
-        button(">") {
-            action {
+            } else {
                 dateInput.selectionModel.selectNext()
             }
         }
-        timeInput = combobox(values = buildTimes()) {
+    }
+
+    private fun Pane.dateCombobox(checkSearch: () -> Unit) = combobox(values = buildDays()) {
+        cellFormat {
+            text = it.formatDayDate()
+        }
+        setOnAction {
+            checkSearch()
+        }
+        selectionModel.selectFirst()
+    }
+
+    private fun Pane.timeCombobox(times: List<TimeOrAll>, checkSearch: () -> Unit) =
+        combobox(values = times) {
             cellFormat {
                 text = it.format()
             }
@@ -84,7 +118,6 @@ class DateSearchPane(
             }
             selectionModel.selectFirst()
         }
-    }
 
     private fun buildDays() =
         clock.todayBeginOfDay().toDaysUntil(searchIntoFutureInDays)
@@ -102,6 +135,7 @@ class DateSearchPane(
     override fun buildSearchRequest() =
         DateSearchRequest(
             date = dateInput.selectedItem!!,
-            time = timeInput.selectedItem!!.time,
+            timeStart = timeStartInput.selectedItem!!.time,
+            timeEnd = timeEndInput.selectedItem!!.time,
         )
 }

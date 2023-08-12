@@ -7,8 +7,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 ### High Prio
 
 * ! syncing only a few days, not full 14 days into future
-* new column for workouts (also for partners): when last time visited this partner
-* when search for workout, also be able to define end-time
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
