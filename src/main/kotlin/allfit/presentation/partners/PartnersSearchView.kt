@@ -20,6 +20,8 @@ class PartnersSearchView : SearchView<FullPartner>(SearchRequest.alwaysTrue()) {
             addIt(TextSearchPane(::checkSearch))
             addIt(CheckinSearchPane(::checkSearch))
             addIt(RatingSearchPane(::checkSearch))
+        }
+        vbox {
             addIt(FavoritedSearchPane(::checkSearch))
             addIt(WishlistedSearchPane(::checkSearch))
         }

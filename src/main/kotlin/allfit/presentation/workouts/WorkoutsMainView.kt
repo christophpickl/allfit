@@ -1,6 +1,5 @@
 package allfit.presentation.workouts
 
-import allfit.Environment
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.WorkoutSelectedThrough
 import allfit.presentation.partners.PartnerDetailView
@@ -37,7 +36,6 @@ class WorkoutsMainView : View() {
     init {
         mainViewModel.sortedFilteredWorkouts.bindTo(workoutsTable)
         workoutsTable.applySort()
-        title = "AllFit " + (if (Environment.current == Environment.Development) " - Developer Mode" else "")
 
         with(workoutsTable) {
             onSelectionChange {

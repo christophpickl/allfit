@@ -1,5 +1,6 @@
 package allfit.presentation.view
 
+import allfit.Environment
 import allfit.presentation.NotesView
 import allfit.presentation.partners.PartnersMainView
 import allfit.presentation.setOnTabShortcutListener
@@ -23,6 +24,8 @@ class MainView : View() {
 //                }
 //            }
 //        }
+        title = "AllFit" + (if (Environment.current == Environment.Development) " - Developer Mode" else "")
+
         tabPane = tabpane {
             tab("Workouts") {
                 add(find<WorkoutsMainView>())

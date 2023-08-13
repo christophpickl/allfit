@@ -19,6 +19,7 @@ import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import tornadofx.FX
 import tornadofx.action
+import tornadofx.cellFormat
 import tornadofx.column
 import tornadofx.contextmenu
 import tornadofx.fixedWidth
@@ -54,7 +55,12 @@ class PartnersTable(
             SimpleObjectProperty(it.value.availability(usage))
         }.fixedWidth(40)
 
-        column("Last Checkin") { SimpleObjectProperty(it.value.lastCheckin?.toPrettyString(clock)) }.fixedWidth(110)
+        column("Last Checkin") { SimpleObjectProperty(it.value.lastCheckin) }.apply {
+            fixedWidth(110)
+            cellFormat { date ->
+                text = date?.toPrettyString(clock)
+            }
+        }
         favoriteColumn { it.value.isFavoritedProperty() }
         wishlistColumn { it.value.isWishlistedProperty() }
 
