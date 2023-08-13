@@ -5,7 +5,6 @@ import allfit.api.models.AuthResponseJson
 import allfit.api.models.CategoriesJsonRoot
 import allfit.api.models.CheckinJson
 import allfit.api.models.CheckinsJsonRoot
-import allfit.api.models.MetaJson
 import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
@@ -17,12 +16,14 @@ import allfit.service.FileEntry
 import allfit.service.FileResolver
 import allfit.service.beginOfDay
 import allfit.service.endOfDay
+import allfit.service.getPageUntilExhausted
 import allfit.service.kotlinxSerializer
 import allfit.service.requireOk
 import allfit.service.toPrettyString
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -41,7 +42,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 private val log = logger {}
-private val authClient = buildClient(null)
+private val authClient = buildHttpClient(null)
 
 suspend fun authenticateOneFit(
     credentials: Credentials, clock: Clock
@@ -66,7 +67,7 @@ suspend fun authenticateOneFit(
     return OnefitHttpClient(response.body<AuthResponseJson>().access_token, clock = clock)
 }
 
-private fun buildClient(authToken: String?) = HttpClient(CIO) {
+fun buildHttpClient(authToken: String?, engine: HttpClientEngine = CIO.create()) = HttpClient(engine) {
     install(ContentNegotiation) {
         json(Json {
             isLenient = true
@@ -92,10 +93,10 @@ class OnefitHttpClient(
     authToken: String,
     private val clock: Clock,
     private val jsonLogFileManager: JsonLogFileManager = JsonLogFileManagerImpl(),
+    private val client: HttpClient = buildHttpClient(authToken),
 ) : OnefitClient {
 
     private val log = logger {}
-    private val client = buildClient(authToken)
 
     override suspend fun getCategories(): CategoriesJsonRoot = get("partners/categories")
 
@@ -115,49 +116,35 @@ class OnefitHttpClient(
 
         val data = mutableListOf<WorkoutJson>()
 
-        var lastMeta: MetaJson
         (0..<params.totalDays).forEach { dayCount ->
-            val dayCountL = dayCount.toLong()
             log.debug { "Fetching workouts for day ${dayCount + 1} / ${params.totalDays}" }
-            var currentParams =
-                params.copy(start = params.start.plusDays(dayCountL), end = params.start.plusDays(dayCountL))
-            if (dayCount != 0) {
-                currentParams = currentParams.copy(start = currentParams.start.beginOfDay())
-            }
-            if (dayCount != (params.totalDays - 1)) {
-                currentParams = currentParams.copy(end = currentParams.end.endOfDay())
-            }
-
-//            println("params: $currentParams")
-            do {
-                val result = getWorkoutsPage(currentParams)
-                data += result.data
-                currentParams = currentParams.nextPage()
-                lastMeta = result.meta
-                log.debug { "Received meta info for page: ${lastMeta.pagination}" }
-            } while (currentParams.page <= lastMeta.pagination.total_pages)
+            data += getPageUntilExhausted(buildWorkoutsParams(params, dayCount), ::getWorkoutsPage)
         }
-
         return data
+    }
+
+    private fun buildWorkoutsParams(params: WorkoutSearchParams, dayCount: Int): WorkoutSearchParams {
+        var currentParams =
+            params.copy(
+                start = params.start.plusDays(dayCount.toLong()),
+                end = params.start.plusDays(dayCount.toLong())
+            )
+        if (dayCount != 0) {
+            currentParams = currentParams.copy(start = currentParams.start.beginOfDay())
+        }
+        if (dayCount != (params.totalDays - 1)) {
+            currentParams = currentParams.copy(end = currentParams.end.endOfDay())
+        }
+        return currentParams
     }
 
     override suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot = get("workouts/$id")
 
     override suspend fun getReservations(): ReservationsJsonRoot = get("members/schedule/reservations")
 
-    override suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot {
+    override suspend fun getCheckins(params: CheckinSearchParams): List<CheckinJson> {
         log.debug { "Fetching paged response with params: $params" }
-        val data = mutableListOf<CheckinJson>()
-        var currentParams = params
-        var lastMeta: MetaJson
-        do {
-            val result = getCheckinsPage(currentParams)
-            data += result.data
-            currentParams = currentParams.nextPage()
-            lastMeta = result.meta
-            log.debug { "Received meta info for page: ${lastMeta.pagination}" }
-        } while (currentParams.page <= lastMeta.pagination.total_pages)
-        return CheckinsJsonRoot(data, lastMeta)
+        return getPageUntilExhausted(params, ::getCheckinsPage)
     }
 
     override suspend fun getUsage(): UsageJsonRoot = get("members/usage")
@@ -194,5 +181,4 @@ class OnefitHttpClient(
             JsonLogFileName(path, status.value, clock.now()), kotlinxSerializer.toPrettyString(bodyAsText())
         )
     }
-
 }

@@ -282,3 +282,10 @@ fun Arb.Companion.usageProductJson() = arbitrary {
         )
     )
 }
+
+fun Arb.Companion.categoriesJsonRoot() = arbitrary {
+    CategoriesJsonRoot(
+        data = list(categoryJson(), range = 0..3).next()
+    )
+}
+

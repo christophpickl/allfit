@@ -40,7 +40,7 @@ class InMemoryOnefitClient : OnefitClient {
     override suspend fun getWorkouts(params: WorkoutSearchParams) = workoutsJson.data
     override suspend fun getWorkoutById(id: Int) = workoutsById[id]!!
     override suspend fun getReservations() = reservationsJson
-    override suspend fun getCheckins(params: CheckinSearchParams) = checkinsJson
+    override suspend fun getCheckins(params: CheckinSearchParams) = checkinsJson.data
     override suspend fun getUsage() = usageJson
 
 }

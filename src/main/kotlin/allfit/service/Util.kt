@@ -1,15 +1,10 @@
 package allfit.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.request
-import io.ktor.http.HttpStatusCode
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -41,13 +36,6 @@ fun readFromClasspath(classpath: String): String {
 
 fun Json.toPrettyString(jsonString: String) =
     encodeToString(parseToJsonElement(jsonString))
-
-suspend fun HttpResponse.requireOk() {
-    if (status != HttpStatusCode.OK) {
-        System.err.println(bodyAsText())
-        error("Invalid status code: $status requesting ${request.url}")
-    }
-}
 
 suspend fun <T> List<T>.workParallel(
     numberOfCoroutines: Int,

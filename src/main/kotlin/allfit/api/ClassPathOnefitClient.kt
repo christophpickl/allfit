@@ -26,7 +26,7 @@ object ClassPathOnefitClient : OnefitClient {
         readApiResponse<ReservationsJsonRoot>("reservations.json")
 
     override suspend fun getCheckins(params: CheckinSearchParams) =
-        readApiResponse<CheckinsJsonRoot>("checkins.json")
+        readApiResponse<CheckinsJsonRoot>("checkins.json").data
 
     override suspend fun getUsage() =
         readApiResponse<UsageJsonRoot>("usage.json")

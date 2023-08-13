@@ -1,7 +1,7 @@
 package allfit.api
 
 import allfit.api.models.CategoriesJsonRoot
-import allfit.api.models.CheckinsJsonRoot
+import allfit.api.models.CheckinJson
 import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
@@ -19,7 +19,7 @@ interface OnefitClient {
     suspend fun getWorkouts(params: WorkoutSearchParams): List<WorkoutJson>
     suspend fun getWorkoutById(id: Int): SingleWorkoutJsonRoot
     suspend fun getReservations(): ReservationsJsonRoot
-    suspend fun getCheckins(params: CheckinSearchParams): CheckinsJsonRoot
+    suspend fun getCheckins(params: CheckinSearchParams): List<CheckinJson>
     suspend fun getUsage(): UsageJsonRoot
 
 }

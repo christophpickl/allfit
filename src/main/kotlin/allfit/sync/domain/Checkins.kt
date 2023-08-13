@@ -44,7 +44,7 @@ class CheckinsSyncerImpl(
     private suspend fun checkinsToBeInserted(): List<CheckinJson> {
         val remoteCheckins = client.getCheckins(CheckinSearchParams.simple())
         val localCheckinIds = checkinsRepo.selectAll().map { it.id.toString() }
-        return remoteCheckins.data.filter {
+        return remoteCheckins.filter {
             !localCheckinIds.contains(it.uuid)
         }
     }
