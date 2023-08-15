@@ -6,8 +6,19 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 ### High Prio
 
+* indicate how many workouts reserved in this period for this particular partner
+* remove workout images from table; load them lazily cached; increase sync to 14 days
+    * or: load workouts 14 days in advance (approx 20k) => needs lazy image loading (dynamic load, otherwise heap error!)
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
+
+### Going Public
+
+* Website for download
+* show version number in app
+* pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
+* notification for new version available (like done back then with gadsu)
+* luxury: auto release and auto upload (one-click website release)
 
 ### Medium
 
@@ -15,10 +26,11 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * sync available spots
 * reservation button
 * disable quitting during syncing (?)
+* tornadofx UI tests
+* use GitHub actions (to verify; maybe even release in the future?!)
 
 ### Low
 
-* tornadofx UI tests
 * render distance in km to my place (calculate via google during sync)
 * make application start-able also when there is no internet connection
 * PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days to all existing data)

@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+    <title>AllFit</title>
+    <style>
+        body {
+            background: black;
+        }
+
+        * {
+            color: white;
+            font-family: "Goudy Bookletter 1911", sans-serif;
+        }
+
+        #root {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        #title {
+            font-size: 1.4em;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+        a:hover {
+            text-decoration: none;
+            color: lightgray;
+        }
+
+        #logo {
+            padding-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="root">
+    <div class="centered"><img id="logo" src="logo.png" alt="logo"/></div>
+    <div id="title" class="centered"><b>AllFit</b> - An unofficial OneFit client for you</div>
+    <div><a href="screenshot-big.png" title="View bigger screenshot"><img src="screenshot-small.png" alt="screenshot"/></a>
+    </div>
+    <div class="centered">Download:
+        <a href="https://github.com/christophpickl/allfit/releases/download/release-0/AllFit.app.zip">macOS</a>,
+        <a href="https://github.com/christophpickl/allfit/releases/download/release-0/AllFit.jar.zip">Windows&co</a>
+    </div>
+</div>
+</body>
+</html>

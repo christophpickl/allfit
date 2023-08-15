@@ -45,8 +45,8 @@ java -jar $PACKR_JAR_PATH \
      --mainclass allfit.AllFit \
      --icon src/macapp/logo.icns \
      --vmargs Xmx4G \
-     --vmargs Dallfit.env=PROD \
      --vmargs Xms1G \
+     --vmargs Dallfit.env=PROD \
      --output $TARGET_LOCATION || exit 1
 
 echo ""

@@ -33,7 +33,7 @@ class WorkoutsSyncerImpl(
 ) : WorkoutsSyncer {
 
     private val log = logger {}
-    private val syncDaysIntoFuture = 14
+    private val syncDaysIntoFuture = 7
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }

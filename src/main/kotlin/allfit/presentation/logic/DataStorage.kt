@@ -89,7 +89,7 @@ class ExposedDataStorage(
                     wasVisited = workoutsWithCheckins.contains(workoutEntity.id),
                 )
             } catch (e: Exception) {
-                log.error("Corrupt workout with ID: ${workoutEntity.id}")
+                log.error { "Corrupt workout with ID: ${workoutEntity.id}" }
                 throw e
             }
         }
