@@ -2,6 +2,8 @@
 
 A desktop client for OneFit with additional metadata (notes, personal rating, visibility...).
 
+https://christophpickl.github.io/allfit/
+
 ## ToDos
 
 ### High Prio
@@ -10,24 +12,25 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 * remove workout images from table; load them lazily cached; increase sync to 14 days
     * or: load workouts 14 days in advance (approx 20k) => needs lazy image loading (dynamic load, otherwise heap error!)
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
-* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
 ### Going Public
 
 * Website for download
 * show version number in app
+* when auth fails, allow user to rewrite credentials
 * pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
 * notification for new version available (like done back then with gadsu)
 * luxury: auto release and auto upload (one-click website release)
 
 ### Medium
 
-* display location on map
+* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * sync available spots
 * reservation button
 * disable quitting during syncing (?)
 * tornadofx UI tests
 * use GitHub actions (to verify; maybe even release in the future?!)
+* display location on map
 
 ### Low
 
@@ -52,11 +55,6 @@ A desktop client for OneFit with additional metadata (notes, personal rating, vi
 
 * display more (all) pictures
 * model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation
-
-### Going Public
-
-* ad credentials loader: encrypt password (using local username?); prompt dialog if file doesn't exist
-* release on tag, deploy JAR file
 
 ## Guides
 

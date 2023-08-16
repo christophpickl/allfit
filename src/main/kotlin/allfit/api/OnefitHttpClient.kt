@@ -52,7 +52,7 @@ suspend fun authenticateOneFit(
         setBody(
             AuthJson(
                 email = credentials.email,
-                password = credentials.password,
+                password = credentials.clearTextPassword,
             )
         )
     }

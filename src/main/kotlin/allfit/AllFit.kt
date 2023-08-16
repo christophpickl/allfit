@@ -5,8 +5,8 @@ import allfit.api.OnefitClient
 import allfit.api.authenticateOneFit
 import allfit.presentation.TornadoFxEntryPoint
 import allfit.presentation.UiPreSyncer
-import allfit.service.CredentialsLoader
 import allfit.service.SystemClock
+import allfit.service.credentials.CredentialsLoader
 import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javax.swing.JOptionPane

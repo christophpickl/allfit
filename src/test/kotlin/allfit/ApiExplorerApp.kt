@@ -3,8 +3,8 @@ package allfit
 import allfit.api.OnefitHttpClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.authenticateOneFit
-import allfit.service.CredentialsLoader
 import allfit.service.SystemClock
+import allfit.service.credentials.CredentialsLoader
 import io.kotest.common.runBlocking
 
 class ApiExplorerApp(private val client: OnefitHttpClient) {
