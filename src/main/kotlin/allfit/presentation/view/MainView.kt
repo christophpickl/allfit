@@ -5,6 +5,7 @@ import allfit.presentation.NotesView
 import allfit.presentation.partners.PartnersMainView
 import allfit.presentation.setOnTabShortcutListener
 import allfit.presentation.workouts.WorkoutsMainView
+import allfit.service.MetaProps
 import javafx.scene.control.TabPane
 import tornadofx.View
 import tornadofx.singleAssign
@@ -24,7 +25,9 @@ class MainView : View() {
 //                }
 //            }
 //        }
-        title = "AllFit" + (if (Environment.current == Environment.Development) " - Developer Mode" else "")
+
+        title =
+            "AllFit v${MetaProps.instance.version}" + (if (Environment.current == Environment.Development) " - Developer Mode" else "")
 
         tabPane = tabpane {
             tab("Workouts") {

@@ -15,11 +15,9 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
-* Website for download
-* show version number in app
+* notification for new version available (like done back then with gadsu)
 * when auth fails, allow user to rewrite credentials
 * pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
-* notification for new version available (like done back then with gadsu)
 * luxury: auto release and auto upload (one-click website release)
 
 ### Medium

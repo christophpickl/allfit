@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
@@ -92,6 +93,19 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
     }
 }
 
+
+configure<ProcessResources>("processResources") {
+    from("src/main/resources") {
+        include("allfit.properties")
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        filter<ReplaceTokens>(
+            "tokens" to mapOf(
+                "version" to (project.properties["allfit.version"] ?: "0"),
+            ),
+        )
+    }
+}
+
 //configurations.all {
 //    resolutionStrategy {
 //        failOnVersionConflict()
@@ -99,3 +113,7 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 //    }
 //}
 
+
+inline fun <reified C> Project.configure(name: String, configuration: C.() -> Unit) {
+    (this.tasks.getByName(name) as C).configuration()
+}
