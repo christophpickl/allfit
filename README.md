@@ -15,13 +15,13 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
-* notification for new version available (like done back then with gadsu)
-* when auth fails, allow user to rewrite credentials
+* !!! notification for new version available (like done back then with gadsu)
+* !! when auth fails, allow user to rewrite credentials
 * pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
-* luxury: auto release and auto upload (one-click website release)
 
 ### Medium
 
+* luxury: auto release and auto upload (one-click website release)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 * sync available spots
 * reservation button
