@@ -14,8 +14,11 @@ import allfit.service.FileResolver
 import allfit.service.FileSystemImageStorage
 import allfit.service.ImageStorage
 import allfit.service.JavaPrefs
+import allfit.service.NoopVersionChecker
+import allfit.service.OnlineVersionChecker
 import allfit.service.Prefs
 import allfit.service.SystemClock
+import allfit.service.VersionChecker
 import allfit.service.WorkoutInserter
 import allfit.service.WorkoutInserterImpl
 import allfit.sync.syncModule
@@ -49,6 +52,9 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
     single<Prefs> { JavaPrefs("allfit" + (if (config.isDevMode) "-dev" else "")) }
     single<WorkoutInserter> { WorkoutInserterImpl(get(), get(), get()) }
+    single<VersionChecker> {
+        if (config.mockClient) NoopVersionChecker else OnlineVersionChecker()
+    }
 
     includes(persistenceModule(config))
     includes(syncModule(config))

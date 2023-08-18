@@ -111,16 +111,27 @@ private fun Pane.internalLlabelDetail(
                 textFill = it
             }
             if (link != null) {
-                textFill = Color.BLUE
-                isUnderline = true
-                cursor = Cursor.HAND
-                setOnMouseClicked {
-                    openBrowser(link.value)
-                }
+                styleAsLink(link.value)
             }
         }
     }
 }
+
+fun Label.styleAsLink(url: String) {
+    textFill = Color.BLUE
+    isUnderline = true
+    cursor = Cursor.HAND
+    setOnMouseClicked {
+        openBrowser(url)
+    }
+}
+
+fun EventTarget.link(url: String, op: Label.() -> Unit = {}): Label =
+    label {
+        text = url
+        styleAsLink(url)
+        op()
+    }
 
 fun Pane.labelPrompt(prompt: String, smallSize: Boolean = false) {
     label("$prompt: ") {

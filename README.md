@@ -15,7 +15,6 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
-* !!! notification for new version available (like done back then with gadsu)
 * pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
 
 ### Medium

@@ -17,10 +17,16 @@ import allfit.presentation.search.VisitedSearchRequest
 import allfit.presentation.search.VisitedState
 import allfit.presentation.tornadofx.safeSubscribe
 import allfit.presentation.view.MainView
+import allfit.presentation.view.VersionMismatchDialog
 import allfit.presentation.workouts.WorkoutsMainModel
 import allfit.service.Clock
+import allfit.service.MetaProps
+import allfit.service.VersionChecker
+import allfit.service.VersionResult
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
+import kotlinx.coroutines.runBlocking
 import tornadofx.Controller
+import tornadofx.runLater
 import tornadofx.toObservable
 
 class MainController : Controller() {
@@ -36,6 +42,7 @@ class MainController : Controller() {
     private val usageRepo: UsageRepository by di()
     private val reservationsRepo: ReservationsRepo by di()
     private val clock: Clock by di()
+    private val versionChecker: VersionChecker by di()
 
     init {
         val usage = usageRepo.selectOne().toUsage()
@@ -53,6 +60,19 @@ class MainController : Controller() {
             val initialWorkoutTimeSearch = VisitedSearchRequest(VisitedState.UPCOMING).predicate
             workoutsModel.sortedFilteredWorkouts.predicate = {
                 WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
+            }
+
+            runAsync {
+                val versionResult = runBlocking {
+                    versionChecker.check(MetaProps.instance.version)
+                }
+                runLater {
+                    if (versionResult is VersionResult.TooOld) {
+                        VersionMismatchDialog(
+                            currentVersion = versionResult.currentVersion, latestVersion = versionResult.latestVersion
+                        ).openModal()
+                    }
+                }
             }
         }
         safeSubscribe<WorkoutSearchFXEvent>() {
