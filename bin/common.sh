@@ -35,7 +35,6 @@ packageDeployables () {
     exit 1
   fi
 
-  # TODO add version number to app file
   java -jar $PACKR_JAR_PATH \
        --platform mac \
        --jdk $JDK_PATH \

@@ -12,9 +12,8 @@ import allfit.api.models.UsageJsonRoot
 import allfit.api.models.WorkoutJson
 import allfit.api.models.WorkoutsJsonRoot
 import allfit.service.Clock
-import allfit.service.FileEntry
-import allfit.service.FileResolver
 import allfit.service.beginOfDay
+import allfit.service.credentials.CredentialsManager
 import allfit.service.endOfDay
 import allfit.service.getPageUntilExhausted
 import allfit.service.kotlinxSerializer
@@ -45,7 +44,8 @@ private val log = logger {}
 private val authClient = buildHttpClient(null)
 
 suspend fun authenticateOneFit(
-    credentials: Credentials, clock: Clock
+    credentials: Credentials,
+    clock: Clock
 ): OnefitClient {
     val response = authClient.post("") {
         header("Content-Type", "application/json")
@@ -57,10 +57,8 @@ suspend fun authenticateOneFit(
         )
     }
     if (response.status == HttpStatusCode.Unauthorized) {
-        val loginFile = FileResolver.resolve(FileEntry.Login)
-        error(
-            "Authenticating as '${credentials.email}' failed!\n\nPlease verify your credentials by logging in to OneFit directly,\n" + "and check the entered password in the login file here:\n${loginFile.absolutePath}"
-        )
+        CredentialsManager.requestToStoreNewCredentialsOnError()
+        error("Now that your new credentials are stored, AllFit will quit. Please restart it again and good luck.")
     }
     response.requireOk()
     log.info { "Login success." }

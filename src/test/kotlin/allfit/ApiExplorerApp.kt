@@ -4,7 +4,7 @@ import allfit.api.OnefitHttpClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.authenticateOneFit
 import allfit.service.SystemClock
-import allfit.service.credentials.CredentialsLoader
+import allfit.service.credentials.CredentialsManager
 import io.kotest.common.runBlocking
 
 class ApiExplorerApp(private val client: OnefitHttpClient) {
@@ -15,7 +15,7 @@ class ApiExplorerApp(private val client: OnefitHttpClient) {
             runBlocking {
                 ApiExplorerApp(
                     authenticateOneFit(
-                        CredentialsLoader.load(),
+                        CredentialsManager.load(),
                         SystemClock
                     ) as OnefitHttpClient
                 ).playground()
