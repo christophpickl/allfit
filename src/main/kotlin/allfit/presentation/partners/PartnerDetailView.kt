@@ -88,9 +88,12 @@ class PartnerDetailView(
 
                 labelPrompt("Description")
                 htmlview(model.selectedPartner.description) {
-                    setAllHeights(60.0)
+                    setAllHeights(65.0)
                 }
-                openWebsiteButton(model.selectedPartner.url)
+                hbox {
+                    paddingTop = 5.0
+                    openWebsiteButton(model.selectedPartner.url)
+                }
             }
             paddingBottom = 5.0
         }

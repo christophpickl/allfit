@@ -20,19 +20,19 @@ data class AppConfig(
             preSyncEnabled = false,
             syncEnabled = false,
             mockDb = false,
-            mockDataStore = false,
+            mockDataStore = true,
 //            dummyDate = null,
             dummyDate = LocalDateTime.parse("2023-05-26T14:23:21"),
             useLogFileAppender = false,
         )
         val prod = AppConfig(
-            isDevMode = false,
-            mockClient = false,
+            useLogFileAppender = true,
             preSyncEnabled = true,
             syncEnabled = true,
+            isDevMode = false,
+            mockClient = false,
             mockDb = false,
             mockDataStore = false,
-            useLogFileAppender = true,
         )
     }
 }

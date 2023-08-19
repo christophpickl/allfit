@@ -8,7 +8,7 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
-* pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
+* pimp release script: macos zip, shadowjar zip => https://github.com/libgdx/packr
 
 ### High Prio
 

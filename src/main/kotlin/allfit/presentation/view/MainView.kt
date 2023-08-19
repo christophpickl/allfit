@@ -30,13 +30,13 @@ class MainView : View() {
             "AllFit v${MetaProps.instance.version}" + (if (Environment.current == Environment.Development) " - Developer Mode" else "")
 
         tabPane = tabpane {
-            tab("Workouts") {
+            tab("Workouts (1)") {
                 add(find<WorkoutsMainView>())
             }
-            tab("Partners") {
+            tab("Partners (2)") {
                 add(find<PartnersMainView>())
             }
-            tab("Notes") {
+            tab("Notes (3)") {
                 add(find<NotesView>())
             }
         }
