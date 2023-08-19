@@ -8,8 +8,6 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
-* improve UI a bit
-  * UI any clickable element with blue rounded background color
 * pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
 
 ### High Prio
@@ -21,6 +19,7 @@ https://christophpickl.github.io/allfit/
 
 ### Medium
 
+* STYLE: padding within htmlviews remove (especially left/right)
 * ad search views: instead checkbox, make "enable/disable slider a la iphone"
 * ad search views: when disabled, make everything transparent; when enabled, make it opaque
 * play sound when sync is done (or say something funny like "sync is done master")

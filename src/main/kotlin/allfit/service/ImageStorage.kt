@@ -158,8 +158,8 @@ class FileSystemImageStorage(
         log.debug { "Loading ${partnerIds.size} partner images." }
         return partnerIds.map { id ->
             val file = File(partnersFolder, "$id.$extension")
-            require(file.exists()) { "Image not found for partner $id at location: ${file.absolutePath}" }
-            PartnerAndImageBytes(id, file.readBytes())
+            val bytes = if (file.exists()) file.readBytes() else notFoundDefaultImageBytes
+            PartnerAndImageBytes(id, bytes)
         }
     }
 
