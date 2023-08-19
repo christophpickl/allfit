@@ -21,7 +21,7 @@ fun EventTarget.workoutTable(
     items: ObservableList<SimpleWorkout>,
     onSelected: (SimpleWorkout) -> Unit,
     clock: Clock,
-    withTable: WorkoutTable.() -> Unit,
+    withTable: WorkoutTable.() -> Unit = {},
 ) = WorkoutTable(items, onSelected, clock).attachTo(this, withTable)
 
 class WorkoutTable(
@@ -51,7 +51,7 @@ class WorkoutTable(
         column<SimpleWorkout, String>("Name") {
             it.value.nameProperty()
         }.apply {
-            minWidth = 250.0
+            minWidth = 190.0
             remainingWidth()
         }
 

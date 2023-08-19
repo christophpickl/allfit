@@ -1,7 +1,9 @@
 package allfit.presentation.search
 
+import allfit.presentation.Styles
 import allfit.presentation.models.FullWorkout
 import javafx.scene.control.ToggleGroup
+import tornadofx.addClass
 import tornadofx.radiobutton
 import tornadofx.selectedValueProperty
 import tornadofx.singleAssign
@@ -36,9 +38,14 @@ class VisitedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
             }
             radiobutton("Upcoming", value = VisitedState.UPCOMING) {
                 isSelected = true
+                addClass(Styles.link)
             }
-            radiobutton("Visited", value = VisitedState.VISITED)
-            radiobutton("Both", value = VisitedState.BOTH)
+            radiobutton("Visited", value = VisitedState.VISITED) {
+                addClass(Styles.link)
+            }
+            radiobutton("Both", value = VisitedState.BOTH) {
+                addClass(Styles.link)
+            }
         }
     }
 

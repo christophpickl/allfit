@@ -56,11 +56,12 @@ data class PartnerModifications(
         )
 }
 
-fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit = {}) {
+fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit = {}) =
     webview {
+        engine.userStyleSheetLocation = "data:,body { font: 12px Arial; }";
         html.addListener { _, _, newValue ->
             engine.loadContent(newValue ?: "")
         }
         op()
     }
-}
+

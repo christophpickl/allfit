@@ -17,7 +17,7 @@ import tornadofx.toProperty
 fun EventTarget.checkinTable(
     items: ObservableList<Checkin>,
     clock: Clock,
-    withTable: CheckinTable.() -> Unit,
+    withTable: CheckinTable.() -> Unit = {},
 ) = CheckinTable(items, clock).attachTo(this, withTable)
 
 class CheckinTable(
@@ -33,7 +33,7 @@ class CheckinTable(
                 is Checkin.DropinCheckin -> "Drop-In".toProperty()
             }
         }.apply {
-            minWidth = 250.0
+            minWidth = 190.0
             remainingWidth()
         }
 

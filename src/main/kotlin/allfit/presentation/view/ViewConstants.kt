@@ -1,6 +1,6 @@
 package allfit.presentation.view
 
 object ViewConstants {
-    const val bigImageHeight = 200.0
-    const val detailTextHeight = 80.0
+    const val BIG_IMAGE_HEIGHT = 200.0
+    const val DETAIL_TEXT_HEIGHT = 80.0
 }

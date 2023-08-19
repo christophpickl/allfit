@@ -1,10 +1,10 @@
 package allfit.presentation
 
-import javafx.scene.layout.BorderStrokeStyle
+import javafx.scene.Cursor
 import javafx.scene.paint.Color
-import javafx.scene.shape.StrokeLineCap
-import javafx.scene.shape.StrokeLineJoin
-import javafx.scene.shape.StrokeType
+import javafx.scene.paint.CycleMethod
+import javafx.scene.paint.LinearGradient
+import javafx.scene.paint.Stop
 import javafx.scene.text.FontWeight
 import tornadofx.Stylesheet
 import tornadofx.box
@@ -19,8 +19,12 @@ class Styles : Stylesheet() {
         val detailPrompt by cssclass()
         val htmlview by cssclass()
         val small by cssclass()
+        val link by cssclass()
 
-        val blue = c("#477ADB")
+        val standardBlue = c("#477ADB")
+        val clickLinkColor = c("#899AC1")
+        val clickLinkHoverColor = c("#9DB0DC")
+
     }
 
     init {
@@ -37,29 +41,28 @@ class Styles : Stylesheet() {
         header1 {
             fontSize = 28.px
             fontWeight = FontWeight.EXTRA_BOLD
-            textFill = blue
-//            backgroundColor += blue
+            textFill = Color.BLACK
+        }
+        tooltip {
+            backgroundColor += LinearGradient(
+                0.0, 0.0, 0.0, 10.0, true, CycleMethod.NO_CYCLE,
+                Stop(0.0, Color.WHITE), Stop(10.0, standardBlue)
+            )
+            textFill = Color.BLACK
+            fontSize = 12.px
         }
         detailPrompt {
             // TODO bold doesnt work?! fontWeight = FontWeight.EXTRA_BOLD
             textFill = Color.GRAY
         }
-        htmlview {
-            borderColor += box(Color.DARKGRAY)
-            borderStyle += BorderStrokeStyle(
-                StrokeType.INSIDE,
-                StrokeLineJoin.MITER,
-                StrokeLineCap.BUTT,
-                10.0,
-                0.0,
-                listOf(25.0, 5.0)
-            )
-            borderWidth += box(5.px)
+        link {
+            textFill = clickLinkColor
+            underline = true
+            cursor = Cursor.HAND
+            and(hover) {
+                textFill = clickLinkHoverColor
+            }
         }
-//        button, checkBox, Stylesheet.comboBox {
-//            backgroundColor += blue
-//        }
-        // button:hover
 
 //        textArea {
 //            content {

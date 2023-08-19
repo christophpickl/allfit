@@ -19,28 +19,29 @@ import tornadofx.FXEvent
 import tornadofx.hbox
 import tornadofx.vbox
 
-private object DefaultWorkoutSubSearchRequest : SubSearchRequest<FullWorkout> {
+private data object DefaultWorkoutSubSearchRequest : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = {
         WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it)
     }
 
-    override fun toString() = this::class.simpleName!!
 }
 
 class WorkoutsSearchView : SearchView<FullWorkout>(DefaultWorkoutSubSearchRequest) {
 
     private val clock: Clock by di()
 
-    override val root = hbox {
-        vbox {
+    override val root = hbox(spacing = 30.0) {
+        vbox(spacing = 5.0) {
             addIt(VisitedSearchPane(::checkSearch))
             addIt(TextSearchPane(::checkSearch))
             addIt(DateSearchPane(clock, ::checkSearch))
+        }
+        vbox(spacing = 5.0) {
             addIt(GroupSearchPane(::checkSearch))
             addIt(CheckinSearchPane(::checkSearch))
             addIt(RatingSearchPane(::checkSearch))
         }
-        vbox {
+        vbox(spacing = 5.0) {
             addIt(WishlistedSearchPane(::checkSearch))
             addIt(FavoritedSearchPane(::checkSearch))
             addIt(ReservedSearchPane(::checkSearch))

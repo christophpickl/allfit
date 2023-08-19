@@ -6,19 +6,24 @@ https://christophpickl.github.io/allfit/
 
 ## ToDos
 
-### High Prio
-
-* indicate how many workouts reserved in this period for this particular partner
-* remove workout images from table; load them lazily cached; increase sync to 14 days
-    * or: load workouts 14 days in advance (approx 20k) => needs lazy image loading (dynamic load, otherwise heap error!)
-* define text search targets (partner/workout, title/description/notes, teacher, ...)
-
 ### Going Public
 
+* improve UI a bit
+  * UI any clickable element with blue rounded background color
 * pimp release script: macos zip, shadowjar zip (maybe windows exe zip?)
+
+### High Prio
+
+* include in available, how many workouts reserved in this period for this particular partner
+* totally remove workout images (they are not worth it; almost always same as partner anyway)
+* define text search targets (partner/workout, title/description/notes, teacher, ...)
+* UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
 
 ### Medium
 
+* ad search views: instead checkbox, make "enable/disable slider a la iphone"
+* ad search views: when disabled, make everything transparent; when enabled, make it opaque
+* play sound when sync is done (or say something funny like "sync is done master")
 * add version number to app file manifest
 * luxury: auto release and auto upload (one-click website release)
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
@@ -42,11 +47,6 @@ https://christophpickl.github.io/allfit/
 
 * improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
 * improve sync dialog: show report at the end: X foo inserted, Y bar deleted
-
-### Styling
-
-* UI any clickable element with blue rounded background color
-* https://docs.oracle.com/javase/8/javafx/user-interface-tutorial/custom.htm
 
 ### Future
 

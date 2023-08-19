@@ -6,13 +6,19 @@ import allfit.presentation.view.ViewConstants
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.image.Image
+import tornadofx.borderpane
+import tornadofx.center
 import tornadofx.imageview
-import tornadofx.scrollpane
 
 fun EventTarget.bigImage(image: ObservableValue<Image?>) {
-    scrollpane(fitToHeight = true) {
-        setAllHeights(ViewConstants.bigImageHeight)
-        setAllWidths(ViewConstants.bigImageHeight)
-        imageview(image)
+//    scrollpane {
+    borderpane {
+        setAllHeights(ViewConstants.BIG_IMAGE_HEIGHT)
+        setAllWidths(ViewConstants.BIG_IMAGE_HEIGHT)
+        center {
+            imageview(image)
+        }
+
     }
+//    }
 }

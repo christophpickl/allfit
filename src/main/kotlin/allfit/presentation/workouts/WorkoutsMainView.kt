@@ -3,10 +3,10 @@ package allfit.presentation.workouts
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.WorkoutSelectedThrough
 import allfit.presentation.partners.PartnerDetailView
+import allfit.presentation.tornadofx.setAllWidths
 import allfit.presentation.view.UsageView
 import allfit.service.Clock
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
-import javafx.scene.control.Label
 import javafx.scene.layout.Priority
 import tornadofx.View
 import tornadofx.borderpane
@@ -15,6 +15,9 @@ import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.onDoubleClick
 import tornadofx.onSelectionChange
+import tornadofx.paddingAll
+import tornadofx.paddingLeft
+import tornadofx.paddingRight
 import tornadofx.right
 import tornadofx.selectedItem
 import tornadofx.top
@@ -57,7 +60,8 @@ class WorkoutsMainView : View() {
         top {
             vgrow = Priority.NEVER
             hgrow = Priority.ALWAYS
-            hbox {
+            hbox(spacing = 30.0) {
+                paddingAll = 10.0
                 add(searchView)
                 hgrow = Priority.NEVER
                 add(usageView)
@@ -71,9 +75,11 @@ class WorkoutsMainView : View() {
         right {
             hgrow = Priority.NEVER
             vgrow = Priority.ALWAYS
-            vbox {
+            vbox(spacing = 10.0) {
+                setAllWidths(700.0)
+                paddingLeft = 5.0
+                paddingRight = 5.0
                 add(workoutDetailView)
-                add(Label()) // layout hack ;)
                 add(partnerDetailView)
             }
         }

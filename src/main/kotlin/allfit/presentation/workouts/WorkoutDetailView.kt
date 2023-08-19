@@ -19,6 +19,7 @@ import tornadofx.addClass
 import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.label
+import tornadofx.paddingBottom
 import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.visibleWhen
@@ -35,7 +36,7 @@ class WorkoutDetailView(
 
     override val root = vbox {
 //        background = Background.fill(Color.BLUE)
-        hbox {
+        hbox(spacing = 5.0) {
             bigImage(workoutModel.selectedWorkout.map { it.image })
 
             vbox {
@@ -62,15 +63,17 @@ class WorkoutDetailView(
                 labelDetail("Teacher", workoutModel.selectedWorkout.map { it.teacher })
                 openWebsiteButton(workoutModel.selectedWorkout.map { it.url })
             }
+            paddingBottom = 5.0
         }
+
         labelPrompt("About")
         htmlview(workoutModel.selectedWorkout.map { it.about }) {
-            setAllHeights(ViewConstants.detailTextHeight)
+            setAllHeights(ViewConstants.DETAIL_TEXT_HEIGHT)
         }
 
         labelPrompt("Specifics")
         htmlview(workoutModel.selectedWorkout.map { it.specifics }) {
-            setAllHeights(ViewConstants.detailTextHeight)
+            setAllHeights(ViewConstants.DETAIL_TEXT_HEIGHT)
         }
     }
 }

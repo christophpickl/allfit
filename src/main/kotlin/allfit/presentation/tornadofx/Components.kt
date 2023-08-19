@@ -6,7 +6,6 @@ import javafx.beans.Observable
 import javafx.beans.binding.StringBinding
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
-import javafx.scene.Cursor
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
@@ -111,16 +110,14 @@ private fun Pane.internalLlabelDetail(
                 textFill = it
             }
             if (link != null) {
-                styleAsLink(link.value)
+                addClass(Styles.link)
+                openBrowserOnClick(link.value)
             }
         }
     }
 }
 
-fun Label.styleAsLink(url: String) {
-    textFill = Color.BLUE
-    isUnderline = true
-    cursor = Cursor.HAND
+fun Label.openBrowserOnClick(url: String) {
     setOnMouseClicked {
         openBrowser(url)
     }
@@ -129,7 +126,8 @@ fun Label.styleAsLink(url: String) {
 fun EventTarget.link(url: String, op: Label.() -> Unit = {}): Label =
     label {
         text = url
-        styleAsLink(url)
+        addClass(Styles.link)
+        openBrowserOnClick(url)
         op()
     }
 
@@ -143,7 +141,7 @@ fun Pane.labelPrompt(prompt: String, smallSize: Boolean = false) {
 }
 
 fun EventTarget.openWebsiteButton(url: ObservableValue<String>, op: Button.() -> Unit = {}) {
-    button("Website") {
+    button("Open Website") {
         tooltip {
             this@tooltip.textProperty().bind(url)
         }

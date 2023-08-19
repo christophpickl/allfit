@@ -15,13 +15,13 @@ import tornadofx.vbox
 
 class PartnersSearchView : SearchView<FullPartner>(SearchRequest.alwaysTrue()) {
 
-    override val root = hbox {
-        vbox {
+    override val root = hbox(spacing = 30.0) {
+        vbox(spacing = 5.0) {
             addIt(TextSearchPane(::checkSearch))
             addIt(CheckinSearchPane(::checkSearch))
             addIt(RatingSearchPane(::checkSearch))
         }
-        vbox {
+        vbox(spacing = 5.0) {
             addIt(FavoritedSearchPane(::checkSearch))
             addIt(WishlistedSearchPane(::checkSearch))
         }

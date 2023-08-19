@@ -7,6 +7,7 @@ import allfit.service.formatTime
 import allfit.service.toDaysUntil
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
 import javafx.scene.layout.Pane
 import tornadofx.action
@@ -72,13 +73,13 @@ class DateSearchPane(
         title = "Date"
         enabledAction = OnEnabledAction { checkSearch() }
 
-        vbox {
-            hbox {
+        vbox(spacing = 5.0) {
+            hbox(spacing = 2.0) {
                 navigationButton(isBack = true)
                 dateInput = dateCombobox(checkSearch)
                 navigationButton(isBack = false)
             }
-            hbox {
+            hbox(spacing = 2.0, alignment = Pos.CENTER_LEFT) {
                 val times = buildTimes()
                 label("From:")
                 timeStartInput = timeCombobox(times, checkSearch)
