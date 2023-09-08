@@ -11,8 +11,11 @@ import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
 import javafx.scene.layout.Pane
 import tornadofx.action
+import tornadofx.addChildIfPossible
+import tornadofx.asObservable
 import tornadofx.button
 import tornadofx.combobox
+import tornadofx.enableWhen
 import tornadofx.hbox
 import tornadofx.label
 import tornadofx.selectedItem
@@ -65,7 +68,7 @@ class DateSearchPane(
     private val dayStartsAt = 6
     private val dayEndsAt = 22
 
-    private var dateInput: ComboBox<ZonedDateTime> by singleAssign()
+    private var dateInput: ComboBox<ZonedDateTime> = buildDateCombobox(checkSearch)
     private var timeStartInput: ComboBox<TimeOrAll> by singleAssign()
     private var timeEndInput: ComboBox<TimeOrAll> by singleAssign()
 
@@ -76,7 +79,7 @@ class DateSearchPane(
         vbox(spacing = 5.0) {
             hbox(spacing = 2.0) {
                 navigationButton(isBack = true)
-                dateInput = dateCombobox(checkSearch)
+                addChildIfPossible(dateInput)
                 navigationButton(isBack = false)
             }
             hbox(spacing = 2.0, alignment = Pos.CENTER_LEFT) {
@@ -97,9 +100,18 @@ class DateSearchPane(
                 dateInput.selectionModel.selectNext()
             }
         }
+        enableWhen {
+            dateInput.selectionModel.selectedIndexProperty().map { selectedIndex ->
+                if (isBack) {
+                    selectedIndex != 0
+                } else {
+                    selectedIndex != (dateInput.items.size - 1)
+                }
+            }
+        }
     }
 
-    private fun Pane.dateCombobox(checkSearch: () -> Unit) = combobox(values = buildDays()) {
+    private fun buildDateCombobox(checkSearch: () -> Unit) = ComboBox(buildDays().asObservable()).apply {
         cellFormat {
             text = it.formatDayDate()
         }

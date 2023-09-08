@@ -10,8 +10,7 @@ https://christophpickl.github.io/allfit/
 
 * !!! BUG: when skip through date, period-indicator grows horizontally!
 * !!! choose location (AMS, ...) at startup (store in DB; later on can be preferences window)
-* ! disable workout meta fetching (move syncer all in pre-syncer!)
-* ! totally remove workout images (they are not worth it; almost always same as partner anyway)
+* !! totally remove workout images (they are not worth it; almost always same as partner anyway)
 * pimp release script: macos zip, shadowjar zip => https://github.com/libgdx/packr
 
 ### High Prio
@@ -48,6 +47,7 @@ https://christophpickl.github.io/allfit/
 
 ### Nope
 
+* ? disable workout meta fetching (move syncer all in pre-syncer!)
 * improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
 * improve sync dialog: show report at the end: X foo inserted, Y bar deleted
 
