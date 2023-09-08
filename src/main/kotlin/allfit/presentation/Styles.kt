@@ -19,12 +19,14 @@ class Styles : Stylesheet() {
         val detailPrompt by cssclass()
         val htmlview by cssclass()
         val small by cssclass()
-        val link by cssclass()
+        val linkInternal by cssclass()
+        val linkExternal by cssclass()
 
         val standardBlue = c("#477ADB")
-        val clickLinkColor = c("#899AC1")
-        val clickLinkHoverColor = c("#9DB0DC")
-
+        val clickLinkInternalColor = c("#899AC1")
+        val clickLinkInternalHoverColor = c("#9DB0DC")
+        val clickLinkExternalColor = c("#193EFF")
+        val clickLinkExternalHoverColor = c("#4B67FF")
     }
 
     init {
@@ -55,12 +57,20 @@ class Styles : Stylesheet() {
             // TODO bold doesnt work?! fontWeight = FontWeight.EXTRA_BOLD
             textFill = Color.GRAY
         }
-        link {
-            textFill = clickLinkColor
+        s(linkInternal, linkExternal) {
             underline = true
             cursor = Cursor.HAND
+        }
+        linkInternal {
+            textFill = clickLinkInternalColor
             and(hover) {
-                textFill = clickLinkHoverColor
+                textFill = clickLinkInternalHoverColor
+            }
+        }
+        linkExternal {
+            textFill = clickLinkExternalColor
+            and(hover) {
+                textFill = clickLinkExternalHoverColor
             }
         }
 

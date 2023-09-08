@@ -6,6 +6,7 @@ import allfit.presentation.search.HasTextSearchable
 import allfit.presentation.search.IsFavoritable
 import allfit.presentation.search.IsWishlistable
 import allfit.service.Images
+import allfit.service.beginOfDay
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
 import javafx.beans.property.ObjectProperty
@@ -136,11 +137,11 @@ data class FullWorkout(
                 id = 0,
                 partnerId = 0,
                 name = "Workout",
-                about = "About",
-                specifics = "Specifics",
+                about = "",
+                specifics = "",
                 teacher = "",
-                address = "Address",
-                date = DateRange(start = ZonedDateTime.now(), end = ZonedDateTime.now()),
+                address = "",
+                date = DateRange(start = ZonedDateTime.now().beginOfDay(), end = ZonedDateTime.now().beginOfDay()),
                 image = Images.prototype,
                 url = "",
                 isReserved = false,

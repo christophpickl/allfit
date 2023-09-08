@@ -33,7 +33,7 @@ class VersionMismatchDialog(
             addClass(Styles.header1)
         }
         label("You are using an out-of-date version: $currentVersion\nThe latest available version is: $latestVersion\n\nDownload it now from here:")
-        link("https://github.com/christophpickl/allfit/releases")
+        link("https://github.com/christophpickl/allfit/releases", linkIsExternal = true)
         hbox {
             hgrow = Priority.ALWAYS
             alignment = Pos.CENTER

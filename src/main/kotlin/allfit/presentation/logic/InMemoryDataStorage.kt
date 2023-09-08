@@ -42,7 +42,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         specifics = "About specifics in HTML.",
         teacher = "",
         date = defaultDateRange,
-        address = "Main Street 1",
+        address = "Spuistraat 42, 1012 VE Amsterdam",
         image = readImage("workouts/ems.jpg"),
         url = OnefitUtils.workoutUrl(11101386, "ems-health-studio-ems-training-ems-training"),
         isReserved = true,

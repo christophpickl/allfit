@@ -28,9 +28,18 @@ fun Pane.labelDetailMultibind(
     textColor: Color? = null,
     textMaxWidth: Double? = null,
     link: ObservableValue<String>? = null,
+    linkIsExternal: Boolean = false,
     transformer: () -> String,
 ) {
-    internalLlabelDetail(prompt, MultiLabelValue(dependencies, transformer), smallSize, textColor, textMaxWidth, link)
+    internalLabelDetail(
+        prompt,
+        MultiLabelValue(dependencies, transformer),
+        smallSize,
+        textColor,
+        textMaxWidth,
+        link,
+        linkIsExternal
+    )
 }
 
 fun Pane.labelDetail(
@@ -40,8 +49,9 @@ fun Pane.labelDetail(
     textColor: Color? = null,
     textMaxWidth: Double? = null,
     link: ObservableValue<String>? = null,
+    isExternal: Boolean = false,
 ) {
-    internalLlabelDetail(prompt, SingleLabelValue(value), smallSize, textColor, textMaxWidth, link)
+    internalLabelDetail(prompt, SingleLabelValue(value), smallSize, textColor, textMaxWidth, link, isExternal)
 }
 
 private interface LabelValue {
@@ -84,13 +94,14 @@ private class MultiLabelValue(
     }
 }
 
-private fun Pane.internalLlabelDetail(
+private fun Pane.internalLabelDetail(
     prompt: String,
     valueParam: LabelValue,
     smallSize: Boolean = false,
     textColor: Color? = null,
     textMaxWidth: Double? = null,
     link: ObservableValue<String>? = null,
+    linkIsExternal: Boolean,
 ) {
     hbox {
         labelPrompt(prompt, smallSize)
@@ -110,10 +121,16 @@ private fun Pane.internalLlabelDetail(
                 textFill = it
             }
             if (link != null) {
-                addClass(Styles.link)
-                openBrowserOnClick(link.value)
+                addClass(if (linkIsExternal) Styles.linkExternal else Styles.linkInternal)
+                openBrowserOnClick(link)
             }
         }
+    }
+}
+
+fun Label.openBrowserOnClick(url: ObservableValue<String>) {
+    setOnMouseClicked {
+        openBrowser(url.value)
     }
 }
 
@@ -123,10 +140,10 @@ fun Label.openBrowserOnClick(url: String) {
     }
 }
 
-fun EventTarget.link(url: String, op: Label.() -> Unit = {}): Label =
+fun EventTarget.link(url: String, linkIsExternal: Boolean = false, op: Label.() -> Unit = {}): Label =
     label {
         text = url
-        addClass(Styles.link)
+        addClass(if (linkIsExternal) Styles.linkExternal else Styles.linkInternal)
         openBrowserOnClick(url)
         op()
     }

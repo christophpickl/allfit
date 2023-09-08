@@ -50,7 +50,7 @@ class SearchFieldPane(private val alwaysEnabled: Boolean) : HBox(4.0) {
         }
         label {
             bind(titleProperty())
-            addClass(Styles.link)
+            addClass(Styles.linkInternal)
             setOnMouseClicked {
                 isEnabledProperty.set(!isEnabledProperty.get())
             }

@@ -58,8 +58,10 @@ class WorkoutDetailView(
                 }
 
                 labelDetail("When", workoutModel.selectedWorkout.map { it.date.toPrettyString(clock) })
-                val addressBind = workoutModel.selectedWorkout.map { it.address }
-                labelDetail("Where", addressBind, link = googleMapsSearchUrl(addressBind))
+                labelDetail(
+                    "Where", workoutModel.selectedWorkout.map { it.address },
+                    link = workoutModel.selectedWorkout.map { googleMapsSearchUrl(it.address) }, isExternal = true
+                )
                 labelDetail("Teacher", workoutModel.selectedWorkout.map { it.teacher })
                 openWebsiteButton(workoutModel.selectedWorkout.map { it.url })
             }

@@ -8,17 +8,21 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
+* !!! BUG: when skip through date, period-indicator grows horizontally!
+* !!! choose location (AMS, ...) at startup (store in DB; later on can be preferences window)
+* ! disable workout meta fetching (move syncer all in pre-syncer!)
+* ! totally remove workout images (they are not worth it; almost always same as partner anyway)
 * pimp release script: macos zip, shadowjar zip => https://github.com/libgdx/packr
 
 ### High Prio
 
 * include in available, how many workouts reserved in this period for this particular partner
-* totally remove workout images (they are not worth it; almost always same as partner anyway)
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
 
 ### Medium
 
+* right click on address, context menu to copy to clipboard
 * STYLE: padding within htmlviews remove (especially left/right)
 * ad search views: instead checkbox, make "enable/disable slider a la iphone"
 * ad search views: when disabled, make everything transparent; when enabled, make it opaque

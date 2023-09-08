@@ -38,13 +38,13 @@ class VisitedSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
             }
             radiobutton("Upcoming", value = VisitedState.UPCOMING) {
                 isSelected = true
-                addClass(Styles.link)
+                addClass(Styles.linkInternal)
             }
             radiobutton("Visited", value = VisitedState.VISITED) {
-                addClass(Styles.link)
+                addClass(Styles.linkInternal)
             }
             radiobutton("Both", value = VisitedState.BOTH) {
-                addClass(Styles.link)
+                addClass(Styles.linkInternal)
             }
         }
     }
