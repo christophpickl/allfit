@@ -33,17 +33,9 @@ interface ImageStorage {
     fun saveDefaultImageForPartner(partnerIds: List<Int>)
     fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes>
 
-    suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>)
-    fun saveDefaultImageForWorkout(workoutIds: List<Int>)
-    fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes>
-    fun deleteWorkoutImages(workoutIds: List<Int>)
 }
 
 object DummyImageStorage : ImageStorage {
-
-    override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> {
-        return workoutIds.map { WorkoutAndImagesBytes(it, byteArrayOf()) }
-    }
 
     override fun loadPartnerImages(partnerIds: List<Int>): List<PartnerAndImageBytes> {
         return partnerIds.map { PartnerAndImageBytes(it, byteArrayOf()) }
@@ -53,15 +45,6 @@ object DummyImageStorage : ImageStorage {
     }
 
     override fun saveDefaultImageForPartner(partnerIds: List<Int>) {
-    }
-
-    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
-    }
-
-    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
-    }
-
-    override fun deleteWorkoutImages(workoutIds: List<Int>) {
     }
 }
 
@@ -92,23 +75,6 @@ class InMemoryImageStorage : ImageStorage {
         partnerIds.mapNotNull {
             partnerImagesToBeLoaded[it]
         }
-
-    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
-        savedWorkoutImages += workouts
-    }
-
-    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
-        savedWorkoutImages += workoutIds.map { WorkoutAndImageUrl(it, it.toString()) }
-    }
-
-    override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> =
-        workoutIds.mapNotNull {
-            workoutImagesToBeLoaded[it]
-        }
-
-    override fun deleteWorkoutImages(workoutIds: List<Int>) {
-        deletedWorkoutImages += workoutIds
-    }
 }
 
 class FileSystemImageStorage(
@@ -163,57 +129,57 @@ class FileSystemImageStorage(
         }
     }
 
-    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
-        log.debug { "Saving ${workouts.size} workout images." }
-        workouts.map { it.imageUrl }.requireAllEndsWithExtension(extension)
-
-        workouts.workParallel(parallelWorkersCount, {
-            syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of workout images done.")
-        }) { workout ->
-            val bytes = client.retryGetBytes("${workout.imageUrl}?w=$width", maxRetryDownloadAttempts)
-            workoutTarget(workout.workoutId).saveAndLogOrDefault(bytes)
-            delay(delayBetweenEachDownloadInMs)
-        }
-    }
-
-    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
-        workoutIds.forEach { id ->
-            workoutTarget(id).saveAndLogOrDefault(null)
-        }
-    }
-
-    private fun workoutTarget(workoutId: Int) = File(workoutsFolder, "$workoutId.$extension")
-
-    override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> {
-        log.debug { "Loading ${workoutIds.size} workout images." }
-        return workoutIds.map { id ->
-            WorkoutAndImagesBytes(
-                workoutId = id,
-                imageBytes = loadWorkoutImage(id),
-            )
-        }
-    }
-
-    private fun loadWorkoutImage(workoutId: Int): ByteArray {
-        val file = File(workoutsFolder, "$workoutId.$extension")
-        return if (file.exists()) {
-            file.readBytes()
-        } else {
-            notFoundDefaultImageBytes
-        }
-    }
-
-    override fun deleteWorkoutImages(workoutIds: List<Int>) {
-        val prefixes = workoutIds.map { "$it-" }
-        workoutsFolder.list { _, name ->
-            prefixes.any { name.startsWith(it) }
-        }!!.forEach {
-            val file = File(workoutsFolder, it)
-            if (!file.delete()) {
-                log.warn { "Unable to delete workout image located at: ${file.absolutePath}" }
-            }
-        }
-    }
+//    override suspend fun downloadWorkoutImages(workouts: List<WorkoutAndImageUrl>) {
+//        log.debug { "Saving ${workouts.size} workout images." }
+//        workouts.map { it.imageUrl }.requireAllEndsWithExtension(extension)
+//
+//        workouts.workParallel(parallelWorkersCount, {
+//            syncListeners.onSyncDetail("Saving ${(it * 100).toInt()}% of workout images done.")
+//        }) { workout ->
+//            val bytes = client.retryGetBytes("${workout.imageUrl}?w=$width", maxRetryDownloadAttempts)
+//            workoutTarget(workout.workoutId).saveAndLogOrDefault(bytes)
+//            delay(delayBetweenEachDownloadInMs)
+//        }
+//    }
+//
+//    override fun saveDefaultImageForWorkout(workoutIds: List<Int>) {
+//        workoutIds.forEach { id ->
+//            workoutTarget(id).saveAndLogOrDefault(null)
+//        }
+//    }
+//
+//    private fun workoutTarget(workoutId: Int) = File(workoutsFolder, "$workoutId.$extension")
+//
+//    override fun loadWorkoutImages(workoutIds: List<Int>): List<WorkoutAndImagesBytes> {
+//        log.debug { "Loading ${workoutIds.size} workout images." }
+//        return workoutIds.map { id ->
+//            WorkoutAndImagesBytes(
+//                workoutId = id,
+//                imageBytes = loadWorkoutImage(id),
+//            )
+//        }
+//    }
+//
+//    private fun loadWorkoutImage(workoutId: Int): ByteArray {
+//        val file = File(workoutsFolder, "$workoutId.$extension")
+//        return if (file.exists()) {
+//            file.readBytes()
+//        } else {
+//            notFoundDefaultImageBytes
+//        }
+//    }
+//
+//    override fun deleteWorkoutImages(workoutIds: List<Int>) {
+//        val prefixes = workoutIds.map { "$it-" }
+//        workoutsFolder.list { _, name ->
+//            prefixes.any { name.startsWith(it) }
+//        }!!.forEach {
+//            val file = File(workoutsFolder, it)
+//            if (!file.delete()) {
+//                log.warn { "Unable to delete workout image located at: ${file.absolutePath}" }
+//            }
+//        }
+//    }
 }
 
 private fun List<String>.requireAllEndsWithExtension(extension: String) {

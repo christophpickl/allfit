@@ -44,12 +44,6 @@ class WorkoutInserterImpl(
 
         listener.onProgress("Inserting ${workouts.size} workouts into DB.")
         workoutsRepo.insertAll(workouts.map { it.toWorkoutEntity(metaFetchById[it.id]!!) })
-        val workoutsFetchImages = metaFetchById.values
-            .filter { it.imageUrls.isNotEmpty() }
-            .map { WorkoutAndImageUrl(it.workoutId, it.imageUrls.first()) }
-
-        listener.onProgress("Downloading ${workoutsFetchImages.size} workout images.")
-        imageStorage.downloadWorkoutImages(workoutsFetchImages)
     }
 
     private suspend fun fetchMetaData(

@@ -90,7 +90,6 @@ class CheckinsSyncerImpl(
         workoutsRepo.insertAll(toBeInserted.map {
             it.workout!!.toWorkoutEntity()
         })
-        imageStorage.saveDefaultImageForWorkout(toBeInserted.map { it.workout!!.id })
     }
 }
 

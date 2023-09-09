@@ -1,7 +1,6 @@
 package allfit.presentation.workouts
 
 import allfit.presentation.Styles
-import allfit.presentation.components.bigImage
 import allfit.presentation.htmlview
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
@@ -37,7 +36,6 @@ class WorkoutDetailView(
     override val root = vbox {
 //        background = Background.fill(Color.BLUE)
         hbox(spacing = 5.0) {
-            bigImage(workoutModel.selectedWorkout.map { it.image })
 
             vbox {
                 hbox {

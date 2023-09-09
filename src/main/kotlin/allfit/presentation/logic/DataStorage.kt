@@ -21,7 +21,6 @@ import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.service.Clock
 import allfit.service.ImageStorage
-import allfit.service.Images
 import allfit.service.beginOfDay
 import allfit.service.fromUtcToAmsterdamZonedDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
@@ -80,11 +79,9 @@ class ExposedDataStorage(
         val workoutsWithReservation = reservationsRepo.selectAll().map { it.workoutId }.toSet()
         val workoutsWithCheckins = checkins.mapNotNull { it.workoutId }.toSet()
         val storedWorkouts = workoutsRepo.selectAll()
-        val workoutImages = imageStorage.loadWorkoutImages(storedWorkouts.map { it.id }).associateBy { it.workoutId }
         storedWorkouts.map { workoutEntity ->
             try {
                 workoutEntity.toSimpleWorkout(
-                    image = Image(workoutImages[workoutEntity.id]!!.inputStream()),
                     isReserved = workoutsWithReservation.contains(workoutEntity.id),
                     wasVisited = workoutsWithCheckins.contains(workoutEntity.id),
                 )
@@ -209,7 +206,6 @@ private fun CheckinEntity.fromDropinToSimpleWorkout(partnerUrl: String): SimpleW
         address = "",
         teacher = "",
         date = DateRange(start = start, end = start.plusHours(1)),
-        image = Images.dropin,
         url = partnerUrl,
         isReserved = false,
         wasVisited = true,
@@ -239,7 +235,6 @@ private fun PartnerEntity.toSimplePartner(
 )
 
 private fun WorkoutEntity.toSimpleWorkout(
-    image: Image,
     wasVisited: Boolean,
     isReserved: Boolean,
 ) = SimpleWorkout(
@@ -251,7 +246,6 @@ private fun WorkoutEntity.toSimpleWorkout(
     teacher = teacher ?: "",
     address = address,
     date = DateRange(start = start.fromUtcToAmsterdamZonedDateTime(), end = end.fromUtcToAmsterdamZonedDateTime()),
-    image = image,
     url = OnefitUtils.workoutUrl(id, slug),
     isReserved = isReserved,
     wasVisited = wasVisited,

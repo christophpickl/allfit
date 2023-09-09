@@ -75,7 +75,6 @@ class WorkoutsSyncerImpl(
             .filter { !workoutIdsWithCheckin.contains(it.id) }.map { it.id }
         log.debug { "Deleting ${workoutIdsToDelete.size} outdated workouts." }
         workoutsRepo.deleteAll(workoutIdsToDelete)
-        imageStorage.deleteWorkoutImages(workoutIdsToDelete)
     }
 }
 

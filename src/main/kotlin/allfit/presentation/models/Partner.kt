@@ -112,7 +112,7 @@ class SimplePartner(
     override fun hiddenImageProperty() = getProperty(SimplePartner::hiddenImage)
 
     override var image: Image by property(image)
-    override fun imageProperty() = getProperty(SimpleWorkout::image)
+    override fun imageProperty() = getProperty(SimplePartner::image)
     override var note: String by property(note)
     override fun noteProperty() = getProperty(SimplePartner::note)
     override var description: String by property(description)

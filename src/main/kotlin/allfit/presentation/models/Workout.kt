@@ -5,12 +5,10 @@ import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
 import allfit.presentation.search.IsFavoritable
 import allfit.presentation.search.IsWishlistable
-import allfit.service.Images
 import allfit.service.beginOfDay
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
 import javafx.beans.property.ObjectProperty
-import javafx.scene.image.Image
 import tornadofx.getProperty
 import tornadofx.property
 
@@ -39,9 +37,6 @@ interface Workout {
     val address: String
     fun addressProperty(): ObjectProperty<String>
 
-    val image: Image
-    fun imageProperty(): ObjectProperty<Image>
-
     val isReserved: Boolean
     fun isReservedProperty(): ObjectProperty<Boolean>
 
@@ -60,7 +55,6 @@ class SimpleWorkout(
     teacher: String,
     address: String,
     date: DateRange,
-    image: Image,
     url: String,
     isReserved: Boolean,
     wasVisited: Boolean,
@@ -81,8 +75,6 @@ class SimpleWorkout(
     override fun urlProperty() = getProperty(SimpleWorkout::url)
     override var date: DateRange by property(date)
     override fun dateProperty() = getProperty(SimpleWorkout::date)
-    override var image: Image by property(image)
-    override fun imageProperty() = getProperty(SimpleWorkout::image)
     override var isReserved: Boolean by property(isReserved)
     override fun isReservedProperty() = getProperty(SimpleWorkout::isReserved)
     override var wasVisited: Boolean by property(wasVisited)
@@ -111,8 +103,7 @@ class SimpleWorkout(
                 isReserved == other.isReserved &&
                 url == other.url &&
                 address == other.address &&
-                date == other.date &&
-                image == other.image
+                date == other.date
     }
 
     override fun hashCode() = id.hashCode()
@@ -142,7 +133,6 @@ data class FullWorkout(
                 teacher = "",
                 address = "",
                 date = DateRange(start = ZonedDateTime.now().beginOfDay(), end = ZonedDateTime.now().beginOfDay()),
-                image = Images.prototype,
                 url = "",
                 isReserved = false,
                 wasVisited = false,
