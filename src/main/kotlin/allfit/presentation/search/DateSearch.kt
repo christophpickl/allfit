@@ -1,5 +1,6 @@
 package allfit.presentation.search
 
+import allfit.AppConstants
 import allfit.presentation.models.FullWorkout
 import allfit.service.Clock
 import allfit.service.formatDayDate
@@ -64,7 +65,6 @@ class DateSearchPane(
     checkSearch: () -> Unit,
 ) : SearchPane<FullWorkout>() {
 
-    private val searchIntoFutureInDays = 14
     private val dayStartsAt = 6
     private val dayEndsAt = 22
 
@@ -133,7 +133,7 @@ class DateSearchPane(
         }
 
     private fun buildDays() =
-        clock.todayBeginOfDay().toDaysUntil(searchIntoFutureInDays)
+        clock.todayBeginOfDay().toDaysUntil(AppConstants.workoutsIntoFuture)
 
     private fun buildTimes(): List<TimeOrAll> {
         val today = clock.now().truncatedTo(ChronoUnit.DAYS)

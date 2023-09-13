@@ -36,7 +36,7 @@ fun syncModule(config: AppConfig) = module {
     single<SyncListenerManager> { SyncListenerManagerImpl() }
     single<Syncer> {
         if (config.syncEnabled) {
-            CompositeOnefitSyncer(get(), get(), get(), get(), get(), get(), get(), get(), get())
+            CompositeOnefitSyncer(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
         } else {
 //            DelayedSyncer(get())
             NoOpSyncer(get())

@@ -27,6 +27,8 @@ class Styles : Stylesheet() {
         val clickLinkInternalHoverColor = c("#9DB0DC")
         val clickLinkExternalColor = c("#193EFF")
         val clickLinkExternalHoverColor = c("#4B67FF")
+
+        val colorImageBigBg = Color.rgb(190, 190, 190)
     }
 
     init {

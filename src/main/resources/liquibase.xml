@@ -223,6 +223,15 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="5" author="christophpickl" failOnError="true">
+        <comment>add SINGLES.location column</comment>
+        <addColumn tableName="SINGLES">
+            <column name="LOCATION" type="char(3)" defaultValue="AMS">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
     <!--
         <modifyDataType
             columnName="title"

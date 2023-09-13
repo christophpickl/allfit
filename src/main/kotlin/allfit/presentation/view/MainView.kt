@@ -3,6 +3,7 @@ package allfit.presentation.view
 import allfit.Environment
 import allfit.presentation.NotesView
 import allfit.presentation.partners.PartnersMainView
+import allfit.presentation.preferences.PreferencesView
 import allfit.presentation.setOnTabShortcutListener
 import allfit.presentation.workouts.WorkoutsMainView
 import allfit.service.MetaProps
@@ -38,6 +39,9 @@ class MainView : View() {
             }
             tab("Notes (3)") {
                 add(find<NotesView>())
+            }
+            tab("Preferences") {
+                add(find<PreferencesView>())
             }
         }
 

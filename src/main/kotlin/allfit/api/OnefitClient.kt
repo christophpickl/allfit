@@ -7,6 +7,7 @@ import allfit.api.models.ReservationsJsonRoot
 import allfit.api.models.SingleWorkoutJsonRoot
 import allfit.api.models.UsageJsonRoot
 import allfit.api.models.WorkoutJson
+import allfit.domain.Location
 import allfit.service.endOfDay
 import allfit.service.formatIsoOffset
 import java.time.ZonedDateTime
@@ -37,9 +38,9 @@ data class PartnerSearchParams(
 //    val zipCode: String,
 ) {
     companion object {
-        fun simple() =
+        fun simple(location: Location) =
             PartnerSearchParams(
-                city = "AMS",
+                city = location.shortCode,
                 pageItemCount = 5_000,
 //                radiusInMeters = 3_000,
 //                zipCode = "1011HW",
@@ -75,11 +76,12 @@ data class WorkoutSearchParams(
     val totalDays = ChronoUnit.DAYS.between(start, end).toInt()
 
     constructor(
+        location: Location,
         from: ZonedDateTime,
         plusDays: Int,
         limit: Int = 5_000, // must not be 15k (or similar) otherwise throws 500! we follow pagination anyway ;)
     ) : this(
-        city = "AMS",
+        city = location.shortCode,
         limit = limit,
         page = 1,
         start = from,

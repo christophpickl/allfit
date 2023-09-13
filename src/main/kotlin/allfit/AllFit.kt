@@ -1,8 +1,11 @@
 package allfit
 
 import allfit.api.ClassPathOnefitClient
+import allfit.api.Credentials
 import allfit.api.OnefitClient
 import allfit.api.authenticateOneFit
+import allfit.domain.Location
+import allfit.persistence.domain.SinglesRepo
 import allfit.presentation.TornadoFxEntryPoint
 import allfit.presentation.UiPreSyncer
 import allfit.service.SystemClock
@@ -42,7 +45,9 @@ object AllFit {
         }
         runBlocking {
             try {
-                startupKoin().get<AllFitStarter>().start()
+                val locationAndCredentials = CredentialsManager.load()
+                val location = locationAndCredentials.location
+                startupKoin(locationAndCredentials.other).get<AllFitStarter>().start(location)
             } catch (e: Exception) {
                 log.error(e) { "Startup failed!" }
                 showStartupError(e)
@@ -50,29 +55,36 @@ object AllFit {
         }
     }
 
-    private suspend fun startupKoin(): Koin {
-        val client = buildClient(config)
+    private suspend fun startupKoin(credentials: Credentials): Koin {
+        val client = buildClient(config, credentials)
         return startKoin {
             log.debug { "Starting up Koin context." }
             modules(rootModule(config, client))
         }.koin
     }
 
-    private suspend fun buildClient(config: AppConfig): OnefitClient = if (config.mockClient) {
-        ClassPathOnefitClient
-    } else {
-        authenticateOneFit(CredentialsManager.load(), clock = SystemClock)
-    }
+    private suspend fun buildClient(config: AppConfig, credentials: Credentials): OnefitClient =
+        if (config.mockClient) {
+            ClassPathOnefitClient
+        } else {
+            // FIXME pass through a `data class LocationPassthrough<T>(val t: T, Location?)`, to AllFitStarter;
+            // FIXME PLUS!!! add DB table, that each partner has a LOCATION column (needs to be filtered by depending on pref in DB)
+            authenticateOneFit(credentials, clock = SystemClock)
+        }
 }
 
 class AllFitStarter(
     private val preSyncEnabled: Boolean,
     private val uiPreSyncer: UiPreSyncer,
+    private val singlesRepo: SinglesRepo,
 ) {
 
     private val log = logger {}
 
-    fun start() {
+    fun start(location: Location?) {
+        if (location != null) {
+            singlesRepo.updateLocation(location)
+        }
         if (preSyncEnabled) {
             uiPreSyncer.start { result ->
                 result.fold(

@@ -4,6 +4,7 @@ import allfit.api.JsonLogFileManager
 import allfit.api.OnefitClient
 import allfit.api.PartnerSearchParams
 import allfit.api.models.PartnersJsonRoot
+import allfit.persistence.domain.SinglesRepo
 import allfit.sync.domain.CategoriesSyncer
 import allfit.sync.domain.CheckinsSyncer
 import allfit.sync.domain.LocationsSyncer
@@ -24,6 +25,7 @@ class CompositeOnefitSyncer(
     private val checkinsSyncer: CheckinsSyncer,
     private val listeners: SyncListenerManager,
     private val jsonLogFileManager: JsonLogFileManager,
+    private val singlesRepo: SinglesRepo,
 ) : Syncer, SyncListenerManager by listeners {
 
     private lateinit var partners: PartnersJsonRoot
@@ -31,7 +33,7 @@ class CompositeOnefitSyncer(
 
     private val syncSteps = listOf(
         SyncStep("Fetching partners") {
-            partners = client.getPartners(PartnerSearchParams.simple())
+            partners = client.getPartners(PartnerSearchParams.simple(location = singlesRepo.selectLocation()))
         },
         SyncStep("Syncing categories") {
             categoriesSyncer.sync(partners)

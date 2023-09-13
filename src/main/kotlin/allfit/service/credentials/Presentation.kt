@@ -1,7 +1,9 @@
 package allfit.service.credentials
 
 import allfit.api.Credentials
+import allfit.domain.Location
 import java.awt.BorderLayout
+import java.awt.Component
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Insets
@@ -9,16 +11,19 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.imageio.ImageIO
 import javax.swing.BorderFactory
+import javax.swing.DefaultListCellRenderer
 import javax.swing.ImageIcon
 import javax.swing.JButton
+import javax.swing.JComboBox
 import javax.swing.JDialog
 import javax.swing.JFrame
 import javax.swing.JLabel
+import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JTextField
 
 fun interface CredentialsInitDialogCallback {
-    fun done(credentials: Credentials?)
+    fun done(credentials: Credentials?, location: Location?)
 }
 
 sealed interface CredentialsMode {
@@ -42,6 +47,16 @@ sealed interface CredentialsMode {
     }
 }
 
+private object LocationRenderer : DefaultListCellRenderer() {
+    override fun getListCellRendererComponent(
+        list: JList<*>?, value: Any?, index: Int, isSelected: Boolean, cellHasFocus: Boolean
+    ): Component {
+        val label = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus) as JLabel
+        label.text = (value as Location).label
+        return label
+    }
+}
+
 class CredentialsInitDialog(
     private val mode: CredentialsMode,
     private val callback: CredentialsInitDialogCallback,
@@ -51,6 +66,10 @@ class CredentialsInitDialog(
     private val dialog = JDialog(null as JFrame?, "OneFit Authentication", true)
     private val txtEmail = JTextField(30)
     private val txtPassword = JTextField(30)
+    private val cmbLocation = JComboBox(Location.entries.toTypedArray()).apply {
+        renderer = LocationRenderer
+    }
+
     private val saveButton = JButton(
         when (mode) {
             is CredentialsMode.InitialSet -> "Save"
@@ -64,7 +83,8 @@ class CredentialsInitDialog(
             CredentialsInitDialog(
                 CredentialsMode.InitialSet
 //                CredentialsMode.Update("foo@bar.com")
-            ) {}.show()
+            ) { _, _ ->
+            }.show()
         }
     }
 
@@ -139,6 +159,17 @@ class CredentialsInitDialog(
         c.insets = Insets(0, 0, 2, 0)
         inputs.add(txtPassword, c)
 
+        if (mode == CredentialsMode.InitialSet) {
+            c.gridy++
+            c.gridx = 0
+            c.insets = Insets(0, 0, 2, 5)
+            inputs.add(JLabel("Location:"), c)
+
+            c.gridx++
+            c.insets = Insets(0, 0, 2, 0)
+            inputs.add(cmbLocation, c)
+        }
+
         return inputs
     }
 
@@ -150,8 +181,10 @@ class CredentialsInitDialog(
                     email = txtEmail.text,
                     clearTextPassword = txtPassword.text,
                 )
-            }
+            },
+            if (mode == CredentialsMode.InitialSet) {
+                cmbLocation.selectedItem as Location
+            } else null
         )
     }
-
 }

@@ -1,14 +1,15 @@
 package allfit.sync.domain
 
+import allfit.AppConstants
 import allfit.api.OnefitClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.models.WorkoutJson
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnersRepo
 import allfit.persistence.domain.ReservationsRepo
+import allfit.persistence.domain.SinglesRepo
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.Clock
-import allfit.service.ImageStorage
 import allfit.service.InsertWorkout
 import allfit.service.WorkoutInserter
 import allfit.service.toUtcLocalDateTime
@@ -24,30 +25,33 @@ class WorkoutsSyncerImpl(
     private val client: OnefitClient,
     private val workoutsRepo: WorkoutsRepo,
     private val partnersRepo: PartnersRepo,
-    private val imageStorage: ImageStorage,
     private val checkinsRepository: CheckinsRepository,
     private val reservationsRepo: ReservationsRepo,
     private val clock: Clock,
     private val workoutInserter: WorkoutInserter,
     private val syncListeners: SyncListenerManager,
+    private val singlesRepo: SinglesRepo,
 ) : WorkoutsSyncer {
 
     private val log = logger {}
-    private val syncDaysIntoFuture = 7
+    private val syncDaysIntoFuture = AppConstants.workoutsIntoFuture
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
         val workoutsToBeSyncedJson = getWorkoutsToBeSynced()
         workoutInserter.insert(
-            workoutsToBeSyncedJson.map { it.toInsertWorkout() },
-            syncListeners.toWorkoutInsertListener()
+            workoutsToBeSyncedJson.map { it.toInsertWorkout() }, syncListeners.toWorkoutInsertListener()
         )
         deleteOutdated()
     }
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
         val from = clock.todayBeginOfDay()
-        val rawClientWorkouts = client.getWorkouts(WorkoutSearchParams(from = from, plusDays = syncDaysIntoFuture))
+        val rawClientWorkouts = client.getWorkouts(
+            WorkoutSearchParams(
+                location = singlesRepo.selectLocation(), from = from, plusDays = syncDaysIntoFuture
+            )
+        )
         val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }
         if (rawClientWorkouts.size != distinctClientWorkouts.size) {
             log.warn { "Dropped ${rawClientWorkouts.size - distinctClientWorkouts.size} workouts because of duplicate IDs." }

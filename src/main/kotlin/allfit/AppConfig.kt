@@ -17,7 +17,7 @@ data class AppConfig(
         val develop = AppConfig(
             isDevMode = true,
             mockClient = true,
-            preSyncEnabled = false,
+            preSyncEnabled = true,
             syncEnabled = false,
             mockDb = false,
             mockDataStore = true,

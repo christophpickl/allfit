@@ -48,7 +48,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
         )
     }
     single { UiPreSyncer(get()) }
-    single { AllFitStarter(config.preSyncEnabled, get()) }
+    single { AllFitStarter(config.preSyncEnabled, get(), get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
     single<Prefs> { JavaPrefs("allfit" + (if (config.isDevMode) "-dev" else "")) }
     single<WorkoutInserter> { WorkoutInserterImpl(get(), get(), get()) }

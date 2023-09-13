@@ -14,7 +14,7 @@ object SyncSystemTestManual {
             println("Start ...")
             println()
 
-            val client = authenticateOneFit(CredentialsManager.load(), SystemClock)
+            val client = authenticateOneFit(CredentialsManager.load().other, SystemClock)
             val koin = startKoin {
                 modules(rootModule(AppConfig.prod, client))
             }.koin

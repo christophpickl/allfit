@@ -5,13 +5,17 @@ import allfit.presentation.tornadofx.setAllWidths
 import javafx.beans.value.ObservableValue
 import javafx.event.EventTarget
 import javafx.scene.image.Image
+import javafx.scene.layout.Background
 import tornadofx.imageview
 import tornadofx.pane
 
 private const val size = 200.0
 
-fun EventTarget.bigImage(image: ObservableValue<Image?>) {
+fun EventTarget.bigImage(image: ObservableValue<Image?>, background: Background? = null) {
     pane {
+        if (background != null) {
+            this.background = background
+        }
         setAllHeights(size)
         setAllWidths(size)
         imageview(image) {

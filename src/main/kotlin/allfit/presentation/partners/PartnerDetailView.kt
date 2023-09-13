@@ -22,6 +22,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
+import javafx.scene.layout.Background
 import javafx.scene.layout.Priority
 import tornadofx.View
 import tornadofx.action
@@ -65,7 +66,7 @@ class PartnerDetailView(
 
     override val root = vbox {
         hbox(spacing = 5.0) {
-            bigImage(model.selectedPartner.image)
+            bigImage(model.selectedPartner.image, background = Background.fill(Styles.colorImageBigBg))
 
             vbox {
                 label(model.selectedPartner.name) {

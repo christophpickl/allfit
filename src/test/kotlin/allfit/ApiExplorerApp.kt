@@ -15,7 +15,7 @@ class ApiExplorerApp(private val client: OnefitHttpClient) {
             runBlocking {
                 ApiExplorerApp(
                     authenticateOneFit(
-                        CredentialsManager.load(),
+                        CredentialsManager.load().other,
                         SystemClock
                     ) as OnefitHttpClient
                 ).playground()
