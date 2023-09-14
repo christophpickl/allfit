@@ -27,20 +27,31 @@ fun interface CredentialsInitDialogCallback {
 }
 
 sealed interface CredentialsMode {
+
     val infoText: String
+    val showLocation: Boolean
 
     fun setEmailTextOn(txtEmail: JTextField)
 
     data object InitialSet : CredentialsMode {
         override val infoText = "Enter your initial OneFit login credentials"
-
+        override val showLocation = true
         override fun setEmailTextOn(txtEmail: JTextField) {
             // do nothing
         }
     }
 
     class UpdateOnError(private val defaultEmail: String) : CredentialsMode {
+        override val showLocation = false
         override val infoText = "Authentication failed. Please update your credentials."
+        override fun setEmailTextOn(txtEmail: JTextField) {
+            txtEmail.text = defaultEmail
+        }
+    }
+
+    class UpdateManually(private val defaultEmail: String) : CredentialsMode {
+        override val showLocation = false
+        override val infoText = "Update your credentials."
         override fun setEmailTextOn(txtEmail: JTextField) {
             txtEmail.text = defaultEmail
         }
@@ -72,7 +83,9 @@ class CredentialsInitDialog(
 
     private val saveButton = JButton(
         when (mode) {
-            is CredentialsMode.InitialSet -> "Save"
+            is CredentialsMode.InitialSet,
+            is CredentialsMode.UpdateManually -> "Save"
+
             is CredentialsMode.UpdateOnError -> "Save and Exit"
         }
     )
@@ -159,7 +172,7 @@ class CredentialsInitDialog(
         c.insets = Insets(0, 0, 2, 0)
         inputs.add(txtPassword, c)
 
-        if (mode == CredentialsMode.InitialSet) {
+        if (mode.showLocation) {
             c.gridy++
             c.gridx = 0
             c.insets = Insets(0, 0, 2, 5)
@@ -182,7 +195,7 @@ class CredentialsInitDialog(
                     clearTextPassword = txtPassword.text,
                 )
             },
-            if (mode == CredentialsMode.InitialSet) {
+            if (mode.showLocation) {
                 cmbLocation.selectedItem as Location
             } else null
         )
