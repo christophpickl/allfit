@@ -10,6 +10,7 @@ import allfit.api.models.PartnersJsonRoot
 import allfit.api.models.partnerCategoryJson
 import allfit.api.models.partnerJson
 import allfit.persistence.domain.ExposedCategoriesRepo
+import allfit.persistence.domain.InMemorySinglesRepo
 import allfit.persistence.testInfra.DbListener
 import allfit.sync.domain.CategoriesSyncer
 import allfit.sync.domain.CategoriesSyncerImpl
@@ -59,6 +60,7 @@ class CompositeSyncerTest : StringSpec() {
             checkinsSyncer,
             SyncListenerManagerImpl(),
             jsonLogFileManager,
+            InMemorySinglesRepo(),
         )
     }
 

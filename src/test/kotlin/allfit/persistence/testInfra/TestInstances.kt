@@ -1,5 +1,6 @@
 package allfit.persistence.testInfra
 
+import allfit.domain.Location
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.CheckinType
@@ -14,6 +15,7 @@ import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.double
+import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.next
@@ -48,6 +50,7 @@ fun Arb.Companion.partnerEntity() = arbitrary {
         isWishlisted = boolean().next(),
         isHidden = boolean().next(),
         isFavorited = boolean().next(),
+        locationShortCode = enum<Location>().next().shortCode,
     )
 }
 

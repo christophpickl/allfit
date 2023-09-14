@@ -2,8 +2,10 @@ package allfit.sync.domain
 
 import allfit.api.models.PartnerJson
 import allfit.api.models.PartnersJsonRoot
+import allfit.domain.Location
 import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.SinglesRepo
 import allfit.service.ImageStorage
 import allfit.service.PartnerAndImageUrl
 import allfit.sync.core.SyncListenerManager
@@ -17,13 +19,15 @@ class PartnersSyncerImpl(
     private val partnersRepo: PartnersRepo,
     private val imageStorage: ImageStorage,
     private val listeners: SyncListenerManager,
+    private val singlesRepo: SinglesRepo,
 ) : PartnersSyncer {
     private val log = logger {}
 
     override suspend fun sync(partners: PartnersJsonRoot) {
         log.debug { "Syncing partners ..." }
+        val location = singlesRepo.selectLocation()
         val report = syncAny(partnersRepo, partners.data) {
-            it.toPartnerEntity()
+            it.toPartnerEntity(location)
         }
         listeners.onSyncDetail("Fetching ${report.toInsert.size} partner images.")
         imageStorage.savePartnerImages(report.toInsert.map {
@@ -32,7 +36,7 @@ class PartnersSyncerImpl(
     }
 }
 
-private fun PartnerJson.toPartnerEntity() = PartnerEntity(
+private fun PartnerJson.toPartnerEntity(location: Location) = PartnerEntity(
     id = id,
     primaryCategoryId = category.id,
     secondaryCategoryIds = categories.map { it.id }.distinct().minus(category.id), // OneFit sends corrupt data :-/
@@ -48,4 +52,5 @@ private fun PartnerJson.toPartnerEntity() = PartnerEntity(
     isFavorited = false,
     isHidden = false,
     isWishlisted = false,
+    locationShortCode = location.shortCode,
 )

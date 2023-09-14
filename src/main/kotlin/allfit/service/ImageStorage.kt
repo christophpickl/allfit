@@ -51,13 +51,6 @@ object DummyImageStorage : ImageStorage {
 class InMemoryImageStorage : ImageStorage {
     val savedPartnerImages = mutableListOf<PartnerAndImageUrl>()
     val partnerImagesToBeLoaded = mutableMapOf<Int, PartnerAndImageBytes>()
-    val savedWorkoutImages = mutableListOf<WorkoutAndImageUrl>()
-    val workoutImagesToBeLoaded = mutableMapOf<Int, WorkoutAndImagesBytes>()
-    val deletedWorkoutImages = mutableListOf<Int>()
-
-    fun addWorkoutImagesToBeLoaded(workout: WorkoutAndImagesBytes) {
-        workoutImagesToBeLoaded[workout.workoutId] = workout
-    }
 
     fun addPartnerImagesToBeLoaded(partner: PartnerAndImageBytes) {
         partnerImagesToBeLoaded[partner.partnerId] = partner
@@ -79,7 +72,6 @@ class InMemoryImageStorage : ImageStorage {
 
 class FileSystemImageStorage(
     private val partnersFolder: File,
-    private val workoutsFolder: File,
     private val syncListeners: SyncListenerManager,
 ) : ImageStorage {
 

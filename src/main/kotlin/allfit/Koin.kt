@@ -38,13 +38,12 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single<ImageStorage> {
         FileSystemImageStorage(
             partnersFolder = FileResolver.resolve(DirectoryEntry.ImagesPartners),
-            workoutsFolder = FileResolver.resolve(DirectoryEntry.ImagesWorkouts),
             syncListeners = get(),
         )
     }
     single {
         if (config.mockDataStore) InMemoryDataStorage(get()) else ExposedDataStorage(
-            get(), get(), get(), get(), get(), get(), get()
+            get(), get(), get(), get(), get(), get(), get(), get(),
         )
     }
     single { UiPreSyncer(get()) }

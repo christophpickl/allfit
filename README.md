@@ -8,9 +8,6 @@ https://christophpickl.github.io/allfit/
 
 ### Going Public
 
-* !!! location support:
-  * each partner needs to have location stored along with it (workouts are associated with partners, so that's ok)
-  * only display/filter (DataStorage) those which are same as Singles.location
 * pimp release script: macos zip, shadowjar zip => https://github.com/libgdx/packr
 
 ### High Prio

@@ -5,12 +5,14 @@ import allfit.api.OnefitClient
 import allfit.api.models.CheckinJson
 import allfit.api.models.PartnerWorkoutCheckinJson
 import allfit.api.models.WorkoutCheckinJson
+import allfit.domain.Location
 import allfit.persistence.domain.CategoriesRepo
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.CheckinType
 import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersRepo
+import allfit.persistence.domain.SinglesRepo
 import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.ImageStorage
@@ -29,6 +31,7 @@ class CheckinsSyncerImpl(
     private val partnersRepo: PartnersRepo,
     private val categoriesRepo: CategoriesRepo,
     private val imageStorage: ImageStorage,
+    private val singlesRepo: SinglesRepo,
 ) : CheckinsSyncer {
 
     private val log = logger {}
@@ -37,7 +40,7 @@ class CheckinsSyncerImpl(
         log.info { "Syncing checkins." }
         val toBeInserted = checkinsToBeInserted()
         log.debug { "Inserting ${toBeInserted.size} checkins." }
-        syncRequirements(toBeInserted)
+        syncRequirements(singlesRepo.selectLocation(), toBeInserted)
         checkinsRepo.insertAll(toBeInserted.map { it.toCheckinEntity() })
     }
 
@@ -49,9 +52,9 @@ class CheckinsSyncerImpl(
         }
     }
 
-    private fun syncRequirements(remoteCheckins: List<CheckinJson>) {
+    private fun syncRequirements(location: Location, remoteCheckins: List<CheckinJson>) {
         syncCategories(remoteCheckins)
-        syncPartners(remoteCheckins)
+        syncPartners(location, remoteCheckins)
         syncWorkouts(remoteCheckins)
     }
 
@@ -66,14 +69,14 @@ class CheckinsSyncerImpl(
         })
     }
 
-    private fun syncPartners(remoteCheckins: List<CheckinJson>) {
+    private fun syncPartners(location: Location, remoteCheckins: List<CheckinJson>) {
         val localPartnerIds = partnersRepo.selectAll().map { it.id }
         val toBeInserted = remoteCheckins.filter {
             !localPartnerIds.contains(it.typeSafePartner.id)
         }
         log.debug { "Inserting ${toBeInserted.size} missing partners for checkins." }
         partnersRepo.insertAll(toBeInserted.map {
-            it.typeSafePartner.toPartnerEntity()
+            it.typeSafePartner.toPartnerEntity(location)
         })
         imageStorage.saveDefaultImageForPartner(toBeInserted.map { it.typeSafePartner.id })
     }
@@ -93,7 +96,7 @@ class CheckinsSyncerImpl(
     }
 }
 
-private fun PartnerWorkoutCheckinJson.toPartnerEntity() = PartnerEntity(
+private fun PartnerWorkoutCheckinJson.toPartnerEntity(location: Location) = PartnerEntity(
     id = id,
     primaryCategoryId = category.id,
     secondaryCategoryIds = emptyList(), // when getting partner via checkin, no secondary groups are available
@@ -107,7 +110,8 @@ private fun PartnerWorkoutCheckinJson.toPartnerEntity() = PartnerEntity(
     isDeleted = false,
     isFavorited = false,
     isWishlisted = false,
-    isHidden = false
+    isHidden = false,
+    locationShortCode = location.shortCode,
 )
 
 private fun WorkoutCheckinJson.toWorkoutEntity() = WorkoutEntity(

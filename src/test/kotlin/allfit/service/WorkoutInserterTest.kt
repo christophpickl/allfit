@@ -46,10 +46,6 @@ class WorkoutInserterTest : StringSpec() {
             workoutsRepo.workouts.values.shouldBeSingleton().first().also { entity ->
                 entity.id shouldBe insertData.id
             }
-            imageStorage.savedWorkoutImages.shouldBeSingleton().first().also { given ->
-                given.workoutId shouldBe workoutUrl.workoutId
-                given.imageUrl shouldBe "imageUrl"
-            }
         }
     }
 }

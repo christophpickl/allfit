@@ -12,6 +12,7 @@ import allfit.persistence.domain.CheckinType
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryCheckinsRepository
 import allfit.persistence.domain.InMemoryPartnersRepo
+import allfit.persistence.domain.InMemorySinglesRepo
 import allfit.persistence.domain.InMemoryWorkoutsRepo
 import allfit.persistence.testInfra.categoryEntity
 import allfit.persistence.testInfra.checkinEntityWorkout
@@ -21,7 +22,6 @@ import allfit.persistence.testInfra.singletonShouldBe
 import allfit.persistence.testInfra.workoutEntity
 import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
-import allfit.service.WorkoutAndImageUrl
 import allfit.service.toUtcLocalDateTime
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
@@ -51,7 +51,15 @@ class CheckinsSyncerTest : StringSpec() {
         partnersRepo = InMemoryPartnersRepo()
         categoriesRepo = InMemoryCategoriesRepo()
         imageStorage = InMemoryImageStorage()
-        syncer = CheckinsSyncerImpl(client, checkinsRepo, workoutsRepo, partnersRepo, categoriesRepo, imageStorage)
+        syncer = CheckinsSyncerImpl(
+            client,
+            checkinsRepo,
+            workoutsRepo,
+            partnersRepo,
+            categoriesRepo,
+            imageStorage,
+            InMemorySinglesRepo()
+        )
     }
 
     init {
@@ -70,11 +78,6 @@ class CheckinsSyncerTest : StringSpec() {
             imageStorage.savedPartnerImages.shouldBeSingleton().first() shouldBe PartnerAndImageUrl(
                 checkinJsonWorkout.workout!!.partner.id,
                 checkinJsonWorkout.workout!!.partner.id.toString()
-            )
-            imageStorage.savedWorkoutImages.shouldBeSingleton()
-                .first() shouldBe WorkoutAndImageUrl(
-                checkinJsonWorkout.workout!!.id,
-                checkinJsonWorkout.workout!!.id.toString()
             )
         }
         "Given workout-checkin When sync Then insert partner" {

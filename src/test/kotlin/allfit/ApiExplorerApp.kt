@@ -3,6 +3,7 @@ package allfit
 import allfit.api.OnefitHttpClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.authenticateOneFit
+import allfit.domain.Location
 import allfit.service.SystemClock
 import allfit.service.credentials.CredentialsManager
 import io.kotest.common.runBlocking
@@ -30,7 +31,8 @@ class ApiExplorerApp(private val client: OnefitHttpClient) {
         val workouts = client.getWorkouts(
             WorkoutSearchParams(
                 from = SystemClock.todayBeginOfDay(),//.plusDays(7),
-                plusDays = 14
+                plusDays = 14,
+                location = Location.Amsterdam,
             )
         )
         println("found ${workouts.size} workouts")

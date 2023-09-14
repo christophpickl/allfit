@@ -10,20 +10,19 @@ import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.InMemoryCheckinsRepository
 import allfit.persistence.domain.InMemoryPartnersRepo
 import allfit.persistence.domain.InMemoryReservationsRepo
+import allfit.persistence.domain.InMemorySinglesRepo
 import allfit.persistence.domain.InMemoryWorkoutsRepo
 import allfit.persistence.testInfra.checkinEntityWorkout
 import allfit.persistence.testInfra.partnerEntity
 import allfit.persistence.testInfra.reservationEntity
 import allfit.persistence.testInfra.singletonShouldBe
 import allfit.persistence.testInfra.workoutEntity
-import allfit.service.InMemoryImageStorage
 import allfit.service.InMemoryWorkoutInserter
 import allfit.service.InsertWorkout
 import allfit.service.toUtcLocalDateTime
 import allfit.sync.core.SyncListenerManagerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
-import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -43,17 +42,16 @@ class WorkoutsSyncerTest : StringSpec() {
     private lateinit var workoutFetcher: DummyWorkoutFetcher
     private lateinit var workoutsRepo: InMemoryWorkoutsRepo
     private lateinit var partnersRepo: InMemoryPartnersRepo
-    private lateinit var imageStorage: InMemoryImageStorage
     private lateinit var checkinsRepository: CheckinsRepository
     private lateinit var reservationsRepo: InMemoryReservationsRepo
     private lateinit var workoutInserter: InMemoryWorkoutInserter
+    private val singlesRepo = InMemorySinglesRepo()
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         workoutsRepo = InMemoryWorkoutsRepo()
         workoutFetcher = DummyWorkoutFetcher()
         partnersRepo = InMemoryPartnersRepo()
-        imageStorage = InMemoryImageStorage()
         checkinsRepository = InMemoryCheckinsRepository()
         reservationsRepo = InMemoryReservationsRepo()
         workoutInserter = InMemoryWorkoutInserter()
@@ -61,12 +59,12 @@ class WorkoutsSyncerTest : StringSpec() {
             client,
             workoutsRepo,
             partnersRepo,
-            imageStorage,
             checkinsRepository,
             reservationsRepo,
             clock,
             workoutInserter,
             SyncListenerManagerImpl(),
+            singlesRepo,
         )
     }
 
@@ -96,7 +94,6 @@ class WorkoutsSyncerTest : StringSpec() {
             syncer.sync()
 
             workoutsRepo.workouts.shouldBeEmpty()
-            imageStorage.savedPartnerImages.shouldBeEmpty()
         }
 
         "Given duplicate workouts Then filter them out" {
@@ -141,7 +138,6 @@ class WorkoutsSyncerTest : StringSpec() {
             syncer.sync()
 
             workoutsRepo.workouts.shouldBeEmpty()
-            imageStorage.deletedWorkoutImages.shouldBeSingleton().first() shouldBe visitedWorkout.id
         }
 
         "Given visited workout with checkin When sync Then keep it and image" {
@@ -152,7 +148,6 @@ class WorkoutsSyncerTest : StringSpec() {
             syncer.sync()
 
             workoutsRepo singletonShouldBe visitedWorkout
-            imageStorage.deletedWorkoutImages.shouldBeEmpty()
         }
     }
 

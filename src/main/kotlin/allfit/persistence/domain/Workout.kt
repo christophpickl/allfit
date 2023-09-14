@@ -1,9 +1,11 @@
 package allfit.persistence.domain
 
+import allfit.domain.Location
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.time.LocalDateTime
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.JoinType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.jetbrains.exposed.sql.deleteWhere
@@ -42,12 +44,13 @@ data class WorkoutEntity(
 
 interface WorkoutsRepo {
     fun selectAll(): List<WorkoutEntity>
+    fun selectAllIds(): List<Int>
+    fun selectAllForLocation(location: Location): List<WorkoutEntity>
     fun selectAllStartingFrom(fromInclusive: LocalDateTime): List<WorkoutEntity>
     fun selectAllBefore(untilExclusive: LocalDateTime): List<WorkoutEntity>
     fun selectAllForIds(searchIds: List<Int>): List<WorkoutEntity>
     fun insertAll(workouts: List<WorkoutEntity>)
     fun deleteAll(workoutIds: List<Int>)
-    fun selectAllIds(): List<Int>
 }
 
 class InMemoryWorkoutsRepo : WorkoutsRepo {
@@ -55,8 +58,7 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
     private val log = logger {}
     val workouts = mutableMapOf<Int, WorkoutEntity>()
 
-    override fun selectAll(): List<WorkoutEntity> =
-        workouts.values.toList()
+    override fun selectAll(): List<WorkoutEntity> = workouts.values.toList()
 
     override fun selectAllStartingFrom(fromInclusive: LocalDateTime) =
         workouts.values.filter { it.start >= fromInclusive }
@@ -81,8 +83,9 @@ class InMemoryWorkoutsRepo : WorkoutsRepo {
         }
     }
 
-    override fun selectAllIds(): List<Int> =
-        workouts.keys.toList()
+    override fun selectAllIds(): List<Int> = workouts.keys.toList()
+
+    override fun selectAllForLocation(location: Location): List<WorkoutEntity> = selectAll()
 
     override fun selectAllForIds(searchIds: List<Int>): List<WorkoutEntity> =
         workouts.values.filter { searchIds.contains(it.id) }
@@ -96,6 +99,14 @@ object ExposedWorkoutsRepo : WorkoutsRepo {
     override fun selectAll() = transaction {
         WorkoutsTable.selectAll().map { it.toWorkoutEntity() }.also {
             log.debug { "Selecting all returns ${it.size} workouts." }
+        }
+    }
+
+    override fun selectAllForLocation(location: Location): List<WorkoutEntity> = transaction {
+        WorkoutsTable.join(
+            PartnersTable, JoinType.LEFT, onColumn = WorkoutsTable.partnerId, otherColumn = PartnersTable.id
+        ).select { PartnersTable.locationShortCode eq location.shortCode }.map { it.toWorkoutEntity() }.also {
+            log.debug { "Selecting for ${location.label} returns ${it.size} workouts." }
         }
     }
 

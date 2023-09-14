@@ -44,5 +44,4 @@ enum class DirectoryEntry(val directoryName: String) {
     JsonLogs("json_logs"),
     ApplicationLogs("app_logs"),
     ImagesPartners("images/partners"),
-    ImagesWorkouts("images/workouts"),
 }

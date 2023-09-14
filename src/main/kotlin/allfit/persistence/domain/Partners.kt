@@ -20,6 +20,7 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val slug = varchar("SLUG", 256)
     val description = text("DESCRIPTION")
     val note = text("NOTE") // custom
+    val locationShortCode = varchar("LOCATION", 3)
     val imageUrl = varchar("IMAGE_URL", 256).nullable()
     val facilities = text("FACILITIES") // comma separated list
     val isDeleted = bool("IS_DELETED") // custom
@@ -57,6 +58,7 @@ data class PartnerEntity(
     override val isFavorited: Boolean,
     override val isWishlisted: Boolean,
     val isHidden: Boolean,
+    val locationShortCode: String,
 ) : BaseEntity, PartnerCustomAttributesRead
 
 interface PartnersRepo : BaseRepo<PartnerEntity> {
@@ -156,6 +158,7 @@ object ExposedPartnersRepo : PartnersRepo {
                     it[slug] = partner.slug
                     it[description] = partner.description
                     it[note] = partner.note
+                    it[locationShortCode] = partner.locationShortCode
                     it[rating] = partner.rating
                     it[facilities] = partner.facilities
                     it[imageUrl] = partner.imageUrl
@@ -248,6 +251,7 @@ private fun ResultRow.toPartnerEntity(primaryCategoryId: Int, secondaryCategoryI
     isFavorited = this[PartnersTable.isFavorited],
     isHidden = this[PartnersTable.isHidden],
     isWishlisted = this[PartnersTable.isWishlisted],
+    locationShortCode = this[PartnersTable.locationShortCode],
 )
 
 private fun ResultRow.toPartnerCategoryEntity() = PartnerCategoryEntity(

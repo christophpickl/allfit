@@ -1,5 +1,6 @@
 package allfit.presentation.models
 
+import allfit.domain.Location
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.search.HasCheckins
@@ -71,6 +72,8 @@ interface Partner : PartnerCustomAttributesWrite, HasRating, HasCheckins {
 
     var hiddenImage: Image
     fun hiddenImageProperty(): ObjectProperty<Image>
+
+    val location: Location
 }
 
 class SimplePartner(
@@ -88,6 +91,7 @@ class SimplePartner(
     isHidden: Boolean,
     image: Image,
     hiddenImage: Image,
+    override val location: Location,
 ) : Partner {
 
     override var id: Int by property(id)
@@ -187,6 +191,7 @@ data class FullPartner(
                 isHidden = false,
                 hiddenImage = NOT_HIDDEN_IMAGE,
                 image = Images.prototype,
+                location = Location.Amsterdam, // doesn't matter which one
             ),
             pastCheckins = emptyList(),
             upcomingWorkouts = emptyList()

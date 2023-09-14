@@ -9,6 +9,7 @@ import allfit.api.models.partnerSubCategoryJson
 import allfit.persistence.domain.InMemoryCategoriesRepo
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.InMemoryPartnersRepo
+import allfit.persistence.domain.InMemorySinglesRepo
 import allfit.persistence.domain.PartnerEntity
 import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
@@ -34,6 +35,7 @@ class PartnersSyncerTest : StringSpec() {
     private lateinit var partnersRepo: InMemoryPartnersRepo
     private lateinit var locationsRepo: InMemoryLocationsRepo
     private lateinit var listeners: SyncListenerManager
+    private val singlesRepo = InMemorySinglesRepo()
 
     override suspend fun beforeEach(testCase: TestCase) {
         imageStorage = InMemoryImageStorage()
@@ -41,7 +43,7 @@ class PartnersSyncerTest : StringSpec() {
         partnersRepo = InMemoryPartnersRepo()
         locationsRepo = InMemoryLocationsRepo()
         listeners = SyncListenerManagerImpl()
-        syncer = PartnersSyncerImpl(partnersRepo, imageStorage, listeners)
+        syncer = PartnersSyncerImpl(partnersRepo, imageStorage, listeners, singlesRepo)
     }
 
     init {
@@ -63,6 +65,7 @@ class PartnersSyncerTest : StringSpec() {
                 isFavorited = false,
                 isWishlisted = false,
                 isHidden = false,
+                locationShortCode = singlesRepo.selectLocation().shortCode
             )
         }
         "When sync partner with duplicate secondary categories Then insert only one" {

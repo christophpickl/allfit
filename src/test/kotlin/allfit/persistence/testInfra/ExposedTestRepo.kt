@@ -1,5 +1,6 @@
 package allfit.persistence.testInfra
 
+import allfit.domain.Location
 import allfit.persistence.domain.CategoriesTable
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.CheckinEntity
@@ -39,6 +40,7 @@ object ExposedTestRepo {
     }
 
     fun insertCategoryAndPartner(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
     ): Pair<CategoryEntity, PartnerEntity> {
@@ -46,7 +48,9 @@ object ExposedTestRepo {
         val partner = Arb.partnerEntity().next().let(withPartner).copy(
             primaryCategoryId = category.id,
             secondaryCategoryIds = emptyList(),
-        )
+        ).let {
+            if (location != null) it.copy(locationShortCode = location.shortCode) else it
+        }
         ExposedPartnersRepo.insertAll(listOf(partner))
         return Pair(category, partner)
     }
@@ -68,15 +72,15 @@ object ExposedTestRepo {
     }
 
     fun insertCategoryPartnerAndWorkout(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
         withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, w -> w },
     ): Triple<CategoryEntity, PartnerEntity, WorkoutEntity> {
-        val (category, partner) = insertCategoryAndPartner(withCategory, withPartner)
+        val (category, partner) = insertCategoryAndPartner(location, withCategory, withPartner)
 
         val workout = Arb.workoutEntity().next().let { withWorkout(category, partner, it) }.copy(
             partnerId = partner.id,
-//            start = LocalDateTime.now().plusDays(1)
         )
         ExposedWorkoutsRepo.insertAll(listOf(workout))
 
@@ -84,59 +88,66 @@ object ExposedTestRepo {
     }
 
     fun insertCategoryAndPartnerForWorkout(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
         withWorkout: (WorkoutEntity) -> WorkoutEntity = { it },
     ): WorkoutEntity {
-        val (_, partner) = insertCategoryAndPartner(withCategory, withPartner)
+        val (_, partner) = insertCategoryAndPartner(location, withCategory, withPartner)
 
         return Arb.workoutEntity().next().let(withWorkout).copy(partnerId = partner.id)
     }
 
     fun insertCategoryPartnerWorkoutAndWorkoutCheckin(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
         withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, x -> x },
     ): Quadrupel<CategoryEntity, PartnerEntity, WorkoutEntity, CheckinEntity> {
-        val (category, partner, workout) = insertCategoryPartnerAndWorkout(withCategory, withPartner, withWorkout)
+        val (category, partner, workout) = insertCategoryPartnerAndWorkout(
+            location,
+            withCategory,
+            withPartner,
+            withWorkout
+        )
         val checkin = Arb.checkinEntityWorkout().next().copy(partnerId = partner.id, workoutId = workout.id)
         ExposedCheckinsRepository.insertAll(listOf(checkin))
         return Quadrupel(category, partner, workout, checkin)
     }
 
     fun insertCategoryPartnerAndDropinCheckin(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
         withCheckin: (CheckinEntity) -> CheckinEntity = { it },
     ): Triple<CategoryEntity, PartnerEntity, CheckinEntity> {
-        val (category, partner) = insertCategoryAndPartner(withCategory, withPartner)
+        val (category, partner) = insertCategoryAndPartner(location, withCategory, withPartner)
         val checkin = Arb.checkinEntityDropin().next().copy(partnerId = partner.id).let(withCheckin)
         ExposedCheckinsRepository.insertAll(listOf(checkin))
         return Triple(category, partner, checkin)
     }
 
     fun insertCategoryPartnerAndWorkoutForReservation(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
         withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, w -> w },
         withReservation: (ReservationEntity) -> ReservationEntity = { it },
     ): ReservationEntity {
-        val (_, _, workout) = insertCategoryPartnerAndWorkout(withCategory, withPartner, withWorkout)
+        val (_, _, workout) = insertCategoryPartnerAndWorkout(location, withCategory, withPartner, withWorkout)
 
         return Arb.reservationEntity().next().let(withReservation).copy(workoutId = workout.id)
     }
 
     fun insertCategoryPartnerWorkoutAndReservation(
+        location: Location? = null,
         withCategory: (CategoryEntity) -> CategoryEntity = { it },
         withPartner: (PartnerEntity) -> PartnerEntity = { it },
         withWorkout: (CategoryEntity, PartnerEntity, WorkoutEntity) -> WorkoutEntity = { _, _, w -> w },
         withReservation: (ReservationEntity) -> ReservationEntity = { it },
     ): ReservationEntity {
         val reservation = insertCategoryPartnerAndWorkoutForReservation(
-            withCategory,
-            withPartner,
-            withWorkout,
-            withReservation
+            location, withCategory, withPartner, withWorkout, withReservation
         )
         ExposedReservationsRepo.insertAll(listOf(reservation))
         return reservation

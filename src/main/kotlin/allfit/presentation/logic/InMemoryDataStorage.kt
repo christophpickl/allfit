@@ -1,6 +1,7 @@
 package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
+import allfit.domain.Location
 import allfit.presentation.PartnerModifications
 import allfit.presentation.PresentationConstants
 import allfit.presentation.models.Checkin
@@ -146,6 +147,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             note = "This URL actually works.",
             description = "Super intense nice <b>workout</b> with HTML.",
             facilities = "",
+            location = Location.Amsterdam,
         ),
         pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutEms),
@@ -166,6 +168,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             note = "my custom note",
             description = "Esoteric stuff.",
             facilities = "Mats",
+            location = Location.Amsterdam,
         ),
         pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot, workoutYogaCold)
@@ -189,6 +192,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             note = "",
             description = "Train your body.",
             facilities = "Shower,Locker",
+            location = Location.Amsterdam,
         ),
         listOf(
             Checkin.DropinCheckin(defaultDateTime.minusDays(7)),
@@ -212,6 +216,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             note = "This is weird.",
             description = "Haha.",
             facilities = "",
+            location = Location.Amsterdam,
         ),
         pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutJump)

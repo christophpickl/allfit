@@ -1,6 +1,7 @@
 package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
+import allfit.domain.Location
 import allfit.persistence.domain.CategoriesRepo
 import allfit.persistence.domain.CheckinEntity
 import allfit.persistence.domain.CheckinType
@@ -8,6 +9,7 @@ import allfit.persistence.domain.CheckinsRepository
 import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersRepo
 import allfit.persistence.domain.ReservationsRepo
+import allfit.persistence.domain.SinglesRepo
 import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.presentation.PartnerModifications
@@ -48,11 +50,12 @@ class ExposedDataStorage(
     private val workoutsRepo: WorkoutsRepo,
     private val imageStorage: ImageStorage,
     private val clock: Clock,
+    private val singlesRepo: SinglesRepo,
 ) : DataStorage {
 
     private val log = logger {}
 
-    private val simplePartners by lazy {
+    private val allSimplePartners by lazy {
         val categoriesById = categoriesRepo.selectAll().associateBy { it.id }
         val partnerEntities = partnersRepo.selectAll()
         val partnerImagesByPartnerId = imageStorage.loadPartnerImages(partnerEntities.map { it.id })
@@ -75,10 +78,10 @@ class ExposedDataStorage(
         }
     }
 
-    private val simpleWorkouts by lazy {
+    private val locationizedSimpleWorkouts by lazy {
         val workoutsWithReservation = reservationsRepo.selectAll().map { it.workoutId }.toSet()
         val workoutsWithCheckins = checkins.mapNotNull { it.workoutId }.toSet()
-        val storedWorkouts = workoutsRepo.selectAll()
+        val storedWorkouts = workoutsRepo.selectAllForLocation(singlesRepo.selectLocation())
         storedWorkouts.map { workoutEntity ->
             try {
                 workoutEntity.toSimpleWorkout(
@@ -92,22 +95,22 @@ class ExposedDataStorage(
         }
     }
 
-    private val simplePartnersById by lazy {
-        simplePartners.associateBy { it.id }
+    private val allSimplePartnersById by lazy {
+        allSimplePartners.associateBy { it.id }
     }
 
     private val fullWorkoutsVisitedOrUpcomingOrDropins by lazy {
         val now = clock.now().beginOfDay()
-        simpleWorkouts
+        locationizedSimpleWorkouts
             .filter { it.wasVisited || it.date.start >= now }
             .map { simpleWorkout ->
                 FullWorkout(
                     simpleWorkout = simpleWorkout,
-                    partner = simplePartnersById[simpleWorkout.partnerId]!!
+                    partner = allSimplePartnersById[simpleWorkout.partnerId]!!
                 )
             } +
                 dropinCheckins.map { checkin ->
-                    val partner = simplePartnersById[checkin.partnerId]!!
+                    val partner = allSimplePartnersById[checkin.partnerId]!!
                     FullWorkout(
                         simpleWorkout = checkin.fromDropinToSimpleWorkout(partner.url),
                         partner = partner
@@ -119,19 +122,19 @@ class ExposedDataStorage(
         fullWorkoutsVisitedOrUpcomingOrDropins.associateBy { it.id }
     }
 
-    private val fullPartners by lazy {
+    private val allFullPartners by lazy {
         val now = clock.now()
-        simplePartners.map { simplePartner ->
+        allSimplePartners.map { simplePartner ->
             FullPartner(
                 simplePartner = simplePartner,
                 pastCheckins = (
-                        simpleWorkouts.filter { it.isPastCheckinFor(simplePartner.id, now) }
+                        locationizedSimpleWorkouts.filter { it.isPastCheckinFor(simplePartner.id, now) }
                             .map { Checkin.WorkoutCheckin(it) } +
                                 dropinCheckins.filter { it.partnerId == simplePartner.id }
                                     .map { Checkin.DropinCheckin(it.createdAt.fromUtcToAmsterdamZonedDateTime()) }
                         )
                     .sortedBy { it.date },
-                upcomingWorkouts = simpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now }
+                upcomingWorkouts = locationizedSimpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now }
                     .sortedBy { it.date },
             )
         }
@@ -141,7 +144,12 @@ class ExposedDataStorage(
         this.partnerId == partnerId && date.start <= now && visitedWorkoutIds.contains(id)
 
     private val fullPartnersById by lazy {
-        fullPartners.associateBy { it.id }
+        allFullPartners.associateBy { it.id }
+    }
+
+    private val localizedFullPartners by lazy {
+        val location = singlesRepo.selectLocation()
+        allFullPartners.filter { it.location == location }
     }
 
     private val checkins by lazy {
@@ -160,7 +168,7 @@ class ExposedDataStorage(
         categoriesRepo.selectAll().map { it.name }.distinct().sorted()
 
     override fun getPartners() =
-        fullPartners
+        localizedFullPartners
 
     override fun getWorkouts() =
         fullWorkoutsVisitedOrUpcomingOrDropins
@@ -232,6 +240,7 @@ private fun PartnerEntity.toSimplePartner(
     isWishlisted = isWishlisted,
     isHidden = isHidden,
     hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
+    location = Location.byShortCode(locationShortCode),
 )
 
 private fun WorkoutEntity.toSimpleWorkout(

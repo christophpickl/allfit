@@ -224,8 +224,13 @@
     </changeSet>
 
     <changeSet id="5" author="christophpickl" failOnError="true">
-        <comment>add SINGLES.location column</comment>
+        <comment>add location</comment>
         <addColumn tableName="SINGLES">
+            <column name="LOCATION" type="char(3)" defaultValue="AMS">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="PARTNERS">
             <column name="LOCATION" type="char(3)" defaultValue="AMS">
                 <constraints nullable="false"/>
             </column>
