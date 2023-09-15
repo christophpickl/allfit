@@ -8,6 +8,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import java.io.IOException
 import java.nio.channels.UnresolvedAddressException
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -66,7 +67,7 @@ class WorkoutFetcherImpl : WorkoutFetcher {
         try {
             response = client.get(url.url)
         } catch (e: Exception) {
-            if (e is IOException || e is UnresolvedAddressException) {
+            if (e is IOException || e is UnresolvedAddressException || e is ClosedReceiveChannelException) {
                 log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
                 return fetchRetriable(url, attempt + 1)
             } else {

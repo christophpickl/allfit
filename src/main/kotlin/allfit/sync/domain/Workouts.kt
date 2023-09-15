@@ -38,38 +38,48 @@ class WorkoutsSyncerImpl(
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
-        val workoutsToBeSyncedJson = getWorkoutsToBeSynced()
         workoutInserter.insert(
-            workoutsToBeSyncedJson.map { it.toInsertWorkout() }, syncListeners.toWorkoutInsertListener()
+            workouts = getWorkoutsToBeSynced().map { it.toInsertWorkout() },
+            listener = syncListeners.toWorkoutInsertListener()
         )
         deleteOutdated()
     }
 
     private suspend fun getWorkoutsToBeSynced(): List<WorkoutJson> {
-        val from = clock.todayBeginOfDay()
-        val rawClientWorkouts = client.getWorkouts(
-            WorkoutSearchParams(
-                location = singlesRepo.selectLocation(), from = from, plusDays = syncDaysIntoFuture
-            )
-        )
-        val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }
-        if (rawClientWorkouts.size != distinctClientWorkouts.size) {
-            log.warn { "Dropped ${rawClientWorkouts.size - distinctClientWorkouts.size} workouts because of duplicate IDs." }
-        }
-        val nonExistingClientWorkoutIds = distinctClientWorkouts.map { it.id }.toMutableList()
-        val existingWorkoutIds = workoutsRepo.selectAllIds()
-        nonExistingClientWorkoutIds.removeAll(existingWorkoutIds)
-        val nonExistingClientWorkouts = distinctClientWorkouts.filter { nonExistingClientWorkoutIds.contains(it.id) }
+        val locallyNotExistingWorkouts = getLocallyNotExistingWorkouts()
 
         // remove all workouts without an existing partner (partner seems disabled, yet workout is being returned)
         val partnerIds = partnersRepo.selectAllIds()
-        return nonExistingClientWorkouts.filter { workout ->
+        return locallyNotExistingWorkouts.filter { workout ->
             val partnerForWorkoutExistsLocally = partnerIds.contains(workout.partner.id)
             if (!partnerForWorkoutExistsLocally) {
                 log.warn { "Dropping workout because partner is not known (set inactive by OneFit?!): $workout" }
             }
             partnerForWorkoutExistsLocally
         }
+    }
+
+    private suspend fun getLocallyNotExistingWorkouts(): List<WorkoutJson> {
+        val distinctRemoteWorkouts = getDistinctRemoteWorkouts()
+        val nonExistingRemoteWorkoutIds = distinctRemoteWorkouts.map { it.id }.toMutableList()
+        val existingWorkoutIds = workoutsRepo.selectAllIds()
+        nonExistingRemoteWorkoutIds.removeAll(existingWorkoutIds)
+        return distinctRemoteWorkouts.filter { nonExistingRemoteWorkoutIds.contains(it.id) }
+    }
+
+    private suspend fun getDistinctRemoteWorkouts(): List<WorkoutJson> {
+        val rawClientWorkouts = client.getWorkouts(
+            WorkoutSearchParams(
+                location = singlesRepo.selectLocation(),
+                from = clock.todayBeginOfDay(),
+                plusDays = syncDaysIntoFuture
+            )
+        )
+        val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }
+        if (rawClientWorkouts.size != distinctClientWorkouts.size) {
+            log.warn { "Dropped ${rawClientWorkouts.size - distinctClientWorkouts.size} workouts because of duplicate IDs." }
+        }
+        return distinctClientWorkouts
     }
 
     private fun deleteOutdated() {
