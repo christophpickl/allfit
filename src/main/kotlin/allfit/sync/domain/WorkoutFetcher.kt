@@ -55,7 +55,7 @@ class WorkoutFetcherImpl : WorkoutFetcher {
 
     private val log = logger {}
     private val client = HttpClient()
-    private val maxRetries = 6
+    private val maxRetries = 8
 
     override suspend fun fetch(url: WorkoutUrl): WorkoutFetch {
         log.debug { "Fetch workout data from: ${url.url}" }
@@ -68,7 +68,7 @@ class WorkoutFetcherImpl : WorkoutFetcher {
             response = client.get(url.url)
         } catch (e: Exception) {
             if (e is IOException || e is UnresolvedAddressException || e is ClosedReceiveChannelException) {
-                log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
+                log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1}/$maxRetries)" }
                 return fetchRetriable(url, attempt + 1)
             } else {
                 throw e
@@ -79,9 +79,9 @@ class WorkoutFetcherImpl : WorkoutFetcher {
             404 -> WorkoutFetch.empty(url.workoutId)
             500, 502, 520 -> {
                 if (attempt == maxRetries) {
-                    error("Invalid response after last attempt for URL: ${url.url}")
+                    error("Invalid response (${response.status.value}) after last attempt $maxRetries for URL: ${url.url}")
                 } else {
-                    log.warn { "Retrying after receiving ${response.status} to fetch URL: ${url.url} (attempt: ${attempt + 1})" }
+                    log.warn { "Retrying after receiving ${response.status} to fetch URL: ${url.url} (attempt: ${attempt + 1}/${maxRetries})" }
                     fetchRetriable(url, attempt + 1)
                 }
             }

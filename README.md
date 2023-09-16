@@ -1,88 +1,26 @@
 # AllFit
 
-A desktop client for OneFit with additional metadata (notes, personal rating, visibility...).
+A desktop client for **OneFit** which feels a bit like communism: _From the people for the people_.
 
-https://christophpickl.github.io/allfit/
+![AllFit Logo](https://raw.githubusercontent.com/christophpickl/allfit/main/docs/logo.png "AllFit")
 
-## ToDos
+This is a more detailed (technically) page; you might look for the [official landing page](https://christophpickl.github.io/allfit/).
 
-### Going Public
+## Features
 
-* pimp release script: macos zip, shadowjar zip => https://github.com/libgdx/packr
-
-### High Prio
-
-* BUG: when skip through date, period-indicator grows horizontally! but... there is a "specific unknown condition"!
-* include in available, how many workouts reserved in this period for this particular partner
-* define text search targets (partner/workout, title/description/notes, teacher, ...)
-* UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
-
-### Medium
-
-* somehow make partners with "open training" more visible
-* parse "bijzonderheden" (they are shown in the app, and sometimes important!)
-* instead table columns { reserved, visited, wishlisted, favorited }, merge to one single column with all necessary (max 2) icons
-* right click on address, context menu to copy to clipboard
-* STYLE: padding within htmlviews remove (especially left/right)
-* ad search views: instead checkbox, make "enable/disable slider a la iphone"
-* ad search views: when disabled, make everything transparent; when enabled, make it opaque
-* play sound when sync is done (or say something funny like "sync is done master")
-* add version number to app file manifest
-* luxury: auto release and auto upload (one-click website release)
-* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
-* sync available spots
-* reservation button
-* disable quitting during syncing (?)
-* tornadofx UI tests
-* use GitHub actions (to verify; maybe even release in the future?!)
-* display location on map
-
-### Low
-
-* render distance in km to my place (calculate via google during sync)
-* make application start-able also when there is no internet connection
-* PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days to all existing data)
-* make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k workouts, every 2 secs)
-* use ktor client retry plugin: https://ktor.io/docs/client-retry.html
-* disable closing app while still syncing. display info dialog.
-
-### Nope
-
-* ? disable workout meta fetching (move syncer all in pre-syncer!)
-* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
-* improve sync dialog: show report at the end: X foo inserted, Y bar deleted
-
-### Future
-
-* display more (all) pictures
-* model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation
-
-## Guides
-
-### Limit production data
-
-1. Connect directly to H2 DB and execute the following:
-
-```sql
-delete
-from WORKOUTS
-where START < '2023-05-26';
-
-delete
-from CHECKINS
-where WORKOUT_ID in (select WORKOUT_ID
-                     from WORKOUTS
-                     where START < '2023-05-26');
-
-delete
-from RESERVATIONS
-where WORKOUT_ID in (select WORKOUT_ID
-                     from WORKOUTS
-                     where START < '2023-05-26')
-```
-
-2. In the app-config, set the proper dummy date.
-
-### Resources
-
-* Layout help: https://docs.tornadofx.io/0_subsection/7_layouts_and_menus
+* Extremely **fast**, as all data is stored locally
+* Extensive **search** and filter capabilities
+  * Freetext
+  * Date and time (range)
+  * Number of checkins
+  * Rating
+  * Flags (wishlisted, favorited, reserved)
+* A **compact overview** enabling you to see what matters quickly
+  * A simple table with all workouts/partners
+  * See all workouts (past visited and future available) of a partner
+* Additional customizable **meta data**:
+  * Notes (useful if you can't remember what happened a week ago like me)
+  * Rating (which is not an average of all people's rating but your very own)
+  * Flag partners as favorites or wishlisted
+* **Hide** partners which are not for you (e.g.: women's only for a man or SUP)
+* A progress bar indicating your **usage** compared of how many days left in this **period**
