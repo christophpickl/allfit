@@ -13,7 +13,6 @@ import allfit.persistence.domain.ReservationEntity
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
 import allfit.persistence.testInfra.reservationEntity
-import allfit.service.InMemoryImageStorage
 import allfit.service.InMemoryWorkoutInserter
 import allfit.service.InsertWorkout
 import allfit.service.WorkoutInserterImpl
@@ -112,7 +111,7 @@ class ReservationsSyncerIntegrationTest : StringSpec() {
         client = InMemoryOnefitClient()
         workoutFetcher = InMemoryWorkoutFetcher()
         val workoutInserter = WorkoutInserterImpl(
-            ExposedWorkoutsRepo, workoutFetcher, InMemoryImageStorage()
+            ExposedWorkoutsRepo, workoutFetcher
         )
         syncer = ReservationsSyncerImpl(
             client, ExposedReservationsRepo, clock, workoutInserter, ExposedWorkoutsRepo, InMemorySyncListenerManager()

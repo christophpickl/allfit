@@ -8,18 +8,21 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import java.io.IOException
 import java.nio.channels.UnresolvedAddressException
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.delay
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
-interface WorkoutFetcher {
-    suspend fun fetch(url: WorkoutUrl): WorkoutFetch
+interface WorkoutMetadataFetcher {
+    suspend fun fetch(url: WorkoutUrl, listener: WorkoutMetadataFetchListener): WorkoutFetchMetadata
 }
 
-class DummyWorkoutFetcher : WorkoutFetcher {
-    var fetched = WorkoutFetch(42, "about", "specifics", "address", null, emptyList())
-    override suspend fun fetch(url: WorkoutUrl) = fetched.copy(workoutId = url.workoutId)
+class DummyWorkoutFetcher : WorkoutMetadataFetcher {
+    var fetched = WorkoutFetchMetadata(42, "about", "specifics", "address", null, emptyList())
+    override suspend fun fetch(url: WorkoutUrl, listener: WorkoutMetadataFetchListener) =
+        fetched.copy(workoutId = url.workoutId)
 }
 
 data class WorkoutUrl(
@@ -29,60 +32,77 @@ data class WorkoutUrl(
     val url = OnefitUtils.workoutUrl(workoutId, workoutSlug)
 }
 
-data class WorkoutFetch(
+data class WorkoutFetchMetadata(
     val workoutId: Int,
     override val about: String,
     override val specifics: String,
     override val address: String,
     override val teacher: String?,
     val imageUrls: List<String>, // add "?w=123" to define width
-) : WorkoutHtmlMetaData {
+) : WorkoutMetadata {
     companion object {
-        fun empty(workoutId: Int) = WorkoutFetch(
+        fun empty(workoutId: Int) = WorkoutFetchMetadata(
             workoutId = workoutId, about = "", specifics = "", address = "", imageUrls = emptyList(), teacher = null
         )
     }
 }
 
-interface WorkoutHtmlMetaData {
+interface WorkoutMetadata {
     val about: String
     val specifics: String
     val address: String
     val teacher: String?
 }
 
-class WorkoutFetcherImpl : WorkoutFetcher {
+interface WorkoutMetadataFetchListener {
+    fun failedFetching(message: String)
+}
+
+class HttpWorkoutMetadataFetcher : WorkoutMetadataFetcher {
 
     private val log = logger {}
     private val client = HttpClient()
-    private val maxRetries = 8
+    private val maxRetries = 10
+    private val pauseBetweenRetries = 500.milliseconds
 
-    override suspend fun fetch(url: WorkoutUrl): WorkoutFetch {
+    override suspend fun fetch(url: WorkoutUrl, listener: WorkoutMetadataFetchListener): WorkoutFetchMetadata {
         log.debug { "Fetch workout data from: ${url.url}" }
-        return fetchRetriable(url, 1)
+        return fetchRetriable(url, listener, 1)
     }
 
-    private suspend fun fetchRetriable(url: WorkoutUrl, attempt: Int): WorkoutFetch {
+    private suspend fun fetchRetriable(
+        url: WorkoutUrl,
+        listener: WorkoutMetadataFetchListener,
+        attempt: Int
+    ): WorkoutFetchMetadata {
         val response: HttpResponse
         try {
             response = client.get(url.url)
         } catch (e: Exception) {
             if (e is IOException || e is UnresolvedAddressException || e is ClosedReceiveChannelException) {
                 log.warn(e) { "Retrying to fetch URL: ${url.url} (attempt: ${attempt + 1}/$maxRetries)" }
-                return fetchRetriable(url, attempt + 1)
+                return fetchRetriable(url, listener, attempt + 1)
             } else {
                 throw e
             }
         }
         return when (response.status.value) {
             200 -> WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())
-            404 -> WorkoutFetch.empty(url.workoutId)
+            404 -> WorkoutFetchMetadata.empty(url.workoutId)
             500, 502, 520 -> {
                 if (attempt == maxRetries) {
-                    error("Invalid response (${response.status.value}) after last attempt $maxRetries for URL: ${url.url}")
+                    val errorMessage =
+                        "Invalid response (${response.status.value}) after last attempt $maxRetries for URL: ${url.url}"
+                    if (response.status.value == 500) {
+                        listener.failedFetching("No metadata could be fetched for workout at: ${url.url}")
+                        log.warn { errorMessage }
+                        log.warn { "Going to ignore it and return empty workout data instead." }
+                        WorkoutFetchMetadata.empty(url.workoutId)
+                    } else error(errorMessage)
                 } else {
                     log.warn { "Retrying after receiving ${response.status} to fetch URL: ${url.url} (attempt: ${attempt + 1}/${maxRetries})" }
-                    fetchRetriable(url, attempt + 1)
+                    delay(pauseBetweenRetries)
+                    fetchRetriable(url, listener, attempt + 1)
                 }
             }
 
@@ -92,9 +112,9 @@ class WorkoutFetcherImpl : WorkoutFetcher {
 }
 
 object WorkoutHtmlParser {
-    fun parse(workoutId: Int, html: String): WorkoutFetch {
+    fun parse(workoutId: Int, html: String): WorkoutFetchMetadata {
         val body = Jsoup.parse(html).body()
-        return WorkoutFetch(
+        return WorkoutFetchMetadata(
             workoutId = workoutId,
             about = parseAbout(body),
             specifics = parseSpecifics(body),

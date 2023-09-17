@@ -27,6 +27,7 @@ buildArtifactWithVersion $APP_VERSION
 packageDeployables
 git_tag_and_push
 
+open $TARGET_DIR
 echo ""
 echo "Success ✅"
 echo ""

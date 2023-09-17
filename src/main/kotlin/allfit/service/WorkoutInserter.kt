@@ -3,12 +3,14 @@ package allfit.service
 import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.sync.core.SyncListenerManager
-import allfit.sync.domain.WorkoutFetch
-import allfit.sync.domain.WorkoutFetcher
-import allfit.sync.domain.WorkoutHtmlMetaData
+import allfit.sync.domain.WorkoutFetchMetadata
+import allfit.sync.domain.WorkoutMetadata
+import allfit.sync.domain.WorkoutMetadataFetchListener
+import allfit.sync.domain.WorkoutMetadataFetcher
 import allfit.sync.domain.WorkoutUrl
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.time.ZonedDateTime
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
 data class InsertWorkout(
@@ -31,13 +33,12 @@ interface WorkoutInsertListener {
 // FIXME write test
 class WorkoutInserterImpl(
     private val workoutsRepo: WorkoutsRepo,
-    private val workoutFetcher: WorkoutFetcher,
-    private val imageStorage: ImageStorage,
+    private val workoutFetcher: WorkoutMetadataFetcher,
 ) : WorkoutInserter {
 
     private val log = logger {}
-
-    private val parallelFetchers = 6
+    private val numberOfParallelFetchers = 10
+    private val pauseBetweenEachFetch = 100.milliseconds
 
     override suspend fun insert(workouts: List<InsertWorkout>, listener: WorkoutInsertListener) {
         val metaFetchById = fetchMetaData(workouts, listener)
@@ -49,29 +50,33 @@ class WorkoutInserterImpl(
     private suspend fun fetchMetaData(
         workoutsToBeSyncedJson: List<InsertWorkout>,
         listener: WorkoutInsertListener
-    ): Map<Int, WorkoutFetch> {
+    ): Map<Int, WorkoutFetchMetadata> {
         log.debug { "Fetching metadata for ${workoutsToBeSyncedJson.size} workouts." }
         listener.onProgress("Fetching metadata for ${workoutsToBeSyncedJson.size} workouts.")
-        val metaFetchById = mutableMapOf<Int, WorkoutFetch>()
+        val metaFetchById = mutableMapOf<Int, WorkoutFetchMetadata>()
+        val fetchListener = listener.toWorkoutMetadataFetchListener()
         workoutsToBeSyncedJson.workParallel(
-            numberOfCoroutines = parallelFetchers,
+            numberOfCoroutines = numberOfParallelFetchers,
             percentageBroadcastIntervalInMs = 12_000,
             percentageProgressCallback = {
                 listener.onProgress("Fetched ${(it * 100).toInt()}% of workout metadata.")
             }) { workout ->
             metaFetchById[workout.id] = workoutFetcher.fetch(
-                WorkoutUrl(
-                    workoutId = workout.id,
-                    workoutSlug = workout.slug
-                )
+                WorkoutUrl(workoutId = workout.id, workoutSlug = workout.slug), fetchListener
             )
-            delay(30) // artificial delay to soothen possible cloudflare's DoS anger :)
+            delay(pauseBetweenEachFetch) // artificial delay to soothen possible cloudflare's DoS anger :)
         }
         return metaFetchById
     }
+
+    private fun WorkoutInsertListener.toWorkoutMetadataFetchListener() = object : WorkoutMetadataFetchListener {
+        override fun failedFetching(message: String) {
+            onProgress("⚠️ $message")
+        }
+    }
 }
 
-private fun InsertWorkout.toWorkoutEntity(htmlMetaData: WorkoutHtmlMetaData) = WorkoutEntity(
+private fun InsertWorkout.toWorkoutEntity(htmlMetaData: WorkoutMetadata) = WorkoutEntity(
     id = id,
     partnerId = partnerId,
     name = name,

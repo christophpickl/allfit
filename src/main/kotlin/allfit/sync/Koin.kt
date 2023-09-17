@@ -10,14 +10,14 @@ import allfit.sync.domain.CategoriesSyncer
 import allfit.sync.domain.CategoriesSyncerImpl
 import allfit.sync.domain.CheckinsSyncer
 import allfit.sync.domain.CheckinsSyncerImpl
+import allfit.sync.domain.HttpWorkoutMetadataFetcher
 import allfit.sync.domain.LocationsSyncer
 import allfit.sync.domain.LocationsSyncerImpl
 import allfit.sync.domain.PartnersSyncer
 import allfit.sync.domain.PartnersSyncerImpl
 import allfit.sync.domain.ReservationsSyncer
 import allfit.sync.domain.ReservationsSyncerImpl
-import allfit.sync.domain.WorkoutFetcher
-import allfit.sync.domain.WorkoutFetcherImpl
+import allfit.sync.domain.WorkoutMetadataFetcher
 import allfit.sync.domain.WorkoutsSyncer
 import allfit.sync.domain.WorkoutsSyncerImpl
 import allfit.sync.presync.ApiPreSyncer
@@ -46,5 +46,5 @@ fun syncModule(config: AppConfig) = module {
     single<PreSyncer> {
         ApiPreSyncer(get(), get(), get())
     }
-    single<WorkoutFetcher> { WorkoutFetcherImpl() }
+    single<WorkoutMetadataFetcher> { HttpWorkoutMetadataFetcher() }
 }

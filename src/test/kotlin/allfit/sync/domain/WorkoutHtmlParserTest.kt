@@ -12,7 +12,7 @@ class WorkoutHtmlParserTest : StringSpec() {
     init {
         "When parse HTML Then return relevant data" {
             val workout = parse(readHtmlResponse("workout.html"), workoutId)
-            workout shouldBe WorkoutFetch(
+            workout shouldBe WorkoutFetchMetadata(
                 workoutId = workoutId,
                 about = "about1<br>\n about2",
                 specifics = "specifics1 <br><a href=\"foo\">specifics2</a>",

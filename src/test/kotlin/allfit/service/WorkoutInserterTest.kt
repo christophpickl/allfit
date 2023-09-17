@@ -18,18 +18,15 @@ class WorkoutInserterTest : StringSpec() {
     private lateinit var listener: InMemoryWorkoutInsertListener
     private lateinit var workoutsRepo: InMemoryWorkoutsRepo
     private lateinit var workoutFetcher: InMemoryWorkoutFetcher
-    private lateinit var imageStorage: InMemoryImageStorage
     private lateinit var inserter: WorkoutInserter
 
     override suspend fun beforeEach(testCase: TestCase) {
         listener = InMemoryWorkoutInsertListener()
         workoutsRepo = InMemoryWorkoutsRepo()
         workoutFetcher = InMemoryWorkoutFetcher()
-        imageStorage = InMemoryImageStorage()
         inserter = WorkoutInserterImpl(
             workoutsRepo = workoutsRepo,
             workoutFetcher = workoutFetcher,
-            imageStorage = imageStorage,
         )
     }
 
@@ -56,6 +53,7 @@ fun InsertWorkout.toWorkoutUrl() = WorkoutUrl(
 )
 
 class InMemoryWorkoutInsertListener : WorkoutInsertListener {
+    @Suppress("MemberVisibilityCanBePrivate")
     val messages = mutableListOf<String>()
     override fun onProgress(message: String) {
         messages += message

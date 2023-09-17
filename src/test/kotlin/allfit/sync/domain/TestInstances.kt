@@ -9,7 +9,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.string
 
 fun Arb.Companion.workoutFetch() = arbitrary {
-    WorkoutFetch(
+    WorkoutFetchMetadata(
         workoutId = int().next(),
         about = string().next(),
         specifics = string().next(),

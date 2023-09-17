@@ -50,7 +50,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single { AllFitStarter(config.preSyncEnabled, get(), get()) }
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
     single<Prefs> { JavaPrefs("allfit" + (if (config.isDevMode) "-dev" else "")) }
-    single<WorkoutInserter> { WorkoutInserterImpl(get(), get(), get()) }
+    single<WorkoutInserter> { WorkoutInserterImpl(get(), get()) }
     single<VersionChecker> {
         if (config.mockClient) NoopVersionChecker else OnlineVersionChecker()
     }
