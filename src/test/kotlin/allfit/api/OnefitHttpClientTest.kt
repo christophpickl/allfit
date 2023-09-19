@@ -36,7 +36,6 @@ class OnefitHttpClientTest : DescribeSpec() {
                 categories shouldBe categoriesJsonRoot
             }
         }
-        // TODO write more tests for onefit http client
     }
 
     private inline fun <reified T> toContent(jsonResponse: T) =

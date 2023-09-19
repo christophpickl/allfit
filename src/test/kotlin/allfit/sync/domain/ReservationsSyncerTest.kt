@@ -135,7 +135,7 @@ class ReservationsSyncerIntegrationTest : StringSpec() {
             }
         }
 
-        // TODO "Given no workout and no partner Then insert both"
+        // "Given no workout and no partner Then insert both"
 
         "Given workout and reservation Then insert reservation for that workout" {
             val (_, _, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()

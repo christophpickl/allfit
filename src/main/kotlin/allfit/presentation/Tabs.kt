@@ -5,8 +5,6 @@ import javafx.scene.input.KeyEvent
 import tornadofx.Component
 import tornadofx.FXEvent
 
-// TODO this is good enough, yet the key listener could be even more global (e.g. when in textfield "stuck")
-
 fun Node.setOnTabShortcutListener(parent: Component) {
     setOnKeyTyped {
         it.checkForSelectTabShortcut()?.also { parent.fire(it) }

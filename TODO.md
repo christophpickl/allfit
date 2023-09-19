@@ -23,9 +23,14 @@
 * BUG: when skip through date, period-indicator grows horizontally! but... there is a "specific unknown condition"!
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
 * use GitHub actions (to verify; maybe even release in the future?!)
+* how to get bold font via CSS working?!
 
 ### Medium Prio
 
+* only show tooltip if width is > maxWidth and text is cut off
+* could catch exception in SyncController (custom dialog?!)
+* listen to shortcut for tab selection good enough, yet the key listener could be even more global (e.g. when in textfield "stuck")
+* TESTS: OneFitHttpClient, WorkoutInserterImpl, ReservationsSyncerIntegrationTest
 * presync all; except workout meta and partner images 2+
 * real time sync (?); while syncing, update DB and UI (no restart needed!)
 * support offline mode

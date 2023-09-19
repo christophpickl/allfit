@@ -56,7 +56,6 @@ class Styles : Stylesheet() {
             fontSize = 12.px
         }
         detailPrompt {
-            // TODO bold doesnt work?! fontWeight = FontWeight.EXTRA_BOLD
             textFill = Color.GRAY
         }
         s(linkInternal, linkExternal) {

@@ -108,7 +108,6 @@ private fun Pane.internalLabelDetail(
         label {
             valueParam.bindLabel(this)
             tooltip {
-                // TODO only show if width is > maxWidth and text is cut off
                 valueParam.bindTooltip(this)
             }
             textMaxWidth?.let {

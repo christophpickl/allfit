@@ -30,7 +30,6 @@ interface WorkoutInsertListener {
     fun onProgress(message: String)
 }
 
-// FIXME write test
 class WorkoutInserterImpl(
     private val workoutsRepo: WorkoutsRepo,
     private val workoutFetcher: WorkoutMetadataFetcher,

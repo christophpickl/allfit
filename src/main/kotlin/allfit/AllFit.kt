@@ -67,8 +67,6 @@ object AllFit {
         if (config.mockClient) {
             ClassPathOnefitClient
         } else {
-            // FIXME pass through a `data class LocationPassthrough<T>(val t: T, Location?)`, to AllFitStarter;
-            // FIXME PLUS!!! add DB table, that each partner has a LOCATION column (needs to be filtered by depending on pref in DB)
             authenticateOneFit(credentials, clock = SystemClock)
         }
 }

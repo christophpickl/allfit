@@ -22,7 +22,7 @@ class SyncController : Controller(), SyncListener {
             syncWindow.openWindow(modality = Modality.NONE)
             syncer.registerListener(this@SyncController)
             runAsync {
-                syncer.syncAll() // TODO catch exceptions?!
+                syncer.syncAll()
             }
         }
     }
