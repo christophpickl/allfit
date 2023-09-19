@@ -1,6 +1,5 @@
 package allfit.presentation.view
 
-import allfit.persistence.domain.ExposedReservationsRepo
 import allfit.presentation.Styles
 import allfit.presentation.components.ProgressIndicator
 import allfit.presentation.models.Usage
@@ -73,8 +72,6 @@ class UsageView : View() {
         }
         add(checkinsIndicator)
         add(periodIndicator)
-
-        ExposedReservationsRepo.selectAll()
 
         labelDetailMultibind("Reservations", model.usage.map { it.maxReservations }, model.reservations) {
             "${model.reservations.get()} / ${model.usage.get().maxReservations}"
