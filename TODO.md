@@ -8,6 +8,7 @@
 
 ### High Prio
 
+* change button label from "Open Website" to "Workout/Partner Website"
 * harden retry logic (use ktor-retry plugin)
 * instead table columns { reserved, visited, wishlisted, favorited }, merge to one single column with all necessary (max 2) icons
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
@@ -25,6 +26,9 @@
 
 ### Medium Prio
 
+* presync all; except workout meta and partner images 2+
+* real time sync (?); while syncing, update DB and UI (no restart needed!)
+* support offline mode
 * display location on map
 * tornadofx UI tests
 * ad search views: when disabled, make everything transparent; when enabled, make it opaque
