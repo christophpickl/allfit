@@ -16,18 +16,20 @@ git_tag_and_push () {
   echo "Incrementing and tagging version number via GIT ..."
   echo $APP_VERSION > $VERSION_FILE
   git add .
+  TAG_NAME="v${APP_VERSION}"
   git commit -m "Increment version number to $APP_VERSION"
-  git tag -a $APP_VERSION -m "Tag new release version $APP_VERSION"
+  git tag -a $TAG_NAME -m "Tag new release version $APP_VERSION"
   git push
-  git push origin $APP_VERSION
+  git push origin $TAG_NAME
 }
 
 git_status_verify
 buildArtifactWithVersion $APP_VERSION
 packageDeployables
+zip -r "${TARGET_LOCATION_APP}.zip" "$TARGET_LOCATION_APP"
 git_tag_and_push
 
-open $TARGET_DIR
+open "$TARGET_DIR"
 echo ""
 echo "Success ✅"
 echo ""
