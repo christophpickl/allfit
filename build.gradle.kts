@@ -26,14 +26,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.42.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.42.0")
     implementation("org.jetbrains.exposed:exposed-java-time:0.42.0")
-//    implementation("com.h2database:h2:2.2.220")
-    /*
-    java -jar /Applications/H2MigrationTool-1.3.6-all.jar \
-        --db-file /Users/christoph.pickl/.allfit-dev/database/h2.mv.db \
-        --version-from 2.1.214 --version-to 2.2.220 \
-        --user "" --password ""
-     */
-    implementation("com.h2database:h2:2.1.214")
+    implementation("com.h2database:h2:2.2.222")
     implementation("org.liquibase:liquibase-core:4.23.0")
     implementation("com.mattbertolini:liquibase-slf4j:5.0.0")
 
