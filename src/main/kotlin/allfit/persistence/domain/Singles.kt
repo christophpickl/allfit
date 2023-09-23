@@ -9,9 +9,18 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 
+private const val SYNC_DAYS_DEFAULT = 7
+
+data class PreferencesData(
+    val location: Location,
+    val syncDays: Int,
+)
+
 interface SinglesRepo {
     fun selectNotes(): String
     fun updateNotes(notes: String)
+    fun selectPreferencesData(): PreferencesData
+    fun updatePreferencesData(prefs: PreferencesData)
     fun selectLocation(): Location
     fun updateLocation(location: Location)
 }
@@ -19,6 +28,7 @@ interface SinglesRepo {
 object SinglesTable : Table("PUBLIC.SINGLES") {
     val notes = largeText("NOTES")
     val location = char("LOCATION", 3) // its shortcode
+    val syncDays = integer("SYNC_DAYS")
 }
 
 object ExposedSinglesRepo : SinglesRepo {
@@ -38,17 +48,27 @@ object ExposedSinglesRepo : SinglesRepo {
         }
     }
 
-    override fun selectLocation(): Location = transaction {
+    override fun selectPreferencesData() = transaction {
         ensureDefault()
-        Location.byShortCode(SinglesTable.selectSingleton()[SinglesTable.location])
+        val result = SinglesTable.selectSingleton()
+        PreferencesData(
+            location = Location.byShortCode(result[SinglesTable.location]),
+            syncDays = result[SinglesTable.syncDays],
+        )
     }
 
-    override fun updateLocation(location: Location): Unit = transaction {
-        log.debug { "updateLocation($location)" }
+    override fun updatePreferencesData(prefs: PreferencesData): Unit = transaction {
+        log.debug { "updatePreferencesData($prefs)" }
         ensureDefault()
         SinglesTable.update {
-            it[SinglesTable.location] = location.shortCode
+            it[location] = prefs.location.shortCode
+            it[syncDays] = prefs.syncDays
         }
+    }
+
+    override fun selectLocation() = selectPreferencesData().location
+    override fun updateLocation(location: Location) {
+        updatePreferencesData(selectPreferencesData().copy(location = location))
     }
 
     private fun ensureDefault() {
@@ -57,6 +77,7 @@ object ExposedSinglesRepo : SinglesRepo {
             SinglesTable.insert {
                 it[notes] = ""
                 it[location] = Location.DEFAULT.shortCode
+                it[syncDays] = SYNC_DAYS_DEFAULT
             }
         }
     }
@@ -64,17 +85,30 @@ object ExposedSinglesRepo : SinglesRepo {
 
 class InMemorySinglesRepo : SinglesRepo {
 
+    private val log = logger {}
     private var notes = ""
     private var location = Location.Amsterdam
+    private var syncDays = SYNC_DAYS_DEFAULT
 
     override fun selectNotes() = notes
 
     override fun updateNotes(notes: String) {
+        log.debug { "updateNotes(...)" }
         this.notes = notes
     }
 
-    override fun selectLocation() = location
+    override fun selectPreferencesData() = PreferencesData(
+        location = location, syncDays = syncDays,
 
+        )
+
+    override fun updatePreferencesData(prefs: PreferencesData) {
+        log.debug { "updatePreferencesData($prefs)" }
+        location = prefs.location
+        syncDays = prefs.syncDays
+    }
+
+    override fun selectLocation() = location
     override fun updateLocation(location: Location) {
         this.location = location
     }

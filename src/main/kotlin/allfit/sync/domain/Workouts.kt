@@ -1,6 +1,5 @@
 package allfit.sync.domain
 
-import allfit.AppConstants
 import allfit.api.OnefitClient
 import allfit.api.WorkoutSearchParams
 import allfit.api.models.WorkoutJson
@@ -34,7 +33,6 @@ class WorkoutsSyncerImpl(
 ) : WorkoutsSyncer {
 
     private val log = logger {}
-    private val syncDaysIntoFuture = AppConstants.workoutsIntoFuture
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
@@ -68,11 +66,12 @@ class WorkoutsSyncerImpl(
     }
 
     private suspend fun getDistinctRemoteWorkouts(): List<WorkoutJson> {
+        val prefsData = singlesRepo.selectPreferencesData()
         val rawClientWorkouts = client.getWorkouts(
             WorkoutSearchParams(
-                location = singlesRepo.selectLocation(),
+                location = prefsData.location,
                 from = clock.todayBeginOfDay(),
-                plusDays = syncDaysIntoFuture
+                plusDays = prefsData.syncDays
             )
         )
         val distinctClientWorkouts = rawClientWorkouts.distinctBy { it.id }

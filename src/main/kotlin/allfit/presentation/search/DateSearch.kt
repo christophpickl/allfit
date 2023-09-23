@@ -1,6 +1,5 @@
 package allfit.presentation.search
 
-import allfit.AppConstants
 import allfit.presentation.models.FullWorkout
 import allfit.service.Clock
 import allfit.service.formatDayDate
@@ -62,11 +61,12 @@ private sealed interface TimeOrAll {
 
 class DateSearchPane(
     private val clock: Clock,
+    private val syncDays: Int,
     checkSearch: () -> Unit,
 ) : SearchPane<FullWorkout>() {
 
-    private val dayStartsAt = 6
-    private val dayEndsAt = 22
+    private val dayStartsAtHour = 6
+    private val dayEndsAtHour = 22
 
     private var dateInput: ComboBox<ZonedDateTime> = buildDateCombobox(checkSearch)
     private var timeStartInput: ComboBox<TimeOrAll> by singleAssign()
@@ -133,13 +133,13 @@ class DateSearchPane(
         }
 
     private fun buildDays() =
-        clock.todayBeginOfDay().toDaysUntil(AppConstants.workoutsIntoFuture)
+        clock.todayBeginOfDay().toDaysUntil(syncDays)
 
     private fun buildTimes(): List<TimeOrAll> {
         val today = clock.now().truncatedTo(ChronoUnit.DAYS)
         return buildList {
             this += TimeOrAll.All
-            this += (dayStartsAt..dayEndsAt).map {
+            this += (dayStartsAtHour..dayEndsAtHour).map {
                 TimeOrAll.Time(today.withHour(it))
             }
         }

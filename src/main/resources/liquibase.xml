@@ -237,6 +237,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="6" author="christophpickl" failOnError="true">
+        <comment>add sync days</comment>
+        <addColumn tableName="SINGLES">
+            <column name="SYNC_DAYS" type="integer" defaultValue="7">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
     <!--
         <modifyDataType
             columnName="title"

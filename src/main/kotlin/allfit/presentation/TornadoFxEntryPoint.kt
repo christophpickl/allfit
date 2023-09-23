@@ -5,6 +5,7 @@ import allfit.presentation.logic.MainController
 import allfit.presentation.logic.PartnerUpdateController
 import allfit.presentation.logic.PrefsController
 import allfit.presentation.partners.PartnersController
+import allfit.presentation.preferences.PreferencesController
 import allfit.presentation.view.MainView
 import allfit.sync.view.SyncController
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
@@ -26,6 +27,7 @@ class TornadoFxEntryPoint : App(
         PartnersController::class,
         SyncController::class,
         NotesController::class,
+        PreferencesController::class,
     )
 
     init {

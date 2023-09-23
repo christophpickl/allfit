@@ -2,7 +2,9 @@
 
 ## Version 2
 
-* TBD
+* configurable (via preferences) the number of days to sync into the future
+
+AFTER: user experience session with: serieke, joey, sophia
 
 ## Backlog
 
@@ -10,6 +12,7 @@
 
 * change button label from "Open Website" to "Workout/Partner Website"
 * harden retry logic (use ktor-retry plugin)
+* URL of official website from partner
 * instead table columns { reserved, visited, wishlisted, favorited }, merge to one single column with all necessary (max 2) icons
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
 * UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
@@ -18,7 +21,6 @@
 * right click on address, context menu to copy to clipboard
 * add version number to app file manifest (macOS)
 * download more partner images (think of migration step)
-* in preferences, define number of days to sync into the future
 * improve progress tracking, when 100% force a message, don't just stay with 0% and then next step
 * BUG: when skip through date, period-indicator grows horizontally! but... there is a "specific unknown condition"!
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
@@ -27,6 +29,7 @@
 
 ### Medium Prio
 
+* link partners together (similar...)
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)
 * listen to shortcut for tab selection good enough, yet the key listener could be even more global (e.g. when in textfield "stuck")

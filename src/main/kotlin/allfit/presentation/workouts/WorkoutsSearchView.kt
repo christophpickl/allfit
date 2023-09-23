@@ -1,5 +1,6 @@
 package allfit.presentation.workouts
 
+import allfit.persistence.domain.SinglesRepo
 import allfit.presentation.WorkoutSearchFXEvent
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.search.CheckinSearchPane
@@ -29,12 +30,13 @@ private data object DefaultWorkoutSubSearchRequest : SubSearchRequest<FullWorkou
 class WorkoutsSearchView : SearchView<FullWorkout>(DefaultWorkoutSubSearchRequest) {
 
     private val clock: Clock by di()
+    private val singlesRepo: SinglesRepo by di()
 
     override val root = hbox(spacing = 30.0) {
         vbox(spacing = 5.0) {
             addIt(VisitedSearchPane(::checkSearch))
             addIt(TextSearchPane(::checkSearch))
-            addIt(DateSearchPane(clock, ::checkSearch))
+            addIt(DateSearchPane(clock, singlesRepo.selectPreferencesData().syncDays, ::checkSearch))
         }
         vbox(spacing = 5.0) {
             addIt(GroupSearchPane(::checkSearch))
