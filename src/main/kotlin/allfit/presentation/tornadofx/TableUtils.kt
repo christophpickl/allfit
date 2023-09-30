@@ -5,16 +5,20 @@ import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.models.Rating
 import allfit.presentation.renderStars
 import javafx.beans.value.ObservableValue
+import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.image.Image
+import kotlin.reflect.KProperty1
 import tornadofx.cellFormat
 import tornadofx.column
 import tornadofx.fixedWidth
+import tornadofx.hbox
 import tornadofx.imageview
 import tornadofx.label
+import tornadofx.readonlyColumn
 
 fun <T, S> TableView<S>.applyInitSort(column: TableColumn<S, T>) {
     column.isSortable = true
@@ -64,27 +68,46 @@ fun <S> TableView<S>.ratingColumn(
         }
 }
 
-fun <S> TableView<S>.favoriteColumn(
-    valueProvider: (TableColumn.CellDataFeatures<S, Boolean>) -> ObservableValue<Boolean>
+private fun <S> TableView<S>.iconColumn(
+    title: String,
+    valueProvider: (TableColumn.CellDataFeatures<S, Boolean>) -> ObservableValue<Boolean>,
+    iconTrue: StaticIcon,
+    iconFalse: StaticIcon,
 ) {
-    column("Favorite", valueProvider).fixedWidth(60)
-        .cellFormat { isFavorite ->
+    column(title, valueProvider).fixedWidth(60)
+        .cellFormat { isTrue ->
             graphic =
-                imageview(StaticIconStorage.get(if (isFavorite) StaticIcon.FavoriteFull else StaticIcon.FavoriteOutline)) {
+                imageview(StaticIconStorage.get(if (isTrue) iconTrue else iconFalse)) {
                     alignment = Pos.CENTER
                 }
         }
 }
 
-fun <S> TableView<S>.wishlistColumn(
-    valueProvider: (TableColumn.CellDataFeatures<S, Boolean>) -> ObservableValue<Boolean>
-) {
+fun <S> TableView<S>.favoriteColumn(valueProvider: (TableColumn.CellDataFeatures<S, Boolean>) -> ObservableValue<Boolean>) {
+    iconColumn("Favorite", valueProvider, StaticIcon.FavoriteFull, StaticIcon.FavoriteOutline)
+}
 
-    column<S, Boolean>("Wishlist", valueProvider).fixedWidth(60)
-        .cellFormat { isWishlisted ->
-            graphic =
-                imageview(StaticIconStorage.get(if (isWishlisted) StaticIcon.WishlistFull else StaticIcon.WishlistOutline)) {
-                    alignment = Pos.CENTER
+fun <S> TableView<S>.wishlistColumn(valueProvider: (TableColumn.CellDataFeatures<S, Boolean>) -> ObservableValue<Boolean>) {
+    iconColumn("Wishlist", valueProvider, StaticIcon.WishlistFull, StaticIcon.WishlistOutline)
+}
+
+interface Imageable {
+    val image: Image
+}
+
+inline fun <reified S, IMG : Imageable> TableView<S>.iconsColumn(
+    getter: KProperty1<S, ObservableList<IMG>>,
+    width: Int
+) {
+    readonlyColumn("Icons", getter)
+        .fixedWidth(width)
+        .cellFormat { icons: ObservableList<IMG> ->
+            graphic = hbox(spacing = 10.0) {
+                icons.map { icon ->
+                    imageview(icon.image) {
+                        alignment = Pos.CENTER_LEFT
+                    }
                 }
+            }
         }
 }

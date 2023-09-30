@@ -93,7 +93,7 @@ class PartnerDetailView(
                 }
                 hbox {
                     paddingTop = 5.0
-                    openWebsiteButton(model.selectedPartner.url)
+                    openWebsiteButton(model.selectedPartner.url, "Partner Website")
                 }
             }
             paddingBottom = 5.0

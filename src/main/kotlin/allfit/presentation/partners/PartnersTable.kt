@@ -29,7 +29,6 @@ import tornadofx.selectedItem
 import tornadofx.smartResize
 import tornadofx.weightedWidth
 
-
 class PartnersTable(
     usage: Usage,
     clock: Clock,

@@ -2,18 +2,16 @@
 
 ## Version 2
 
-* configurable (via preferences) the number of days to sync into the future
+* Days to synchronize future data made configurable via preferences.
+* UI improvement: Unified table icons (reserved, wishlisted, favorited, visited) into a single column.
 
-AFTER: user experience session with: serieke, joey, sophia
+AFTER: user experience session with: serieke, joey
 
 ## Backlog
 
 ### High Prio
 
-* change button label from "Open Website" to "Workout/Partner Website"
 * harden retry logic (use ktor-retry plugin)
-* URL of official website from partner
-* instead table columns { reserved, visited, wishlisted, favorited }, merge to one single column with all necessary (max 2) icons
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
 * UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
@@ -29,6 +27,8 @@ AFTER: user experience session with: serieke, joey, sophia
 
 ### Medium Prio
 
+* view replace transition: https://courses.bekwam.net/public_tutorials/bkcourse_tornadofx_replacewithapp.html
+* URL of official website from partner
 * link partners together (similar...)
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)

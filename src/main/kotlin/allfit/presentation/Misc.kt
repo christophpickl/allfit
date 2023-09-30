@@ -4,7 +4,9 @@ import allfit.persistence.domain.PartnerEntity
 import allfit.persistence.domain.PartnersTable
 import allfit.presentation.models.PartnerCustomAttributesWrite
 import allfit.presentation.models.Rating
+import javafx.beans.property.ObjectProperty
 import javafx.beans.value.ObservableValue
+import javafx.collections.ObservableList
 import javafx.event.EventTarget
 import javafx.scene.web.WebView
 import org.jetbrains.exposed.sql.statements.UpdateStatement
@@ -65,3 +67,32 @@ fun EventTarget.htmlview(html: ObservableValue<String>, op: WebView.() -> Unit =
         op()
     }
 
+fun ObjectProperty<Boolean>.addListenerAndInit(function: (Boolean) -> Unit) {
+    function(get())
+    addListener { _, _, newValue ->
+        function(newValue)
+    }
+}
+
+fun <E : Enum<E>> ObservableList<E>.addAtSortPosition(enum: E) {
+    add(calcIconIndex(iterator(), enum), enum)
+}
+
+private fun <E : Enum<E>> calcIconIndex(otherEnums: Iterator<E>, enum: E): Int {
+    var index = 0
+    while (otherEnums.hasNext()) {
+        val other = otherEnums.next()
+        if (enum.ordinal > other.ordinal) {
+            index++
+        } else {
+            break
+        }
+    }
+    return index
+}
+
+fun <E : Enum<E>> ObservableList<E>.manageEnum(property: ObjectProperty<Boolean>, icon: E) {
+    property.addListenerAndInit { value ->
+        if (value) addAtSortPosition(icon) else remove(icon)
+    }
+}

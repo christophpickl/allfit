@@ -61,7 +61,7 @@ class WorkoutDetailView(
                     link = workoutModel.selectedWorkout.map { googleMapsSearchUrl(it.address) }, isExternal = true
                 )
                 labelDetail("Teacher", workoutModel.selectedWorkout.map { it.teacher })
-                openWebsiteButton(workoutModel.selectedWorkout.map { it.url })
+                openWebsiteButton(workoutModel.selectedWorkout.map { it.url }, "Workout Website")
             }
             paddingBottom = 5.0
         }

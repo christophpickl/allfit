@@ -1,15 +1,22 @@
 package allfit.presentation.models
 
+import allfit.presentation.logic.StaticIcon
+import allfit.presentation.logic.StaticIconStorage
+import allfit.presentation.manageEnum
 import allfit.presentation.search.HasCheckins
 import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
 import allfit.presentation.search.IsFavoritable
 import allfit.presentation.search.IsWishlistable
+import allfit.presentation.tornadofx.Imageable
 import allfit.service.beginOfDay
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
 import javafx.beans.property.ObjectProperty
+import javafx.collections.ObservableList
+import javafx.scene.image.Image
 import tornadofx.getProperty
+import tornadofx.observableListOf
 import tornadofx.property
 
 interface Workout {
@@ -109,6 +116,15 @@ class SimpleWorkout(
     override fun hashCode() = id.hashCode()
 }
 
+enum class WorkoutTableIcon(override val image: Image) : Imageable {
+    // CAVE: order plays a (UI) role!
+    Favorite(StaticIconStorage.get(StaticIcon.FavoriteFull)),
+    Wishlist(StaticIconStorage.get(StaticIcon.WishlistFull)),
+    Reserved(StaticIconStorage.get(StaticIcon.Reserved)),
+    Visited(StaticIconStorage.get(StaticIcon.Visited)),
+}
+
+
 data class FullWorkout(
     val simpleWorkout: SimpleWorkout,
     val partner: SimplePartner,
@@ -121,6 +137,15 @@ data class FullWorkout(
     IsWishlistable by partner {
 
     override val searchableTerms = listOf(name, partner.name, teacher)
+
+    val icons: ObservableList<WorkoutTableIcon> = observableListOf()
+
+    init {
+        icons.manageEnum(partner.isFavoritedProperty(), WorkoutTableIcon.Favorite)
+        icons.manageEnum(partner.isWishlistedProperty(), WorkoutTableIcon.Wishlist)
+        icons.manageEnum(simpleWorkout.isReservedProperty(), WorkoutTableIcon.Reserved)
+        icons.manageEnum(simpleWorkout.wasVisitedProperty(), WorkoutTableIcon.Visited)
+    }
 
     companion object {
         val prototype = FullWorkout(

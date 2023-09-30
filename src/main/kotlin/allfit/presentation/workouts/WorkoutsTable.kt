@@ -7,10 +7,9 @@ import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.tornadofx.applyInitSort
-import allfit.presentation.tornadofx.favoriteColumn
+import allfit.presentation.tornadofx.iconsColumn
 import allfit.presentation.tornadofx.imageColumn
 import allfit.presentation.tornadofx.ratingColumn
-import allfit.presentation.tornadofx.wishlistColumn
 import allfit.service.Clock
 import javafx.scene.control.SelectionMode
 import javafx.scene.control.TableColumn
@@ -54,8 +53,7 @@ class WorkoutsTable(
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }.remainingWidth().weightedWidth(0.5)
         column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
         ratingColumn { it.value.partner.ratingProperty() }
-        favoriteColumn { it.value.partner.isFavoritedProperty() }
-        wishlistColumn { it.value.partner.isWishlistedProperty() }
+        iconsColumn(FullWorkout::icons, 120)
 
         contextmenu {
             item("Hide Partner").action {

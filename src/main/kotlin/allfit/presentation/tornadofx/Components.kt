@@ -156,8 +156,12 @@ fun Pane.labelPrompt(prompt: String, smallSize: Boolean = false) {
     }
 }
 
-fun EventTarget.openWebsiteButton(url: ObservableValue<String>, op: Button.() -> Unit = {}) {
-    button("Open Website") {
+fun EventTarget.openWebsiteButton(
+    url: ObservableValue<String>,
+    label: String = "Open Website",
+    op: Button.() -> Unit = {}
+) {
+    button(label) {
         tooltip {
             this@tooltip.textProperty().bind(url)
         }
