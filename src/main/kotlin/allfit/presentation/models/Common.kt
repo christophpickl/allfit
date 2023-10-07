@@ -30,3 +30,13 @@ data class DateRange(
         return end.compareTo(other.end)
     }
 }
+
+enum class Trilean {
+    Yes, No, Unknown;
+}
+
+fun Boolean?.toTrilean() = when (this) {
+    true -> Trilean.Yes
+    false -> Trilean.No
+    null -> Trilean.Unknown
+}

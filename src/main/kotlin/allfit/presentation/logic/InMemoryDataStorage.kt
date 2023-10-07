@@ -12,6 +12,7 @@ import allfit.presentation.models.HIDDEN_IMAGE
 import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.models.Trilean
 import allfit.service.Clock
 import allfit.service.InMemoryImageStorage
 import java.time.temporal.ChronoUnit
@@ -148,6 +149,8 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Super intense nice <b>workout</b> with HTML.",
             facilities = "",
             location = Location.Amsterdam,
+            hasDropins = Trilean.No,
+            hasWorkouts = Trilean.Yes,
         ),
         pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutEms),
@@ -169,6 +172,8 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Esoteric stuff.",
             facilities = "Mats",
             location = Location.Amsterdam,
+            hasDropins = Trilean.Unknown,
+            hasWorkouts = Trilean.Unknown,
         ),
         pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot, workoutYogaCold)
@@ -193,6 +198,8 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Train your body.",
             facilities = "Shower,Locker",
             location = Location.Amsterdam,
+            hasDropins = Trilean.Yes,
+            hasWorkouts = Trilean.No,
         ),
         listOf(
             Checkin.DropinCheckin(defaultDateTime.minusDays(7)),
@@ -217,6 +224,8 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             description = "Haha.",
             facilities = "",
             location = Location.Amsterdam,
+            hasDropins = Trilean.Yes,
+            hasWorkouts = Trilean.Yes,
         ),
         pastCheckins = emptyList(),
         upcomingWorkouts = listOf(workoutJump)

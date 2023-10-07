@@ -21,6 +21,7 @@ import allfit.presentation.models.HIDDEN_IMAGE
 import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.models.toTrilean
 import allfit.service.Clock
 import allfit.service.ImageStorage
 import allfit.service.beginOfDay
@@ -58,8 +59,8 @@ class ExposedDataStorage(
     private val allSimplePartners by lazy {
         val categoriesById = categoriesRepo.selectAll().associateBy { it.id }
         val partnerEntities = partnersRepo.selectAll()
-        val partnerImagesByPartnerId = imageStorage.loadPartnerImages(partnerEntities.map { it.id })
-            .associateBy { it.partnerId }
+        val partnerImagesByPartnerId =
+            imageStorage.loadPartnerImages(partnerEntities.map { it.id }).associateBy { it.partnerId }
 
         val checkinsByPartnerId = checkinsRepository.selectCountForPartners().associateBy { it.partnerId }
 
@@ -101,21 +102,16 @@ class ExposedDataStorage(
 
     private val fullWorkoutsVisitedOrUpcomingOrDropins by lazy {
         val now = clock.now().beginOfDay()
-        locationizedSimpleWorkouts
-            .filter { it.wasVisited || it.date.start >= now }
-            .map { simpleWorkout ->
-                FullWorkout(
-                    simpleWorkout = simpleWorkout,
-                    partner = allSimplePartnersById[simpleWorkout.partnerId]!!
-                )
-            } +
-                dropinCheckins.map { checkin ->
-                    val partner = allSimplePartnersById[checkin.partnerId]!!
-                    FullWorkout(
-                        simpleWorkout = checkin.fromDropinToSimpleWorkout(partner.url),
-                        partner = partner
-                    )
-                }
+        locationizedSimpleWorkouts.filter { it.wasVisited || it.date.start >= now }.map { simpleWorkout ->
+            FullWorkout(
+                simpleWorkout = simpleWorkout, partner = allSimplePartnersById[simpleWorkout.partnerId]!!
+            )
+        } + dropinCheckins.map { checkin ->
+            val partner = allSimplePartnersById[checkin.partnerId]!!
+            FullWorkout(
+                simpleWorkout = checkin.fromDropinToSimpleWorkout(partner.url), partner = partner
+            )
+        }
     }
 
     private val fullWorkoutsById by lazy {
@@ -127,13 +123,9 @@ class ExposedDataStorage(
         allSimplePartners.map { simplePartner ->
             FullPartner(
                 simplePartner = simplePartner,
-                pastCheckins = (
-                        locationizedSimpleWorkouts.filter { it.isPastCheckinFor(simplePartner.id, now) }
-                            .map { Checkin.WorkoutCheckin(it) } +
-                                dropinCheckins.filter { it.partnerId == simplePartner.id }
-                                    .map { Checkin.DropinCheckin(it.createdAt.fromUtcToAmsterdamZonedDateTime()) }
-                        )
-                    .sortedBy { it.date },
+                pastCheckins = (locationizedSimpleWorkouts.filter { it.isPastCheckinFor(simplePartner.id, now) }
+                    .map { Checkin.WorkoutCheckin(it) } + dropinCheckins.filter { it.partnerId == simplePartner.id }
+                    .map { Checkin.DropinCheckin(it.createdAt.fromUtcToAmsterdamZonedDateTime()) }).sortedBy { it.date },
                 upcomingWorkouts = locationizedSimpleWorkouts.filter { it.partnerId == simplePartner.id && it.date.start > now }
                     .sortedBy { it.date },
             )
@@ -164,14 +156,11 @@ class ExposedDataStorage(
         checkins.filter { it.type == CheckinType.DROP_IN }
     }
 
-    override fun getCategories() =
-        categoriesRepo.selectAll().map { it.name }.distinct().sorted()
+    override fun getCategories() = categoriesRepo.selectAll().map { it.name }.distinct().sorted()
 
-    override fun getPartners() =
-        localizedFullPartners
+    override fun getPartners() = localizedFullPartners
 
-    override fun getWorkouts() =
-        fullWorkoutsVisitedOrUpcomingOrDropins
+    override fun getWorkouts() = fullWorkoutsVisitedOrUpcomingOrDropins
 
     override fun getPartnerById(partnerId: Int): FullPartner =
         fullPartnersById[partnerId] ?: error("Could not find partner by ID: $partnerId")
@@ -241,6 +230,8 @@ private fun PartnerEntity.toSimplePartner(
     isHidden = isHidden,
     hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
     location = Location.byShortCode(locationShortCode),
+    hasWorkouts = hasWorkouts.toTrilean(),
+    hasDropins = hasDropins.toTrilean(),
 )
 
 private fun WorkoutEntity.toSimpleWorkout(

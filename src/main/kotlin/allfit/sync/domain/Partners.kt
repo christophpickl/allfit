@@ -45,6 +45,8 @@ private fun PartnerJson.toPartnerEntity(location: Location) = PartnerEntity(
     description = description,
     imageUrl = header_image?.orig,
     facilities = facilities.joinToString(","),
+    hasDropins = settlement_options.drop_in_enabled,
+    hasWorkouts = settlement_options.reservable_workouts,
     // custom fields:
     note = "",
     rating = 0,

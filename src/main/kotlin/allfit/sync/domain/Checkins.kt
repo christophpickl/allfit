@@ -70,15 +70,14 @@ class CheckinsSyncerImpl(
     }
 
     private fun syncPartners(location: Location, remoteCheckins: List<CheckinJson>) {
-        val localPartnerIds = partnersRepo.selectAll().map { it.id }
-        val toBeInserted = remoteCheckins.filter {
-            !localPartnerIds.contains(it.typeSafePartner.id)
-        }
-        log.debug { "Inserting ${toBeInserted.size} missing partners for checkins." }
-        partnersRepo.insertAll(toBeInserted.map {
-            it.typeSafePartner.toPartnerEntity(location)
-        })
-        imageStorage.saveDefaultImageForPartner(toBeInserted.map { it.typeSafePartner.id })
+        val localPartnerIds = partnersRepo.selectAllIds()
+        val partnersToInsert = remoteCheckins.filter { !localPartnerIds.contains(it.typeSafePartner.id) }
+            .distinctBy { it.typeSafePartner.id }
+            .map { it.typeSafePartner.toPartnerEntity(location) }
+
+        log.debug { "Inserting ${partnersToInsert.size} missing partners for checkins." }
+        partnersRepo.insertAll(partnersToInsert)
+        imageStorage.saveDefaultImageForPartner(partnersToInsert.map { it.id })
     }
 
     private fun syncWorkouts(remoteCheckins: List<CheckinJson>) {
@@ -112,6 +111,8 @@ private fun PartnerWorkoutCheckinJson.toPartnerEntity(location: Location) = Part
     isWishlisted = false,
     isHidden = false,
     locationShortCode = location.shortCode,
+    hasWorkouts = null,
+    hasDropins = null,
 )
 
 private fun WorkoutCheckinJson.toWorkoutEntity() = WorkoutEntity(

@@ -11,11 +11,11 @@ AFTER: user experience session with: serieke, joey
 
 ### High Prio
 
+* BUG: visited icon is shown almost everywhere; WTF?!
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
 * UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
-* somehow make partners with "open training" more visible
 * right click on address, context menu to copy to clipboard
 * add version number to app file manifest (macOS)
 * download more partner images (think of migration step)

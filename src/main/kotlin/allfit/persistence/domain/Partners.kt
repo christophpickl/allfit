@@ -25,6 +25,8 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val facilities = text("FACILITIES") // comma separated list
     val isDeleted = bool("IS_DELETED") // custom
     val rating = integer("RATING") // custom
+    val hasDropins = bool("HAS_DROPINS").nullable() // settlement_options.drop_in_enabled
+    val hasWorkouts = bool("HAS_WORKOUTS").nullable() // settlement_options.reservable_workouts
     val isFavorited = bool("IS_FAVORITED") // custom
     val isWishlisted = bool("IS_WISHLISTED") // custom
     val isHidden = bool("IS_HIDDEN") // custom
@@ -58,6 +60,8 @@ data class PartnerEntity(
     override val isFavorited: Boolean,
     override val isWishlisted: Boolean,
     val isHidden: Boolean,
+    val hasDropins: Boolean?,
+    val hasWorkouts: Boolean?,
     val locationShortCode: String,
 ) : BaseEntity, PartnerCustomAttributesRead
 
@@ -164,6 +168,8 @@ object ExposedPartnersRepo : PartnersRepo {
                     it[imageUrl] = partner.imageUrl
                     it[isWishlisted] = partner.isWishlisted
                     it[isFavorited] = partner.isFavorited
+                    it[hasDropins] = partner.hasDropins
+                    it[hasWorkouts] = partner.hasWorkouts
                     it[isHidden] = partner.isHidden
                     it[isDeleted] = partner.isDeleted
                 }
@@ -252,6 +258,8 @@ private fun ResultRow.toPartnerEntity(primaryCategoryId: Int, secondaryCategoryI
     isHidden = this[PartnersTable.isHidden],
     isWishlisted = this[PartnersTable.isWishlisted],
     locationShortCode = this[PartnersTable.locationShortCode],
+    hasDropins = this[PartnersTable.hasDropins],
+    hasWorkouts = this[PartnersTable.hasWorkouts],
 )
 
 private fun ResultRow.toPartnerCategoryEntity() = PartnerCategoryEntity(

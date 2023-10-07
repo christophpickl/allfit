@@ -73,6 +73,12 @@ interface Partner : PartnerCustomAttributesWrite, HasRating, HasCheckins {
     var hiddenImage: Image
     fun hiddenImageProperty(): ObjectProperty<Image>
 
+    // can be null, if partner was synced via checkins (partner missing during syncing this one, no settlement options in JSON)
+    var hasDropins: Trilean
+    fun hasDropinsProperty(): ObjectProperty<Trilean>
+    var hasWorkouts: Trilean
+    fun hasWorkoutsProperty(): ObjectProperty<Trilean>
+
     val location: Location
 }
 
@@ -92,6 +98,8 @@ class SimplePartner(
     image: Image,
     hiddenImage: Image,
     override val location: Location,
+    hasDropins: Trilean,
+    hasWorkouts: Trilean,
 ) : Partner {
 
     override var id: Int by property(id)
@@ -108,13 +116,10 @@ class SimplePartner(
     override fun isFavoritedProperty() = getProperty(SimplePartner::isFavorited)
     override var isWishlisted: Boolean by property(isWishlisted)
     override fun isWishlistedProperty() = getProperty(SimplePartner::isWishlisted)
-
     override var isHidden: Boolean by property(isHidden)
     override fun isHiddenProperty() = getProperty(SimplePartner::isHidden)
-
     override var hiddenImage: Image by property(hiddenImage)
     override fun hiddenImageProperty() = getProperty(SimplePartner::hiddenImage)
-
     override var image: Image by property(image)
     override fun imageProperty() = getProperty(SimplePartner::image)
     override var note: String by property(note)
@@ -125,6 +130,10 @@ class SimplePartner(
     override fun facilitiesProperty() = getProperty(SimplePartner::facilities)
     override var url: String by property(url)
     override fun urlProperty() = getProperty(SimplePartner::url)
+    override var hasDropins: Trilean by property(hasDropins)
+    override fun hasDropinsProperty() = getProperty(SimplePartner::hasDropins)
+    override var hasWorkouts: Trilean by property(hasWorkouts)
+    override fun hasWorkoutsProperty() = getProperty(SimplePartner::hasWorkouts)
 
     init {
         require(id >= 0) { "Invalid ID: $id" }
@@ -192,6 +201,8 @@ data class FullPartner(
                 hiddenImage = NOT_HIDDEN_IMAGE,
                 image = Images.prototype,
                 location = Location.Amsterdam, // doesn't matter which one
+                hasDropins = Trilean.Unknown,
+                hasWorkouts = Trilean.Unknown,
             ),
             pastCheckins = emptyList(),
             upcomingWorkouts = emptyList()

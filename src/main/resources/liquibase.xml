@@ -246,6 +246,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="7" author="christophpickl" failOnError="true">
+        <comment>add partner fields</comment>
+        <addColumn tableName="PARTNERS">
+            <column name="HAS_DROPINS" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="HAS_WORKOUTS" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <!-- changeset 8 make PARTNERS.IS_DROPIN and PARTNERS.HAS_WORKOUTS not-nullable! -->
     <!--
         <modifyDataType
             columnName="title"
