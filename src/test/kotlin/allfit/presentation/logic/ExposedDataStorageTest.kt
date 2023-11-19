@@ -30,6 +30,7 @@ import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.PartnerCustomAttributesRead
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.models.Trilean
 import allfit.service.DummyImageStorage
 import allfit.service.ImageStorage
 import allfit.service.InMemoryImageStorage
@@ -317,6 +318,8 @@ private fun PartnerEntity.toSimplePartner(
     hiddenImage = if (isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
     image = image,
     location = Location.byShortCode(locationShortCode),
+    hasDropins = Trilean.No,
+    hasWorkouts = Trilean.Yes,
 )
 
 private fun PartnerEntity.toFullPartner(
@@ -378,6 +381,8 @@ private fun buildFullWorkout(
         hiddenImage = if (partner.isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
         image = partnerImage,
         location = Location.byShortCode(partner.locationShortCode),
+        hasDropins = Trilean.No,
+        hasWorkouts = Trilean.Yes,
     )
 )
 

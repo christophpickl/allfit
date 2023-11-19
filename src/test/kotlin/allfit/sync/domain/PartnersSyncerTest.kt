@@ -65,7 +65,9 @@ class PartnersSyncerTest : StringSpec() {
                 isFavorited = false,
                 isWishlisted = false,
                 isHidden = false,
-                locationShortCode = singlesRepo.selectLocation().shortCode
+                locationShortCode = singlesRepo.selectLocation().shortCode,
+                hasDropins = partnerJson.settlement_options.drop_in_enabled,
+                hasWorkouts = partnerJson.settlement_options.reservable_workouts,
             )
         }
         "When sync partner with duplicate secondary categories Then insert only one" {

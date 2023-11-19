@@ -51,6 +51,8 @@ fun Arb.Companion.partnerEntity() = arbitrary {
         isHidden = boolean().next(),
         isFavorited = boolean().next(),
         locationShortCode = enum<Location>().next().shortCode,
+        hasDropins = false,
+        hasWorkouts = true,
     )
 }
 
