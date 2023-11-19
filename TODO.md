@@ -11,7 +11,6 @@ AFTER: user experience session with: serieke, joey
 
 ### High Prio
 
-* new workout filter-group: "workouts this period" (basically a combo of visited + date filter)
 * URL of official website from partner
 * right click on address "copy to clipboard"
 * BUG: calculation of available needs to respect the period date range

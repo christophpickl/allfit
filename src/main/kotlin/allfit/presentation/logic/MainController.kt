@@ -8,13 +8,14 @@ import allfit.presentation.SelectTabFXEvent
 import allfit.presentation.WorkoutSearchFXEvent
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.WorkoutSelectedThrough
+import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.UsageModel
 import allfit.presentation.models.toUsage
-import allfit.presentation.search.VisitedSearchRequest
-import allfit.presentation.search.VisitedState
+import allfit.presentation.search.GeneralWorkoutFilter
+import allfit.presentation.search.GeneralWorkoutSearchRequest
 import allfit.presentation.tornadofx.safeSubscribe
 import allfit.presentation.view.MainView
 import allfit.presentation.view.VersionMismatchDialog
@@ -57,7 +58,8 @@ class MainController : Controller() {
             val workouts = dataStorage.getWorkouts()
             workoutsModel.allWorkouts.addAll(workouts.toObservable())
             workoutsModel.allGroups.addAll(dataStorage.getCategories())
-            val initialWorkoutTimeSearch = VisitedSearchRequest(VisitedState.UPCOMING).predicate
+            val initialWorkoutTimeSearch =
+                GeneralWorkoutSearchRequest(GeneralWorkoutFilter.UPCOMING, DateRange.NONE).predicate
             workoutsModel.sortedFilteredWorkouts.predicate = {
                 WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
             }

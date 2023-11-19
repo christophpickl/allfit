@@ -36,7 +36,8 @@ class SearchFieldPane(private val alwaysEnabled: Boolean) : HBox(4.0) {
 
     private var enabledCheckbox: CheckBox by singleAssign()
     val isEnabled get() = if (alwaysEnabled) true else isEnabledProperty.get()
-    var enabledAction: OnEnabledAction by property(OnEnabledAction({}))
+    var enabledAction: OnEnabledAction by property(OnEnabledAction {})
+
     private val isEnabledProperty = false.toProperty().also {
         it.addListener { _ ->
             enabledAction.listener()

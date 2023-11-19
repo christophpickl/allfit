@@ -2,6 +2,8 @@ package allfit.presentation.search
 
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.scene.control.TextField
+import javafx.scene.layout.HBox
+import javafx.scene.layout.Priority
 import tornadofx.singleAssign
 import tornadofx.textfield
 
@@ -28,6 +30,7 @@ class TextSearchPane<T : HasTextSearchable>(checkSearch: () -> Unit) : SearchPan
     private var termsInput: TextField by singleAssign()
 
     override var searchFieldPane = searchField {
+//        background = Background.fill(Color.BLUE)
         title = "Text"
         enabledAction = OnEnabledAction { checkSearch() }
         termsInput = textfield {
@@ -35,22 +38,16 @@ class TextSearchPane<T : HasTextSearchable>(checkSearch: () -> Unit) : SearchPan
                 checkSearch()
             }
         }
+        HBox.setHgrow(termsInput, Priority.ALWAYS)
     }
 
-    override fun buildSearchRequest() =
-        termsInput.text.let { terms ->
-            if (terms.isEmpty()) {
-                null
-            } else {
-                TextSearchRequest<T>(
-                    terms
-                        .trim()
-                        .split(" ")
-                        .map { it.trim().lowercase() }
-                        .filter { it.isNotEmpty() }
-                        .also {
-                            logger.debug { "Searching for terms: $it" }
-                        })
-            }
+    override fun buildSearchRequest() = termsInput.text.let { terms ->
+        if (terms.isEmpty()) {
+            null
+        } else {
+            TextSearchRequest<T>(terms.trim().split(" ").map { it.trim().lowercase() }.filter { it.isNotEmpty() }.also {
+                logger.debug { "Searching for terms: $it" }
+            })
         }
+    }
 }

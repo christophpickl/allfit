@@ -49,8 +49,8 @@ class UsageView : View() {
             launch<UsageViewApp>()
         }
 
-        private val colorCheckins = Color.BLUE
-        private val colorReservations = Color.GREEN
+        private val colorCheckins = Color.GREEN
+        private val colorReservations = Color.BLUE
         private val colorPeriod = Color.CHOCOLATE
     }
 
