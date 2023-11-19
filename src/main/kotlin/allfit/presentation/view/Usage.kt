@@ -1,6 +1,7 @@
 package allfit.presentation.view
 
 import allfit.presentation.Styles
+import allfit.presentation.components.DualProgressIndicator
 import allfit.presentation.components.ProgressIndicator
 import allfit.presentation.models.Usage
 import allfit.presentation.models.UsageModel
@@ -49,33 +50,48 @@ class UsageView : View() {
         }
 
         private val colorCheckins = Color.BLUE
+        private val colorReservations = Color.GREEN
         private val colorPeriod = Color.CHOCOLATE
     }
 
     private val model: UsageModel by inject()
 
     override val root = vbox {
-        labelDetail("Usage", model.usage.map { "${it.total} / ${it.periodCap}" }, textColor = colorCheckins)
+        labelDetailMultibind(
+            "Usage",
+            model.usage.map { it.total }, model.reservations, model.usage.map { it.periodCap },
+            textColor = colorCheckins
+        ) {
+            "${(model.usage.map { it.total }.value + model.reservations.value)} / ${model.usage.map { it.periodCap }.value}"
+        }
+        labelDetailMultibind(
+            "Reservations",
+            model.usage.map { it.maxReservations }, model.reservations,
+            textColor = colorReservations
+        ) {
+            "${model.reservations.get()} / ${model.usage.get().maxReservations}"
+        }
         labelDetail(
             "Period",
             model.usage.map { "${it.from.formatDate()} t/m ${it.until.formatDate()}" },
             textColor = colorPeriod
         )
 
-        val checkinsIndicator = ProgressIndicator(colorCheckins, model.usage.map { it.total.toDouble() / it.periodCap })
+        val usageIndicator = DualProgressIndicator(
+            colorCheckins, colorReservations,
+            model.usage.map { it.total.toDouble() / it.periodCap },
+            model.reservations.map { it.toDouble() / model.usage.map { it.periodCap }.value }
+        )
         val periodIndicator = ProgressIndicator(
-            colorPeriod,
-            model.usage.map { it.daysUsed(model.today.get()).toDouble() / it.daysTotal() })
+            colorPeriod, model.usage.map { it.daysUsed(model.today.get()).toDouble() / it.daysTotal() }
+        )
         widthProperty().addListener { _, _, newValue ->
-            checkinsIndicator.setMaxLineWidth(newValue.toDouble())
+            usageIndicator.setMaxLineWidth(newValue.toDouble())
             periodIndicator.setMaxLineWidth(newValue.toDouble())
         }
-        add(checkinsIndicator)
+        add(usageIndicator)
         add(periodIndicator)
 
-        labelDetailMultibind("Reservations", model.usage.map { it.maxReservations }, model.reservations) {
-            "${model.reservations.get()} / ${model.usage.get().maxReservations}"
-        }
         labelDetail("No shows", model.usage.map { it.noShows.toString() })
 
         labelDetail(

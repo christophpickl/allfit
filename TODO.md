@@ -11,6 +11,13 @@ AFTER: user experience session with: serieke, joey
 
 ### High Prio
 
+* new workout filter-group: "workouts this period" (basically a combo of visited + date filter)
+* URL of official website from partner
+* right click on address "copy to clipboard"
+* BUG: calculation of available needs to respect the period date range
+
+### Medium Prio
+
 * BUG: visited icon is shown almost everywhere; WTF?!
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
@@ -24,11 +31,8 @@ AFTER: user experience session with: serieke, joey
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
 * use GitHub actions (to verify; maybe even release in the future?!)
 * how to get bold font via CSS working?!
-
-### Medium Prio
-
+* when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
 * view replace transition: https://courses.bekwam.net/public_tutorials/bkcourse_tornadofx_replacewithapp.html
-* URL of official website from partner
 * link partners together (similar...)
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)
@@ -47,6 +51,7 @@ AFTER: user experience session with: serieke, joey
 
 ### Low Prio
 
+* sync with google calendar plugin
 * reservation button (BIIIIG feature)
 * disable quitting during syncing (?)
 * luxury: auto release and auto upload (one-click website release)

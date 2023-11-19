@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
 
 data class Usage(
-    val total: Int,
+    val total: Int, // number of checkins so far in this period
     val noShows: Int,
     val from: ZonedDateTime,
     val until: ZonedDateTime, // inclusive that day
@@ -35,7 +35,7 @@ data class Usage(
 class UsageModel : ViewModel() {
     val usage = SimpleObjectProperty<Usage>()
     val today = SimpleObjectProperty<ZonedDateTime>()
-    val reservations = SimpleObjectProperty(0)
+    val reservations = SimpleObjectProperty(0) // number of reservations in this period
 }
 
 fun UsageEntity.toUsage() = Usage(
