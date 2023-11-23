@@ -3,6 +3,7 @@ package allfit.presentation
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimpleWorkout
+import allfit.presentation.partners.PartnerModifications
 import allfit.presentation.search.SearchRequest
 import tornadofx.FXEvent
 

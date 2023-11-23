@@ -2,8 +2,8 @@ package allfit.persistence.domain
 
 import allfit.persistence.BaseEntity
 import allfit.persistence.BaseRepo
-import allfit.presentation.PartnerModifications
 import allfit.presentation.models.PartnerCustomAttributesRead
+import allfit.presentation.partners.PartnerModifications
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -22,6 +22,7 @@ object PartnersTable : IntIdTable("PUBLIC.PARTNERS", "ID") {
     val note = text("NOTE") // custom
     val locationShortCode = varchar("LOCATION", 3)
     val imageUrl = varchar("IMAGE_URL", 256).nullable()
+    val officialWebsite = varchar("OFFICIAL_WEBSITE", 256).nullable()
     val facilities = text("FACILITIES") // comma separated list
     val isDeleted = bool("IS_DELETED") // custom
     val rating = integer("RATING") // custom
@@ -52,11 +53,12 @@ data class PartnerEntity(
     val name: String,
     val slug: String,
     val description: String,
-    override val note: String,
     val facilities: String,
     override val rating: Int,
     override val isDeleted: Boolean,
     val imageUrl: String?,
+    override val note: String,
+    override val officialWebsite: String?,
     override val isFavorited: Boolean,
     override val isWishlisted: Boolean,
     val isHidden: Boolean,
@@ -165,6 +167,7 @@ object ExposedPartnersRepo : PartnersRepo {
                     it[locationShortCode] = partner.locationShortCode
                     it[rating] = partner.rating
                     it[facilities] = partner.facilities
+                    it[officialWebsite] = partner.officialWebsite
                     it[imageUrl] = partner.imageUrl
                     it[isWishlisted] = partner.isWishlisted
                     it[isFavorited] = partner.isFavorited
@@ -260,6 +263,7 @@ private fun ResultRow.toPartnerEntity(primaryCategoryId: Int, secondaryCategoryI
     locationShortCode = this[PartnersTable.locationShortCode],
     hasDropins = this[PartnersTable.hasDropins],
     hasWorkouts = this[PartnersTable.hasWorkouts],
+    officialWebsite = this[PartnersTable.officialWebsite],
 )
 
 private fun ResultRow.toPartnerCategoryEntity() = PartnerCategoryEntity(

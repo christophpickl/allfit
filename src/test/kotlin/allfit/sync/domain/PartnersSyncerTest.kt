@@ -65,6 +65,7 @@ class PartnersSyncerTest : StringSpec() {
                 isFavorited = false,
                 isWishlisted = false,
                 isHidden = false,
+                officialWebsite = null,
                 locationShortCode = singlesRepo.selectLocation().shortCode,
                 hasDropins = partnerJson.settlement_options.drop_in_enabled,
                 hasWorkouts = partnerJson.settlement_options.reservable_workouts,

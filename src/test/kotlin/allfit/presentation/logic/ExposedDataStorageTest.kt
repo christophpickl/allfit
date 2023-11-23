@@ -20,7 +20,6 @@ import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
-import allfit.presentation.PartnerModifications
 import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
@@ -31,6 +30,7 @@ import allfit.presentation.models.PartnerCustomAttributesRead
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.models.Trilean
+import allfit.presentation.partners.PartnerModifications
 import allfit.service.DummyImageStorage
 import allfit.service.ImageStorage
 import allfit.service.InMemoryImageStorage
@@ -275,6 +275,7 @@ private fun insertPartnerAndGetModifications(location: Location): Pair<PartnerEn
         partnerId = partner.id,
         rating = 1,
         note = "new",
+        officialWebsite = null,
         isFavorited = true,
         isWishlisted = true,
     )
@@ -311,6 +312,7 @@ private fun PartnerEntity.toSimplePartner(
     note = note,
     description = description,
     facilities = facilities,
+    officialWebsite = officialWebsite,
     rating = rating,
     isFavorited = isFavorited,
     isWishlisted = isWishlisted,
@@ -379,6 +381,7 @@ private fun buildFullWorkout(
         isWishlisted = partner.isWishlisted,
         isHidden = partner.isHidden,
         hiddenImage = if (partner.isHidden) HIDDEN_IMAGE else NOT_HIDDEN_IMAGE,
+        officialWebsite = partner.officialWebsite,
         image = partnerImage,
         location = Location.byShortCode(partner.locationShortCode),
         hasDropins = Trilean.No,

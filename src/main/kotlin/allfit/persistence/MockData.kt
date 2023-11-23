@@ -27,14 +27,28 @@ private val category2 = CategoryEntity(id = 2, name = "Category 2", slug = null,
 private val allCategories = listOf(category1, category2)
 
 private val partner1 = PartnerEntity(
-    id = 1, primaryCategoryId = category1.id, secondaryCategoryIds = emptyList(), name = "Partner 1", slug = "part1",
-    description = "description from one fit", note = "note from me", facilities = "fac1,fac2,fac3",
-    imageUrl = "www.one.fit/image1.jpg", rating = 0, hasWorkouts = true, hasDropins = true,
-    isDeleted = false, isFavorited = true, isHidden = false, isWishlisted = false, locationShortCode = "AMS"
+    id = 1,
+    primaryCategoryId = category1.id,
+    secondaryCategoryIds = emptyList(),
+    name = "Partner 1",
+    slug = "part1",
+    description = "description from one fit",
+    note = "note from me",
+    facilities = "fac1,fac2,fac3",
+    officialWebsite = null,
+    imageUrl = "www.one.fit/image1.jpg",
+    rating = 0,
+    hasWorkouts = true,
+    hasDropins = true,
+    isDeleted = false,
+    isFavorited = true,
+    isHidden = false,
+    isWishlisted = false,
+    locationShortCode = "AMS"
 )
 private val partner2 = PartnerEntity(
     id = 2, primaryCategoryId = category2.id, secondaryCategoryIds = emptyList(), name = "Partner 2", slug = "part2",
-    description = "description from one fit", note = "", facilities = "",
+    description = "description from one fit", note = "", facilities = "", officialWebsite = null,
     imageUrl = null, rating = 3, hasWorkouts = true, hasDropins = false,
     isDeleted = false, isFavorited = false, isHidden = false, isWishlisted = true, locationShortCode = "AMS"
 )

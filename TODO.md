@@ -4,6 +4,9 @@
 
 * Days to synchronize future data made configurable via preferences.
 * UI improvement: Unified table icons (reserved, wishlisted, favorited, visited) into a single column.
+* New workout filter-group for workouts only in this period (visited and reserved).
+* Progress ("consumption") bar also includes future reserved workouts (with a different highlight color).
+* Custom field for official partner website
 
 AFTER: user experience session with: serieke, joey
 
@@ -11,7 +14,6 @@ AFTER: user experience session with: serieke, joey
 
 ### High Prio
 
-* URL of official website from partner
 * right click on address "copy to clipboard"
 * BUG: calculation of available needs to respect the period date range
 

@@ -49,6 +49,7 @@ private fun PartnerJson.toPartnerEntity(location: Location) = PartnerEntity(
     hasWorkouts = settlement_options.reservable_workouts,
     // custom fields:
     note = "",
+    officialWebsite = null,
     rating = 0,
     isDeleted = false,
     isFavorited = false,

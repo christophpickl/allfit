@@ -2,7 +2,6 @@ package allfit.presentation.logic
 
 import allfit.api.OnefitUtils
 import allfit.domain.Location
-import allfit.presentation.PartnerModifications
 import allfit.presentation.PresentationConstants
 import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
@@ -13,6 +12,7 @@ import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.models.Trilean
+import allfit.presentation.partners.PartnerModifications
 import allfit.service.Clock
 import allfit.service.InMemoryImageStorage
 import java.time.temporal.ChronoUnit
@@ -146,6 +146,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             image = readImage("partners/ems.jpg"),
             url = OnefitUtils.partnerUrl(16456, "ems-health-studio-ems-training-amsterdam"),
             note = "This URL actually works.",
+            officialWebsite = "https://www.ems.com",
             description = "Super intense nice <b>workout</b> with HTML.",
             facilities = "",
             location = Location.Amsterdam,
@@ -168,6 +169,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/yoga.jpg"),
             url = "https://nu.nl",
+            officialWebsite = null,
             note = "my custom note",
             description = "Esoteric stuff.",
             facilities = "Mats",
@@ -194,6 +196,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/gym.jpg"),
             url = "https://nu.nl",
+            officialWebsite = null,
             note = "",
             description = "Train your body.",
             facilities = "Shower,Locker",
@@ -220,6 +223,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             hiddenImage = NOT_HIDDEN_IMAGE,
             image = readImage("partners/foobar.jpg"),
             url = "https://nu.nl",
+            officialWebsite = null,
             note = "This is weird.",
             description = "Haha.",
             facilities = "",

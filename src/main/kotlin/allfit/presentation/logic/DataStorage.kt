@@ -12,7 +12,6 @@ import allfit.persistence.domain.ReservationsRepo
 import allfit.persistence.domain.SinglesRepo
 import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
-import allfit.presentation.PartnerModifications
 import allfit.presentation.models.Checkin
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
@@ -22,6 +21,7 @@ import allfit.presentation.models.NOT_HIDDEN_IMAGE
 import allfit.presentation.models.SimplePartner
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.models.toTrilean
+import allfit.presentation.partners.PartnerModifications
 import allfit.service.Clock
 import allfit.service.ImageStorage
 import allfit.service.beginOfDay
@@ -232,6 +232,7 @@ private fun PartnerEntity.toSimplePartner(
     location = Location.byShortCode(locationShortCode),
     hasWorkouts = hasWorkouts.toTrilean(),
     hasDropins = hasDropins.toTrilean(),
+    officialWebsite = officialWebsite,
 )
 
 private fun WorkoutEntity.toSimpleWorkout(

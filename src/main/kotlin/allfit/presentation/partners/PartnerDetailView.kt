@@ -1,6 +1,5 @@
 package allfit.presentation.partners
 
-import allfit.presentation.PartnerModifications
 import allfit.presentation.PartnerWorkoutSelectedFXEvent
 import allfit.presentation.Styles
 import allfit.presentation.UpdatePartnerFXEvent
@@ -22,6 +21,7 @@ import javafx.geometry.Pos
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
+import javafx.scene.control.TextField
 import javafx.scene.layout.Background
 import javafx.scene.layout.Priority
 import tornadofx.View
@@ -40,6 +40,7 @@ import tornadofx.paddingTop
 import tornadofx.selectedItem
 import tornadofx.singleAssign
 import tornadofx.textarea
+import tornadofx.textfield
 import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.vgrow
@@ -59,6 +60,7 @@ class PartnerDetailView(
     private var wishlistCheckbox: CheckBox by singleAssign()
     private var ratingInput: ComboBox<Number> by singleAssign()
     private var noteText: TextArea by singleAssign()
+    private var officialWebsiteText: TextField by singleAssign()
 
     private val enabledChecker: () -> ObservableValue<Boolean> = {
         model.selectedPartner.id.greaterThan(0)
@@ -122,6 +124,16 @@ class PartnerDetailView(
             }
         }
 
+        hbox(spacing = 5.0, alignment = Pos.CENTER_LEFT) {
+            paddingTop = 5.0
+            openWebsiteButton(officialWebsiteText.textProperty(), "Partner Official Website") {
+                hgrow = Priority.NEVER
+            }
+            officialWebsiteText = textfield(model.selectedPartner.officialWebsite) {
+                hgrow = Priority.ALWAYS
+            }
+        }
+
         labelPrompt("Note")
         noteText = textarea {
             bind(model.selectedPartner.note)
@@ -139,6 +151,7 @@ class PartnerDetailView(
                                 partnerId = model.selectedPartner.id.get(),
                                 note = noteText.text,
                                 rating = ratingInput.selectedItem?.toInt() ?: error("No rating selected!"),
+                                officialWebsite = officialWebsiteText.text.let { it.ifEmpty { null } },
                                 isFavorited = favoriteCheckbox.isSelected,
                                 isWishlisted = wishlistCheckbox.isSelected,
                             )

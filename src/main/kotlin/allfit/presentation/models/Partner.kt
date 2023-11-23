@@ -19,6 +19,7 @@ import tornadofx.property
 interface PartnerCustomAttributesRead : IsFavoritable, IsWishlistable {
     val rating: Rating
     val note: String
+    val officialWebsite: String?
     override val isFavorited: Boolean
     override val isWishlisted: Boolean
 }
@@ -26,6 +27,7 @@ interface PartnerCustomAttributesRead : IsFavoritable, IsWishlistable {
 interface PartnerCustomAttributesWrite : PartnerCustomAttributesRead {
     override var rating: Rating
     override var note: String
+    override var officialWebsite: String?
     override var isFavorited: Boolean
     override var isWishlisted: Boolean
 }
@@ -60,6 +62,9 @@ interface Partner : PartnerCustomAttributesWrite, HasRating, HasCheckins {
 
     val image: Image
     fun imageProperty(): ObjectProperty<Image>
+
+    override var officialWebsite: String?
+    fun officialWebsiteProperty(): ObjectProperty<String?>
 
     override var isFavorited: Boolean
     fun isFavoritedProperty(): ObjectProperty<Boolean>
@@ -100,6 +105,7 @@ class SimplePartner(
     override val location: Location,
     hasDropins: Trilean,
     hasWorkouts: Trilean,
+    officialWebsite: String?,
 ) : Partner {
 
     override var id: Int by property(id)
@@ -134,6 +140,8 @@ class SimplePartner(
     override fun hasDropinsProperty() = getProperty(SimplePartner::hasDropins)
     override var hasWorkouts: Trilean by property(hasWorkouts)
     override fun hasWorkoutsProperty() = getProperty(SimplePartner::hasWorkouts)
+    override var officialWebsite: String? by property(officialWebsite)
+    override fun officialWebsiteProperty() = getProperty(SimplePartner::officialWebsite)
 
     init {
         require(id >= 0) { "Invalid ID: $id" }
@@ -191,6 +199,7 @@ data class FullPartner(
                 url = "",
                 categories = emptyList(),
                 note = "",
+                officialWebsite = "",
                 description = "",
                 facilities = "",
                 checkins = 0,

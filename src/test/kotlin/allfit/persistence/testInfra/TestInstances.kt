@@ -45,6 +45,7 @@ fun Arb.Companion.partnerEntity() = arbitrary {
         note = string().next(),
         facilities = string().next(),
         imageUrl = string().next(),
+        officialWebsite = string(maxSize = 256).orNull().next(),
         rating = int(min = 0, max = 5).next(),
         isDeleted = boolean().next(),
         isWishlisted = boolean().next(),

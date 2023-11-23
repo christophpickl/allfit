@@ -258,6 +258,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="8" author="christophpickl" failOnError="true">
+        <comment>add partner fields</comment>
+        <addColumn tableName="PARTNERS">
+            <column name="OFFICIAL_WEBSITE" type="varchar(256)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 
     <!-- changeset 8 make PARTNERS.IS_DROPIN and PARTNERS.HAS_WORKOUTS not-nullable! -->
     <!--

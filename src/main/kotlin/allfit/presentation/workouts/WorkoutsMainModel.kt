@@ -51,6 +51,7 @@ class CurrentPartnerViewModel : ViewModel() {
         if (categories.isEmpty()) "None" else categories.joinToString()
     }
     val description = SimpleStringProperty()
+    val officialWebsite = SimpleStringProperty()
     val isFavorited = SimpleBooleanProperty()
     val isWishlisted = SimpleBooleanProperty()
     val pastCheckins = mutableListOf<Checkin>().toObservable()
@@ -66,6 +67,7 @@ class CurrentPartnerViewModel : ViewModel() {
         facilities.set(partner.facilities)
         categories.set(partner.categories)
         description.set(partner.description)
+        officialWebsite.set(partner.officialWebsite ?: "")
         isFavorited.set(partner.isFavorited)
         isWishlisted.set(partner.isWishlisted)
         pastCheckins.setAll(partner.pastCheckins)

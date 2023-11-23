@@ -103,6 +103,7 @@ private fun PartnerWorkoutCheckinJson.toPartnerEntity(location: Location) = Part
     slug = slug,
     description = "N/A",
     imageUrl = "",
+    officialWebsite = null,
     note = "",
     facilities = "",
     rating = 0,
