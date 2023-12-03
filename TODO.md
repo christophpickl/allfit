@@ -8,18 +8,16 @@
 * Progress ("consumption") bar also includes future reserved workouts (with a different highlight color).
 * Custom field for official partner website.
 * Ability to copy address to clipboard.
-
-AFTER: user experience session with: serieke, joey
+* Show reserved icon in "upcoming workouts" table.
 
 ## Backlog
 
 ### High Prio
 
-* BUG: calculation of available needs to respect the period date range
+* Improve sync log: always show 0 and 100% message (when super fast, 100% is not shown)
 
 ### Medium Prio
 
-* partners "upcoming workouts", add reserved icon if so
 * BUG: visited icon is shown almost everywhere; WTF?!
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)

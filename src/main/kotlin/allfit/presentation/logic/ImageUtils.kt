@@ -4,14 +4,14 @@ import javafx.scene.image.Image
 
 object StaticIconStorage {
 
-    private const val width = 30.0
+    private const val WIDTH = 30.0
 
-    private val images = StaticIcon.values().map {
-        it to load(it)
-    }.toMap()
+    private val images = StaticIcon.entries.associateWith {
+        load(it)
+    }
 
     private fun load(image: StaticIcon) =
-        ImageReader.readFromClasspath("/images/icon/${image.filename}", width)
+        ImageReader.readFromClasspath("/images/icon/${image.filename}", WIDTH)
 
     fun get(image: StaticIcon) = images[image] ?: error("Invalid image: $image")
 
