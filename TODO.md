@@ -6,20 +6,12 @@
 
 * ...
 
-### Version 2
-
-* Days to synchronize future data made configurable via preferences.
-* UI improvement: Unified table icons (reserved, wishlisted, favorited, visited) into a single column.
-* New workout filter-group for workouts only in this period (visited and reserved).
-* Progress ("consumption") bar also includes future reserved workouts (with a different highlight color).
-* Custom field for official partner website.
-* Ability to copy address to clipboard.
-* Show reserved icon in "upcoming workouts" table.
-
 ## Backlog
 
 ### High Prio
 
+* BUG: usage counter should respect period (17/16 is obviously wrong)
+* macApp package define version in xml metainfo
 * Improve sync log: always show 0 and 100% message (when super fast, 100% is not shown)
 
 ### Medium Prio
