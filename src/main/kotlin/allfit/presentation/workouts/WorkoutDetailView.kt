@@ -6,6 +6,7 @@ import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.logic.googleMapsSearchUrl
 import allfit.presentation.models.FullWorkout
+import allfit.presentation.tornadofx.copyToClipboard
 import allfit.presentation.tornadofx.labelDetail
 import allfit.presentation.tornadofx.labelPrompt
 import allfit.presentation.tornadofx.openWebsiteButton
@@ -57,8 +58,11 @@ class WorkoutDetailView(
 
                 labelDetail("When", workoutModel.selectedWorkout.map { it.date.toPrettyString(clock) })
                 labelDetail(
-                    "Where", workoutModel.selectedWorkout.map { it.address },
-                    link = workoutModel.selectedWorkout.map { googleMapsSearchUrl(it.address) }, isExternal = true
+                    prompt = "Where",
+                    value = workoutModel.selectedWorkout.map { it.address },
+                    link = workoutModel.selectedWorkout.map { googleMapsSearchUrl(it.address) },
+                    isExternal = true,
+                    contextMenu = mapOf("Copy to clipboard" to { copyToClipboard(workoutModel.selectedWorkout.get().address) })
                 )
                 labelDetail("Teacher", workoutModel.selectedWorkout.map { it.teacher })
                 openWebsiteButton(workoutModel.selectedWorkout.map { it.url }, "Workout Website")

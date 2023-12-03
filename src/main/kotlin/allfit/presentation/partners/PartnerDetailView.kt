@@ -21,7 +21,6 @@ import javafx.geometry.Pos
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
-import javafx.scene.control.TextField
 import javafx.scene.layout.Background
 import javafx.scene.layout.Priority
 import tornadofx.View
@@ -60,7 +59,9 @@ class PartnerDetailView(
     private var wishlistCheckbox: CheckBox by singleAssign()
     private var ratingInput: ComboBox<Number> by singleAssign()
     private var noteText: TextArea by singleAssign()
-    private var officialWebsiteText: TextField by singleAssign()
+    private val officialWebsiteText = textfield(model.selectedPartner.officialWebsite) {
+        hgrow = Priority.ALWAYS
+    }
 
     private val enabledChecker: () -> ObservableValue<Boolean> = {
         model.selectedPartner.id.greaterThan(0)
@@ -129,9 +130,7 @@ class PartnerDetailView(
             openWebsiteButton(officialWebsiteText.textProperty(), "Partner Official Website") {
                 hgrow = Priority.NEVER
             }
-            officialWebsiteText = textfield(model.selectedPartner.officialWebsite) {
-                hgrow = Priority.ALWAYS
-            }
+            add(officialWebsiteText)
         }
 
         labelPrompt("Note")

@@ -9,14 +9,17 @@ import javafx.event.EventTarget
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.button
+import tornadofx.contextmenu
 import tornadofx.enableWhen
 import tornadofx.hbox
+import tornadofx.item
 import tornadofx.label
 import tornadofx.stringBinding
 import tornadofx.tooltip
@@ -29,16 +32,18 @@ fun Pane.labelDetailMultibind(
     textMaxWidth: Double? = null,
     link: ObservableValue<String>? = null,
     linkIsExternal: Boolean = false,
+    contextMenu: Map<String, () -> Unit> = emptyMap(),
     transformer: () -> String,
 ) {
     internalLabelDetail(
-        prompt,
-        MultiLabelValue(dependencies, transformer),
-        smallSize,
-        textColor,
-        textMaxWidth,
-        link,
-        linkIsExternal
+        prompt = prompt,
+        valueParam = MultiLabelValue(dependencies, transformer),
+        smallSize = smallSize,
+        textColor = textColor,
+        textMaxWidth = textMaxWidth,
+        link = link,
+        contextMenu = contextMenu,
+        linkIsExternal = linkIsExternal,
     )
 }
 
@@ -50,8 +55,18 @@ fun Pane.labelDetail(
     textMaxWidth: Double? = null,
     link: ObservableValue<String>? = null,
     isExternal: Boolean = false,
+    contextMenu: Map<String, () -> Unit> = emptyMap(),
 ) {
-    internalLabelDetail(prompt, SingleLabelValue(value), smallSize, textColor, textMaxWidth, link, isExternal)
+    internalLabelDetail(
+        prompt = prompt,
+        valueParam = SingleLabelValue(value),
+        smallSize = smallSize,
+        textColor = textColor,
+        textMaxWidth = textMaxWidth,
+        link = link,
+        contextMenu = contextMenu,
+        linkIsExternal = isExternal
+    )
 }
 
 private interface LabelValue {
@@ -101,6 +116,7 @@ private fun Pane.internalLabelDetail(
     textColor: Color? = null,
     textMaxWidth: Double? = null,
     link: ObservableValue<String>? = null,
+    contextMenu: Map<String, () -> Unit> = emptyMap(),
     linkIsExternal: Boolean,
 ) {
     hbox {
@@ -123,19 +139,33 @@ private fun Pane.internalLabelDetail(
                 addClass(if (linkIsExternal) Styles.linkExternal else Styles.linkInternal)
                 openBrowserOnClick(link)
             }
+            if (contextMenu.isNotEmpty()) {
+                if (link == null) {
+                    addClass(Styles.linkExternal)
+                }
+                contextmenu {
+                    contextMenu.forEach { (label, action) ->
+                        item(label).action(action)
+                    }
+                }
+            }
         }
     }
 }
 
 fun Label.openBrowserOnClick(url: ObservableValue<String>) {
     setOnMouseClicked {
-        openBrowser(url.value)
+        if (it.button == MouseButton.PRIMARY) {
+            openBrowser(url.value)
+        }
     }
 }
 
 fun Label.openBrowserOnClick(url: String) {
     setOnMouseClicked {
-        openBrowser(url)
+        if (it.button == MouseButton.PRIMARY) {
+            openBrowser(url)
+        }
     }
 }
 

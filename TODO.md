@@ -6,7 +6,8 @@
 * UI improvement: Unified table icons (reserved, wishlisted, favorited, visited) into a single column.
 * New workout filter-group for workouts only in this period (visited and reserved).
 * Progress ("consumption") bar also includes future reserved workouts (with a different highlight color).
-* Custom field for official partner website
+* Custom field for official partner website.
+* Ability to copy address to clipboard.
 
 AFTER: user experience session with: serieke, joey
 
@@ -14,11 +15,11 @@ AFTER: user experience session with: serieke, joey
 
 ### High Prio
 
-* right click on address "copy to clipboard"
 * BUG: calculation of available needs to respect the period date range
 
 ### Medium Prio
 
+* partners "upcoming workouts", add reserved icon if so
 * BUG: visited icon is shown almost everywhere; WTF?!
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
