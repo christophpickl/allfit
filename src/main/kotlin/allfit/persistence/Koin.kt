@@ -45,9 +45,6 @@ fun persistenceModule(config: AppConfig) = module {
         if (config.mockDb) InMemoryReservationsRepo().insertMockData() else ExposedReservationsRepo
     }
     single {
-        if (config.mockDb) InMemoryReservationsRepo().insertMockData() else ExposedReservationsRepo
-    }
-    single {
         if (config.mockDb) InMemoryLocationsRepo().insertMockData() else ExposedLocationsRepo
     }
     single {

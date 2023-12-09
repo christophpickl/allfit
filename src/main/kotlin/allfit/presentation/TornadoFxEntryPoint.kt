@@ -2,6 +2,7 @@ package allfit.presentation
 
 import allfit.presentation.components.ErrorDialog
 import allfit.presentation.logic.MainController
+import allfit.presentation.logic.ModelRepoBinder
 import allfit.presentation.logic.PartnerUpdateController
 import allfit.presentation.logic.PrefsController
 import allfit.presentation.partners.PartnersController
@@ -38,6 +39,7 @@ class TornadoFxEntryPoint : App(
 
     override fun start(stage: Stage) {
         log.info { "start(stage)" }
+        find<ModelRepoBinder>().bindModels()
         super.start(stage)
         find<PrefsController>().prepareStage(stage)
         fire(ApplicationStartedFxEvent)

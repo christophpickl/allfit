@@ -4,13 +4,12 @@
 
 ### Version 3
 
-* ...
+* Bugfix usage counter not staying within current period.
 
 ## Backlog
 
 ### High Prio
 
-* BUG: usage counter should respect period (17/16 is obviously wrong)
 * macApp package define version in xml metainfo
 * Improve sync log: always show 0 and 100% message (when super fast, 100% is not shown)
 

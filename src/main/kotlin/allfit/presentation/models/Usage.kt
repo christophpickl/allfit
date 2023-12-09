@@ -7,11 +7,11 @@ import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
 
 data class Usage(
-    val total: Int, // number of checkins so far in this period
+    val totalCheckins: Int, // number of checkins so far in this period
     val noShows: Int,
     val from: ZonedDateTime,
     val until: ZonedDateTime, // inclusive that day
-    val periodCap: Int, // 16
+    val maxCheckinsInPeriod: Int, // 16
     val maxCheckInsOrReservationsPerPeriod: Int, // 4 (per partner)
     val totalCheckInsOrReservationsPerDay: Int, // 2
     val maxReservations: Int, // 6 (for whole period)
@@ -35,15 +35,16 @@ data class Usage(
 class UsageModel : ViewModel() {
     val usage = SimpleObjectProperty<Usage>()
     val today = SimpleObjectProperty<ZonedDateTime>()
-    val reservations = SimpleObjectProperty(0) // number of reservations in this period
+    val periodReservations = SimpleObjectProperty(0) // number of reservations in this period
+    val totalReservations = SimpleObjectProperty(0) // number of reservations in total
 }
 
 fun UsageEntity.toUsage() = Usage(
-    total = total,
+    totalCheckins = total,
     noShows = noShows,
     from = from.fromUtcToAmsterdamZonedDateTime(),
     until = until.fromUtcToAmsterdamZonedDateTime(),
-    periodCap = periodCap,
+    maxCheckinsInPeriod = periodCap,
     maxCheckInsOrReservationsPerPeriod = maxCheckInsOrReservationsPerPeriod,
     totalCheckInsOrReservationsPerDay = totalCheckInsOrReservationsPerDay,
     maxReservations = maxReservations,
