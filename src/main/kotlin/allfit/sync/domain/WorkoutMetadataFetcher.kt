@@ -89,7 +89,7 @@ class HttpWorkoutMetadataFetcher : WorkoutMetadataFetcher {
         return when (response.status.value) {
             200 -> WorkoutHtmlParser.parse(url.workoutId, response.bodyAsText())
             404 -> WorkoutFetchMetadata.empty(url.workoutId)
-            500, 502, 520 -> {
+            in 500..599 -> {
                 if (attempt == maxRetries) {
                     val errorMessage =
                         "Invalid response (${response.status.value}) after last attempt $maxRetries for URL: ${url.url}"

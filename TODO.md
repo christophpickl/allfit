@@ -6,6 +6,7 @@
 
 * Bugfix: Usage counter now only respecting reservations within current period.
 * Define version for macOs native app bundle.
+* Hardening metadata fetching (recover from any 5** API response).
 
 ## Backlog
 
