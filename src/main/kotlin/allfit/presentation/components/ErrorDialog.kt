@@ -7,30 +7,26 @@ import tornadofx.textarea
 import tornadofx.vbox
 import tornadofx.vgrow
 
-class ErrorDialog(private val throwable: Throwable) : View() {
+class ErrorDialog : View() {
+    
     companion object {
+
         private val log = logger {}
 
         fun show(throwable: Throwable) {
             log.error(throwable) { "Uncaught exception detected!" }
-            val dialog = ErrorDialog(throwable)
+            val dialog = ErrorDialog()
             dialog.dialog("Fatal error!") {
+                vgrow = Priority.ALWAYS
                 vbox {
                     vgrow = Priority.ALWAYS
-                    textarea(throwable.stackTraceToString())
+                    textarea(throwable.stackTraceToString()) {
+                        vgrow = Priority.ALWAYS
+                    }
                 }
-//            button("Dismiss") {
-//                action {
-//                    dialog.close()
-//                }
-//            }
             }
         }
     }
 
-    override val root = vbox {
-
-        // nope, this has no effect
-//        textarea(throwable.stackTraceToString())
-    }
+    override val root = vbox()
 }

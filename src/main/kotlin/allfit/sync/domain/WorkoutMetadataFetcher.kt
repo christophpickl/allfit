@@ -93,12 +93,10 @@ class HttpWorkoutMetadataFetcher : WorkoutMetadataFetcher {
                 if (attempt == maxRetries) {
                     val errorMessage =
                         "Invalid response (${response.status.value}) after last attempt $maxRetries for URL: ${url.url}"
-                    if (response.status.value == 500) {
-                        listener.failedFetching("No metadata could be fetched for workout at: ${url.url}")
-                        log.warn { errorMessage }
-                        log.warn { "Going to ignore it and return empty workout data instead." }
-                        WorkoutFetchMetadata.empty(url.workoutId)
-                    } else error(errorMessage)
+                    log.warn { errorMessage }
+                    log.warn { "Going to ignore it and return empty workout data instead." }
+                    listener.failedFetching("No metadata could be fetched (${response.status.value}) for workout at: ${url.url}")
+                    WorkoutFetchMetadata.empty(url.workoutId)
                 } else {
                     log.warn { "Retrying after receiving ${response.status} to fetch URL: ${url.url} (attempt: ${attempt + 1}/${maxRetries})" }
                     delay(pauseBetweenRetries)
