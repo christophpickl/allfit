@@ -33,12 +33,9 @@ class ModelRepoBinder : Controller() {
 
     fun bindModels() {
         logg.info { "Binding models ..." }
-
         val usage = bindUsage()
-
         workoutsModel.selectedPartner.initPartner(FullPartner.prototype, usage)
         workoutsModel.selectedWorkout.set(FullWorkout.prototype)
-
         bindWorkouts()
         bindPartners()
     }
@@ -48,11 +45,8 @@ class ModelRepoBinder : Controller() {
         usageModel.today.set(clock.now())
         usageModel.usage.set(usage)
         val reservations = reservationsRepo.selectAll()
-        println("usage period: ${usage.period}")
         usageModel.periodReservations.set(reservations.count {
-            usage.period.contains(it.workoutStart.fromUtcToAmsterdamZonedDateTime()).also { x ->
-                println("${it.workoutStart.fromUtcToAmsterdamZonedDateTime()} => $x")
-            }
+            usage.period.contains(it.workoutStart.fromUtcToAmsterdamZonedDateTime())
         })
         usageModel.totalReservations.set(reservations.count())
         return usage

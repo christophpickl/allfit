@@ -12,6 +12,7 @@ import allfit.presentation.tornadofx.safeSubscribe
 import allfit.presentation.view.MainView
 import allfit.presentation.view.VersionMismatchDialog
 import allfit.presentation.workouts.WorkoutsMainModel
+import allfit.presentation.workouts.WorkoutsSearchView
 import allfit.service.MetaProps
 import allfit.service.VersionChecker
 import allfit.service.VersionResult
@@ -28,6 +29,7 @@ class MainController : Controller() {
     private val partnersModel: PartnersViewModel by inject()
     private val usageModel: UsageModel by inject()
     private val mainView: MainView by inject()
+    private val workoutsSearchView: WorkoutsSearchView by inject()
 
     private val dataStorage: DataStorage by di()
     private val versionChecker: VersionChecker by di()
@@ -36,6 +38,7 @@ class MainController : Controller() {
         safeSubscribe<ApplicationStartedFxEvent>() {
             logger.debug { "Application started." }
             versionCheck()
+            workoutsSearchView.checkSearch() // will fire WorkoutSearchFXEvent
         }
         safeSubscribe<WorkoutSearchFXEvent>() {
             logger.debug { "Search: ${it.searchRequest}" }

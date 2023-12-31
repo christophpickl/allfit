@@ -2,7 +2,7 @@
 
 ### Make a Release
 
-1. make a new local release and smoke test it
+1. make a new local release and smoke test it: `bin/local_release.sh`
 2. execute the `bin/prod_release.sh` script
 3. create a [new release in github](https://github.com/christophpickl/allfit/releases/new).
    1. select the latest tag

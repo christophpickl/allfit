@@ -18,12 +18,12 @@ abstract class SearchView<T>(
         allSearchPanes += pane
     }
 
-    private fun buildSearchRequest() = SearchRequest<T>(
+    private fun buildSearchRequest() = SearchRequest(
         allSearchPanes.mapNotNull { it.maybeBuildSearchRequest() }.toSet(),
         alwaysIncludeSearchRequest
     )
 
-    protected fun checkSearch() {
+    fun checkSearch() {
         val currentSearchRequest = buildSearchRequest()
         if (previousSearchRequest == currentSearchRequest) {
             return

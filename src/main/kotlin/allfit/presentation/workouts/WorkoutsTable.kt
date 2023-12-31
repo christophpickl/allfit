@@ -33,7 +33,6 @@ class WorkoutsTable(
 
     private val dateColumn: TableColumn<FullWorkout, DateRange>
     private val reservedImage = StaticIconStorage.get(StaticIcon.Reserved)
-    private val visitedImage = StaticIconStorage.get(StaticIcon.Visited)
 
     init {
         smartResize()
@@ -50,7 +49,6 @@ class WorkoutsTable(
         }
         column<FullWorkout, String>("Teacher") { it.value.teacherProperty() }.fixedWidth(100)
         imageColumn("Reserved", reservedImage) { it.value.isReservedProperty() }
-        imageColumn("Visited", visitedImage) { it.value.wasVisitedProperty() }
         column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
         ratingColumn { it.value.partner.ratingProperty() }
         iconsColumn(FullWorkout::icons, 120)

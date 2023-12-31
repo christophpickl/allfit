@@ -6,6 +6,7 @@
 
 * Bugfix: Usage counter now only respecting reservations within current period.
 * Bugfix: Hardening metadata fetching (recover from any 5xx API response).
+* Bugfix: Visited icon is now only shown where it should be shown.
 * Define version for macOs native app bundle.
 * Minor improvement of synchronisation progress message.
 
@@ -13,7 +14,6 @@
 
 ### High Prio
 
-* BUG: visited icon is shown almost everywhere; WTF?!
 * sync available spots
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 

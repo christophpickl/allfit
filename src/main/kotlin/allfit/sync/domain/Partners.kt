@@ -29,10 +29,14 @@ class PartnersSyncerImpl(
         val report = syncAny(partnersRepo, partners.data) {
             it.toPartnerEntity(location)
         }
-        listeners.onSyncDetail("Fetching ${report.toInsert.size} partner images.")
-        imageStorage.savePartnerImages(report.toInsert.map {
-            PartnerAndImageUrl(it.id, it.imageUrl)
-        })
+        if (report.toInsert.isEmpty()) {
+            listeners.onSyncDetail("No new partners available.")
+        } else {
+            listeners.onSyncDetail("Fetching ${report.toInsert.size} partner images.")
+            imageStorage.savePartnerImages(report.toInsert.map {
+                PartnerAndImageUrl(it.id, it.imageUrl)
+            })
+        }
     }
 }
 
