@@ -2,14 +2,9 @@
 
 ## Version Hisotry
 
-### Version 3
+### Version 5
 
-* Bugfix: Usage counter now only respecting reservations within current period.
-* Bugfix: Hardening metadata fetching (recover from any 5xx API response).
-* Bugfix: Visited icon is now only shown where it should be shown.
-* Define version for macOs native app bundle.
-* Minor improvement of synchronisation progress message.
-* Minor improvement of partner update form using icons.
+* ...
 
 ## Backlog
 
