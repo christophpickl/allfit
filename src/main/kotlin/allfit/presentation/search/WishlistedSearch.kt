@@ -1,9 +1,6 @@
 package allfit.presentation.search
 
-import allfit.presentation.components.ImageToggleEffect
-import allfit.presentation.components.imagedToggleButton
-import allfit.presentation.logic.StaticIcon
-import allfit.presentation.logic.StaticIconStorage
+import allfit.presentation.components.wishlistToggleButton
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
 
@@ -26,11 +23,7 @@ class WishlistedSearchPane<T : IsWishlistable>(checkSearch: () -> Unit) : Search
     override var searchFieldPane = searchField {
         title = "Wishlisted"
         enabledAction = OnEnabledAction { checkSearch() }
-        wishlistedOperand = imagedToggleButton(
-            effect = ImageToggleEffect.Saturation,
-            imageTrue = StaticIconStorage.get(StaticIcon.WishlistFull),
-            imageFalse = StaticIconStorage.get(StaticIcon.WishlistOutline),
-        ) {
+        wishlistedOperand = wishlistToggleButton {
             isSelected = true
             selectedProperty().addListener { _ ->
                 checkSearch()

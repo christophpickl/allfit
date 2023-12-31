@@ -1,9 +1,6 @@
 package allfit.presentation.search
 
-import allfit.presentation.components.ImageToggleEffect
-import allfit.presentation.components.imagedToggleButton
-import allfit.presentation.logic.StaticIcon
-import allfit.presentation.logic.StaticIconStorage
+import allfit.presentation.components.favoriteToggleButton
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
 
@@ -26,18 +23,13 @@ class FavoritedSearchPane<T : IsFavoritable>(checkSearch: () -> Unit) : SearchPa
     override var searchFieldPane = searchField {
         title = "Favorited"
         enabledAction = OnEnabledAction { checkSearch() }
-        favoritedOperand = imagedToggleButton(
-            effect = ImageToggleEffect.Saturation,
-            imageTrue = StaticIconStorage.get(StaticIcon.FavoriteFull),
-            imageFalse = StaticIconStorage.get(StaticIcon.FavoriteOutline),
-        ) {
+        favoritedOperand = favoriteToggleButton {
             isSelected = true
             selectedProperty().addListener { _ ->
                 checkSearch()
             }
         }
     }
-
 
     override fun buildSearchRequest() = FavoritedSearchRequest<T>(operand = favoritedOperand.isSelected)
 }

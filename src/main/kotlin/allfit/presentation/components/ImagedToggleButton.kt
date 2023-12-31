@@ -13,11 +13,11 @@ import tornadofx.opcr
 enum class ImageToggleEffect {
     Saturation {
         override fun applyOn(isHovering: Boolean, toggle: ToggleButton) {
-            toggle.effectRemoveColors(!isHovering, outHoverSaturation)
+            toggle.effectRemoveColors(!isHovering, OUT_HOVER_SATURATION)
         }
 
         override fun initOn(toggle: ToggleButton) {
-            toggle.effectRemoveColors(true, outHoverSaturation)
+            toggle.effectRemoveColors(true, OUT_HOVER_SATURATION)
         }
     },
     Brightness {
@@ -31,7 +31,7 @@ enum class ImageToggleEffect {
     };
 
     companion object {
-        private const val outHoverSaturation = -0.6
+        private const val OUT_HOVER_SATURATION = -0.6
     }
 
     abstract fun applyOn(isHovering: Boolean, toggle: ToggleButton)

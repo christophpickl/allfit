@@ -6,6 +6,7 @@ import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.models.Usage
 import allfit.presentation.partners.PartnerDetailModel
+import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -33,6 +34,8 @@ class WorkoutsMainModel : ViewModel(), PartnerDetailModel, WorkoutDetailModel {
 }
 
 class CurrentPartnerViewModel : ViewModel() {
+
+    private val logg = logger {}
     val id = SimpleIntegerProperty()
     val name = SimpleStringProperty()
     val rating = SimpleIntegerProperty()
@@ -58,7 +61,7 @@ class CurrentPartnerViewModel : ViewModel() {
     val upcomingWorkouts = mutableListOf<SimpleWorkout>().toObservable()
 
     fun initPartner(partner: FullPartner, usage: Usage) {
-        id.set(partner.id)
+        logg.debug { "init partner: $partner" }
         name.set(partner.name)
         note.set(partner.note)
         rating.set(partner.rating)
@@ -73,5 +76,6 @@ class CurrentPartnerViewModel : ViewModel() {
         pastCheckins.setAll(partner.pastCheckins)
         upcomingWorkouts.setAll(partner.upcomingWorkouts)
         availability.set(partner.availability(usage))
+        id.set(partner.id) // hack - needs to be last ;)
     }
 }

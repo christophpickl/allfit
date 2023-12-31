@@ -5,6 +5,8 @@ import allfit.presentation.Styles
 import allfit.presentation.UpdatePartnerFXEvent
 import allfit.presentation.WorkoutSelectedThrough
 import allfit.presentation.components.bigImage
+import allfit.presentation.components.favoriteToggleButton
+import allfit.presentation.components.wishlistToggleButton
 import allfit.presentation.htmlview
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.renderStars
@@ -16,21 +18,24 @@ import allfit.presentation.view.checkinTable
 import allfit.presentation.workouts.CurrentPartnerViewModel
 import allfit.presentation.workouts.workoutTable
 import allfit.service.Clock
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.value.ObservableValue
 import javafx.geometry.Pos
-import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
 import javafx.scene.control.TextArea
+import javafx.scene.control.ToggleButton
 import javafx.scene.layout.Background
 import javafx.scene.layout.Priority
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KProperty1
 import tornadofx.View
 import tornadofx.action
 import tornadofx.addClass
 import tornadofx.bind
 import tornadofx.button
-import tornadofx.checkbox
 import tornadofx.combobox
 import tornadofx.enableWhen
+import tornadofx.fitToParentHeight
 import tornadofx.hbox
 import tornadofx.hgrow
 import tornadofx.label
@@ -55,8 +60,8 @@ class PartnerDetailView(
 
     private val clock: Clock by di()
 
-    private var favoriteCheckbox: CheckBox by singleAssign()
-    private var wishlistCheckbox: CheckBox by singleAssign()
+    private var favoriteButton: ToggleButton by singleAssign()
+    private var wishlistButton: ToggleButton by singleAssign()
     private var ratingInput: ComboBox<Number> by singleAssign()
     private var noteText: TextArea by singleAssign()
     private val officialWebsiteText = textfield(model.selectedPartner.officialWebsite) {
@@ -112,17 +117,21 @@ class PartnerDetailView(
                 enableWhen(enabledChecker)
             }
 
-            labelPrompt("Favorite")
-            favoriteCheckbox = checkbox {
-                bind(model.selectedPartner.isFavorited)
-                enableWhen(enabledChecker)
+            val makeToggleButton = { label: String,
+                                     toggleFun: KFunction1<ToggleButton.() -> Unit, ToggleButton>,
+                                     booleanProp: KProperty1<CurrentPartnerViewModel, SimpleBooleanProperty> ->
+                labelPrompt(label)
+                toggleFun {
+                    model.selectedPartner.id.addListener { _, _, _ ->
+                        isSelected = booleanProp.get(model.selectedPartner).get()
+                    }
+                    enableWhen(enabledChecker)
+                    fitToParentHeight()
+                }
             }
 
-            labelPrompt("Wishlist")
-            wishlistCheckbox = checkbox {
-                bind(model.selectedPartner.isWishlisted)
-                enableWhen(enabledChecker)
-            }
+            favoriteButton = makeToggleButton("Favorite", ::favoriteToggleButton, CurrentPartnerViewModel::isFavorited)
+            wishlistButton = makeToggleButton("Wishlist", ::wishlistToggleButton, CurrentPartnerViewModel::isWishlisted)
         }
 
         hbox(spacing = 5.0, alignment = Pos.CENTER_LEFT) {
@@ -151,8 +160,8 @@ class PartnerDetailView(
                                 note = noteText.text,
                                 rating = ratingInput.selectedItem?.toInt() ?: error("No rating selected!"),
                                 officialWebsite = officialWebsiteText.text.let { it.ifEmpty { null } },
-                                isFavorited = favoriteCheckbox.isSelected,
-                                isWishlisted = wishlistCheckbox.isSelected,
+                                isFavorited = favoriteButton.isSelected,
+                                isWishlisted = wishlistButton.isSelected,
                             )
                         )
                     )

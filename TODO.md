@@ -9,6 +9,7 @@
 * Bugfix: Visited icon is now only shown where it should be shown.
 * Define version for macOs native app bundle.
 * Minor improvement of synchronisation progress message.
+* Minor improvement of partner update form using icons.
 
 ## Backlog
 
