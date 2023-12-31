@@ -48,6 +48,7 @@ suspend fun <T> List<T>.workParallel(
     percentageProgressCallback(0.0)
     var lastPercentageBroadcasted = System.currentTimeMillis()
     val items = ConcurrentLinkedQueue(toMutableList())
+    val workList = this
     runBlocking {
         (1..numberOfCoroutines).map { coroutine ->
             log.debug { "Starting coroutine $coroutine/$numberOfCoroutines ..." }
@@ -60,14 +61,15 @@ suspend fun <T> List<T>.workParallel(
                     val now = System.currentTimeMillis()
                     val msSinceLastMessage = now - lastPercentageBroadcasted
                     if (msSinceLastMessage > percentageBroadcastIntervalInMs) {
-                        val leftOver = this@workParallel.size - items.size
-                        percentageProgressCallback(leftOver.toDouble() / this@workParallel.size)
+                        val leftOver = workList.size - items.size
+                        percentageProgressCallback(leftOver.toDouble() / workList.size)
                         lastPercentageBroadcasted = now
                     }
                 }
             }
         }.joinAll()
     }
+    percentageProgressCallback(100.0)
 }
 
 data class Quadrupel<V1, V2, V3, V4>(

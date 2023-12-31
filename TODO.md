@@ -5,14 +5,14 @@
 ### Version 3
 
 * Bugfix: Usage counter now only respecting reservations within current period.
+* Bugfix: Hardening metadata fetching (recover from any 5xx API response).
 * Define version for macOs native app bundle.
-* Hardening metadata fetching (recover from any 5** API response).
+* Minor improvement of synchronisation progress message.
 
 ## Backlog
 
 ### High Prio
 
-* Improve sync log: always show 0 and 100% message (when super fast, 100% is not shown)
 * BUG: visited icon is shown almost everywhere; WTF?!
 * sync available spots
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
