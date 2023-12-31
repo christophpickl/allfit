@@ -42,11 +42,13 @@ packageDeployables () {
        --executable AllFit \
        --classpath $SHADOW_JAR_LOCATION \
        --mainclass allfit.AllFit \
+       --bundle org.cpickl.allfit \
        --icon src/macapp/logo.icns \
        --vmargs Xmx4G \
        --vmargs Xms1G \
        --vmargs Dallfit.env=PROD \
        --output $TARGET_LOCATION_APP || exit 1
+  plutil -replace CFBundleShortVersionString -string $VERSION $TARGET_LOCATION_APP/Contents/Info.plist
 
   mv $SHADOW_JAR_LOCATION $TARGET_DIR/AllFit.jar
 }
