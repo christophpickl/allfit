@@ -32,7 +32,7 @@ interface WorkoutInsertListener {
 
 class WorkoutInserterImpl(
     private val workoutsRepo: WorkoutsRepo,
-    private val workoutFetcher: WorkoutMetadataFetcher,
+    private val metadataFetcher: WorkoutMetadataFetcher,
 ) : WorkoutInserter {
 
     private val log = logger {}
@@ -60,7 +60,7 @@ class WorkoutInserterImpl(
             percentageProgressCallback = {
                 listener.onProgress("Fetched ${(it * 100).toInt()}% of workout metadata.")
             }) { workout ->
-            metaFetchById[workout.id] = workoutFetcher.fetch(
+            metaFetchById[workout.id] = metadataFetcher.fetch(
                 WorkoutUrl(workoutId = workout.id, workoutSlug = workout.slug), fetchListener
             )
             delay(pauseBetweenEachFetch) // artificial delay to soothen possible cloudflare's DoS anger :)

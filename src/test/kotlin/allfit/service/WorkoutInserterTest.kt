@@ -26,7 +26,7 @@ class WorkoutInserterTest : StringSpec() {
         workoutFetcher = InMemoryWorkoutFetcher()
         inserter = WorkoutInserterImpl(
             workoutsRepo = workoutsRepo,
-            workoutFetcher = workoutFetcher,
+            metadataFetcher = workoutFetcher,
         )
     }
 

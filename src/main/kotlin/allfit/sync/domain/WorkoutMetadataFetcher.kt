@@ -66,7 +66,7 @@ class HttpWorkoutMetadataFetcher : WorkoutMetadataFetcher {
     private val pauseBetweenRetries = 500.milliseconds
 
     override suspend fun fetch(url: WorkoutUrl, listener: WorkoutMetadataFetchListener): WorkoutFetchMetadata {
-        log.debug { "Fetch workout data from: ${url.url}" }
+        log.debug { "Fetch workout metadata from: ${url.url}" }
         return fetchRetriable(url, listener, 1)
     }
 

@@ -10,6 +10,11 @@
 
 ### High Prio
 
+* live resync epic
+    * datastore becomes UI responsive
+    * when syncing entities, dispatch event to notify UI as well
+* BUG: usage (counts 13/16, although only 3 checkins, 5 reserved)
+* favorite row red bg (wishlist yellow), for easier recognition
 * sync available spots
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
@@ -17,7 +22,8 @@
 
 * ability to group/link partners together
 * harden retry logic (use ktor-retry plugin)
-* include in available counter: how many workouts reserved in this period for this particular partner (not only past checkins)
+* include in available counter: how many workouts reserved in this period for this particular partner (not only past
+  checkins)
 * UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * improve progress tracking, when 100% force a message, don't just stay with 0% and then next step
@@ -28,7 +34,8 @@
 * when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)
-* listen to shortcut for tab selection good enough, yet the key listener could be even more global (e.g. when in textfield "stuck")
+* listen to shortcut for tab selection good enough, yet the key listener could be even more global (e.g. when in
+  textfield "stuck")
 * TESTS: OneFitHttpClient, WorkoutInserterImpl, ReservationsSyncerIntegrationTest
 * presync all; except workout meta and partner images 2+
 * real time sync (?); while syncing, update DB and UI (no restart needed!)
@@ -50,8 +57,10 @@
 * ad search views: instead checkbox, make "enable/disable slider a la iphone"
 * render distance in km to my place (calculate via google during sync)
 * make application start-able also when there is no internet connection
-* PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days to all existing data)
-* make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k workouts, every 2 secs)
+* PROD to DEV copier: delete DEV files, copy over relevant PROD files, change dates for all workouts (add necessary days
+  to all existing data)
+* make work parallel fetch delay time dependent on amount of items (e.g. when 10k workouts, then every 5 secs, when 1k
+  workouts, every 2 secs)
 * use ktor client retry plugin: https://ktor.io/docs/client-retry.html
 * disable closing app while still syncing. display info dialog.
 * model dirty check/commit tutorial: https://docs.tornadofx.io/0_subsection/11_editing_models_and_validation
@@ -59,5 +68,6 @@
 ### Nope
 
 * ? disable workout meta fetching (move syncer all in pre-syncer!)
-* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total amount is known
+* improve sync dialog: how many partners/workouts (left, report on interval); show progress with progress bar as total
+  amount is known
 * improve sync dialog: show report at the end: X foo inserted, Y bar deleted
