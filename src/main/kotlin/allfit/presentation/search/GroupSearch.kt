@@ -1,7 +1,7 @@
 package allfit.presentation.search
 
 import allfit.presentation.models.FullWorkout
-import allfit.presentation.workouts.WorkoutsMainModel
+import allfit.presentation.workouts.WorkoutsViewModel
 import javafx.scene.control.ComboBox
 import tornadofx.combobox
 import tornadofx.selectedItem
@@ -17,7 +17,7 @@ data class GroupSearchRequest(
 
 class GroupSearchPane(checkSearch: () -> Unit) : SearchPane<FullWorkout>() {
 
-    private val mainViewModel: WorkoutsMainModel by inject()
+    private val mainViewModel: WorkoutsViewModel by inject()
     private var selectedGroup: ComboBox<String> by singleAssign()
 
     override var searchFieldPane = searchField {

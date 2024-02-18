@@ -6,13 +6,13 @@ import allfit.presentation.SelectTabFXEvent
 import allfit.presentation.WorkoutSearchFXEvent
 import allfit.presentation.WorkoutSelectedFXEvent
 import allfit.presentation.WorkoutSelectedThrough
-import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.UsageModel
+import allfit.presentation.partners.PartnersViewModel
 import allfit.presentation.tornadofx.safeSubscribe
 import allfit.presentation.view.MainView
 import allfit.presentation.view.VersionMismatchDialog
-import allfit.presentation.workouts.WorkoutsMainModel
 import allfit.presentation.workouts.WorkoutsSearchView
+import allfit.presentation.workouts.WorkoutsViewModel
 import allfit.service.MetaProps
 import allfit.service.VersionChecker
 import allfit.service.VersionResult
@@ -25,8 +25,8 @@ class MainController : Controller() {
 
     private val logger = logger {}
 
-    private val workoutsModel: WorkoutsMainModel by inject()
     private val partnersModel: PartnersViewModel by inject()
+    private val workoutsModel: WorkoutsViewModel by inject()
     private val usageModel: UsageModel by inject()
     private val mainView: MainView by inject()
     private val workoutsSearchView: WorkoutsSearchView by inject()

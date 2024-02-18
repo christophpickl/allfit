@@ -1,9 +1,10 @@
 package allfit.presentation.partners
 
+import allfit.presentation.PartnerAddedFXEvent
 import allfit.presentation.PartnerSelectedFXEvent
 import allfit.presentation.Styles
 import allfit.presentation.WorkoutSelectedThrough
-import allfit.presentation.models.PartnersViewModel
+import allfit.presentation.models.FullPartner
 import allfit.presentation.models.UsageModel
 import allfit.presentation.tornadofx.setAllWidths
 import allfit.presentation.workouts.WorkoutDetailView
@@ -11,7 +12,9 @@ import allfit.service.Clock
 import javafx.scene.layout.Priority
 import tornadofx.App
 import tornadofx.View
+import tornadofx.action
 import tornadofx.borderpane
+import tornadofx.button
 import tornadofx.center
 import tornadofx.hbox
 import tornadofx.hgrow
@@ -42,16 +45,16 @@ class PartnersMainView : View() {
 
     private val clock: Clock by di()
 
-    private val partnersViewModel: PartnersViewModel by inject()
+    private val partnersModel: PartnersViewModel by inject()
     private val searchView: PartnersSearchView by inject()
     private val usageModel: UsageModel by inject()
     private val partnersTable = PartnersTable(usageModel.usage.get(), clock)
-    private val workoutDetailView = WorkoutDetailView(partnersViewModel)
-    private val partnerDetailView = PartnerDetailView(partnersViewModel, WorkoutSelectedThrough.Partners)
+    private val workoutDetailView = WorkoutDetailView(partnersModel.selectedWorkout)
+    private val partnerDetailView = PartnerDetailView(partnersModel.selectedPartner, WorkoutSelectedThrough.Partners)
 
     init {
         title = "Partners"
-        partnersViewModel.sortedFilteredPartners.bindTo(partnersTable)
+        partnersModel.sortedFilteredPartners.bindTo(partnersTable)
         partnersTable.applySort()
 
         with(partnersTable) {
@@ -72,9 +75,19 @@ class PartnersMainView : View() {
         top {
             hgrow = Priority.NEVER
             vgrow = Priority.NEVER
-            hbox {
-                paddingAll = 10.0
-                add(searchView)
+            vbox {
+                hbox {
+                    button("add partner") {
+                        action {
+                            println("adding prototype partner to model")
+                            fire(PartnerAddedFXEvent(FullPartner.prototype))
+                        }
+                    }
+                }
+                hbox {
+                    paddingAll = 10.0
+                    add(searchView)
+                }
             }
         }
         center {

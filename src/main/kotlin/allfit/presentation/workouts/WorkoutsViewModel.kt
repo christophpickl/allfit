@@ -5,7 +5,6 @@ import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
 import allfit.presentation.models.SimpleWorkout
 import allfit.presentation.models.Usage
-import allfit.presentation.partners.PartnerDetailModel
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
@@ -18,12 +17,12 @@ import tornadofx.SortedFilteredList
 import tornadofx.ViewModel
 import tornadofx.toObservable
 
-class WorkoutsMainModel : ViewModel(), PartnerDetailModel, WorkoutDetailModel {
+class WorkoutsViewModel : ViewModel() {
 
     val allWorkouts = FXCollections.observableArrayList<FullWorkout>()!!
     val sortedFilteredWorkouts = SortedFilteredList<FullWorkout>(allWorkouts)
-    override val selectedPartner = CurrentPartnerViewModel()
-    override val selectedWorkout = SimpleObjectProperty<FullWorkout>()
+    val selectedPartner = CurrentPartnerViewModel()
+    val selectedWorkout = SimpleObjectProperty<FullWorkout>()
     val allGroups = FXCollections.observableArrayList<String>()!!
 
     companion object {

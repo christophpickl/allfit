@@ -5,13 +5,13 @@ import allfit.persistence.domain.UsageRepository
 import allfit.presentation.models.DateRange
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.FullWorkout
-import allfit.presentation.models.PartnersViewModel
 import allfit.presentation.models.Usage
 import allfit.presentation.models.UsageModel
 import allfit.presentation.models.toUsage
+import allfit.presentation.partners.PartnersViewModel
 import allfit.presentation.search.GeneralWorkoutFilter
 import allfit.presentation.search.GeneralWorkoutSearchRequest
-import allfit.presentation.workouts.WorkoutsMainModel
+import allfit.presentation.workouts.WorkoutsViewModel
 import allfit.service.Clock
 import allfit.service.fromUtcToAmsterdamZonedDateTime
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
@@ -27,7 +27,7 @@ class ModelRepoBinder : Controller() {
     private val usageRepo: UsageRepository by di()
     private val reservationsRepo: ReservationsRepo by di()
     private val usageModel: UsageModel by inject()
-    private val workoutsModel: WorkoutsMainModel by inject()
+    private val workoutsModel: WorkoutsViewModel by inject()
     private val partnersModel: PartnersViewModel by inject()
     private val dataStorage: DataStorage by di()
 
@@ -55,7 +55,7 @@ class ModelRepoBinder : Controller() {
     private fun bindPartners() {
         partnersModel.selectedPartner.initPartner(FullPartner.prototype, usageModel.usage.get())
         partnersModel.selectedWorkout.set(FullWorkout.prototype)
-        partnersModel.allPartners.addAll(dataStorage.getPartners())
+        partnersModel.sortedFilteredPartners.addAll(dataStorage.getPartners())
     }
 
     private fun bindWorkouts() {
@@ -65,7 +65,7 @@ class ModelRepoBinder : Controller() {
         val initialWorkoutTimeSearch =
             GeneralWorkoutSearchRequest(GeneralWorkoutFilter.UPCOMING, DateRange.NONE).predicate
         workoutsModel.sortedFilteredWorkouts.predicate = {
-            WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
+            WorkoutsViewModel.DEFAULT_WORKOUT_PREDICATE(it) && initialWorkoutTimeSearch(it)
         }
     }
 }

@@ -24,12 +24,8 @@ import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.visibleWhen
 
-interface WorkoutDetailModel {
-    val selectedWorkout: SimpleObjectProperty<FullWorkout>
-}
-
 class WorkoutDetailView(
-    private val workoutModel: WorkoutDetailModel
+    private val selectedWorkout: SimpleObjectProperty<FullWorkout>
 ) : View() {
 
     private val clock: Clock by di()
@@ -40,43 +36,43 @@ class WorkoutDetailView(
 
             vbox {
                 hbox {
-                    label(workoutModel.selectedWorkout.map { it.name }) {
+                    label(selectedWorkout.map { it.name }) {
                         addClass(Styles.header1)
                         maxWidth = 550.0
                         tooltip {
-                            workoutModel.selectedWorkout.map { it.name }.addListener { _, _, newName ->
+                            selectedWorkout.map { it.name }.addListener { _, _, newName ->
                                 text = newName
                             }
                         }
                     }
                     imageview(StaticIconStorage.get(StaticIcon.Reserved)) {
                         visibleWhen {
-                            workoutModel.selectedWorkout.map { it.isReserved }
+                            selectedWorkout.map { it.isReserved }
                         }
                     }
                 }
 
-                labelDetail("When", workoutModel.selectedWorkout.map { it.date.toPrettyString(clock) })
+                labelDetail("When", selectedWorkout.map { it.date.toPrettyString(clock) })
                 labelDetail(
                     prompt = "Where",
-                    value = workoutModel.selectedWorkout.map { it.address },
-                    link = workoutModel.selectedWorkout.map { googleMapsSearchUrl(it.address) },
+                    value = selectedWorkout.map { it.address },
+                    link = selectedWorkout.map { googleMapsSearchUrl(it.address) },
                     isExternal = true,
-                    contextMenu = mapOf("Copy to clipboard" to { copyToClipboard(workoutModel.selectedWorkout.get().address) })
+                    contextMenu = mapOf("Copy to clipboard" to { copyToClipboard(selectedWorkout.get().address) })
                 )
-                labelDetail("Teacher", workoutModel.selectedWorkout.map { it.teacher })
-                openWebsiteButton(workoutModel.selectedWorkout.map { it.url }, "Workout Website")
+                labelDetail("Teacher", selectedWorkout.map { it.teacher })
+                openWebsiteButton(selectedWorkout.map { it.url }, "Workout Website")
             }
             paddingBottom = 5.0
         }
 
         labelPrompt("About")
-        htmlview(workoutModel.selectedWorkout.map { it.about }) {
+        htmlview(selectedWorkout.map { it.about }) {
             setAllHeights(ViewConstants.DETAIL_TEXT_HEIGHT)
         }
 
         labelPrompt("Specifics")
-        htmlview(workoutModel.selectedWorkout.map { it.specifics }) {
+        htmlview(selectedWorkout.map { it.specifics }) {
             setAllHeights(ViewConstants.DETAIL_TEXT_HEIGHT)
         }
     }

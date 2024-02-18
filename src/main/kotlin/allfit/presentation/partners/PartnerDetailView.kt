@@ -49,12 +49,8 @@ import tornadofx.tooltip
 import tornadofx.vbox
 import tornadofx.vgrow
 
-interface PartnerDetailModel {
-    val selectedPartner: CurrentPartnerViewModel
-}
-
 class PartnerDetailView(
-    model: PartnerDetailModel,
+    selectedPartner: CurrentPartnerViewModel,
     private val selectedThrough: WorkoutSelectedThrough,
 ) : View() {
 
@@ -64,44 +60,44 @@ class PartnerDetailView(
     private var wishlistButton: ToggleButton by singleAssign()
     private var ratingInput: ComboBox<Number> by singleAssign()
     private var noteText: TextArea by singleAssign()
-    private val officialWebsiteText = textfield(model.selectedPartner.officialWebsite) {
+    private val officialWebsiteText = textfield(selectedPartner.officialWebsite) {
         hgrow = Priority.ALWAYS
     }
 
     private val enabledChecker: () -> ObservableValue<Boolean> = {
-        model.selectedPartner.id.greaterThan(0)
+        selectedPartner.id.greaterThan(0)
     }
 
     override val root = vbox {
         hbox(spacing = 5.0) {
-            bigImage(model.selectedPartner.image, background = Background.fill(Styles.colorImageBigBg))
+            bigImage(selectedPartner.image, background = Background.fill(Styles.colorImageBigBg))
 
             vbox {
-                label(model.selectedPartner.name) {
+                label(selectedPartner.name) {
                     addClass(Styles.header1)
                     maxWidth = 550.0
                     tooltip {
-                        model.selectedPartner.name.addListener { _, _, newName ->
+                        selectedPartner.name.addListener { _, _, newName ->
                             text = newName
                         }
                     }
                 }
 
-                labelDetail("Categories", model.selectedPartner.categoriesRendered, textMaxWidth = 450.0)
-                labelDetail("Facilities", model.selectedPartner.facilitiesRendered, textMaxWidth = 450.0)
+                labelDetail("Categories", selectedPartner.categoriesRendered, textMaxWidth = 450.0)
+                labelDetail("Facilities", selectedPartner.facilitiesRendered, textMaxWidth = 450.0)
                 labelDetail(
                     "Available",
-                    model.selectedPartner.availability.map { it.toString() },
+                    selectedPartner.availability.map { it.toString() },
                     textMaxWidth = 100.0
                 )
 
                 labelPrompt("Description")
-                htmlview(model.selectedPartner.description) {
+                htmlview(selectedPartner.description) {
                     setAllHeights(65.0)
                 }
                 hbox {
                     paddingTop = 5.0
-                    openWebsiteButton(model.selectedPartner.url, "Partner Website")
+                    openWebsiteButton(selectedPartner.url, "Partner Website")
                 }
             }
             paddingBottom = 5.0
@@ -110,7 +106,7 @@ class PartnerDetailView(
         hbox(spacing = 5.0, alignment = Pos.CENTER_LEFT) {
             labelPrompt("Rating")
             ratingInput = combobox(values = listOf<Number>(0, 1, 2, 3, 4, 5)) {
-                bind(model.selectedPartner.rating)
+                bind(selectedPartner.rating)
                 cellFormat {
                     text = it.toInt().renderStars()
                 }
@@ -122,8 +118,8 @@ class PartnerDetailView(
                                      booleanProp: KProperty1<CurrentPartnerViewModel, SimpleBooleanProperty> ->
                 labelPrompt(label)
                 toggleFun {
-                    model.selectedPartner.id.addListener { _, _, _ ->
-                        isSelected = booleanProp.get(model.selectedPartner).get()
+                    selectedPartner.id.addListener { _, _, _ ->
+                        isSelected = booleanProp.get(selectedPartner).get()
                     }
                     enableWhen(enabledChecker)
                     fitToParentHeight()
@@ -144,7 +140,7 @@ class PartnerDetailView(
 
         labelPrompt("Note")
         noteText = textarea {
-            bind(model.selectedPartner.note)
+            bind(selectedPartner.note)
             enableWhen(enabledChecker)
             setAllHeights(70.0)
         }
@@ -156,7 +152,7 @@ class PartnerDetailView(
                     fire(
                         UpdatePartnerFXEvent(
                             PartnerModifications(
-                                partnerId = model.selectedPartner.id.get(),
+                                partnerId = selectedPartner.id.get(),
                                 note = noteText.text,
                                 rating = ratingInput.selectedItem?.toInt() ?: error("No rating selected!"),
                                 officialWebsite = officialWebsiteText.text.let { it.ifEmpty { null } },
@@ -176,11 +172,11 @@ class PartnerDetailView(
             hgrow = Priority.ALWAYS
             vbox {
                 labelPrompt("Upcoming Workouts")
-                workoutTable(model.selectedPartner.upcomingWorkouts, ::fireDelegate, clock)
+                workoutTable(selectedPartner.upcomingWorkouts, ::fireDelegate, clock)
             }
             vbox {
                 labelPrompt("Past Checkins")
-                checkinTable(model.selectedPartner.pastCheckins, clock)
+                checkinTable(selectedPartner.pastCheckins, clock)
             }
         }
     }

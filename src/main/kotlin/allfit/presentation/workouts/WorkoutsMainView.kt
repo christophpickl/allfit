@@ -28,16 +28,16 @@ class WorkoutsMainView : View() {
 
     private val clock: Clock by di()
     private val logger = logger {}
-    private val mainViewModel: WorkoutsMainModel by inject()
+    private val workoutsModel: WorkoutsViewModel by inject()
 
     private val searchView: WorkoutsSearchView by inject()
     private val usageView: UsageView by inject()
-    private val partnerDetailView = PartnerDetailView(mainViewModel, WorkoutSelectedThrough.Workouts)
-    private val workoutDetailView = WorkoutDetailView(mainViewModel)
+    private val partnerDetailView = PartnerDetailView(workoutsModel.selectedPartner, WorkoutSelectedThrough.Workouts)
+    private val workoutDetailView = WorkoutDetailView(workoutsModel.selectedWorkout)
     private val workoutsTable = WorkoutsTable(clock)
 
     init {
-        mainViewModel.sortedFilteredWorkouts.bindTo(workoutsTable)
+        workoutsModel.sortedFilteredWorkouts.bindTo(workoutsTable)
         workoutsTable.applySort()
 
         with(workoutsTable) {

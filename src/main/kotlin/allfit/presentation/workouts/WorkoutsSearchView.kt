@@ -24,7 +24,7 @@ import tornadofx.vbox
 
 private data object DefaultWorkoutSubSearchRequest : SubSearchRequest<FullWorkout> {
     override val predicate: (FullWorkout) -> Boolean = {
-        WorkoutsMainModel.DEFAULT_WORKOUT_PREDICATE(it)
+        WorkoutsViewModel.DEFAULT_WORKOUT_PREDICATE(it)
     }
 
 }
