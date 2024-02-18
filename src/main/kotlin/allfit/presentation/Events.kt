@@ -32,5 +32,3 @@ class UnhidePartnerFXEvent(val partnerId: Int) : FXEvent()
 class PartnerSelectedFXEvent(val partnerId: Int) : FXEvent()
 
 class PartnerSearchFXEvent(val searchRequest: SearchRequest<FullPartner>) : FXEvent()
-
-class PartnerAddedFXEvent(val partner: FullPartner) : FXEvent()

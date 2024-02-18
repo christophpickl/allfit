@@ -1,6 +1,5 @@
 package allfit.presentation.partners
 
-import allfit.presentation.PartnerAddedFXEvent
 import allfit.presentation.PartnerSearchFXEvent
 import allfit.presentation.PartnerSelectedFXEvent
 import allfit.presentation.logic.DataStorage
@@ -23,10 +22,6 @@ class PartnersController : Controller() {
             logger.debug { "Change partner: $partnerId" }
             partnersModel.selectedPartner.initPartner(dataStorage.getPartnerById(partnerId), usageModel.usage.get())
             partnersModel.selectedWorkout.set(FullWorkout.prototype)
-        }
-        safeSubscribe<PartnerAddedFXEvent> {
-            logger.debug { "Partner added: '${it.partner.name}'" }
-            partnersModel.sortedFilteredPartners.add(it.partner)
         }
         safeSubscribe<PartnerSearchFXEvent> {
             logger.debug { "Search: ${it.searchRequest}" }
