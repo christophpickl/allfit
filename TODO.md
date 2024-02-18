@@ -4,17 +4,13 @@
 
 ### Version 5
 
-* ...
+* rows are highlighted with colors (favorite=red, wishlist=yellow) for easier recognition
 
 ## Backlog
 
 ### High Prio
 
-* live resync epic
-    * datastore becomes UI responsive
-    * when syncing entities, dispatch event to notify UI as well
 * BUG: usage (counts 13/16, although only 3 checkins, 5 reserved)
-* favorite row red bg (wishlist yellow), for easier recognition
 * sync available spots
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 

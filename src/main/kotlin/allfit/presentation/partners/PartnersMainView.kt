@@ -1,10 +1,8 @@
 package allfit.presentation.partners
 
-import allfit.presentation.PartnerAddedFXEvent
 import allfit.presentation.PartnerSelectedFXEvent
 import allfit.presentation.Styles
 import allfit.presentation.WorkoutSelectedThrough
-import allfit.presentation.models.FullPartner
 import allfit.presentation.models.UsageModel
 import allfit.presentation.tornadofx.setAllWidths
 import allfit.presentation.workouts.WorkoutDetailView
@@ -12,9 +10,7 @@ import allfit.service.Clock
 import javafx.scene.layout.Priority
 import tornadofx.App
 import tornadofx.View
-import tornadofx.action
 import tornadofx.borderpane
-import tornadofx.button
 import tornadofx.center
 import tornadofx.hbox
 import tornadofx.hgrow
@@ -75,19 +71,9 @@ class PartnersMainView : View() {
         top {
             hgrow = Priority.NEVER
             vgrow = Priority.NEVER
-            vbox {
-                hbox {
-                    button("add partner") {
-                        action {
-                            println("adding prototype partner to model")
-                            fire(PartnerAddedFXEvent(FullPartner.prototype))
-                        }
-                    }
-                }
-                hbox {
-                    paddingAll = 10.0
-                    add(searchView)
-                }
+            hbox {
+                paddingAll = 10.0
+                add(searchView)
             }
         }
         center {

@@ -29,6 +29,10 @@ class Styles : Stylesheet() {
         val clickLinkExternalHoverColor = c("#4B67FF")
 
         val colorImageBigBg = Color.rgb(190, 190, 190)
+        val rowFavorite by cssclass()
+        val rowFavoriteSelected by cssclass()
+        val rowWishlist by cssclass()
+        val rowWishlistSelected by cssclass()
     }
 
     init {
@@ -73,6 +77,18 @@ class Styles : Stylesheet() {
             and(hover) {
                 textFill = clickLinkExternalHoverColor
             }
+        }
+        rowFavorite {
+            backgroundColor += c("#F28F81")
+        }
+        rowFavoriteSelected {
+            backgroundColor += c("#DD4F44")
+        }
+        rowWishlist {
+            backgroundColor += c("#F2E9A9")
+        }
+        rowWishlistSelected {
+            backgroundColor += c("#BEBD45")
         }
 
 //        textArea {
