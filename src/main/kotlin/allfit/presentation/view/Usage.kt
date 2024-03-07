@@ -58,18 +58,18 @@ class UsageView : View() {
 
     override val root = vbox {
         labelDetailMultibind(
-            "Usage",
-            model.usage.map { it.totalCheckins }, model.periodReservations, model.usage.map { it.maxCheckinsInPeriod },
+            prompt = "Usage",
+            model.usage.map { it.totalCheckins }, model.usage.map { it.maxCheckinsInPeriod },
             textColor = colorCheckins
         ) {
-            "${(model.usage.map { it.totalCheckins }.value + model.periodReservations.value)} / ${model.usage.map { it.maxCheckinsInPeriod }.value}"
+            "${(model.usage.map { it.totalCheckins }.value)} / ${model.usage.map { it.maxCheckinsInPeriod }.value}"
         }
         labelDetailMultibind(
             "Reservations",
-            model.usage.map { it.maxReservations }, model.totalReservations,
+            model.usage.map { it.maxReservations }, model.reservationsInTotal,
             textColor = colorReservations
         ) {
-            "${model.totalReservations.get()} / ${model.usage.get().maxReservations}"
+            "${model.reservationsInTotal.get()} / ${model.usage.get().maxReservations}"
         }
         labelDetail(
             "Period",
@@ -79,8 +79,8 @@ class UsageView : View() {
 
         val usageIndicator = DualProgressIndicator(
             colorCheckins, colorReservations,
-            model.usage.map { it.totalCheckins.toDouble() / it.maxCheckinsInPeriod },
-            model.periodReservations.map { it.toDouble() / model.usage.map { it.maxCheckinsInPeriod }.value }
+            model.usage.map { (it.totalCheckins - model.reservationsInPeriod.value).toDouble() / it.maxCheckinsInPeriod },
+            model.reservationsInPeriod.map { it.toDouble() / model.usage.map { it.maxCheckinsInPeriod }.value }
         )
         val periodIndicator = ProgressIndicator(
             colorPeriod, model.usage.map { it.daysUsed(model.today.get()).toDouble() / it.daysTotal() }

@@ -92,13 +92,6 @@ val workout3 = WorkoutEntity(
 )
 private val allWorkouts = listOf(workout1, workout2, workout3)
 
-val reservation1 = ReservationEntity(
-    uuid = UUID.randomUUID(),
-    workoutId = workout1.id,
-    workoutStart = LocalDateTime.now()
-)
-private val allReservations = listOf(reservation1)
-
 private val location1 = LocationEntity(
     id = 1,
     partnerId = partner1.id,
@@ -134,8 +127,13 @@ fun InMemoryWorkoutsRepo.insertMockData() = apply {
     insertAll(allWorkouts)
 }
 
-fun InMemoryReservationsRepo.insertMockData() = apply {
-    insertAll(allReservations)
+fun InMemoryReservationsRepo.insertMockData(mockTodayDate: LocalDateTime?) = apply {
+    val reservation1 = ReservationEntity(
+        uuid = UUID.randomUUID(),
+        workoutId = workout1.id,
+        workoutStart = mockTodayDate ?: LocalDateTime.now(),
+    )
+    insertAll(listOf(reservation1))
 }
 
 fun InMemoryLocationsRepo.insertMockData() = apply {
@@ -149,7 +147,7 @@ fun InMemoryCheckinsRepository.insertMockData() = apply {
 fun InMemoryUsageRepository.insertMockData() = apply {
     upsert(
         UsageEntity(
-            total = 3,
+            total = 2,
             noShows = 1,
             from = LocalDateTime.now().withDayOfMonth(1),
             until = LocalDateTime.now().withDayOfMonth(27),

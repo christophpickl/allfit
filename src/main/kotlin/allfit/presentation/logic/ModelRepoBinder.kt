@@ -45,10 +45,16 @@ class ModelRepoBinder : Controller() {
         usageModel.today.set(clock.now())
         usageModel.usage.set(usage)
         val reservations = reservationsRepo.selectAll()
-        usageModel.periodReservations.set(reservations.count {
+        usageModel.reservationsInPeriod.set(reservations.count {
             usage.period.contains(it.workoutStart.fromUtcToAmsterdamZonedDateTime())
         })
-        usageModel.totalReservations.set(reservations.count())
+        usageModel.reservationsInTotal.set(reservations.count())
+        logg.debug {
+            "Binding usage. " +
+                "Usage total checkins: ${usage.totalCheckins}, " +
+                "total reservations: ${usageModel.reservationsInTotal.get()}, " +
+                "period reservations: ${usageModel.reservationsInPeriod.get()}"
+        }
         return usage
     }
 

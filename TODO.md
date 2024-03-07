@@ -5,12 +5,12 @@
 ### Version 5
 
 * rows are highlighted with colors (favorite=red, wishlist=yellow) for easier recognition
+* bugfix: availability-indicator shows wrong counts (usage, reserved, checkins)
 
 ## Backlog
 
 ### High Prio
 
-* BUG: usage (counts 13/16, although only 3 checkins, 5 reserved)
 * sync available spots
 * BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
