@@ -17,6 +17,7 @@ import allfit.persistence.domain.WorkoutEntity
 import allfit.persistence.domain.WorkoutsRepo
 import allfit.service.ImageStorage
 import allfit.service.toUtcLocalDateTime
+import allfit.sync.core.SyncListenerManager
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.util.UUID
 
@@ -32,16 +33,19 @@ class CheckinsSyncerImpl(
     private val categoriesRepo: CategoriesRepo,
     private val imageStorage: ImageStorage,
     private val singlesRepo: SinglesRepo,
+    private val listeners: SyncListenerManager,
 ) : CheckinsSyncer {
 
     private val log = logger {}
 
     override suspend fun sync() {
-        log.info { "Syncing checkins." }
+        log.info { "Syncing checkins ..." }
+        listeners.onSyncDetail("Syncing checkins ...")
         val toBeInserted = checkinsToBeInserted()
         log.debug { "Inserting ${toBeInserted.size} checkins." }
         syncRequirements(singlesRepo.selectLocation(), toBeInserted)
         checkinsRepo.insertAll(toBeInserted.map { it.toCheckinEntity() })
+        listeners.onSyncDetail(if (toBeInserted.isEmpty()) "No checkins need to be inserted." else "Inserted ${toBeInserted.size} checkins.")
     }
 
     private suspend fun checkinsToBeInserted(): List<CheckinJson> {

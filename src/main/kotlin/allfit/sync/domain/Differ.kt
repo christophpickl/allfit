@@ -44,4 +44,6 @@ object Differ {
 data class DiffReport<INSERT, DELETE>(
     val toInsert: List<INSERT>,
     val toDelete: List<DELETE>,
-)
+) {
+    val somethingHappened = toInsert.isNotEmpty() || toDelete.isNotEmpty()
+}

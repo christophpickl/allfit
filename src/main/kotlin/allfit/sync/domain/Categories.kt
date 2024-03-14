@@ -6,6 +6,7 @@ import allfit.api.models.CategoryJsonDefinition
 import allfit.api.models.PartnersJsonRoot
 import allfit.persistence.domain.CategoriesRepo
 import allfit.persistence.domain.CategoryEntity
+import allfit.sync.core.SyncListenerManager
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
 interface CategoriesSyncer {
@@ -15,14 +16,17 @@ interface CategoriesSyncer {
 class CategoriesSyncerImpl(
     private val client: OnefitClient,
     private val categoriesRepo: CategoriesRepo,
+    private val listeners: SyncListenerManager,
 ) : CategoriesSyncer {
     private val log = logger {}
 
     override suspend fun sync(partners: PartnersJsonRoot) {
         log.debug { "Syncing categories ..." }
-        syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) {
+        listeners.onSyncDetail("Syncing categories ...")
+        val report = syncAny(categoriesRepo, mergedCategories(client.getCategories(), partners)) {
             it.toCategoryEntity()
         }
+        listeners.onSyncDetailReport(report, "categories")
     }
 }
 

@@ -42,7 +42,7 @@ class WorkoutInserterImpl(
     override suspend fun insert(workouts: List<InsertWorkout>, listener: WorkoutInsertListener) {
         val metaFetchById = fetchMetaData(workouts, listener)
 
-        listener.onProgress("Inserting ${workouts.size} workouts into DB.")
+        listener.onProgress("Inserting ${workouts.size} workouts into database.")
         workoutsRepo.insertAll(workouts.map { it.toWorkoutEntity(metaFetchById[it.id]!!) })
     }
 

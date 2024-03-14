@@ -24,12 +24,14 @@ class ReservationsSyncerImpl(
     private val clock: Clock,
     private val workoutInserter: WorkoutInserter,
     private val workoutRepo: WorkoutsRepo,
-    private val syncListeners: SyncListenerManager,
+    private val listeners: SyncListenerManager,
 ) : ReservationsSyncer {
     private val log = logger {}
 
     override suspend fun sync() {
-        log.debug { "Syncing reservations..." }
+        log.debug { "Syncing reservations ..." }
+        listeners.onSyncDetail("Syncing reservations ...")
+
         val reservationsRemote = client.getReservations()
         val reservationsLocal = reservationsRepo.selectAllStartingFrom(clock.now().toUtcLocalDateTime())
 
@@ -45,6 +47,8 @@ class ReservationsSyncerImpl(
         syncDependents(toBeInserted.values.toList())
         reservationsRepo.insertAll(toBeInserted.values.map { it.toReservationEntity() })
         reservationsRepo.deleteAll(toBeDeleted.map { UUID.fromString(it.key) })
+
+        listeners.onSyncDetailReport(DiffReport(toBeInserted.values.toList(), toBeDeleted.values.toList()), "reservations")
     }
 
     private suspend fun syncDependents(reservations: List<ReservationJson>) {
@@ -52,7 +56,7 @@ class ReservationsSyncerImpl(
         val workoutsToBeInserted = reservations.filter { reservation -> !workouts.contains(reservation.workout.id) }
         workoutInserter.insert(
             workoutsToBeInserted.map { it.toInsertWorkout() },
-            syncListeners.toWorkoutInsertListener()
+            listeners.toWorkoutInsertListener()
         )
     }
 }

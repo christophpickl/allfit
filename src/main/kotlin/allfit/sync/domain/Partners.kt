@@ -32,6 +32,7 @@ class PartnersSyncerImpl(
         if (report.toInsert.isEmpty()) {
             listeners.onSyncDetail("No new partners available.")
         } else {
+            listeners.onSyncDetailReport(report, "partners")
             listeners.onSyncDetail("Fetching ${report.toInsert.size} partner images.")
             imageStorage.savePartnerImages(report.toInsert.map {
                 PartnerAndImageUrl(it.id, it.imageUrl)

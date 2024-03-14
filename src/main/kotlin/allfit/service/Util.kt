@@ -69,7 +69,7 @@ suspend fun <T> List<T>.workParallel(
             }
         }.joinAll()
     }
-    percentageProgressCallback(1.0)
+    percentageProgressCallback(1.0) // enforce final "100% done" message
 }
 
 data class Quadrupel<V1, V2, V3, V4>(

@@ -4,41 +4,40 @@
 
 ### Version 5
 
-* rows are highlighted with colors (favorite=red, wishlist=yellow) for easier recognition
+* highlight rows with colors (favorite=red, wishlist=yellow) for easier recognition
 * bugfix: availability-indicator shows wrong counts (usage, reserved, checkins)
-* also show workout details when selecting past visited workout
+* when selecting past visited workout, also show workout details (not only for upcoming workouts)
+* synchronization progress messages improved (more verbose; forced completion message)
 
 ## Backlog
 
 ### High Prio
 
-* sync available spots
+* define text search targets (partner/workout, title/description/notes, teacher, ...)
+* parse "bijzonderheden" (they are shown in the app, and sometimes important!)
 
 ### Medium Prio
 
+* when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
 * ability to group/link partners together
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past
   checkins)
-* UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
-* define text search targets (partner/workout, title/description/notes, teacher, ...)
-* improve progress tracking, when 100% force a message, don't just stay with 0% and then next step
-* BUG: when skip through date, period-indicator grows horizontally! but... there is a "specific unknown condition"!
-* parse "bijzonderheden" (they are shown in the app, and sometimes important!)
-* use GitHub actions (to verify; maybe even release in the future?!)
 * how to get bold font via CSS working?!
-* when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
+* UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
+* use GitHub actions (to verify; maybe even release in the future?!)
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)
 * listen to shortcut for tab selection good enough, yet the key listener could be even more global (e.g. when in
   textfield "stuck")
+* play sound when sync is done (or say something funny like "sync is done master")
 * TESTS: OneFitHttpClient, WorkoutInserterImpl, ReservationsSyncerIntegrationTest
 * presync all; except workout meta and partner images 2+
-* real time sync (?); while syncing, update DB and UI (no restart needed!)
 * display location on map
 * ad search views: when disabled, make everything transparent; when enabled, make it opaque
-* play sound when sync is done (or say something funny like "sync is done master")
 * STYLE: padding within htmlviews remove (especially left/right)
+* real time sync (?); while syncing, update DB and UI (no restart needed!)
+* sync available spots (need to sync ALL workouts; yet gladly without metadata)
 
 ### Low Prio
 

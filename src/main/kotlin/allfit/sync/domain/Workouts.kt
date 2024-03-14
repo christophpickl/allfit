@@ -28,7 +28,7 @@ class WorkoutsSyncerImpl(
     private val reservationsRepo: ReservationsRepo,
     private val clock: Clock,
     private val workoutInserter: WorkoutInserter,
-    private val syncListeners: SyncListenerManager,
+    private val listeners: SyncListenerManager,
     private val singlesRepo: SinglesRepo,
 ) : WorkoutsSyncer {
 
@@ -36,9 +36,10 @@ class WorkoutsSyncerImpl(
 
     override suspend fun sync() {
         log.debug { "Syncing workouts..." }
+        val insertWorkouts = getWorkoutsToBeSynced().map { it.toInsertWorkout() }
         workoutInserter.insert(
-            workouts = getWorkoutsToBeSynced().map { it.toInsertWorkout() },
-            listener = syncListeners.toWorkoutInsertListener()
+            workouts = insertWorkouts,
+            listener = listeners.toWorkoutInsertListener()
         )
         deleteOutdated()
     }
@@ -83,11 +84,13 @@ class WorkoutsSyncerImpl(
 
     private fun deleteOutdated() {
         reservationsRepo.deleteAllBefore(clock.now().toUtcLocalDateTime())
-        val workoutIdsWithCheckin = checkinsRepository.selectAll().map { it.workoutId }
-        val workoutIdsToDelete = workoutsRepo.selectAllBefore(clock.todayBeginOfDay().toUtcLocalDateTime())
-            .filter { !workoutIdsWithCheckin.contains(it.id) }.map { it.id }
-        log.debug { "Deleting ${workoutIdsToDelete.size} outdated workouts." }
-        workoutsRepo.deleteAll(workoutIdsToDelete)
+        val workoutIdsWithCheckin = checkinsRepository.selectAll().toSet().mapNotNull { it.workoutId }
+        val pastWorkoutsWithoutCheckin = workoutsRepo
+            .selectAllBefore(clock.todayBeginOfDay().toUtcLocalDateTime())
+            .filter { !workoutIdsWithCheckin.contains(it.id) }
+        log.debug { "Deleting ${pastWorkoutsWithoutCheckin.size} outdated workouts." }
+        workoutsRepo.deleteAll(pastWorkoutsWithoutCheckin.map { it.id })
+        listeners.onSyncDetail("Deleted ${pastWorkoutsWithoutCheckin.size} outdated workouts.")
     }
 }
 
