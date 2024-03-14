@@ -2,12 +2,9 @@
 
 ## Version Hisotry
 
-### Version 5
+### Version 6
 
-* highlight rows with colors (favorite=red, wishlist=yellow) for easier recognition
-* bugfix: availability-indicator shows wrong counts (usage, reserved, checkins)
-* when selecting past visited workout, also show workout details (not only for upcoming workouts)
-* synchronization progress messages improved (more verbose; forced completion message)
+* ...
 
 ## Backlog
 
