@@ -44,7 +44,7 @@ class CompositeSyncerTest : StringSpec() {
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = mockk()
-        categoriesSyncer = CategoriesSyncerImpl(client, ExposedCategoriesRepo)
+        categoriesSyncer = CategoriesSyncerImpl(client, ExposedCategoriesRepo, InMemorySyncListenerManager())
         partnersSyncer = mockk()
         locationsSyncer = mockk()
         workoutsSyncer = mockk()

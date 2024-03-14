@@ -23,6 +23,7 @@ import allfit.persistence.testInfra.workoutEntity
 import allfit.service.InMemoryImageStorage
 import allfit.service.PartnerAndImageUrl
 import allfit.service.toUtcLocalDateTime
+import allfit.sync.core.InMemorySyncListenerManager
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -58,7 +59,8 @@ class CheckinsSyncerTest : StringSpec() {
             partnersRepo,
             categoriesRepo,
             imageStorage,
-            InMemorySinglesRepo()
+            InMemorySinglesRepo(),
+            InMemorySyncListenerManager(),
         )
     }
 

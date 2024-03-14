@@ -7,6 +7,7 @@ import allfit.api.models.partnerLocationJson
 import allfit.api.models.partnersJsonRoot
 import allfit.persistence.domain.InMemoryLocationsRepo
 import allfit.persistence.domain.LocationEntity
+import allfit.sync.core.InMemorySyncListenerManager
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -22,7 +23,7 @@ class LocationsSyncerTest : StringSpec() {
 
     override suspend fun beforeEach(testCase: TestCase) {
         locationsRepo = InMemoryLocationsRepo()
-        syncer = LocationsSyncerImpl(locationsRepo)
+        syncer = LocationsSyncerImpl(locationsRepo, InMemorySyncListenerManager())
     }
 
     init {

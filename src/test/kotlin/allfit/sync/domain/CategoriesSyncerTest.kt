@@ -10,6 +10,7 @@ import allfit.api.models.partnerSubCategoryJson
 import allfit.api.models.partnersJsonRoot
 import allfit.persistence.domain.CategoryEntity
 import allfit.persistence.domain.InMemoryCategoriesRepo
+import allfit.sync.core.InMemorySyncListenerManager
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.collections.shouldBeSingleton
@@ -33,7 +34,7 @@ class CategoriesSyncerTest : StringSpec() {
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         categoriesRepo = InMemoryCategoriesRepo()
-        syncer = CategoriesSyncerImpl(client, categoriesRepo)
+        syncer = CategoriesSyncerImpl(client, categoriesRepo, InMemorySyncListenerManager())
     }
 
     init {
