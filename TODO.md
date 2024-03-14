@@ -6,13 +6,13 @@
 
 * rows are highlighted with colors (favorite=red, wishlist=yellow) for easier recognition
 * bugfix: availability-indicator shows wrong counts (usage, reserved, checkins)
+* also show workout details when selecting past visited workout
 
 ## Backlog
 
 ### High Prio
 
 * sync available spots
-* BUG? when click on "visited workouts", no details shown?! (also check if exception is displayed!)
 
 ### Medium Prio
 

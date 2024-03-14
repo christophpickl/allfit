@@ -101,7 +101,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         isReserved = false,
         wasVisited = false,
     )
-    private val visitedWorkoutGym = SimpleWorkout(
+    private val pastWorkoutGym = SimpleWorkout(
         id = 6,
         partnerId = partnerGymId,
         name = "Open Gym",
@@ -127,10 +127,23 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         isReserved = false,
         wasVisited = false,
     )
+    private val pastYogaWorkout = SimpleWorkout(
+        id = 8,
+        partnerId = partnerYogaId,
+        name = "Visited",
+        about = "",
+        specifics = "",
+        teacher = "",
+        address = "",
+        date = DateRange(defaultDateTime.minusMonths(1), defaultDateTime.minusMonths(1)),
+        url = "https://nu.nl",
+        isReserved = false,
+        wasVisited = true,
+    )
 
     private val upcomingSimpleWorkouts =
         listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutYogaCold, workoutGym, workoutJump)
-    private val pastSimpleWorkouts = listOf(visitedWorkoutGym)
+    private val pastSimpleWorkouts = listOf(pastWorkoutGym, pastYogaWorkout)
 
     private val partnerEms = FullPartner(
         SimplePartner(
@@ -161,7 +174,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             id = partnerYogaId,
             name = "Yoga School of the north with lots of other offers because they can't do anything else",
             categories = listOf("Yoga", "Breathwork"),
-            checkins = 0,
+            checkins = 1,
             rating = 5,
             isFavorited = true,
             isWishlisted = false,
@@ -177,7 +190,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             hasDropins = Trilean.Unknown,
             hasWorkouts = Trilean.Unknown,
         ),
-        pastCheckins = emptyList(),
+        pastCheckins = listOf(Checkin.WorkoutCheckin(pastYogaWorkout)),
         upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot, workoutYogaCold)
     )
     private val partnerGym = FullPartner(
@@ -204,9 +217,9 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             hasDropins = Trilean.Yes,
             hasWorkouts = Trilean.No,
         ),
-        listOf(
+        pastCheckins = listOf(
             Checkin.DropinCheckin(defaultDateTime.minusDays(7)),
-            Checkin.WorkoutCheckin(visitedWorkoutGym)
+            Checkin.WorkoutCheckin(pastWorkoutGym)
         ),
         upcomingWorkouts = listOf(workoutGym)
     )

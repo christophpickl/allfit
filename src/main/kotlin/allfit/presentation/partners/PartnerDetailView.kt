@@ -172,16 +172,16 @@ class PartnerDetailView(
             hgrow = Priority.ALWAYS
             vbox {
                 labelPrompt("Upcoming Workouts")
-                workoutTable(selectedPartner.upcomingWorkouts, ::fireDelegate, clock)
+                workoutTable(selectedPartner.upcomingWorkouts, ::workoutSelectedDelegate, clock)
             }
             vbox {
                 labelPrompt("Past Checkins")
-                checkinTable(selectedPartner.pastCheckins, clock)
+                checkinTable(selectedPartner.pastCheckins, ::workoutSelectedDelegate, clock)
             }
         }
     }
 
-    private fun fireDelegate(workout: SimpleWorkout) {
+    private fun workoutSelectedDelegate(workout: SimpleWorkout) {
         fire(PartnerWorkoutSelectedFXEvent(workout, selectedThrough))
     }
 }
