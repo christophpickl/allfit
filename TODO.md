@@ -5,12 +5,12 @@
 ### Version 6
 
 * BUGFIX: wrong workout reservation icon when scrolling.
+* BUGFIX: wrong workout background row color when scrolling.
 
 ## Backlog
 
 ### High Prio
 
-* BUGFIX: wrong workout background row color when scrolling.
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
 

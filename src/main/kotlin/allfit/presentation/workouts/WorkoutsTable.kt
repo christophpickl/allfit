@@ -42,27 +42,8 @@ class WorkoutsTable(
         smartResize()
         selectionModel.selectionMode = SelectionMode.SINGLE
 
-        setRowFactory {
-            object : TableRow<FullWorkout>() {
-                override fun updateItem(workout: FullWorkout?, empty: Boolean) {
-                    super.updateItem(workout, empty)
-                    if (!empty && workout != null) {
-                        if (workout.isWishlisted) {
-                            toggleClass(Styles.rowWishlist, !isSelected)
-                            toggleClass(Styles.rowWishlistSelected, isSelected)
-                        } else if (workout.isFavorited) {
-                            toggleClass(Styles.rowFavorite, !isSelected)
-                            toggleClass(Styles.rowFavoriteSelected, isSelected)
-                        }
-                    } else {
-                        removeClass(
-                            Styles.rowWishlist, Styles.rowWishlistSelected,
-                            Styles.rowFavorite, Styles.rowFavoriteSelected,
-                        )
-                    }
-                }
-            }
-        }
+        setRowFactory { WorkoutColoredRow }
+
         imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.partner.imageProperty() }
         column<FullWorkout, String>("Workout") { it.value.nameProperty() }.remainingWidth().weightedWidth(0.5)
         column<FullWorkout, String>("Partner") { it.value.partner.nameProperty() }.remainingWidth().weightedWidth(0.5)
@@ -90,5 +71,34 @@ class WorkoutsTable(
     // has to be invoked after init
     fun applySort() {
         applyInitSort(dateColumn)
+    }
+}
+
+
+object WorkoutColoredRow : TableRow<FullWorkout>() {
+    override fun updateItem(workout: FullWorkout?, empty: Boolean) {
+        super.updateItem(workout, empty)
+        if (!empty && workout != null) {
+            if (workout.isWishlisted) {
+                toggleClass(Styles.rowWishlist, !isSelected)
+                toggleClass(Styles.rowWishlistSelected, isSelected)
+                removeClass(Styles.rowFavorite, Styles.rowFavoriteSelected)
+            } else if (workout.isFavorited) {
+                toggleClass(Styles.rowFavorite, !isSelected)
+                toggleClass(Styles.rowFavoriteSelected, isSelected)
+                removeClass(Styles.rowWishlist, Styles.rowWishlistSelected)
+            } else {
+                removeAllClasses()
+            }
+        } else {
+            removeAllClasses()
+        }
+    }
+
+    private fun removeAllClasses() {
+        removeClass(
+            Styles.rowWishlist, Styles.rowWishlistSelected,
+            Styles.rowFavorite, Styles.rowFavoriteSelected,
+        )
     }
 }
