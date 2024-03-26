@@ -1,13 +1,12 @@
 package allfit.presentation.models
 
 import allfit.domain.Location
+import allfit.domain.Taggable
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.search.HasCheckins
 import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
-import allfit.presentation.search.IsFavoritable
-import allfit.presentation.search.IsWishlistable
 import allfit.service.Images
 import allfit.service.ensureMaxLength
 import java.time.ZonedDateTime
@@ -16,7 +15,7 @@ import javafx.scene.image.Image
 import tornadofx.getProperty
 import tornadofx.property
 
-interface PartnerCustomAttributesRead : IsFavoritable, IsWishlistable {
+interface PartnerCustomAttributesRead : Taggable {
     val rating: Rating
     val note: String
     val officialWebsite: String?
@@ -150,27 +149,27 @@ class SimplePartner(
 
     override fun toString() =
         "SimplePartner[id=$id, name=$name, checkins=$checkins, rating=$rating, isFavorited=$isFavorited, " +
-                "isWishlisted=$isWishlisted, isHidden=$isHidden, url=$url, categories=$categories, " +
-                "facilities=$facilities, note=${note.ensureMaxLength(10)}, " +
-                "description=${description.ensureMaxLength(10)}, image]"
+            "isWishlisted=$isWishlisted, isHidden=$isHidden, url=$url, categories=$categories, " +
+            "facilities=$facilities, note=${note.ensureMaxLength(10)}, " +
+            "description=${description.ensureMaxLength(10)}, image]"
 
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (this === other) return true
         if (other !is SimplePartner) return false
         return id == other.id &&
-                name == other.name &&
-                url == other.url &&
-                categories == other.categories &&
-                note == other.note &&
-                description == other.description &&
-                facilities == other.facilities &&
-                checkins == other.checkins &&
-                rating == other.rating &&
-                isFavorited == other.isFavorited &&
-                isWishlisted == other.isWishlisted &&
-                isHidden == other.isHidden &&
-                image == other.image
+            name == other.name &&
+            url == other.url &&
+            categories == other.categories &&
+            note == other.note &&
+            description == other.description &&
+            facilities == other.facilities &&
+            checkins == other.checkins &&
+            rating == other.rating &&
+            isFavorited == other.isFavorited &&
+            isWishlisted == other.isWishlisted &&
+            isHidden == other.isHidden &&
+            image == other.image
     }
 
     override fun hashCode() = id.hashCode()

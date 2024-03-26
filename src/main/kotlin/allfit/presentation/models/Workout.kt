@@ -1,13 +1,12 @@
 package allfit.presentation.models
 
+import allfit.domain.Taggable
 import allfit.presentation.logic.StaticIcon
 import allfit.presentation.logic.StaticIconStorage
 import allfit.presentation.manageEnum
 import allfit.presentation.search.HasCheckins
 import allfit.presentation.search.HasRating
 import allfit.presentation.search.HasTextSearchable
-import allfit.presentation.search.IsFavoritable
-import allfit.presentation.search.IsWishlistable
 import allfit.presentation.tornadofx.Imageable
 import allfit.service.beginOfDay
 import allfit.service.ensureMaxLength
@@ -94,23 +93,23 @@ class SimpleWorkout(
 
     override fun toString() =
         "SimpleWorkout[name=$name, id=$id, partnerId=$partnerId, isReserved=$isReserved, date=$date, url=$url, " +
-                "address=$address, teacher=$teacher, about=${about.ensureMaxLength(10)}, " +
-                "specifics=${specifics.ensureMaxLength(10)}, image]"
+            "address=$address, teacher=$teacher, about=${about.ensureMaxLength(10)}, " +
+            "specifics=${specifics.ensureMaxLength(10)}, image]"
 
     override fun equals(other: Any?): Boolean {
         if (other == null) return false
         if (this === other) return true
         if (other !is SimpleWorkout) return false
         return id == other.id &&
-                partnerId == other.partnerId &&
-                name == other.name &&
-                about == other.about &&
-                specifics == other.specifics &&
-                teacher == other.teacher &&
-                isReserved == other.isReserved &&
-                url == other.url &&
-                address == other.address &&
-                date == other.date
+            partnerId == other.partnerId &&
+            name == other.name &&
+            about == other.about &&
+            specifics == other.specifics &&
+            teacher == other.teacher &&
+            isReserved == other.isReserved &&
+            url == other.url &&
+            address == other.address &&
+            date == other.date
     }
 
     override fun hashCode() = id.hashCode()
@@ -133,8 +132,7 @@ data class FullWorkout(
     HasCheckins by partner,
     HasTextSearchable,
     HasRating by partner,
-    IsFavoritable by partner,
-    IsWishlistable by partner {
+    Taggable by partner {
 
     override val searchableTerms = listOf(name, partner.name, teacher)
 

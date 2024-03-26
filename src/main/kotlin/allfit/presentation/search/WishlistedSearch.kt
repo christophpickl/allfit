@@ -1,12 +1,9 @@
 package allfit.presentation.search
 
+import allfit.domain.IsWishlistable
 import allfit.presentation.components.wishlistToggleButton
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
-
-interface IsWishlistable {
-    val isWishlisted: Boolean
-}
 
 data class WishlistedSearchRequest<T : IsWishlistable>(
     val operand: Boolean,

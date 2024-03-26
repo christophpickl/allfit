@@ -1,12 +1,9 @@
 package allfit.presentation.search
 
+import allfit.domain.IsFavoritable
 import allfit.presentation.components.favoriteToggleButton
 import javafx.scene.control.ToggleButton
 import tornadofx.singleAssign
-
-interface IsFavoritable {
-    val isFavorited: Boolean
-}
 
 data class FavoritedSearchRequest<T : IsFavoritable>(
     val operand: Boolean,

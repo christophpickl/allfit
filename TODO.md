@@ -6,6 +6,7 @@
 
 * BUGFIX: wrong workout reservation icon when scrolling.
 * BUGFIX: wrong workout background row color when scrolling.
+* Change background row color also for partners (wishlisted/favorited).
 
 ## Backlog
 
@@ -13,6 +14,8 @@
 
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
+* Given table row selected with wishlist/favorite, When table loses focus => Then change bg color (like default
+  behavior)
 
 ### Medium Prio
 

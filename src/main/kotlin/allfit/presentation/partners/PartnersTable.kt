@@ -2,6 +2,7 @@ package allfit.presentation.partners
 
 import allfit.presentation.HidePartnerFXEvent
 import allfit.presentation.PresentationConstants
+import allfit.presentation.TaggableColoredRow
 import allfit.presentation.UnhidePartnerFXEvent
 import allfit.presentation.models.FullPartner
 import allfit.presentation.models.Usage
@@ -39,7 +40,8 @@ class PartnersTable(
     init {
         smartResize()
         selectionModel.selectionMode = SelectionMode.SINGLE
-
+        setRowFactory { TaggableColoredRow() }
+        
         imageColumn(maxWidth = PresentationConstants.tableImageWidth) { it.value.imageProperty() }
 
         nameColumn = column<FullPartner, String>("Name") { it.value.nameProperty() }.remainingWidth().weightedWidth(0.5)
