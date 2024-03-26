@@ -3,7 +3,7 @@
 ### Make a Release
 
 1. run all tests to ensure build will go through
-2. make a new local release and smoke test it: `bin/local_release.sh`
+2. IMPORTANT (don't skip this): make a new local release and smoke test it: `bin/local_release.sh`
 3. execute the `bin/prod_release.sh` script
 4. create a [new release in github](https://github.com/christophpickl/allfit/releases/new).
    1. select the latest tag

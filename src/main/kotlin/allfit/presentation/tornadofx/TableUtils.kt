@@ -54,6 +54,8 @@ fun <S> TableView<S>.imageColumn(
             if (isTrue) {
                 alignment = Pos.CENTER
                 graphic = imageview(image)
+            } else {
+                graphic = null
             }
         }
 }

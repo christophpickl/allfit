@@ -16,6 +16,7 @@ import allfit.presentation.partners.PartnerModifications
 import allfit.service.Clock
 import allfit.service.InMemoryImageStorage
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.atomic.AtomicInteger
 import javafx.scene.image.Image
 
 class InMemoryDataStorage(clock: Clock) : DataStorage {
@@ -36,8 +37,9 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
     private val partnerGymId = 3
     private val partnerFoobarId = 4
 
+    private val workoutIdCounter = AtomicInteger(1)
     private val workoutEms = SimpleWorkout(
-        id = 1,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerEmsId,
         name = "EMS",
         about = "About <b>EMS</b> HTML.",
@@ -50,7 +52,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = false,
     )
     private val workoutYogaYin = SimpleWorkout(
-        id = 2,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerYogaId,
         name = "Yin Yoga was sometimes yin yoga but sometimes it is more cold than hot you know",
         about = "About yoga.",
@@ -63,7 +65,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = false,
     )
     private val workoutYogaHot = SimpleWorkout(
-        id = 3,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerYogaId,
         name = "Hot Yoga",
         about = "",
@@ -76,7 +78,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = false,
     )
     private val workoutGym = SimpleWorkout(
-        id = 4,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerGymId,
         name = "Open Gym",
         about = "",
@@ -89,7 +91,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = false,
     )
     private val workoutJump = SimpleWorkout(
-        id = 5,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerFoobarId,
         name = "Jumping",
         about = "",
@@ -102,7 +104,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = false,
     )
     private val pastWorkoutGym = SimpleWorkout(
-        id = 6,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerGymId,
         name = "Open Gym",
         about = "",
@@ -115,7 +117,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = true,
     )
     private val workoutYogaCold = SimpleWorkout(
-        id = 7,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerYogaId,
         name = "Cold Yoga",
         about = "",
@@ -128,7 +130,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = false,
     )
     private val pastYogaWorkout = SimpleWorkout(
-        id = 8,
+        id = workoutIdCounter.getAndIncrement(),
         partnerId = partnerYogaId,
         name = "Visited",
         about = "",
@@ -141,8 +143,25 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
         wasVisited = true,
     )
 
-    private val upcomingSimpleWorkouts =
-        listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutYogaCold, workoutGym, workoutJump)
+    private val yogaArtificialWorkouts = 1.rangeTo(30).map {
+        val startDate = defaultDateTime.plusDays(3).plusHours(it.toLong())
+        SimpleWorkout(
+            id = workoutIdCounter.getAndIncrement(),
+            partnerId = partnerYogaId,
+            name = "Workout #$it",
+            about = "",
+            specifics = "",
+            teacher = "",
+            address = "",
+            date = DateRange(startDate, startDate.plusMinutes(45)),
+            url = "https://nu.nl",
+            isReserved = false,
+            wasVisited = false,
+        )
+    }
+
+    private val upcomingSimpleWorkouts = listOf(workoutEms, workoutYogaYin, workoutYogaHot, workoutYogaCold, workoutGym, workoutJump) + yogaArtificialWorkouts
+
     private val pastSimpleWorkouts = listOf(pastWorkoutGym, pastYogaWorkout)
 
     private val partnerEms = FullPartner(
@@ -191,7 +210,7 @@ class InMemoryDataStorage(clock: Clock) : DataStorage {
             hasWorkouts = Trilean.Unknown,
         ),
         pastCheckins = listOf(Checkin.WorkoutCheckin(pastYogaWorkout)),
-        upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot, workoutYogaCold)
+        upcomingWorkouts = listOf(workoutYogaYin, workoutYogaHot, workoutYogaCold) + yogaArtificialWorkouts
     )
     private val partnerGym = FullPartner(
         SimplePartner(
