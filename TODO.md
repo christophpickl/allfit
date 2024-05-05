@@ -14,8 +14,6 @@
 
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
-* Given table row selected with wishlist/favorite, When table loses focus => Then change bg color (like default
-  behavior)
 
 ### Medium Prio
 
@@ -39,6 +37,8 @@
 * STYLE: padding within htmlviews remove (especially left/right)
 * real time sync (?); while syncing, update DB and UI (no restart needed!)
 * sync available spots (need to sync ALL workouts; yet gladly without metadata)
+* Given table row selected with wishlist/favorite, When table loses focus => Then change bg color (like default
+  behavior)
 
 ### Low Prio
 
