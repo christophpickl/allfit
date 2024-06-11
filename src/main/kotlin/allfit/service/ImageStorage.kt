@@ -1,5 +1,6 @@
 package allfit.service
 
+import allfit.persistence.domain.PartnerEntity
 import allfit.presentation.PresentationConstants
 import allfit.sync.core.SyncListenerManager
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
@@ -219,6 +220,12 @@ private fun File.saveAndLogOrDefault(imageBinaryData: ByteArray?) {
 data class PartnerAndImageUrl(
     val partnerId: Int,
     val imageUrl: String?,
+) {
+    companion object
+}
+
+fun PartnerEntity.toPartnerAndImageUrl() = PartnerAndImageUrl(
+    partnerId = id, imageUrl = imageUrl
 )
 
 class PartnerAndImageBytes(

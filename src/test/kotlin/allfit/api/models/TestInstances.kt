@@ -17,6 +17,8 @@ import io.kotest.property.arbitrary.uuid
 import java.time.ZonedDateTime
 import java.util.Random
 
+fun Arb.Companion.slug() = string(minSize = 1, maxSize = 8, codepoints = Codepoint.alphanumeric()).next()
+
 fun Arb.Companion.categoryJson() = arbitrary {
     CategoryJson(
         id = int(min = 1).next(),
@@ -202,6 +204,11 @@ fun Arb.Companion.workoutReservationJson() = arbitrary {
 fun Arb.Companion.workoutReservationPartnerJson() = arbitrary {
     WorkoutReservationPartnerJson(
         id = int(min = 1).next(),
+        name = string().next(),
+        slug = slug(),
+        waitlist_enabled = false,
+        header_image = null,
+        category = Arb.partnerSubCategoryJson().next(),
     )
 }
 
@@ -233,12 +240,11 @@ fun Arb.Companion.checkinJsonDropin() = arbitrary {
     )
 }
 
-
 fun Arb.Companion.workoutCheckinJson() = arbitrary {
     WorkoutCheckinJson(
         id = int(min = 1).next(),
         name = string(minSize = 1, maxSize = 8).next(),
-        slug = string(minSize = 1, maxSize = 8, codepoints = Codepoint.alphanumeric()).next(),
+        slug = slug(),
         from = SystemClock.now(),
         till = SystemClock.now(),
         partner = partnerWorkoutCheckinJson().next(),

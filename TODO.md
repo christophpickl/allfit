@@ -4,16 +4,20 @@
 
 ### Version 6
 
-* BUGFIX: wrong workout reservation icon when scrolling.
-* BUGFIX: wrong workout background row color when scrolling.
-* Change background row color also for partners (wishlisted/favorited).
+* BUGFIX: if reservation made for other city (through app), then sync will fail as no partner found with associated reserved workout.
 
 ## Backlog
 
 ### High Prio
 
+* when syncing usage (reservations) then update immediately in UI (without restart necessary)
+* BUGFIX: the app.zip should only contain the app file (not the build/artifacts folders)
+* BUGFIX: wrong workout reservation icon when scrolling.
+* BUGFIX: wrong workout background row color when scrolling.
+* Change background row color also for partners (wishlisted/favorited).
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
 * parse "bijzonderheden" (they are shown in the app, and sometimes important!)
+* filter partners: is hidden
 
 ### Medium Prio
 

@@ -31,7 +31,7 @@ fun syncModule(config: AppConfig) = module {
     single<PartnersSyncer> { PartnersSyncerImpl(get(), get(), get(), get()) }
     single<LocationsSyncer> { LocationsSyncerImpl(get(), get()) }
     single<WorkoutsSyncer> { WorkoutsSyncerImpl(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    single<ReservationsSyncer> { ReservationsSyncerImpl(get(), get(), get(), get(), get(), get()) }
+    single<ReservationsSyncer> { ReservationsSyncerImpl(get(), get(), get(), get(), get(), get(), get(), get()) }
     single<CheckinsSyncer> { CheckinsSyncerImpl(get(), get(), get(), get(), get(), get(), get(), get()) }
     single<SyncListenerManager> { SyncListenerManagerImpl() }
     single<Syncer> {

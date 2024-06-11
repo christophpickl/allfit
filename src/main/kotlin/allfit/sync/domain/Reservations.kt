@@ -2,14 +2,9 @@ package allfit.sync.domain
 
 import allfit.api.OnefitClient
 import allfit.api.models.ReservationJson
-import allfit.persistence.domain.ReservationEntity
-import allfit.persistence.domain.ReservationsRepo
-import allfit.persistence.domain.WorkoutsRepo
-import allfit.service.Clock
-import allfit.service.InsertWorkout
-import allfit.service.WorkoutInserter
-import allfit.service.toUtcLocalDateTime
-import allfit.service.toWorkoutInsertListener
+import allfit.api.models.WorkoutReservationPartnerJson
+import allfit.persistence.domain.*
+import allfit.service.*
 import allfit.sync.core.SyncListenerManager
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import java.util.UUID
@@ -23,6 +18,8 @@ class ReservationsSyncerImpl(
     private val reservationsRepo: ReservationsRepo,
     private val clock: Clock,
     private val workoutInserter: WorkoutInserter,
+    private val partnerInserter: PartnerInserter,
+    private val categoriesRepo: CategoriesRepo,
     private val workoutRepo: WorkoutsRepo,
     private val listeners: SyncListenerManager,
 ) : ReservationsSyncer {
@@ -54,12 +51,55 @@ class ReservationsSyncerImpl(
     private suspend fun syncDependents(reservations: List<ReservationJson>) {
         val workouts = workoutRepo.selectAllForIds(reservations.map { it.workout.id }).map { it.id }
         val workoutsToBeInserted = reservations.filter { reservation -> !workouts.contains(reservation.workout.id) }
+        syncPartners(workoutsToBeInserted)
+
         workoutInserter.insert(
             workoutsToBeInserted.map { it.toInsertWorkout() },
             listeners.toWorkoutInsertListener()
         )
     }
+
+    private suspend fun syncPartners(workoutsToBeInserted: List<ReservationJson>) {
+        val existingPartnerIds = partnerInserter.selectAllIds().toSet()
+        val partnersToInsert = workoutsToBeInserted
+            .filter { !existingPartnerIds.contains(it.workout.partner.id) }
+            // TODO simplify
+//            .map { it.workout.partner }
+//            .distinctBy { it.id }
+            .associate { it.workout.partner.id to it.workout.partner }
+            .map { it.value }
+
+        val existingCategoryIds = categoriesRepo.selectAll().map { it.id }.toSet()
+        val categoriesToInsert = partnersToInsert.map { it.category }.distinctBy { it.id }.filter { !existingCategoryIds.contains(it.id) }
+
+        categoriesRepo.insertAll(categoriesToInsert.map { it.toCategoryEntity() })
+        partnerInserter.insertAllWithImage(partnersToInsert.map { it.toPartnerEntity() })
+    }
 }
+
+private fun WorkoutReservationPartnerJson.toPartnerEntity() =
+    PartnerEntity(
+        id = id,
+        primaryCategoryId = category.id,
+        secondaryCategoryIds = emptyList(),
+        name = name,
+        slug = slug,
+        description = "No description available as this partner was not on the main database but was synced via a reserved workout -most probably outside of your configured location?",
+        facilities = "",
+        imageUrl = header_image?.orig,
+        hasDropins = null,
+        hasWorkouts = null,
+
+        // custom fields:
+        note = "",
+        officialWebsite = null,
+        rating = 0,
+        isDeleted = false,
+        isFavorited = false,
+        isHidden = false,
+        isWishlisted = false,
+        locationShortCode = "???",
+    )
 
 private fun ReservationJson.toInsertWorkout(): InsertWorkout = InsertWorkout(
     id = workout.id,

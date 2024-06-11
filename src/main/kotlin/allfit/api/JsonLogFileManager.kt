@@ -30,8 +30,10 @@ class JsonLogFileManagerImpl : JsonLogFileManager {
 
     private val log = logger {}
 
-    override fun save(file: JsonLogFileName, jsonString: String) {
-        File(FileResolver.resolve(DirectoryEntry.JsonLogs), file.fileName).writeText(jsonString)
+    override fun save(jsonFile: JsonLogFileName, jsonString: String) {
+        val saveFile = File(FileResolver.resolve(DirectoryEntry.JsonLogs), jsonFile.fileName)
+        // TODO if file already exists, try in loop next one by adding some suffix to it
+        saveFile.writeText(jsonString)
     }
 
     override fun deleteOldLogs() {

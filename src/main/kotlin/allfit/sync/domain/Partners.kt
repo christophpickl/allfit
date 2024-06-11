@@ -8,6 +8,7 @@ import allfit.persistence.domain.PartnersRepo
 import allfit.persistence.domain.SinglesRepo
 import allfit.service.ImageStorage
 import allfit.service.PartnerAndImageUrl
+import allfit.service.toPartnerAndImageUrl
 import allfit.sync.core.SyncListenerManager
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 
@@ -35,7 +36,7 @@ class PartnersSyncerImpl(
             listeners.onSyncDetailReport(report, "partners")
             listeners.onSyncDetail("Fetching ${report.toInsert.size} partner images.")
             imageStorage.savePartnerImages(report.toInsert.map {
-                PartnerAndImageUrl(it.id, it.imageUrl)
+                it.toPartnerAndImageUrl()
             })
         }
     }

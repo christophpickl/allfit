@@ -7,20 +7,7 @@ import allfit.persistence.persistenceModule
 import allfit.presentation.UiPreSyncer
 import allfit.presentation.logic.ExposedDataStorage
 import allfit.presentation.logic.InMemoryDataStorage
-import allfit.service.Clock
-import allfit.service.DirectoryEntry
-import allfit.service.DummyDayClock
-import allfit.service.FileResolver
-import allfit.service.FileSystemImageStorage
-import allfit.service.ImageStorage
-import allfit.service.JavaPrefs
-import allfit.service.NoopVersionChecker
-import allfit.service.OnlineVersionChecker
-import allfit.service.Prefs
-import allfit.service.SystemClock
-import allfit.service.VersionChecker
-import allfit.service.WorkoutInserter
-import allfit.service.WorkoutInserterImpl
+import allfit.service.*
 import allfit.sync.syncModule
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import org.koin.dsl.module
@@ -51,6 +38,7 @@ fun rootModule(config: AppConfig, onefitClient: OnefitClient) = module {
     single<JsonLogFileManager> { JsonLogFileManagerImpl() }
     single<Prefs> { JavaPrefs("allfit" + (if (config.isDevMode) "-dev" else "")) }
     single<WorkoutInserter> { WorkoutInserterImpl(get(), get()) }
+    single<PartnerInserter> { PartnerInserterImpl(get(), get()) }
     single<VersionChecker> {
         if (config.mockClient) NoopVersionChecker else OnlineVersionChecker()
     }

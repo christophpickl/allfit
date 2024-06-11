@@ -3,20 +3,14 @@ package allfit.sync.domain
 import allfit.TestDates
 import allfit.api.InMemoryOnefitClient
 import allfit.api.models.ReservationJson
+import allfit.api.models.WorkoutReservationJson
 import allfit.api.models.reservationJson
 import allfit.api.models.reservationsJsonRoot
-import allfit.persistence.domain.ExposedReservationsRepo
-import allfit.persistence.domain.ExposedWorkoutsRepo
-import allfit.persistence.domain.InMemoryReservationsRepo
-import allfit.persistence.domain.InMemoryWorkoutsRepo
-import allfit.persistence.domain.ReservationEntity
+import allfit.persistence.domain.*
 import allfit.persistence.testInfra.DbListener
 import allfit.persistence.testInfra.ExposedTestRepo
 import allfit.persistence.testInfra.reservationEntity
-import allfit.service.InMemoryWorkoutInserter
-import allfit.service.InsertWorkout
-import allfit.service.WorkoutInserterImpl
-import allfit.service.toUtcLocalDateTime
+import allfit.service.*
 import allfit.sync.core.InMemorySyncListenerManager
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
@@ -38,16 +32,27 @@ class ReservationsSyncerTest : StringSpec() {
     private lateinit var client: InMemoryOnefitClient
     private lateinit var reservationsRepo: InMemoryReservationsRepo
     private lateinit var workoutsRepo: InMemoryWorkoutsRepo
+    private lateinit var categoriesRepo: InMemoryCategoriesRepo
     private lateinit var workoutInserter: InMemoryWorkoutInserter
+    private lateinit var partnerInserter: InMemoryPartnerInserter
 
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         reservationsRepo = InMemoryReservationsRepo()
         workoutsRepo = InMemoryWorkoutsRepo()
+        categoriesRepo = InMemoryCategoriesRepo()
         workoutInserter = InMemoryWorkoutInserter()
+        partnerInserter = InMemoryPartnerInserter()
         syncer = ReservationsSyncerImpl(
-            client, reservationsRepo, clock, workoutInserter, workoutsRepo, InMemorySyncListenerManager()
+            client,
+            reservationsRepo,
+            clock,
+            workoutInserter,
+            partnerInserter,
+            categoriesRepo,
+            workoutsRepo,
+            InMemorySyncListenerManager()
         )
     }
 
@@ -63,6 +68,7 @@ class ReservationsSyncerTest : StringSpec() {
                 workoutStart = reservationJson.workout.from.toUtcLocalDateTime(),
             )
         }
+
         "Given client reservation Then insert workout" {
             client.mockReservationsResponse(reservationJson)
 
@@ -101,32 +107,42 @@ class ReservationsSyncerTest : StringSpec() {
 class ReservationsSyncerIntegrationTest : StringSpec() {
 
     private val reservationJson = Arb.reservationJson().next()
-    private val workoutFetch = Arb.workoutFetch().next()
+    private val workoutFetch: WorkoutFetchMetadata = Arb.workoutFetch().next()
     private val clock = TestDates.clock
     private lateinit var client: InMemoryOnefitClient
     private lateinit var syncer: ReservationsSyncer
     private lateinit var workoutFetcher: InMemoryWorkoutFetcher
+    private lateinit var imageStorage: ImageStorage
 
     override suspend fun beforeEach(testCase: TestCase) {
         client = InMemoryOnefitClient()
         workoutFetcher = InMemoryWorkoutFetcher()
-        val workoutInserter = WorkoutInserterImpl(
-            ExposedWorkoutsRepo, workoutFetcher
-        )
+        imageStorage = InMemoryImageStorage()
         syncer = ReservationsSyncerImpl(
-            client, ExposedReservationsRepo, clock, workoutInserter, ExposedWorkoutsRepo, InMemorySyncListenerManager()
+            client,
+            ExposedReservationsRepo,
+            clock,
+            WorkoutInserterImpl(ExposedWorkoutsRepo, workoutFetcher),
+            PartnerInserterImpl(ExposedPartnersRepo, imageStorage),
+            ExposedCategoriesRepo,
+            ExposedWorkoutsRepo,
+            InMemorySyncListenerManager()
         )
+    }
+
+    private fun mockWorkoutMetadataFetching(workout: WorkoutReservationJson, metadata: WorkoutFetchMetadata) {
+        workoutFetcher.urlToFetches[WorkoutUrl(
+            workoutId = workout.id, workoutSlug = workout.slug
+        )] = metadata
     }
 
     init {
         extension(DbListener())
 
-        "Given partner but no workout and reservation Then insert workout" {
+        "Given partner but no workout When sync reservation Then insert workout" {
             client.mockReservationsResponse(reservationJson)
             ExposedTestRepo.insertCategoryAndPartner(withPartner = { it.copy(id = reservationJson.workout.partner.id) })
-            workoutFetcher.urlToFetches[WorkoutUrl(
-                workoutId = reservationJson.workout.id, workoutSlug = reservationJson.workout.slug
-            )] = workoutFetch
+            mockWorkoutMetadataFetching(reservationJson.workout, workoutFetch)
 
             syncer.sync()
 
@@ -135,9 +151,21 @@ class ReservationsSyncerIntegrationTest : StringSpec() {
             }
         }
 
-        // "Given no workout and no partner Then insert both"
+        "Given no workout and no partner and no category Then insert partner and category" {
+            client.mockReservationsResponse(reservationJson)
+            mockWorkoutMetadataFetching(reservationJson.workout, workoutFetch)
 
-        "Given workout and reservation Then insert reservation for that workout" {
+            syncer.sync()
+
+            ExposedPartnersRepo.selectAll().shouldBeSingleton().first().also { partner ->
+                partner.id shouldBe reservationJson.workout.partner.id
+            }
+            ExposedCategoriesRepo.selectAll().shouldBeSingleton().first().also { category ->
+                category.id shouldBe reservationJson.workout.partner.category.id
+            }
+        }
+
+        "Given partner, workout When sync reservation for that workout Then insert reservation for it" {
             val (_, _, workout) = ExposedTestRepo.insertCategoryPartnerAndWorkout()
             client.mockReservationsResponse(reservationJson.copy(workout = reservationJson.workout.copy(id = workout.id)))
 

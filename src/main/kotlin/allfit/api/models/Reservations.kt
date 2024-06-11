@@ -31,4 +31,9 @@ data class WorkoutReservationJson(
 @Serializable
 data class WorkoutReservationPartnerJson(
     val id: Int,
+    val name: String,
+    val slug: String,
+    val waitlist_enabled: Boolean,
+    val header_image: HeaderImageJson? = null, // use orig
+    val category: PartnerSubCategoryJson,
 )

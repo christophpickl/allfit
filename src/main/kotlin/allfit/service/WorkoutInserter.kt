@@ -63,7 +63,7 @@ class WorkoutInserterImpl(
             metaFetchById[workout.id] = metadataFetcher.fetch(
                 WorkoutUrl(workoutId = workout.id, workoutSlug = workout.slug), fetchListener
             )
-            delay(pauseBetweenEachFetch) // artificial delay to soothen possible cloudflare's DoS anger :)
+            delay(pauseBetweenEachFetch) // artificial delay to soothe possible cloudflare's DoS anger :)
         }
         return metaFetchById
     }
