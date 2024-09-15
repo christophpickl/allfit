@@ -2,12 +2,9 @@
 
 ## Version History
 
-### Version 6
+### Version 7
 
-* BUGFIX: Reservation made for a different city (through app), then sync fails, as required partner is not stored.
-* Change background row color also for partners when wishlisted or favorited.
-* Filter partners by hidden state.
-* When syncing usage (reservations) then update immediately in UI (without restart necessary).
+* ...
 
 ## Backlog
 
