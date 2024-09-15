@@ -63,8 +63,9 @@ object ExposedUsageRepo : UsageRepository {
     }
 
     override fun selectOne(): UsageEntity = transaction {
-        log.debug { "selectOne()" }
-        UsageTable.selectSingleton().toUsageEntity()
+        UsageTable.selectSingleton().toUsageEntity().also {
+            log.debug { "selectOne() = $it" }
+        }
     }
 }
 

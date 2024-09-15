@@ -1,20 +1,18 @@
 # ToDos
 
-## Version Hisotry
+## Version History
 
 ### Version 6
 
 * BUGFIX: Reservation made for a different city (through app), then sync fails, as required partner is not stored.
 * Change background row color also for partners when wishlisted or favorited.
 * Filter partners by hidden state.
+* When syncing usage (reservations) then update immediately in UI (without restart necessary).
 
 ## Backlog
 
-* parse "bijzonderheden" (they are shown in the app, and sometimes important!)
-
 ### High Prio
 
-* when syncing usage (reservations) then update immediately in UI (without restart necessary)
 * BUGFIX: the app.zip should only contain the app file (not the build/artifacts folders)
 * BUGFIX: wrong workout reservation icon when scrolling.
 * BUGFIX: wrong workout background row color when scrolling.
