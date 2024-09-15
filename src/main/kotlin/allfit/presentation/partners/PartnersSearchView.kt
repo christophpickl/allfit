@@ -2,15 +2,7 @@ package allfit.presentation.partners
 
 import allfit.presentation.PartnerSearchFXEvent
 import allfit.presentation.models.FullPartner
-import allfit.presentation.search.CheckinSearchPane
-import allfit.presentation.search.FavoritedSearchPane
-import allfit.presentation.search.HasDropinsSearchPane
-import allfit.presentation.search.HasWorkoutsSearchPane
-import allfit.presentation.search.RatingSearchPane
-import allfit.presentation.search.SearchRequest
-import allfit.presentation.search.SearchView
-import allfit.presentation.search.TextSearchPane
-import allfit.presentation.search.WishlistedSearchPane
+import allfit.presentation.search.*
 import tornadofx.FXEvent
 import tornadofx.hbox
 import tornadofx.vbox
@@ -30,6 +22,7 @@ class PartnersSearchView : SearchView<FullPartner>(SearchRequest.alwaysTrue()) {
         vbox(spacing = 5.0) {
             addIt(HasDropinsSearchPane(::checkSearch))
             addIt(HasWorkoutsSearchPane(::checkSearch))
+            addIt(IsHiddenSearchPane(::checkSearch))
         }
     }
 
