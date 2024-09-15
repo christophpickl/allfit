@@ -1,7 +1,8 @@
 #!/bin/bash
 
 PACKR_JAR_PATH=/Applications/packr/packr-all-4.0.0.jar
-JDK_PATH=/Applications/packr/OpenJDK11U-jre_x64_mac_hotspot_11.0.19_7.tar.gz
+# get the right JRE from here: https://www.azul.com/downloads/?version=java-11-lts&os=macos&package=jre-fx#zulu
+JDK_PATH=/Applications/packr/zulu11.74.15-ca-fx-jre11.0.24-macosx_x64.tar.gz
 TARGET_DIR=build/artifacts
 TARGET_LOCATION_APP=${TARGET_DIR}/AllFit.app
 SHADOW_JAR_LOCATION=build/libs/allfit-all.jar
@@ -9,7 +10,7 @@ SHADOW_JAR_LOCATION=build/libs/allfit-all.jar
 buildArtifactWithVersion () {
   VERSION=$1
   echo "Building Gradle artifact with version: [$VERSION] ..."
-  ./gradlew clean check shadowJar -Pallfit.version="$VERSION" || exit 1
+  ./gradlew clean check shadowJar -Pallfit.version="$VERSION" -Dorg.gradle.java.home=/Users/toh/.jenv/versions/11/ || exit 1
 }
 
 sanityCheck() {

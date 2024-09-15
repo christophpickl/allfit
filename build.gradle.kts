@@ -8,7 +8,7 @@ repositories {
 plugins {
     kotlin("jvm") version "1.9.0"
     application
-    id("org.openjfx.javafxplugin") version "0.0.14"
+    id("org.openjfx.javafxplugin") version "0.1.0"
     kotlin("plugin.serialization") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.github.ben-manes.versions") version "0.47.0"
@@ -68,7 +68,7 @@ tasks.withType<KotlinCompile> {
 }
 
 javafx {
-    version = "19.0.2.1" // 20.0.2
+    version = "19.0.2.1" // 20.0.2, 21.0.3, 22.0.1 ... no, would require higher JDK, but tornadofx doesn't support that!
     modules = listOf("javafx.controls", "javafx.fxml", "javafx.web")
 }
 
@@ -97,14 +97,6 @@ configure<ProcessResources>("processResources") {
         )
     }
 }
-
-//configurations.all {
-//    resolutionStrategy {
-//        failOnVersionConflict()
-//        failOnNonReproducibleResolution()
-//    }
-//}
-
 
 inline fun <reified C> Project.configure(name: String, configuration: C.() -> Unit) {
     (this.tasks.getByName(name) as C).configuration()
