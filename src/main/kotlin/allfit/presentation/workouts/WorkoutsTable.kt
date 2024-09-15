@@ -51,7 +51,6 @@ class WorkoutsTable(
             }
         }
         column<FullWorkout, String>("Teacher") { it.value.teacherProperty() }.fixedWidth(100)
-        imageColumn("Reserved", reservedImage) { it.value.isReservedProperty() }
         column<FullWorkout, Int>("Chk") { it.value.partner.checkinsProperty() }.fixedWidth(40)
         ratingColumn { it.value.partner.ratingProperty() }
         iconsColumn(FullWorkout::icons, 120)
