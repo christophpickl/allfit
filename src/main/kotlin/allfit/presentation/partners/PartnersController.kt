@@ -18,10 +18,14 @@ class PartnersController : Controller() {
 
     init {
         safeSubscribe<PartnerSelectedFXEvent> {
-            val partnerId = it.partnerId
-            logger.debug { "Change partner: $partnerId" }
-            partnersModel.selectedPartner.initPartner(dataStorage.getPartnerById(partnerId), usageModel.usage.get())
-            partnersModel.selectedWorkout.set(FullWorkout.prototype)
+            val selectedPartnerId = it.partnerId
+            val selectedPartner = dataStorage.getPartnerById(selectedPartnerId)
+            logger.debug { "partner selected: id=$selectedPartnerId, name=${selectedPartner.name}" }
+            if(partnersModel.selectedPartner.id.get() != selectedPartnerId) {
+                // only reset workout if user selected a different partner (otherwise updated it, and staid the same)
+                partnersModel.selectedWorkout.set(FullWorkout.prototype)
+            }
+            partnersModel.selectedPartner.initPartner(selectedPartner, usageModel.usage.get())
         }
         safeSubscribe<PartnerSearchFXEvent> {
             logger.debug { "Search: ${it.searchRequest}" }

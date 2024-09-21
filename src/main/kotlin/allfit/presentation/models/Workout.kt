@@ -150,7 +150,7 @@ data class FullWorkout(
             simpleWorkout = SimpleWorkout(
                 id = 0,
                 partnerId = 0,
-                name = "Workout",
+                name = "-Workout-",
                 about = "",
                 specifics = "",
                 teacher = "",

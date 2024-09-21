@@ -2,8 +2,9 @@
 
 ## History Version
 
-* BUGFIX: the app.zip distribution should only contain the app file (not the build/artifacts folders)
-* rename "Group" to "Category" and make it searchable for partners instead workouts
+* BUGFIX: The app.zip distribution should only contain the app file (not the build/artifacts folders).
+* Rename "Group" to "Category" in the search panel, and make it searchable for partners instead of workouts.
+* When updating partner while workout is selected, then the same workout stays selected (and not get unselected during update).
 
 ## Backlog
 
@@ -19,7 +20,6 @@
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past
   checkins)
 * how to get bold font via CSS working?!
-* UI BUG: go to partners tab, select partner, select workout, update partner; workout should stay, but is "removed"?!
 * use GitHub actions (to verify; maybe even release in the future?!)
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)
