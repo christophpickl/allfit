@@ -5,6 +5,7 @@
 * BUGFIX: The app.zip distribution should only contain the app file (not the build/artifacts folders).
 * Rename "Group" to "Category" in the search panel, and make it searchable for partners instead of workouts.
 * When updating partner while workout is selected, then the same workout stays selected (and not get unselected during update).
+* Use GitHub actions to build and run tests continuously.
 
 ## Backlog
 
@@ -12,32 +13,32 @@
 
 * when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
 * ability to group/link partners together
+* play sound when sync is done (or say something funny like "sync is done master")
+* ad search views: when disabled, make everything transparent; when enabled, make it opaque
+* sync available spots (need to sync ALL workouts; yet gladly without metadata)
+* define text search targets (partner/workout, title/description/notes, teacher, ...)
 
 ### Medium Prio
 
-* define text search targets (partner/workout, title/description/notes, teacher, ...)
+* Given table row selected with wishlist/favorite, When table loses focus => Then change bg color (like default
+  behavior)
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past
   checkins)
 * how to get bold font via CSS working?!
-* use GitHub actions (to verify; maybe even release in the future?!)
 * only show tooltip if width is > maxWidth and text is cut off
 * could catch exception in SyncController (custom dialog?!)
 * listen to shortcut for tab selection good enough, yet the key listener could be even more global (e.g. when in
   textfield "stuck")
-* play sound when sync is done (or say something funny like "sync is done master")
 * TESTS: OneFitHttpClient, WorkoutInserterImpl, ReservationsSyncerIntegrationTest
 * presync all; except workout meta and partner images 2+
-* display location on map
-* ad search views: when disabled, make everything transparent; when enabled, make it opaque
 * STYLE: padding within htmlviews remove (especially left/right)
-* real time sync (?); while syncing, update DB and UI (no restart needed!)
-* sync available spots (need to sync ALL workouts; yet gladly without metadata)
-* Given table row selected with wishlist/favorite, When table loses focus => Then change bg color (like default
-  behavior)
+
 
 ### Low Prio
 
+* real time sync (?); while syncing, update DB and UI (no restart needed!)
+* display location on map
 * support offline mode
 * tornadofx UI tests
 * view replace transition: https://courses.bekwam.net/public_tutorials/bkcourse_tornadofx_replacewithapp.html

@@ -112,14 +112,13 @@ class WorkoutsSyncerTest : StringSpec() {
             }
         }
 
-        "Given workout already in DB Then do nothing" {
+        "Given workout already in DB and same being synced Then original stays as it is" {
             workoutsRepo.insertAll(listOf(workoutEntity))
-            val workoutJson = Arb.workoutJson().next().copy(id = workoutEntity.id)
-            client.mockWorkoutsResponse(workoutJson)
+            client.mockWorkoutsResponse(Arb.workoutJson().next().copy(id = workoutEntity.id))
 
             syncer.sync()
 
-            workoutsRepo.selectAllStartingFrom(workoutJson.from.toUtcLocalDateTime()).shouldBeSingleton()
+            workoutsRepo.selectAllStartingFrom(workoutEntity.start).shouldBeSingleton()
                 .first() shouldBe workoutEntity
         }
 
