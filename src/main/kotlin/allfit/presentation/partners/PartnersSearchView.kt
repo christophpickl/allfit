@@ -12,6 +12,9 @@ class PartnersSearchView : SearchView<FullPartner>(SearchRequest.alwaysTrue()) {
     override val root = hbox(spacing = 30.0) {
         vbox(spacing = 5.0) {
             addIt(TextSearchPane(::checkSearch))
+        }
+        vbox(spacing = 5.0) {
+            addIt(CategorySearchPane(::checkSearch))
             addIt(CheckinSearchPane(::checkSearch))
             addIt(RatingSearchPane(::checkSearch))
         }

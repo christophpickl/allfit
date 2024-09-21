@@ -67,7 +67,7 @@ class ModelRepoBinder : Controller() {
     private fun bindWorkouts() {
         val workouts = dataStorage.getWorkouts()
         workoutsModel.allWorkouts.addAll(workouts.toObservable())
-        workoutsModel.allGroups.addAll(dataStorage.getCategories())
+        workoutsModel.allCategories.addAll(dataStorage.getCategories())
         val initialWorkoutTimeSearch =
             GeneralWorkoutSearchRequest(GeneralWorkoutFilter.UPCOMING, DateRange.NONE).predicate
         workoutsModel.sortedFilteredWorkouts.predicate = {

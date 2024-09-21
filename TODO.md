@@ -3,19 +3,18 @@
 ## History Version
 
 * BUGFIX: the app.zip distribution should only contain the app file (not the build/artifacts folders)
+* rename "Group" to "Category" and make it searchable for partners instead workouts
 
 ## Backlog
 
 ### High Prio
 
-* BUGFIX: wrong workout reservation icon when scrolling.
-* BUGFIX: wrong workout background row color when scrolling.
-* define text search targets (partner/workout, title/description/notes, teacher, ...)
+* when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
+* ability to group/link partners together
 
 ### Medium Prio
 
-* when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
-* ability to group/link partners together
+* define text search targets (partner/workout, title/description/notes, teacher, ...)
 * harden retry logic (use ktor-retry plugin)
 * include in available counter: how many workouts reserved in this period for this particular partner (not only past
   checkins)

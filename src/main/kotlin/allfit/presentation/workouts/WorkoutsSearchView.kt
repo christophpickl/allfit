@@ -9,7 +9,7 @@ import allfit.presentation.search.CheckinSearchPane
 import allfit.presentation.search.DateSearchPane
 import allfit.presentation.search.FavoritedSearchPane
 import allfit.presentation.search.GeneralWorkoutSearchPane
-import allfit.presentation.search.GroupSearchPane
+import allfit.presentation.search.CategorySearchPane
 import allfit.presentation.search.RatingSearchPane
 import allfit.presentation.search.ReservedSearchPane
 import allfit.presentation.search.SearchRequest
@@ -42,13 +42,12 @@ class WorkoutsSearchView : SearchView<FullWorkout>(DefaultWorkoutSubSearchReques
             addIt(DateSearchPane(clock, singlesRepo.selectPreferencesData().syncDays, ::checkSearch))
         }
         vbox(spacing = 5.0) {
-            addIt(GroupSearchPane(::checkSearch))
             addIt(CheckinSearchPane(::checkSearch))
             addIt(RatingSearchPane(::checkSearch))
         }
         vbox(spacing = 5.0) {
-            addIt(WishlistedSearchPane(::checkSearch))
             addIt(FavoritedSearchPane(::checkSearch))
+            addIt(WishlistedSearchPane(::checkSearch))
             addIt(ReservedSearchPane(::checkSearch))
         }
     }
