@@ -26,7 +26,7 @@ git_tag_and_push () {
 git_status_verify
 buildArtifactWithVersion $APP_VERSION
 packageDeployables
-zip -r "${TARGET_LOCATION_APP}.zip" "$TARGET_LOCATION_APP"
+(cd "${TARGET_DIR}" && zip -r "AllFit.app.zip" "AllFit.app")
 git_tag_and_push
 
 open "$TARGET_DIR"

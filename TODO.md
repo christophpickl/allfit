@@ -1,16 +1,13 @@
 # ToDos
 
-## Version History
+## History Version
 
-### Version 7
-
-* ...
+* BUGFIX: the app.zip distribution should only contain the app file (not the build/artifacts folders)
 
 ## Backlog
 
 ### High Prio
 
-* BUGFIX: the app.zip should only contain the app file (not the build/artifacts folders)
 * BUGFIX: wrong workout reservation icon when scrolling.
 * BUGFIX: wrong workout background row color when scrolling.
 * define text search targets (partner/workout, title/description/notes, teacher, ...)
