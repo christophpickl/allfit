@@ -1,7 +1,6 @@
 package allfit.presentation.search
 
 import allfit.presentation.models.FullPartner
-import allfit.presentation.models.FullWorkout
 import allfit.presentation.workouts.WorkoutsViewModel
 import javafx.scene.control.ComboBox
 import tornadofx.combobox

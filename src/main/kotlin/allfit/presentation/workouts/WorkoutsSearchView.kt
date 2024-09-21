@@ -9,7 +9,6 @@ import allfit.presentation.search.CheckinSearchPane
 import allfit.presentation.search.DateSearchPane
 import allfit.presentation.search.FavoritedSearchPane
 import allfit.presentation.search.GeneralWorkoutSearchPane
-import allfit.presentation.search.CategorySearchPane
 import allfit.presentation.search.RatingSearchPane
 import allfit.presentation.search.ReservedSearchPane
 import allfit.presentation.search.SearchRequest

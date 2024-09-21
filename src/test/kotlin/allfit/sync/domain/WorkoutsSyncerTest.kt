@@ -19,7 +19,6 @@ import allfit.persistence.testInfra.singletonShouldBe
 import allfit.persistence.testInfra.workoutEntity
 import allfit.service.InMemoryWorkoutInserter
 import allfit.service.InsertWorkout
-import allfit.service.toUtcLocalDateTime
 import allfit.sync.core.SyncListenerManagerImpl
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
