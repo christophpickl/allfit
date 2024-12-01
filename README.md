@@ -1,3 +1,9 @@
+# !OUTDATED!
+
+OneFit was acquired by UrbanSportsClub, and thus all the APIs have changed as well as the data model and most of the domain logic, thus... this client is being discontinued and replaced by a new one:
+
+https://github.com/christophpickl/LocalSportsClub
+
 # AllFit
 
 A desktop client for **OneFit** which feels a bit like communism: _From the people for the people_.

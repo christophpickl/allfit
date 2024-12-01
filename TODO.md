@@ -9,8 +9,17 @@
 
 ## Backlog
 
+### Urban Migration
+
+* reverse engineer API and data model
+* new concepts: plans; plus-checkins (massage/EMS, only 8 for XL)
+* authentication/login
+* model update (completely new? integrate? adapt?)
+* data migration (maintain as much as possible)
+
 ### High Prio
 
+* ! BUG: progress tracker groes infinitely in width!
 * when looking at a workout, for whom i already have a reservation with the same partner, then highlight that!
 * ability to group/link partners together
 * play sound when sync is done (or say something funny like "sync is done master")
