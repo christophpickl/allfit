@@ -50,5 +50,10 @@ class PreferencesView : View() {
             }
         }
         label("Restart the application after saving so changes will have an effect.")
+        button("Export DB") {
+            action {
+                fire(ExportFXEvent)
+            }
+        }
     }
 }

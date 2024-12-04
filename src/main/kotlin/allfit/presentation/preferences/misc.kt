@@ -16,3 +16,4 @@ class PreferencesModel : ViewModel() {
 }
 
 object SavePreferencesFXEvent : FXEvent()
+object ExportFXEvent : FXEvent()

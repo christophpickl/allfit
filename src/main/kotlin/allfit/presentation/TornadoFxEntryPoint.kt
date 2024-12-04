@@ -8,6 +8,7 @@ import allfit.presentation.logic.PrefsController
 import allfit.presentation.partners.PartnersController
 import allfit.presentation.preferences.PreferencesController
 import allfit.presentation.view.MainView
+import allfit.service.Exporter
 import allfit.sync.view.SyncController
 import io.github.oshai.kotlinlogging.KotlinLogging.logger
 import javafx.application.Platform
@@ -29,6 +30,7 @@ class TornadoFxEntryPoint : App(
         SyncController::class,
         NotesController::class,
         PreferencesController::class,
+        Exporter::class,
     )
 
     init {
